@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450" fill="none" role="img" aria-label="Next Level Study">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="450" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#003594"/>
+      <stop offset="1" stop-color="#004ac6"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg)"/>
+  <g opacity="0.14" stroke="#ffffff" stroke-width="2">
+    <circle cx="120" cy="90" r="60"/>
+    <circle cx="700" cy="380" r="90"/>
+    <path d="M0 320 Q200 260 400 320 T800 320"/>
+  </g>
+  <g transform="translate(400 195)" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+    <rect x="-52" y="-40" width="104" height="80" rx="10"/>
+    <path d="M-30 -18 H30 M-30 0 H30 M-30 18 H8"/>
+  </g>
+  <text x="400" y="300" text-anchor="middle" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-size="30" font-weight="700" fill="#ffffff" opacity="0.95">Next Level Study</text>
+  <text x="400" y="332" text-anchor="middle" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-size="16" font-weight="500" fill="#b8c8ff" letter-spacing="2">BERITA &amp; EDUKASI</text>
+</svg>

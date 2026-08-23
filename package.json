@@ -1,0 +1,17 @@
+{
+    "name": "nls-blog-hame",
+    "version": "1.0.0",
+    "description": "Static website for Next Level Study public pages",
+    "scripts": {
+        "dev": "npx serve . -p 3000",
+        "start": "npx serve . -p 3000",
+        "preview": "npx serve ."
+    },
+    "keywords": [
+        "next-level-study",
+        "static-site",
+        "frontend"
+    ],
+    "author": "Next Level Study",
+    "license": "MIT"
+}
