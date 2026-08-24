@@ -48,6 +48,7 @@ graph TD
 | Path Rute | File Sumber | Keterangan |
 |---|---|---|
 | `/` | `index.html` | Halaman Beranda (Hero, Program, Galeri Bimbel NLS, Testimoni, Alumni) |
+| `/osn/` & `/bimbel-osn/` | `osn/index.html`, `bimbel-osn/index.html` | Halaman Utama Bimbel OSN (Program Unggulan, Kemitraan, Event JSS, Pilar Keunggulan, Wall of Excellence) |
 | `/tentang/` | `tentang/index.html` | Profil & Visi Misi Next Level Study |
 | `/mitra/` | `mitra/index.html` | Kemitraan Sekolah & Daftar Instansi |
 | `/privat/` | `privat/index.html` | Informasi & Pendaftaran Program Les Privat |

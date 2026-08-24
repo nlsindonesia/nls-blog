@@ -69,7 +69,7 @@
                     x-transition:enter-end="opacity-100 translate-y-0"
                     class="absolute left-0 top-full mt-2 w-64 rounded-2xl border border-gray-100 bg-white p-3 shadow-xl z-50">
                     <div class="flex flex-col gap-1">
-                        <a href="https://osn.next-level-study.com/"
+                        <a href="/osn"
                            class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
                            @click="activeDesktopMenu = null">
                             <p class="font-bold text-on-background">Bimbel OSN</p>
@@ -108,7 +108,7 @@
                     x-transition:enter-end="opacity-100 translate-y-0"
                     class="absolute left-0 top-full mt-2 w-64 rounded-2xl border border-gray-100 bg-white p-3 shadow-xl z-50">
                     <div class="flex flex-col gap-1">
-                        <a href="https://osn.next-level-study.com/"
+                        <a href="/osn"
                            class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
                            @click="activeDesktopMenu = null">
                             <p class="font-bold text-on-background">Try Out OSN</p>
@@ -200,7 +200,7 @@
                           :class="bimbelOpen ? 'rotate-180' : ''"></span>
                 </button>
                 <div x-show="bimbelOpen" x-collapse class="pl-4 flex flex-col gap-1 mt-1">
-                    <a href="https://osn.next-level-study.com/" @click="isMobileMenuOpen = false"
+                    <a href="/osn" @click="isMobileMenuOpen = false"
                        class="text-on-surface-variant font-medium py-1 text-sm">Bimbel OSN</a>
                     <a href="https://tka.next-level-study.com/" @click="isMobileMenuOpen = false"
                        class="text-on-surface-variant font-medium py-1 text-sm">Bimbel TKA</a>
@@ -216,7 +216,7 @@
                           :class="tryoutOpen ? 'rotate-180' : ''"></span>
                 </button>
                 <div x-show="tryoutOpen" x-collapse class="pl-4 flex flex-col gap-1 mt-1">
-                    <a href="https://osn.next-level-study.com/" @click="isMobileMenuOpen = false"
+                    <a href="/osn" @click="isMobileMenuOpen = false"
                        class="text-on-surface-variant font-medium py-1 text-sm">Try Out OSN</a>
                     <a href="https://tka.next-level-study.com/" @click="isMobileMenuOpen = false"
                        class="text-on-surface-variant font-medium py-1 text-sm">Try Out TKA</a>
