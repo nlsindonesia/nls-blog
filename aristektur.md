@@ -60,20 +60,39 @@ graph TD
 
 ---
 
-## 5. 🚀 Panduan Deployment & Git Workflow
+## 5. ⚙️ Konfigurasi Environment (`.env`)
 
-Untuk menyelaraskan perubahan dokumen arsitektur dan kode ke Vercel:
+Sistem menggunakan konfigurasi `.env` dengan fokus domain utama production/deployment:
+
+```dotenv
+APP_NAME="Next Level Study"
+APP_ENV=production
+APP_URL=https://nls-blog-plum.vercel.app
+SITE_URL=https://nls-blog-plum.vercel.app
+BASE_URL=https://nls-blog-plum.vercel.app
+PUBLIC_URL=https://nls-blog-plum.vercel.app
+VERCEL_URL=nls-blog-plum.vercel.app
+NEXT_PUBLIC_SITE_URL=https://nls-blog-plum.vercel.app
+VITE_APP_URL=https://nls-blog-plum.vercel.app
+```
+
+---
+
+## 6. 🚀 Panduan Deployment & Git Workflow
+
+Untuk menyelaraskan perubahan dokumen arsitektur, konfigurasi `.env`, dan kode ke Vercel:
 
 ```bash
 # 1. Cek status repository
 git status
 
 # 2. Tambahkan perubahan file
-git add aristektur.md
+git add .
 
 # 3. Commit perubahan
-git commit -m "Update dokumentasi arsitektur sistem NLS"
+git commit -m "feat: add .env configuration and update architecture docs"
 
 # 4. Push ke GitHub (Vercel otomatis mendeploy)
 git push origin main
 ```
+
