@@ -38,6 +38,90 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
+    <!-- Tailwind CSS CDN & Design Tokens -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "outline": "#6F7881",
+              "outline-variant": "#BEC8D2",
+              "inverse-primary": "#8dcdff",
+              "on-secondary": "#ffffff",
+              "error": "#ba1a1a",
+              "tertiary-container": "#006971",
+              "surface-dim": "#c4dcff",
+              "primary-container": "#006493",
+              "secondary-fixed": "#ffdbcb",
+              "on-background": "#001c37",
+              "primary": "#0E9BDF",
+              "on-error": "#ffffff",
+              "on-error-container": "#93000a",
+              "tertiary-fixed": "#87f3ff",
+              "surface-container-highest": "#d2e4ff",
+              "background": "#f8f9ff",
+              "primary-fixed-dim": "#8dcdff",
+              "surface-container": "#e5eeff",
+              "on-secondary-container": "#5c2400",
+              "inverse-surface": "#19324d",
+              "surface-alt": "#F2F5FA",
+              "primary-fixed": "#cae6ff",
+              "on-secondary-fixed-variant": "#783100",
+              "tertiary": "#004f56",
+              "error-container": "#ffdad6",
+              "on-tertiary": "#ffffff",
+              "on-surface": "#001c37",
+              "secondary": "#F26D0F",
+              "action-blue": "#0E9BDF",
+              "inverse-on-surface": "#eaf1ff",
+              "on-tertiary-container": "#78e9f6",
+              "on-tertiary-fixed-variant": "#004f55",
+              "tertiary-fixed-dim": "#64d7e3",
+              "surface-container-high": "#dce9ff",
+              "surface-tint": "#006493",
+              "on-primary": "#ffffff",
+              "surface-bright": "#F8F9FF",
+              "secondary-container": "#F26D0F",
+              "on-tertiary-fixed": "#002023",
+              "surface-variant": "#d2e4ff",
+              "on-secondary-fixed": "#341100",
+              "on-primary-fixed": "#001e30",
+              "on-surface-variant": "#40484f",
+              "surface-container-low": "#eff4ff",
+              "on-primary-fixed-variant": "#004b70",
+              "surface": "#f8f9ff",
+              "on-primary-container": "#b5ddff",
+              "outline-high": "#2b343c",
+              "surface-container-lowest": "#ffffff",
+              "secondary-fixed-dim": "#ffb691"
+            },
+            borderRadius: {
+              "DEFAULT": "0.25rem",
+              "lg": "0.5rem",
+              "xl": "0.75rem",
+              "2xl": "1rem",
+              "full": "9999px"
+            },
+            spacing: {
+              "margin-desktop": "32px",
+              "margin-mobile": "16px",
+              "gutter-tablet": "20px",
+              "container-max": "1200px",
+              "base": "8px",
+              "gutter-desktop": "24px"
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              headline: ["Inter", "sans-serif"],
+              body: ["Inter", "sans-serif"]
+            }
+          }
+        }
+      };
+    </script>
+
     <!-- Application CSS & JS Asset Bundle -->
     <link rel="preload" as="style" href="/build/assets/app-A86YIcNI.css" />
     <link rel="modulepreload" as="script" href="/build/assets/app-Bzd4avQC.js" />
@@ -48,6 +132,12 @@
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Bimbel OSN - Next Level Study","url":"https://next-level-study.com/bimbel-osn","description":"Halaman resmi bimbingan persiapan Olimpiade Sains Nasional (OSN) dari Next Level Study."}</script>
 
     <style>
+        [x-cloak] { display: none !important; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9ff;
+            color: #001c37;
+        }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             display: inline-block;
@@ -67,11 +157,30 @@
         .card-shadow:hover {
             box-shadow: 0 12px 30px -8px rgba(14, 155, 223, 0.16);
         }
+        .container-max {
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
         .text-action-blue { color: #0E9BDF; }
         .bg-action-blue { background-color: #0E9BDF; }
         .border-action-blue { border-color: #0E9BDF; }
         .bg-surface-alt { background-color: #F2F5FA; }
         .border-surface-alt { border-color: #E2E8F0; }
+        .bg-surface-bright { background-color: #F8F9FF; }
+        .bg-surface-container-low { background-color: #eff4ff; }
+        .bg-surface-container-lowest { background-color: #ffffff; }
+        .text-on-background { color: #001c37; }
+        .text-on-surface-variant { color: #40484f; }
+        .border-outline-variant { border-color: #BEC8D2; }
+
+        @media (min-width: 1024px) {
+            .lg\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)) !important; }
+            .lg\:col-span-7 { grid-column: span 7 / span 7 !important; }
+            .lg\:col-span-5 { grid-column: span 5 / span 5 !important; }
+            .lg\:col-span-8 { grid-column: span 8 / span 8 !important; }
+            .lg\:col-span-4 { grid-column: span 4 / span 4 !important; }
+        }
     </style>
 </head>
 <body class="min-h-screen bg-surface font-sans selection:bg-primary-fixed selection:text-on-primary-fixed overflow-x-hidden flex flex-col text-on-surface">
