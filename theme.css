@@ -34,6 +34,7 @@ html.dark main {
 html.dark section,
 html.dark .bg-surface,
 html.dark .bg-surface-bright,
+html.dark .bg-surface-cream,
 html.dark .bg-surface-container-lowest,
 html.dark .bg-surface-container-low,
 html.dark .bg-surface-container,
@@ -52,7 +53,7 @@ html.dark div[class*="bg-gradient-to-b from-surface"] {
     border-color: #1e293b !important;
 }
 
-/* Alternating Section Background for depth */
+/* Alternating Section Background for rich depth */
 html.dark section:nth-of-type(even),
 html.dark #bimbel,
 html.dark #testimoni,
@@ -62,13 +63,13 @@ html.dark #faq {
 }
 
 /* ==========================================================================
-   2. CARDS & ELEVATED SURFACES (CRITICAL FIX FOR INVISIBLE TEXT)
+   2. CARDS & ELEVATED SURFACES
    ========================================================================== */
 
-/* Every card and content wrapper turns dark with subtle border */
 html.dark .tonal-card,
 html.dark .elevated-card,
 html.dark .card,
+html.dark .glass-card,
 html.dark .bg-white:not(.partner-logo-card):not(.keep-white),
 html.dark .shadow-sm.bg-white,
 html.dark .shadow-md.bg-white,
@@ -85,6 +86,16 @@ html.dark .bg-amber-50\/60 {
     background-color: #131d38 !important;
     border-color: #2a3a5a !important;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Glass Overlays on Top of Images */
+html.dark .bg-white\/90,
+html.dark .bg-white\/80,
+html.dark .bg-white\/70,
+html.dark .bg-white\/95 {
+    background-color: rgba(19, 29, 56, 0.92) !important;
+    backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(51, 65, 85, 0.8) !important;
 }
 
 /* Card hover effect */
@@ -120,6 +131,8 @@ html.dark .font-headline-md,
 html.dark .font-headline-sm,
 html.dark .text-display-sm,
 html.dark .text-display-md,
+html.dark .text-display-lg,
+html.dark .text-display-lg-mobile,
 html.dark .text-body-lg.font-bold,
 html.dark .text-body-md.font-bold {
     color: #ffffff !important;
@@ -128,7 +141,6 @@ html.dark .text-body-md.font-bold {
 /* Subheadings & Body Text -> Slate 200/300 */
 html.dark p,
 html.dark li,
-html.dark span:not([class*="bg-"]):not([class*="text-amber"]):not([class*="text-emerald"]):not([class*="text-rose"]):not([class*="text-primary"]):not([class*="text-success"]),
 html.dark .text-on-surface-variant,
 html.dark .text-slate-700,
 html.dark .text-slate-600,
@@ -166,7 +178,135 @@ html.dark .icon-\[mdi--check\] {
 }
 
 /* ==========================================================================
-   4. NAVIGATION & DROPDOWNS
+   4. PILLS, HERO BADGES & CATEGORY TAGS (HIGH-CONTRAST FIX)
+   ========================================================================== */
+
+/* Hero Badge: Bimbel #1 Persiapan OSN & SNBT (bg-primary-fixed) */
+html.dark .bg-primary-fixed,
+html.dark .bg-primary-fixed-dim {
+    background-color: rgba(14, 165, 233, 0.2) !important;
+    border: 1.5px solid rgba(56, 189, 248, 0.45) !important;
+    color: #38bdf8 !important;
+}
+
+html.dark .bg-primary-fixed *,
+html.dark .bg-primary-fixed-dim *,
+html.dark .text-on-primary-fixed {
+    color: #38bdf8 !important;
+}
+
+/* Category OSN Pill */
+html.dark span.bg-primary,
+html.dark .text-on-primary.bg-primary {
+    background-color: #0284c7 !important;
+    color: #ffffff !important;
+}
+
+/* Category SNBT Pill */
+html.dark span.bg-secondary-container,
+html.dark .bg-secondary-container,
+html.dark .bg-secondary-fixed,
+html.dark .text-on-secondary-container.bg-secondary-container {
+    background-color: #ea580c !important;
+    color: #ffffff !important;
+}
+
+html.dark .bg-secondary-container *,
+html.dark .text-on-secondary-container {
+    color: #ffffff !important;
+}
+
+/* Category TKA Pill */
+html.dark span.bg-tertiary-container,
+html.dark .bg-tertiary-container,
+html.dark .bg-tertiary-fixed,
+html.dark .text-on-tertiary-container.bg-tertiary-container {
+    background-color: #0d9488 !important;
+    color: #ffffff !important;
+}
+
+html.dark .bg-tertiary-container *,
+html.dark .text-on-tertiary-container {
+    color: #ffffff !important;
+}
+
+/* Live Badge / Community Icon Box */
+html.dark .bg-primary-container {
+    background-color: rgba(14, 165, 233, 0.2) !important;
+    border: 1px solid rgba(56, 189, 248, 0.4) !important;
+    color: #38bdf8 !important;
+}
+
+html.dark .bg-primary-container *,
+html.dark .text-on-primary-container {
+    color: #38bdf8 !important;
+}
+
+/* Emerald Pill / Badges */
+html.dark .bg-emerald-50,
+html.dark .bg-emerald-100 {
+    background-color: rgba(6, 78, 59, 0.4) !important;
+    border: 1px solid rgba(5, 150, 105, 0.6) !important;
+    color: #6ee7b7 !important;
+}
+html.dark .bg-emerald-50 *,
+html.dark .bg-emerald-100 * {
+    color: #6ee7b7 !important;
+}
+
+/* Rose Pill / Badges */
+html.dark .bg-rose-50,
+html.dark .bg-rose-100 {
+    background-color: rgba(136, 19, 55, 0.4) !important;
+    border: 1px solid rgba(225, 29, 72, 0.6) !important;
+    color: #fda4af !important;
+}
+html.dark .bg-rose-50 *,
+html.dark .bg-rose-100 * {
+    color: #fda4af !important;
+}
+
+/* Blue & Sky Pill / Badges */
+html.dark .bg-blue-50,
+html.dark .bg-blue-100,
+html.dark .bg-sky-50,
+html.dark .bg-sky-100 {
+    background-color: rgba(30, 58, 138, 0.4) !important;
+    border: 1px solid rgba(37, 99, 235, 0.6) !important;
+    color: #93c5fd !important;
+}
+html.dark .bg-blue-50 *,
+html.dark .bg-blue-100 * {
+    color: #93c5fd !important;
+}
+
+/* Amber & Yellow Pill / Badges */
+html.dark .bg-amber-50,
+html.dark .bg-amber-100,
+html.dark .bg-yellow-50 {
+    background-color: rgba(120, 53, 15, 0.4) !important;
+    border: 1px solid rgba(217, 119, 6, 0.6) !important;
+    color: #fde047 !important;
+}
+html.dark .bg-amber-50 *,
+html.dark .bg-amber-100 * {
+    color: #fde047 !important;
+}
+
+/* Purple Pill / Badges */
+html.dark .bg-purple-50,
+html.dark .bg-purple-100 {
+    background-color: rgba(88, 28, 135, 0.4) !important;
+    border: 1px solid rgba(147, 51, 234, 0.6) !important;
+    color: #d8b4fe !important;
+}
+html.dark .bg-purple-50 *,
+html.dark .bg-purple-100 * {
+    color: #d8b4fe !important;
+}
+
+/* ==========================================================================
+   5. NAVIGATION & DROPDOWNS
    ========================================================================== */
 
 html.dark nav,
@@ -201,42 +341,6 @@ html.dark [x-show="isMobileMenuOpen"] .border-gray-100 {
 }
 
 /* ==========================================================================
-   5. PILLS, CATEGORY BADGES & TAGS
-   ========================================================================== */
-
-/* Category OSN Pill */
-html.dark span.bg-primary,
-html.dark .text-on-primary.bg-primary {
-    background-color: #0284c7 !important;
-    color: #ffffff !important;
-}
-
-/* Category SNBT Pill */
-html.dark span.bg-secondary-container,
-html.dark .text-on-secondary-container.bg-secondary-container {
-    background-color: #ea580c !important;
-    color: #ffffff !important;
-}
-
-/* Category TKA Pill */
-html.dark span.bg-tertiary-container,
-html.dark .text-on-tertiary-container.bg-tertiary-container {
-    background-color: #0d9488 !important;
-    color: #ffffff !important;
-}
-
-/* Live Badge / Community Icon Box */
-html.dark .bg-primary-container {
-    background-color: #1e293b !important;
-    border: 1px solid #334155 !important;
-    color: #38bdf8 !important;
-}
-
-html.dark .text-on-primary-container {
-    color: #38bdf8 !important;
-}
-
-/* ==========================================================================
    6. BORDERS & DIVIDERS
    ========================================================================== */
 
@@ -256,7 +360,6 @@ html.dark .border-y {
    7. PARTNER LOGOS (ENSURE 100% VISIBILITY)
    ========================================================================== */
 
-/* Keep school partner cards crisp on white backdrop */
 html.dark .group:has(img[src*="/images/mitra/"]),
 html.dark div:has(> img[src*="/images/mitra/"]),
 html.dark [class*="grid"]:has(img[src*="/images/mitra/"]) > div {
