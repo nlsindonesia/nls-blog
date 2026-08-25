@@ -670,7 +670,7 @@
         </div>
     </div>
 </section>
-        <section id="kaleidoskop" class="py-24 bg-surface-container-low">
+        <section id="kaleidoskop" class="py-24 bg-surface-container-low" x-data="{ isVideoOpen: false }">
     <div class="container-max px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div class="space-y-6">
@@ -686,18 +686,47 @@
                 </div>
             </div>
 
-            <div class="relative group cursor-pointer">
+            <div class="relative group cursor-pointer" @click="isVideoOpen = true">
                 <div class="aspect-video rounded-2xl overflow-hidden shadow-2xl bg-deep-navy">
-                    <img src="/images/home/video-thumb.jpg" alt="Video Next Level Study" class="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105" />
+                    <img src="https://img.youtube.com/vi/wPVVauJJrL8/hqdefault.jpg" onerror="this.src='/images/home/video-thumb.jpg'" alt="Video Next Level Study" class="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105" />
                 </div>
                 <div class="absolute inset-0 flex items-center justify-center">
-                    <div class="w-16 h-16 bg-white text-primary rounded-full flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110">
-                        <span class="icon-[mdi--play] text-3xl"></span>
+                    <div class="w-16 h-16 bg-white/90 text-primary rounded-full flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110">
+                        <svg class="w-8 h-8 text-primary ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     </div>
                 </div>
                 <div class="absolute bottom-4 right-4">
-                    <span class="px-3 py-1.5 bg-white/90 backdrop-blur-md rounded-lg text-sm font-medium text-on-surface">Durasi: 2:45</span>
+                    <span class="px-3 py-1.5 bg-black/70 backdrop-blur-md rounded-lg text-xs font-semibold text-white flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        YouTube Video
+                    </span>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Modal with YouTube embed -->
+    <div x-show="isVideoOpen"
+         x-cloak
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @keydown.escape.window="isVideoOpen = false"
+         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
+         style="display: none;">
+        <div @click.away="isVideoOpen = false" class="relative max-w-3xl w-full bg-black rounded-2xl overflow-hidden shadow-2xl border border-slate-700/60">
+            <button @click="isVideoOpen = false" class="absolute top-3 right-3 z-20 p-2 bg-black/70 hover:bg-black text-white rounded-full transition-colors cursor-pointer" aria-label="Tutup Video">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            <div class="relative w-full aspect-video flex items-center justify-center bg-black">
+                <template x-if="isVideoOpen">
+                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/wPVVauJJrL8?autoplay=1&rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </template>
             </div>
         </div>
     </div>
