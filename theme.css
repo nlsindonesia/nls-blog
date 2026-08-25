@@ -1,4 +1,7 @@
-/* Global Dark / Light Theme Styling */
+/* ==========================================================================
+   NEXT LEVEL STUDY - COMPREHENSIVE DARK & LIGHT THEME ENGINE
+   ========================================================================== */
+
 :root {
     --theme-transition: background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease, box-shadow 0.25s ease;
 }
@@ -7,36 +10,112 @@ body {
     transition: var(--theme-transition);
 }
 
-/* Dark Theme Overrides */
+/* ==========================================================================
+   DARK MODE SYSTEM-WIDE STYLING
+   ========================================================================== */
+
 html.dark {
     color-scheme: dark;
 }
 
+/* Core Document Background & Text */
 html.dark body {
     background-color: #0b132b !important;
     color: #e2e8f0 !important;
 }
 
-/* Navbars & Headers */
+html.dark main,
+html.dark section {
+    transition: var(--theme-transition);
+}
+
+/* --------------------------------------------------------------------------
+   1. Navbars, Headers, Mobile Drawer & Dropdowns
+   -------------------------------------------------------------------------- */
 html.dark nav,
-html.dark header {
+html.dark header,
+html.dark .fixed.top-0,
+html.dark .sticky.top-0 {
     background-color: rgba(11, 19, 43, 0.96) !important;
     border-color: rgba(51, 65, 85, 0.8) !important;
 }
 
-/* Dropdown Menus */
+/* Mega-Menu Dropdowns Desktop */
 html.dark .absolute.bg-white,
-html.dark [x-show="activeDesktopMenu"],
-html.dark [x-show="isMobileMenuOpen"] {
+html.dark [x-show="activeDesktopMenu"] {
     background-color: #131d38 !important;
     border-color: #334155 !important;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6) !important;
+    box-shadow: 0 20px 30px -5px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
 }
 
-/* Cards & Surfaces */
-html.dark .bg-white {
-    background-color: #131d38 !important;
+/* Dropdown Menu Item Hover */
+html.dark [x-show="activeDesktopMenu"] a:hover {
+    background-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+/* Mobile Menu Drawer */
+html.dark [x-show="isMobileMenuOpen"] {
+    background-color: #0d162f !important;
+    border-color: #334155 !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8) !important;
+}
+
+html.dark [x-show="isMobileMenuOpen"] .border-b,
+html.dark [x-show="isMobileMenuOpen"] .border-gray-100 {
     border-color: #1e293b !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. Typography & Headings (High-Contrast & Vibrant)
+   -------------------------------------------------------------------------- */
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark h5,
+html.dark h6,
+html.dark .text-deep-navy,
+html.dark .text-\[\#0A2540\],
+html.dark .text-\[\#06152B\],
+html.dark .text-slate-900,
+html.dark .text-slate-800,
+html.dark .text-gray-900,
+html.dark .text-gray-800,
+html.dark .text-on-surface,
+html.dark .text-on-background,
+html.dark .font-headline-lg,
+html.dark .font-headline-md,
+html.dark .font-headline-sm {
+    color: #ffffff !important;
+}
+
+html.dark .text-slate-700,
+html.dark .text-slate-600,
+html.dark .text-gray-700,
+html.dark .text-gray-600,
+html.dark .text-on-surface-variant {
+    color: #cbd5e1 !important;
+}
+
+html.dark .text-slate-500,
+html.dark .text-slate-400,
+html.dark .text-gray-500,
+html.dark .text-gray-400,
+html.dark .text-muted-foreground {
+    color: #94a3b8 !important;
+}
+
+/* Text Primary & Gradient Text Enhancement in Dark Mode */
+html.dark .text-primary {
+    color: #38bdf8 !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. Cards, Containers, Sections & Surfaces
+   -------------------------------------------------------------------------- */
+html.dark .bg-white:not(.keep-light):not(.partner-badge) {
+    background-color: #131d38 !important;
+    border-color: #273549 !important;
 }
 
 html.dark .bg-surface,
@@ -44,62 +123,167 @@ html.dark .bg-surface-bright,
 html.dark .bg-surface-container-lowest,
 html.dark .bg-surface-container-low,
 html.dark .bg-slate-50,
-html.dark .bg-emerald-50\/60,
-html.dark .bg-blue-50\/50,
-html.dark .bg-blue-50\/60,
-html.dark .bg-amber-50\/60,
-html.dark .bg-emerald-50\/70,
-html.dark .bg-blue-50\/70,
-html.dark .bg-amber-50\/70,
-html.dark .bg-rose-50\/70 {
+html.dark .bg-gray-50,
+html.dark .bg-gray-100 {
     background-color: #0f182e !important;
     border-color: #334155 !important;
 }
 
-/* Text Colors */
-html.dark .text-deep-navy,
-html.dark .text-\[\#0A2540\],
-html.dark .text-slate-900,
-html.dark .text-slate-800,
-html.dark .text-on-surface,
-html.dark .text-on-background,
-html.dark .font-headline-lg,
-html.dark .font-headline-md,
-html.dark h1, html.dark h2, html.dark h3, html.dark h4, html.dark h5 {
-    color: #f8fafc !important;
+/* Sections with Custom Light Gradients */
+html.dark section[class*="bg-[linear-gradient"],
+html.dark section[class*="bg-gradient-to"],
+html.dark div[class*="bg-gradient-to-b from-[#F0F7FF]"],
+html.dark .bg-emerald-50\/60,
+html.dark .bg-blue-50\/50,
+html.dark .bg-blue-50\/60,
+html.dark .bg-amber-50\/60 {
+    background: #0f182e !important;
+    border-color: #1e293b !important;
 }
 
-html.dark .text-slate-700,
-html.dark .text-slate-600,
-html.dark .text-on-surface-variant {
-    color: #cbd5e1 !important;
+/* --------------------------------------------------------------------------
+   4. Partner School Logos (Preserve 100% Crisp Visibility)
+   -------------------------------------------------------------------------- */
+/* Ensure school partner logos & dark emblem graphics are crystal clear */
+html.dark .group:has(img[src*="/images/mitra/"]),
+html.dark div:has(> img[src*="/images/mitra/"]),
+html.dark [class*="grid"]:has(img[src*="/images/mitra/"]) > div {
+    background-color: #ffffff !important;
+    border-color: #475569 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
 }
 
-html.dark .text-slate-500,
-html.dark .text-slate-400 {
-    color: #94a3b8 !important;
+html.dark div:has(> img[src*="/images/mitra/"]) span,
+html.dark .group:has(img[src*="/images/mitra/"]) span {
+    color: #0f172a !important;
 }
 
-/* Borders */
+/* --------------------------------------------------------------------------
+   5. Interactive Pills, Badges & Highlights
+   -------------------------------------------------------------------------- */
+html.dark .bg-emerald-50,
+html.dark .bg-emerald-50\/70,
+html.dark .bg-emerald-100 {
+    background-color: rgba(6, 78, 59, 0.4) !important;
+    border-color: rgba(5, 150, 105, 0.6) !important;
+    color: #6ee7b7 !important;
+}
+html.dark .text-emerald-800,
+html.dark .text-emerald-900,
+html.dark .text-emerald-700 {
+    color: #6ee7b7 !important;
+}
+
+html.dark .bg-rose-50,
+html.dark .bg-rose-50\/70,
+html.dark .bg-rose-100 {
+    background-color: rgba(136, 19, 55, 0.4) !important;
+    border-color: rgba(225, 29, 72, 0.6) !important;
+    color: #fda4af !important;
+}
+html.dark .text-rose-700,
+html.dark .text-rose-800,
+html.dark .text-rose-900 {
+    color: #fda4af !important;
+}
+
+html.dark .bg-blue-50,
+html.dark .bg-blue-50\/70,
+html.dark .bg-blue-100,
+html.dark .bg-sky-50 {
+    background-color: rgba(30, 58, 138, 0.4) !important;
+    border-color: rgba(37, 99, 235, 0.6) !important;
+    color: #93c5fd !important;
+}
+html.dark .text-blue-800,
+html.dark .text-blue-900,
+html.dark .text-sky-800 {
+    color: #93c5fd !important;
+}
+
+html.dark .bg-amber-50,
+html.dark .bg-amber-50\/70,
+html.dark .bg-amber-100,
+html.dark .bg-yellow-50 {
+    background-color: rgba(120, 53, 15, 0.4) !important;
+    border-color: rgba(217, 119, 6, 0.6) !important;
+    color: #fde047 !important;
+}
+html.dark .text-amber-800,
+html.dark .text-amber-900 {
+    color: #fde047 !important;
+}
+
+html.dark .bg-purple-50,
+html.dark .bg-purple-50\/70,
+html.dark .bg-purple-100 {
+    background-color: rgba(88, 28, 135, 0.4) !important;
+    border-color: rgba(147, 51, 234, 0.6) !important;
+    color: #d8b4fe !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. Borders & Dividers
+   -------------------------------------------------------------------------- */
 html.dark .border-gray-100,
 html.dark .border-slate-100,
 html.dark .border-slate-200,
 html.dark .border-slate-200\/80,
-html.dark .border-slate-200\/60,
 html.dark .border-slate-200\/70,
+html.dark .border-slate-200\/60,
 html.dark .border-outline-variant,
-html.dark .border-surface-container {
+html.dark .border-surface-container,
+html.dark .border-y {
     border-color: rgba(51, 65, 85, 0.7) !important;
 }
 
-/* Toggle Button Styling */
+/* --------------------------------------------------------------------------
+   7. Accordions, FAQs & Details
+   -------------------------------------------------------------------------- */
+html.dark details,
+html.dark .faq-card,
+html.dark [x-data*="open"],
+html.dark [x-data*="faq"] {
+    background-color: #131d38 !important;
+    border-color: #334155 !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. Form Inputs & Selects
+   -------------------------------------------------------------------------- */
+html.dark input:not([type="submit"]):not([type="button"]),
+html.dark select,
+html.dark textarea {
+    background-color: #1a2542 !important;
+    color: #ffffff !important;
+    border-color: #334155 !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+    color: #94a3b8 !important;
+}
+
+/* --------------------------------------------------------------------------
+   9. Shadows & Elevation
+   -------------------------------------------------------------------------- */
+html.dark .shadow-xs,
+html.dark .shadow-sm,
+html.dark .shadow-md,
+html.dark .shadow-lg,
+html.dark .shadow-xl,
+html.dark .shadow-2xl {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* --------------------------------------------------------------------------
+   10. Theme Toggle Button
+   -------------------------------------------------------------------------- */
 .theme-toggle-btn {
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
     border-radius: 9999px;
     border: 1.5px solid #e2e8f0;
     background: #ffffff;
@@ -120,11 +304,12 @@ html.dark .theme-toggle-btn {
     border-color: #334155;
     background: #1e293b;
     color: #f59e0b;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 html.dark .theme-toggle-btn:hover {
     border-color: #f59e0b;
     color: #fbbf24;
     background: #273549;
+    transform: scale(1.05);
 }
