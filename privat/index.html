@@ -340,25 +340,26 @@
     <div class="flex-grow"> 
 
         <main x-data="privatPage()" class="w-full">
-    <!-- Hero Section -->
-    <section class="relative py-20 md:py-32 overflow-hidden min-h-[600px] flex items-center">
-        <div class="absolute inset-0 z-0">
-            <img alt="Background" class="w-full h-full object-cover" src="/images/hero.jpg">
-            <div class="absolute inset-0 bg-gradient-to-r from-primary/30 via-transparent to-transparent"></div>
+        <!-- Hero Section -->
+    <section class="relative py-16 md:py-24 overflow-hidden min-h-[580px] flex items-center bg-gradient-to-b from-blue-50/60 via-surface to-surface">
+        <div class="absolute inset-0 z-0 opacity-15 pointer-events-none">
+            <img alt="Background" class="w-full h-full object-cover blur-sm" src="/images/privat/hero-privat-timothy.jpg">
+            <div class="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-transparent"></div>
         </div>
         <div class="relative z-10 px-4 md:px-8 container-max w-full">
-            <div class="grid md:grid-cols-2 gap-12 items-start">
-                <div class="glass-card p-8 md:p-12 rounded-3xl border border-white/30 shadow-2xl space-y-6">
-                    <div class="inline-block px-3 py-1 bg-primary/10 text-primary rounded-lg text-xs font-bold tracking-wider uppercase">
-                        Premium Privat Mentoring
+            <div class="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                <div class="lg:col-span-6 glass-card p-8 md:p-10 rounded-3xl border border-white/40 shadow-xl space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-primary/10 border border-primary/20 text-primary rounded-full text-xs font-bold tracking-wider uppercase">
+                        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                        Premium Privat Mentoring &bull; Go International
                     </div>
-                    <h1 class="text-4xl md:text-6xl font-black text-primary leading-tight">
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-primary leading-tight">
                         Belajar Lebih Personal, Hasil Lebih Maksimal
                     </h1>
-                    <p class="text-lg max-w-lg leading-relaxed text-on-surface">
-                        Dapatkan bimbingan satu-lawan-satu dengan mentor ahli yang disesuaikan khusus dengan kebutuhan dan kecepatan belajar Anda.
+                    <p class="text-base md:text-lg leading-relaxed text-on-surface">
+                        Dapatkan bimbingan satu-lawan-satu dengan mentor ahli tingkat nasional &amp; internasional yang disesuaikan khusus dengan kebutuhan, target, dan akselerasi belajar Anda.
                     </p>
-                    <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                    <div class="flex flex-col sm:flex-row gap-4 pt-2">
                         <a href="https://wa.me/6285163070002" target="_blank" rel="noopener noreferrer"
                             class="bg-primary text-on-primary px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 group hover:shadow-lg transition-all">
                             Cari Mentor Sekarang
@@ -370,36 +371,50 @@
                         </a>
                     </div>
                 </div>
-                <div class="glass-card p-8 md:p-12 rounded-3xl border border-white/30 shadow-2xl">
-                    <h3 class="text-xl font-bold text-primary mb-6">Mengapa Privat di Kami?</h3>
-                    <div class="space-y-6">
-                        <div class="flex items-start gap-4">
-                            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                                <span class="icon-[mdi--verified] text-primary text-sm"></span>
+                
+                <div class="lg:col-span-6">
+                    <div class="relative rounded-3xl overflow-hidden shadow-2xl border-2 border-white/60 bg-slate-900 group">
+                        <img src="/images/privat/hero-privat-timothy.jpg" alt="Timothy Matthew Wijaya - World Star Champion TIMO Final Round" class="w-full h-[360px] sm:h-[420px] md:h-[460px] object-cover group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent"></div>
+                        <div class="absolute bottom-4 left-4 right-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-4 md:p-5 rounded-2xl border border-white/20 shadow-xl">
+                            <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                                <span class="px-2.5 py-0.5 rounded-full bg-amber-500 text-white text-[11px] font-extrabold uppercase tracking-wide shadow-xs">World Champion</span>
+                                <span class="text-xs font-bold text-slate-800 dark:text-slate-200">TIMO Final Round 2025 - 2026</span>
                             </div>
-                            <div>
-                                <h4 class="font-bold text-on-surface">Mentor Terverifikasi</h4>
-                                <p class="text-sm text-on-surface-variant">Hanya lulusan terbaik dari universitas top nasional & internasional.</p>
-                            </div>
+                            <h3 class="text-base md:text-lg font-extrabold text-primary">Timothy Matthew Wijaya &bull; World Star Champion</h3>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5">Bimbingan Les Privat Intensif &amp; Olimpiade Internasional Next Level Study</p>
                         </div>
-                        <div class="flex items-start gap-4">
-                            <div class="w-10 h-10 rounded-full bg-secondary-container/10 flex items-center justify-center flex-shrink-0">
-                                <span class="icon-[mdi--clock-outline] text-secondary text-sm"></span>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-on-surface">Waktu Fleksibel</h4>
-                                <p class="text-sm text-on-surface-variant">Atur jadwal belajar sesuai kenyamanan Anda, pagi hingga malam.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-4">
-                            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                                <span class="icon-[mdi--chart-line] text-primary text-sm"></span>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-on-surface">Kurikulum Personal</h4>
-                                <p class="text-sm text-on-surface-variant">Materi disusun khusus untuk mengejar ketertinggalan atau akselerasi.</p>
-                            </div>
-                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3 Highlights Bar -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                <div class="glass-card p-5 rounded-2xl border border-white/30 shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                        <span class="icon-[mdi--verified] text-2xl"></span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-on-surface">Mentor Terverifikasi</h4>
+                        <p class="text-xs text-on-surface-variant">Lulusan terbaik kampus top (UI, ITB, UGM) &amp; luar negeri.</p>
+                    </div>
+                </div>
+                <div class="glass-card p-5 rounded-2xl border border-white/30 shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-secondary-container/20 flex items-center justify-center text-secondary shrink-0">
+                        <span class="icon-[mdi--clock-outline] text-2xl"></span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-on-surface">Waktu Fleksibel</h4>
+                        <p class="text-xs text-on-surface-variant">Atur jadwal belajar sesuai kenyamanan Anda, pagi hingga malam.</p>
+                    </div>
+                </div>
+                <div class="glass-card p-5 rounded-2xl border border-white/30 shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                        <span class="icon-[mdi--chart-line] text-2xl"></span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-on-surface">Kurikulum Personal</h4>
+                        <p class="text-xs text-on-surface-variant">Materi disusun khusus untuk akselerasi maupun target juara.</p>
                     </div>
                 </div>
             </div>
