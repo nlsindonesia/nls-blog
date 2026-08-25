@@ -42,52 +42,57 @@
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Next Level Study","url":"https://next-level-study.com"}</script>
             <script
       type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Arti dan Makna Lambang dan Simbol Negara","description":"Garuda Pancasila merupakan Lambang negara Indonesia, yang juga memiliki semboyan Bhinneka Tunggal Ika (Meskipun Berbeda-beda tetapi tetap satu Jika). Lambang ne...","image":["https://assets.kuydinas.id/arti-dan-makna-lambang-dan-simbol-negara.png"],"articleSection":"TWK","datePublished":"2026-08-21T14:56:24+00:00","dateModified":"2026-08-21T14:56:24+00:00","author":{"@type":"Organization","name":"Next Level Study"},"publisher":{"@type":"Organization","name":"Next Level Study","logo":{"@type":"ImageObject","url":"/nls-logo-300.png"}},"mainEntityOfPage":"https://next-level-study.com"}</script>
-  </head>
+      <style>[x-cloak] { display: none !important; }</style>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
 <body class="min-h-screen bg-surface font-sans selection:bg-primary-fixed selection:text-on-primary-fixed overflow-x-hidden flex flex-col text-on-surface">
-    <nav x-data="{ isMobileMenuOpen: false, activeDesktopMenu: null }"
-    @click.outside="activeDesktopMenu = null"
-    class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
-    <div class="container-max flex justify-between items-center h-20 px-4 md:px-6">
-        <a href="/" class="flex items-center gap-3 text-2xl font-extrabold text-primary tracking-tight hover:opacity-90 transition-opacity">
-            <img src="/nls-logo-300.png" alt="Next Level Study Logo" class="h-9 w-9 rounded-full object-cover shadow-sm">
-            <span>Next Level Study</span>
-        </a>
-
-        <div class="hidden lg:flex items-center gap-x-6 text-sm font-semibold text-on-surface-variant">
-            <div class="relative">
-                <button type="button"
-                    class="inline-flex items-center gap-1 border-b-2 border-transparent pb-1 transition-colors hover:text-primary"
-                    :class="activeDesktopMenu === 'bimbel' ? 'text-primary font-bold border-primary' : ''"
-                    @click.stop="activeDesktopMenu = activeDesktopMenu === 'bimbel' ? null : 'bimbel'">
-                    Bimbel
-                    <span class="icon-[mdi--chevron-down] text-lg transition-transform"
-                          :class="activeDesktopMenu === 'bimbel' ? 'rotate-180' : ''"></span>
-                </button>
-
-                <div x-show="activeDesktopMenu === 'bimbel'"
-                    x-cloak
-                    x-transition:enter="transition ease-out duration-150"
-                    x-transition:enter-start="opacity-0 translate-y-1"
-                    x-transition:enter-end="opacity-100 translate-y-0"
-                    class="absolute left-0 top-full mt-2 w-64 rounded-2xl border border-gray-100 bg-white p-3 shadow-xl z-50">
-                    <div class="flex flex-col gap-1">
-                        <a href="/osn"
-                           class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
-                           @click="activeDesktopMenu = null">
-                            <p class="font-bold text-on-background">Bimbel OSN</p>
-                            <p class="text-xs text-on-surface-variant">Bimbingan Olimpiade Sains Nasional.</p>
-                        </a>
-                        <a href="https://tka.next-level-study.com/"
-                           class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
-                           @click="activeDesktopMenu = null">
-                            <p class="font-bold text-on-background">Bimbel TKA</p>
-                            <p class="text-xs text-on-surface-variant">Bimbingan Tes Kemampuan Akademik.</p>
-                        </a>
-                        <a href="https://snbt.next-level-study.com/"
-                           class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
-                           @click="activeDesktopMenu = null">
-                            <p class="font-bold text-on-background">Bimbel SNBT</p>
-                            <p class="text-xs text-on-surface-variant">Bimbingan Seleksi Nasional Berbasis Tes.</p>
+    <nav x-data="{ isMobileMenuOpen: false, activeDesktopMenu: null }"
+    @click.outside="activeDesktopMenu = null"
+    class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
+    <div class="container-max flex justify-between items-center h-20 px-4 md:px-6">
+        <a href="/" class="flex items-center gap-3 text-2xl font-extrabold text-primary tracking-tight hover:opacity-90 transition-opacity">
+            <img src="/nls-logo-300.png" alt="Next Level Study Logo" class="h-9 w-9 rounded-full object-cover shadow-sm">
+            <span>Next Level Study</span>
+        </a>
+
+        <div class="hidden lg:flex items-center gap-x-6 text-sm font-semibold text-on-surface-variant">
+            <div class="relative">
+                <button type="button"
+                    class="inline-flex items-center gap-1.5 border-b-2 border-transparent pb-1 transition-colors hover:text-primary cursor-pointer"
+                    :class="activeDesktopMenu === 'bimbel' ? 'text-primary font-bold border-primary' : ''"
+                    @click.stop="activeDesktopMenu = activeDesktopMenu === 'bimbel' ? null : 'bimbel'">
+                    <span>Bimbel</span>
+                    <svg class="w-4 h-4 transition-transform duration-200" :class="activeDesktopMenu === 'bimbel' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+
+                <div x-show="activeDesktopMenu === 'bimbel'"
+                    x-cloak
+                    x-transition:enter="transition ease-out duration-150"
+                    x-transition:enter-start="opacity-0 translate-y-1"
+                    x-transition:enter-end="opacity-100 translate-y-0"
+                    x-transition:leave="transition ease-in duration-100"
+                    x-transition:leave-start="opacity-100 translate-y-0"
+                    x-transition:leave-end="opacity-0 translate-y-1"
+                    class="absolute left-0 top-full mt-2 w-64 rounded-2xl border border-gray-100 bg-white p-3 shadow-xl z-50">
+                    <div class="flex flex-col gap-1">
+                        <a href="/osn"
+                           class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
+                           @click="activeDesktopMenu = null">
+                            <p class="font-bold text-on-background">Bimbel OSN</p>
+                            <p class="text-xs text-on-surface-variant">Bimbingan Olimpiade Sains Nasional.</p>
+                        </a>
+                        <a href="https://tka.next-level-study.com/"
+                           class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
+                           @click="activeDesktopMenu = null">
+                            <p class="font-bold text-on-background">Bimbel TKA</p>
+                            <p class="text-xs text-on-surface-variant">Bimbingan Tes Kemampuan Akademik.</p>
+                        </a>
+                        <a href="https://snbt.next-level-study.com/"
+                           class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
+                           @click="activeDesktopMenu = null">
+                            <p class="font-bold text-on-background">Bimbel SNBT</p>
+                            <p class="text-xs text-on-surface-variant">Bimbingan Seleksi Nasional Berbasis Tes.</p>
                         </a>
                         <a href="https://wa.me/6285163070002?text=Halo%20Next%20Level%20Study,%20saya%20tertarik%20dengan%20program%20Bimbel%20Offline%20Nexgen%20Academy"
                            target="_blank"
@@ -95,166 +100,171 @@
                            @click="activeDesktopMenu = null">
                             <p class="font-bold text-on-background">Nexgen Academy</p>
                             <p class="text-xs text-on-surface-variant">Bimbel offline produk Next Level Study Indonesia.</p>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="relative">
-                <button type="button"
-                    class="inline-flex items-center gap-1 border-b-2 border-transparent pb-1 transition-colors hover:text-primary"
-                    :class="activeDesktopMenu === 'tryout' ? 'text-primary font-bold border-primary' : ''"
-                    @click.stop="activeDesktopMenu = activeDesktopMenu === 'tryout' ? null : 'tryout'">
-                    Try Out
-                    <span class="icon-[mdi--chevron-down] text-lg transition-transform"
-                          :class="activeDesktopMenu === 'tryout' ? 'rotate-180' : ''"></span>
-                </button>
-
-                <div x-show="activeDesktopMenu === 'tryout'"
-                    x-cloak
-                    x-transition:enter="transition ease-out duration-150"
-                    x-transition:enter-start="opacity-0 translate-y-1"
-                    x-transition:enter-end="opacity-100 translate-y-0"
-                    class="absolute left-0 top-full mt-2 w-64 rounded-2xl border border-gray-100 bg-white p-3 shadow-xl z-50">
-                    <div class="flex flex-col gap-1">
-                        <a href="/osn"
-                           class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
-                           @click="activeDesktopMenu = null">
-                            <p class="font-bold text-on-background">Try Out OSN</p>
-                            <p class="text-xs text-on-surface-variant">Simulasi &amp; latihan Olimpiade Sains Nasional.</p>
-                        </a>
-                        <a href="https://tka.next-level-study.com/"
-                           class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
-                           @click="activeDesktopMenu = null">
-                            <p class="font-bold text-on-background">Try Out TKA</p>
-                            <p class="text-xs text-on-surface-variant">Simulasi Tes Kemampuan Akademik.</p>
-                        </a>
-                        <a href="https://snbt.next-level-study.com/"
-                           class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
-                           @click="activeDesktopMenu = null">
-                            <p class="font-bold text-on-background">Try Out SNBT</p>
-                            <p class="text-xs text-on-surface-variant">Simulasi Seleksi Nasional Berbasis Tes.</p>
-                        </a>
-                        <a href="https://lms.next-level-study.com/"
-                           class="block rounded-xl p-3 transition-colors hover:bg-primary/5 border-t border-gray-100"
-                           @click="activeDesktopMenu = null">
-                            <p class="font-bold text-primary flex items-center justify-between">
-                                <span>Platform CBT Online</span>
-                                <span class="icon-[mdi--arrow-top-right] text-sm"></span>
-                            </p>
-                            <p class="text-xs text-on-surface-variant">Akses ujian dan tryout mandiri di LMS.</p>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <a href="/mitra"
-                class="border-b-2 border-transparent pb-1 transition-colors hover:text-primary">
-                Mitra
-            </a>
-
-            <a href="/privat"
-                class="border-b-2 border-transparent pb-1 transition-colors hover:text-primary">
-                Privat
-            </a>
-
-            <a href="/blog"
-                class="border-b-2 border-transparent pb-1 transition-colors hover:text-primary">
-                Blog
-            </a>
-
-            <a href="/tentang"
-                class="border-b-2 border-transparent pb-1 transition-colors hover:text-primary">
-                Tentang Kami
-            </a>
-
-            <a href="/belajar"
-                class="border-b-2 border-transparent pb-1 transition-colors hover:text-primary">
-                Belajar
-            </a>
-        </div>
-
-        <div class="hidden lg:flex items-center gap-4">
-            <a href="/admin/login" class="text-primary text-sm font-bold px-4 py-2 rounded-lg hover:bg-primary/5 transition-all">
-                Masuk
-            </a>
-            <a href="https://wa.me/6285163070002" target="_blank" class="bg-[#FF8A00] text-white px-6 py-3 rounded-full text-sm font-bold shadow-md hover:shadow-lg hover:scale-105 transition-all inline-block">
-                Yuk Belajar
-            </a>
-        </div>
-
-        <div class="flex items-center lg:hidden">
-            <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="p-2 text-on-surface-variant hover:text-primary focus:outline-none" aria-label="Toggle menu">
-                <span class="text-2xl" :class="isMobileMenuOpen ? 'icon-[mdi--close]' : 'icon-[mdi--menu]'"></span>
-            </button>
-        </div>
-    </div>
-
-    <div x-show="isMobileMenuOpen"
-        x-cloak
-        x-transition:enter="transition ease-out duration-200"
-        x-transition:enter-start="opacity-0 -translate-y-2"
-        x-transition:enter-end="opacity-100 translate-y-0"
-        x-transition:leave="transition ease-in duration-150"
-        x-transition:leave-start="opacity-100 translate-y-0"
-        x-transition:leave-end="opacity-0 -translate-y-2"
-        class="lg:hidden bg-white border-b border-gray-100 shadow-lg px-6 py-6 flex flex-col gap-4">
-
-        <div class="flex flex-col gap-2 border-b border-gray-100 pb-4">
-            <div x-data="{ bimbelOpen: false }">
-                <button @click="bimbelOpen = !bimbelOpen"
-                    class="w-full flex justify-between items-center py-1 text-sm font-medium text-on-surface-variant">
-                    Bimbel
-                    <span class="icon-[mdi--chevron-down] text-lg transition-transform"
-                          :class="bimbelOpen ? 'rotate-180' : ''"></span>
-                </button>
-                <div x-show="bimbelOpen" x-collapse class="pl-4 flex flex-col gap-1 mt-1">
-                    <a href="/osn" @click="isMobileMenuOpen = false"
-                       class="text-on-surface-variant font-medium py-1 text-sm">Bimbel OSN</a>
-                    <a href="https://tka.next-level-study.com/" @click="isMobileMenuOpen = false"
-                       class="text-on-surface-variant font-medium py-1 text-sm">Bimbel TKA</a>
-                    <a href="https://snbt.next-level-study.com/" @click="isMobileMenuOpen = false"
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative">
+                <button type="button"
+                    class="inline-flex items-center gap-1.5 border-b-2 border-transparent pb-1 transition-colors hover:text-primary cursor-pointer"
+                    :class="activeDesktopMenu === 'tryout' ? 'text-primary font-bold border-primary' : ''"
+                    @click.stop="activeDesktopMenu = activeDesktopMenu === 'tryout' ? null : 'tryout'">
+                    <span>Try Out</span>
+                    <svg class="w-4 h-4 transition-transform duration-200" :class="activeDesktopMenu === 'tryout' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+
+                <div x-show="activeDesktopMenu === 'tryout'"
+                    x-cloak
+                    x-transition:enter="transition ease-out duration-150"
+                    x-transition:enter-start="opacity-0 translate-y-1"
+                    x-transition:enter-end="opacity-100 translate-y-0"
+                    x-transition:leave="transition ease-in duration-100"
+                    x-transition:leave-start="opacity-100 translate-y-0"
+                    x-transition:leave-end="opacity-0 translate-y-1"
+                    class="absolute left-0 top-full mt-2 w-64 rounded-2xl border border-gray-100 bg-white p-3 shadow-xl z-50">
+                    <div class="flex flex-col gap-1">
+                        <a href="/osn"
+                           class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
+                           @click="activeDesktopMenu = null">
+                            <p class="font-bold text-on-background">Try Out OSN</p>
+                            <p class="text-xs text-on-surface-variant">Simulasi &amp; latihan Olimpiade Sains Nasional.</p>
+                        </a>
+                        <a href="https://tka.next-level-study.com/"
+                           class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
+                           @click="activeDesktopMenu = null">
+                            <p class="font-bold text-on-background">Try Out TKA</p>
+                            <p class="text-xs text-on-surface-variant">Simulasi Tes Kemampuan Akademik.</p>
+                        </a>
+                        <a href="https://snbt.next-level-study.com/"
+                           class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
+                           @click="activeDesktopMenu = null">
+                            <p class="font-bold text-on-background">Try Out SNBT</p>
+                            <p class="text-xs text-on-surface-variant">Simulasi Seleksi Nasional Berbasis Tes.</p>
+                        </a>
+                        <a href="https://lms.next-level-study.com/"
+                           target="_blank"
+                           class="block rounded-xl p-3 transition-colors hover:bg-primary/5 border-t border-gray-100"
+                           @click="activeDesktopMenu = null">
+                            <p class="font-bold text-primary flex items-center justify-between">
+                                <span>Platform CBT Online</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                            </p>
+                            <p class="text-xs text-on-surface-variant">Akses ujian dan tryout mandiri di LMS.</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <a href="/mitra"
+                class="border-b-2 border-transparent pb-1 transition-colors hover:text-primary">
+                Mitra
+            </a>
+
+            <a href="/privat"
+                class="border-b-2 border-transparent pb-1 transition-colors hover:text-primary">
+                Privat
+            </a>
+
+            <a href="/blog"
+                class="border-b-2 border-transparent pb-1 transition-colors hover:text-primary">
+                Blog
+            </a>
+
+            <a href="/tentang"
+                class="border-b-2 border-transparent pb-1 transition-colors hover:text-primary">
+                Tentang Kami
+            </a>
+
+            <a href="/belajar"
+                class="border-b-2 border-transparent pb-1 transition-colors hover:text-primary">
+                Belajar
+            </a>
+        </div>
+
+        <div class="hidden lg:flex items-center gap-4">
+            <a href="/admin/login" class="text-primary text-sm font-bold px-4 py-2 rounded-lg hover:bg-primary/5 transition-all">
+                Masuk
+            </a>
+            <a href="https://wa.me/6285163070002" target="_blank" class="bg-[#FF8A00] text-white px-6 py-3 rounded-full text-sm font-bold shadow-md hover:shadow-lg hover:scale-105 transition-all inline-block">
+                Yuk Belajar
+            </a>
+        </div>
+
+        <div class="flex items-center lg:hidden">
+            <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="p-2 text-on-surface-variant hover:text-primary focus:outline-none cursor-pointer" aria-label="Toggle menu">
+                <svg x-show="!isMobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                <svg x-show="isMobileMenuOpen" x-cloak class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <div x-show="isMobileMenuOpen"
+        x-cloak
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 -translate-y-2"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 -translate-y-2"
+        class="lg:hidden bg-white border-b border-gray-100 shadow-lg px-6 py-6 flex flex-col gap-4">
+
+        <div class="flex flex-col gap-2 border-b border-gray-100 pb-4">
+            <div x-data="{ bimbelOpen: false }">
+                <button @click="bimbelOpen = !bimbelOpen"
+                    class="w-full flex justify-between items-center py-1 text-sm font-medium text-on-surface-variant cursor-pointer">
+                    <span>Bimbel</span>
+                    <svg class="w-4 h-4 transition-transform duration-200" :class="bimbelOpen ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div x-show="bimbelOpen" x-collapse class="pl-4 flex flex-col gap-1 mt-1">
+                    <a href="/osn" @click="isMobileMenuOpen = false"
+                       class="text-on-surface-variant font-medium py-1 text-sm">Bimbel OSN</a>
+                    <a href="https://tka.next-level-study.com/" @click="isMobileMenuOpen = false"
+                       class="text-on-surface-variant font-medium py-1 text-sm">Bimbel TKA</a>
+                    <a href="https://snbt.next-level-study.com/" @click="isMobileMenuOpen = false"
                        class="text-on-surface-variant font-medium py-1 text-sm">Bimbel SNBT</a>
-                        <a href="https://wa.me/6285163070002?text=Halo%20Next%20Level%20Study,%20saya%20tertarik%20dengan%20program%20Bimbel%20Offline%20Nexgen%20Academy"
-                           target="_blank" @click="isMobileMenuOpen = false"
-                           class="text-on-surface-variant font-medium py-1 text-sm">Nexgen Academy (Bimbel Offline)</a>
-                </div>
-            </div>
-            <div x-data="{ tryoutOpen: false }">
-                <button @click="tryoutOpen = !tryoutOpen"
-                    class="w-full flex justify-between items-center py-1 text-sm font-medium text-on-surface-variant">
-                    Try Out
-                    <span class="icon-[mdi--chevron-down] text-lg transition-transform"
-                          :class="tryoutOpen ? 'rotate-180' : ''"></span>
-                </button>
-                <div x-show="tryoutOpen" x-collapse class="pl-4 flex flex-col gap-1 mt-1">
-                    <a href="/osn" @click="isMobileMenuOpen = false"
-                       class="text-on-surface-variant font-medium py-1 text-sm">Try Out OSN</a>
-                    <a href="https://tka.next-level-study.com/" @click="isMobileMenuOpen = false"
-                       class="text-on-surface-variant font-medium py-1 text-sm">Try Out TKA</a>
-                    <a href="https://snbt.next-level-study.com/" @click="isMobileMenuOpen = false"
-                       class="text-on-surface-variant font-medium py-1 text-sm">Try Out SNBT</a>
-                    <a href="https://lms.next-level-study.com/" @click="isMobileMenuOpen = false"
-                       class="text-primary font-bold py-1 text-sm">Platform CBT Online &rarr;</a>
-                </div>
-            </div>
-            <a href="/mitra" @click="isMobileMenuOpen = false"
-                class="py-1 text-sm font-medium border-b-2 border-transparent text-on-surface-variant">Mitra</a>
-            <a href="/privat" @click="isMobileMenuOpen = false"
-                class="py-1 text-sm font-medium border-b-2 border-transparent text-on-surface-variant">Privat</a>
-            <a href="/blog" @click="isMobileMenuOpen = false"
-                class="py-1 text-sm font-medium border-b-2 border-transparent text-on-surface-variant">Blog</a>
-            <a href="/tentang" @click="isMobileMenuOpen = false"
-                class="py-1 text-sm font-medium border-b-2 border-transparent text-on-surface-variant">Tentang Kami</a>
-            <a href="/belajar" @click="isMobileMenuOpen = false"
-                class="py-1 text-sm font-medium border-b-2 border-transparent text-on-surface-variant">Belajar</a>
-        </div>
-
-        <div class="flex flex-col gap-3 pt-2">
-            <a href="/admin/login" @click="isMobileMenuOpen = false" class="text-center text-primary font-bold py-2.5 rounded-lg border border-primary/30 hover:bg-primary/5">Masuk</a>
-            <a href="https://wa.me/6285163070002" target="_blank" @click="isMobileMenuOpen = false" class="text-center bg-[#FF8A00] text-white font-bold py-3 rounded-full shadow-md hover:shadow-lg transition-all">Yuk Belajar</a>
-        </div>
-    </div>
+                    <a href="https://wa.me/6285163070002?text=Halo%20Next%20Level%20Study,%20saya%20tertarik%20dengan%20program%20Bimbel%20Offline%20Nexgen%20Academy"
+                       target="_blank" @click="isMobileMenuOpen = false"
+                       class="text-on-surface-variant font-medium py-1 text-sm">Nexgen Academy (Bimbel Offline)</a>
+                </div>
+            </div>
+            <div x-data="{ tryoutOpen: false }">
+                <button @click="tryoutOpen = !tryoutOpen"
+                    class="w-full flex justify-between items-center py-1 text-sm font-medium text-on-surface-variant cursor-pointer">
+                    <span>Try Out</span>
+                    <svg class="w-4 h-4 transition-transform duration-200" :class="tryoutOpen ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div x-show="tryoutOpen" x-collapse class="pl-4 flex flex-col gap-1 mt-1">
+                    <a href="/osn" @click="isMobileMenuOpen = false"
+                       class="text-on-surface-variant font-medium py-1 text-sm">Try Out OSN</a>
+                    <a href="https://tka.next-level-study.com/" @click="isMobileMenuOpen = false"
+                       class="text-on-surface-variant font-medium py-1 text-sm">Try Out TKA</a>
+                    <a href="https://snbt.next-level-study.com/" @click="isMobileMenuOpen = false"
+                       class="text-on-surface-variant font-medium py-1 text-sm">Try Out SNBT</a>
+                    <a href="https://lms.next-level-study.com/" @click="isMobileMenuOpen = false"
+                       class="text-primary font-bold py-1 text-sm flex items-center justify-between">
+                        <span>Platform CBT Online</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </a>
+                </div>
+            </div>
+            <a href="/mitra" @click="isMobileMenuOpen = false"
+                class="py-1 text-sm font-medium border-b-2 border-transparent text-on-surface-variant">Mitra</a>
+            <a href="/privat" @click="isMobileMenuOpen = false"
+                class="py-1 text-sm font-medium border-b-2 border-transparent text-on-surface-variant">Privat</a>
+            <a href="/blog" @click="isMobileMenuOpen = false"
+                class="py-1 text-sm font-medium border-b-2 border-transparent text-on-surface-variant">Blog</a>
+            <a href="/tentang" @click="isMobileMenuOpen = false"
+                class="py-1 text-sm font-medium border-b-2 border-transparent text-on-surface-variant">Tentang Kami</a>
+            <a href="/belajar" @click="isMobileMenuOpen = false"
+                class="py-1 text-sm font-medium border-b-2 border-transparent text-on-surface-variant">Belajar</a>
+        </div>
+
+        <div class="flex flex-col gap-3 pt-2">
+            <a href="/admin/login" @click="isMobileMenuOpen = false" class="text-center text-primary font-bold py-2.5 rounded-lg border border-primary/30 hover:bg-primary/5">Masuk</a>
+            <a href="https://wa.me/6285163070002" target="_blank" @click="isMobileMenuOpen = false" class="text-center bg-[#FF8A00] text-white font-bold py-3 rounded-full shadow-md hover:shadow-lg transition-all">Yuk Belajar</a>
+        </div>
+    </div>
 </nav>    
     <div class="flex-grow"> 
 
