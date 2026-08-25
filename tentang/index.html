@@ -337,6 +337,7 @@
     <div class="flex-grow"> 
 
         <main class="w-full">
+
         <!-- ===== 1. HERO STUDIO ===== -->
         <section class="relative w-full py-20 md:py-28 px-4 md:px-8 overflow-hidden bg-surface-container-lowest"
             style="background-image:
@@ -346,58 +347,117 @@
             <div class="absolute -top-24 -right-24 w-96 h-96 bg-primary-container/20 rounded-full blur-3xl pointer-events-none"></div>
             <div class="absolute -bottom-32 -left-24 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
 
-            <div class="container-max flex flex-col items-center text-center gap-8 relative z-10">
-                <div class="inline-flex items-center gap-3 bg-white/70 backdrop-blur-md border border-white/80 shadow-lg px-5 py-2.5 rounded-full text-xs md:text-sm font-bold text-primary">
-                    <span class="relative flex h-2.5 w-2.5">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
-                    </span>
-                    Profil Resmi Next Level Study &bull; Berdiri Sejak Juli 2022
+            <div class="container-max flex flex-col gap-12 relative z-10">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    <!-- Left Hero Text -->
+                    <div class="lg:col-span-7 flex flex-col items-start text-left gap-6">
+                        <div class="inline-flex items-center gap-3 bg-white/80 backdrop-blur-md border border-blue-200/60 shadow-sm px-4 py-2 rounded-full text-xs md:text-sm font-bold text-primary">
+                            <span class="relative flex h-2.5 w-2.5">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                            </span>
+                            <span>Profil Resmi Next Level Study &bull; Sejak Juli 2022</span>
+                        </div>
+
+                        <h1 class="text-[36px] sm:text-[48px] lg:text-[56px] font-extrabold leading-[1.1] tracking-tight text-deep-navy">
+                            Next Level Study:
+                            <span class="bg-gradient-to-r from-[#004B70] via-[#0E9BDF] to-[#FF8A00] bg-clip-text text-transparent">Era Baru Pendidikan</span>
+                        </h1>
+
+                        <p class="text-base md:text-lg text-on-surface-variant max-w-2xl leading-relaxed">
+                            Ekosistem pendidikan dan bimbingan belajar berbasis komunitas terdepan di Indonesia. Kami berdedikasi membimbing siswa meraih impian kuliah di Perguruan Tinggi Negeri (PTN) favorit dan menyabet medali bergengsi Olimpiade Sains Nasional (OSN).
+                        </p>
+
+                        <div class="flex flex-col sm:flex-row gap-4 pt-2 w-full sm:w-auto">
+                            <a href="https://wa.me/6285163070002" target="_blank" rel="noopener noreferrer"
+                                class="bg-gradient-to-r from-[#004B70] to-[#0E9BDF] text-white font-bold text-sm h-[52px] px-8 rounded-full hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center gap-2">
+                                <span class="icon-[mdi--whatsapp] text-[20px]"></span>
+                                Konsultasi via WhatsApp
+                            </a>
+                            <a href="#galeri-kegiatan"
+                                class="bg-white text-primary border border-blue-200 font-bold text-sm h-[52px] px-8 rounded-full hover:bg-blue-50/60 shadow-xs transition-all flex items-center justify-center gap-2">
+                                <span class="icon-[mdi--image-multiple-outline] text-[18px]"></span>
+                                Lihat Galeri &amp; Kegiatan
+                            </a>
+                        </div>
+
+                        <!-- Mini Social Proof -->
+                        <div class="flex items-center gap-4 pt-3 border-t border-gray-200/70 w-full">
+                            <div class="flex -space-x-2 overflow-hidden">
+                                <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover" src="/images/home/alumni-rocheline.jpg" alt="Alumni NLS">
+                                <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover" src="/images/stitch/alumni-axell.jpg" alt="Alumni NLS">
+                                <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover" src="/images/stitch/alumni-rafi.jpg" alt="Alumni NLS">
+                                <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover" src="/images/home/alumni-oslando.jpg" alt="Alumni NLS">
+                            </div>
+                            <div>
+                                <div class="flex items-center text-amber-400 text-sm">
+                                    <span class="icon-[mdi--star] text-[16px]"></span>
+                                    <span class="icon-[mdi--star] text-[16px]"></span>
+                                    <span class="icon-[mdi--star] text-[16px]"></span>
+                                    <span class="icon-[mdi--star] text-[16px]"></span>
+                                    <span class="icon-[mdi--star] text-[16px]"></span>
+                                    <span class="text-slate-800 font-bold ml-1 text-xs">4.9/5</span>
+                                </div>
+                                <p class="text-xs text-on-surface-variant font-medium">Dipercaya 10.000+ Siswa &amp; 100+ Sekolah</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Visual Hero Collage -->
+                    <div class="lg:col-span-5 relative">
+                        <div class="relative mx-auto max-w-md lg:max-w-none">
+                            <div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+                                <img src="/images/home/hero-main.jpg" alt="Suasana kegiatan belajar Next Level Study" class="w-full h-80 sm:h-96 object-cover hover:scale-105 transition-transform duration-700">
+                                <div class="absolute inset-0 bg-gradient-to-t from-[#004B70]/80 via-transparent to-transparent"></div>
+                                <div class="absolute bottom-4 left-4 right-4 text-white">
+                                    <span class="px-2.5 py-1 rounded-full bg-[#FF8A00] text-[10px] font-extrabold uppercase tracking-wider text-white shadow-xs inline-block mb-1">Kegiatan Akbar NLS</span>
+                                    <p class="font-bold text-sm">Pembinaan &amp; Karantina Olimpiade Sains</p>
+                                </div>
+                            </div>
+
+                            <!-- Floating Card Top Right -->
+                            <div class="absolute -top-6 -right-4 sm:-right-6 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-xl border border-blue-100 flex items-center gap-3 animate-bounce hover:animation-none">
+                                <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
+                                    <span class="icon-[mdi--trophy] text-[22px]"></span>
+                                </div>
+                                <div class="text-left">
+                                    <p class="text-xs font-extrabold text-slate-800">50+ Mentor</p>
+                                    <p class="text-[10px] text-slate-500 font-medium">Medalis Nasional &amp; IBO/IEO</p>
+                                </div>
+                            </div>
+
+                            <!-- Floating Card Bottom Left -->
+                            <div class="absolute -bottom-6 -left-4 sm:-left-6 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-xl border border-blue-100 flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                                    <span class="icon-[mdi--school] text-[22px]"></span>
+                                </div>
+                                <div class="text-left">
+                                    <p class="text-xs font-extrabold text-slate-800">98% Kepuasan</p>
+                                    <p class="text-[10px] text-slate-500 font-medium">Lolos PTN &amp; Juara Lomba</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <h1 class="text-[36px] md:text-[60px] font-extrabold leading-[1.08] tracking-tight text-deep-navy max-w-4xl">
-                    Next Level Study:
-                    <span class="text-gradient">Era Baru Pendidikan</span>
-                </h1>
-
-                <p class="text-base md:text-lg text-on-surface-variant max-w-2xl leading-relaxed">
-                    Platform belajar persiapan kompetisi sains dan ujian masuk perguruan tinggi terbaik di Indonesia. Memberdayakan masa depan cerah anak bangsa.
-                </p>
-
-                <div class="flex flex-col sm:flex-row gap-4 pt-2">
-                    <a href="https://wa.me/6285163070002" target="_blank" rel="noopener noreferrer"
-                        class="bg-primary text-white font-semibold text-sm h-[52px] px-8 rounded-full hover:bg-primary-container hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
-                        <span class="icon-[mdi--whatsapp] text-[20px]"></span>
-                        Konsultasi via WhatsApp
-                    </a>
-                    <a href="#pilar-program"
-                        class="bg-white text-primary border border-primary/15 font-semibold text-sm h-[52px] px-8 rounded-full hover:bg-surface-container-low shadow-sm transition-all flex items-center justify-center gap-2">
-                        Jelajahi Program Kami
-                        <span class="icon-[mdi--arrow-down] text-[18px]"></span>
-                    </a>
-                </div>
-
-                <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-4xl pt-8">
-                    <div class="lg:col-span-2 bg-gradient-to-br from-primary to-primary-container rounded-3xl p-7 md:p-8 text-white shadow-xl relative overflow-hidden flex flex-col gap-1 justify-center text-left">
-                        <div class="absolute -right-8 -top-8 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-                        <span class="text-4xl md:text-5xl font-extrabold leading-none">10.000+</span>
-                        <span class="text-sm md:text-base text-white/90 font-medium mt-2">Siswa Terbantu Meraih Level Akademik Berikutnya</span>
+                <!-- 4 Highlight Stats Cards -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 w-full pt-4">
+                    <div class="bg-gradient-to-br from-primary to-[#003652] rounded-3xl p-6 text-white shadow-lg relative overflow-hidden flex flex-col justify-center text-left">
+                        <div class="absolute -right-6 -top-6 w-28 h-28 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+                        <span class="text-3xl sm:text-4xl font-extrabold leading-none">10.000+</span>
+                        <span class="text-xs sm:text-sm text-white/90 font-medium mt-2">Siswa Terbantu Meraih Prestasi Impian</span>
                     </div>
-                    <div class="bg-white rounded-3xl p-6 border border-primary/10 shadow-sm flex flex-col gap-1 justify-center">
-                        <span class="text-3xl md:text-4xl font-extrabold text-primary">2022</span>
-                        <span class="text-xs md:text-sm text-on-surface-variant font-medium">Berdiri Juli 2022</span>
+                    <div class="bg-white rounded-3xl p-6 border border-blue-100 shadow-sm flex flex-col justify-center text-left hover:border-primary/40 hover:shadow-md transition-all">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-primary">2022</span>
+                        <span class="text-xs sm:text-sm text-on-surface-variant font-medium mt-2">Berdiri Sejak Juli 2022</span>
                     </div>
-                    <div class="bg-white rounded-3xl p-6 border border-primary/10 shadow-sm flex flex-col gap-1 justify-center">
-                        <span class="text-3xl md:text-4xl font-extrabold text-primary">50+</span>
-                        <span class="text-xs md:text-sm text-on-surface-variant font-medium">Mentor Juara Nasional &amp; Internasional</span>
+                    <div class="bg-white rounded-3xl p-6 border border-blue-100 shadow-sm flex flex-col justify-center text-left hover:border-primary/40 hover:shadow-md transition-all">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-[#FF8A00]">50+</span>
+                        <span class="text-xs sm:text-sm text-on-surface-variant font-medium mt-2">Mentor Juara Nasional &amp; Dunia</span>
                     </div>
-                    <div class="bg-white rounded-3xl p-6 border border-primary/10 shadow-sm flex flex-col gap-1 justify-center">
-                        <span class="text-3xl md:text-4xl font-extrabold text-primary">98%</span>
-                        <span class="text-xs md:text-sm text-on-surface-variant font-medium">Kepuasan Siswa &amp; Sekolah</span>
-                    </div>
-                    <div class="bg-white rounded-3xl p-6 border border-primary/10 shadow-sm flex flex-col gap-1 justify-center">
-                        <span class="text-3xl md:text-4xl font-extrabold text-primary">100+</span>
-                        <span class="text-xs md:text-sm text-on-surface-variant font-medium">Mitra Sekolah &amp; Dinas</span>
+                    <div class="bg-white rounded-3xl p-6 border border-blue-100 shadow-sm flex flex-col justify-center text-left hover:border-primary/40 hover:shadow-md transition-all">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-emerald-600">100+</span>
+                        <span class="text-xs sm:text-sm text-on-surface-variant font-medium mt-2">Mitra Sekolah, Dinas, &amp; Lembaga</span>
                     </div>
                 </div>
             </div>
@@ -408,68 +468,186 @@
             <div class="container-max grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center">
                 <div class="relative order-2 lg:order-1">
                     <div class="absolute inset-0 bg-gradient-to-tr from-primary/15 to-primary-container/15 rounded-[32px] blur-2xl"></div>
-                    <div class="relative grid grid-cols-2 gap-5">
-                        <img src="/images/home/about-1.jpg" alt="Suasana belajar komunitas Next Level Study"
-                            class="w-full aspect-[3/4] object-cover rounded-3xl shadow-xl border-4 border-white hover:-translate-y-1 transition-transform duration-500" loading="lazy" />
-                        <img src="/images/home/about-2.jpg" alt="Tim dan mentor Next Level Study"
-                            class="w-full aspect-[3/4] object-cover rounded-3xl shadow-xl border-4 border-white translate-y-10 hover:translate-y-8 transition-transform duration-500" loading="lazy" />
+                    <div class="relative grid grid-cols-2 gap-4 sm:gap-6">
+                        <div class="relative overflow-hidden rounded-3xl shadow-xl border-4 border-white group">
+                            <img src="/images/home/about-1.jpg" alt="Suasana belajar komunitas Next Level Study"
+                                class="w-full aspect-[3/4] object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
+                            <span class="absolute bottom-3 left-3 text-white text-xs font-bold">Diskusi Interaktif</span>
+                        </div>
+                        <div class="relative overflow-hidden rounded-3xl shadow-xl border-4 border-white translate-y-8 group">
+                            <img src="/images/home/about-2.jpg" alt="Tim dan mentor Next Level Study"
+                                class="w-full aspect-[3/4] object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
+                            <span class="absolute bottom-3 left-3 text-white text-xs font-bold">Pendampingan Mentor</span>
+                        </div>
                     </div>
-                    <div class="relative -mt-6 ms-6 md:-mt-8 md:ms-10 bg-surface-container-lowest/95 backdrop-blur border border-primary/10 rounded-2xl shadow-lg px-6 py-5 w-max max-w-xs group hover:shadow-xl transition-shadow">
-                        <span class="icon-[mdi--format-quote-open] text-primary text-2xl block mb-2"></span>
-                        <p class="text-sm font-medium text-on-surface leading-relaxed">
-                            "Berdiri dari komunitas belajar, tumbuh menjadi institusi olimpiade &amp; PTN terdepan."
+                    <div class="relative -mt-2 ms-4 md:ms-8 bg-surface-container-lowest/95 backdrop-blur border border-primary/20 rounded-2xl shadow-xl px-6 py-4 w-max max-w-sm group hover:shadow-2xl transition-all">
+                        <span class="icon-[mdi--format-quote-open] text-primary text-2xl block mb-1"></span>
+                        <p class="text-xs sm:text-sm font-semibold text-slate-800 leading-relaxed">
+                            "Berdiri dari komunitas belajar, tumbuh menjadi institusi bimbingan olimpiade &amp; PTN terdepan di Indonesia."
                         </p>
-                        <p class="text-xs text-primary font-bold mt-2 uppercase tracking-wider">Filosofi NLS</p>
+                        <p class="text-[11px] text-[#FF8A00] font-extrabold mt-2 uppercase tracking-wider">Filosofi &bull; Next Level Study</p>
                     </div>
                 </div>
 
                 <div class="flex flex-col gap-6 order-1 lg:order-2">
-                    <div class="inline-flex items-center gap-2 bg-surface-container-low text-primary text-xs font-bold px-3 py-1.5 rounded-full w-max uppercase tracking-wider">
+                    <div class="inline-flex items-center gap-2 bg-surface-container-low text-primary text-xs font-bold px-3.5 py-1.5 rounded-full w-max uppercase tracking-wider border border-primary/10">
                         <span class="icon-[mdi--history] text-[16px]"></span>
-                        Kisah &amp; Filosofi
+                        Kisah &amp; Filosofi Kami
                     </div>
                     <h2 class="text-[28px] md:text-[42px] font-bold leading-tight tracking-tight text-deep-navy">
-                        Kala Biaya Bukan Hambatan, NLS Hadir Menjadi <span class="text-primary">Era Baru Pendidikan</span>
+                        Kala Biaya Bukan Hambatan, NLS Hadir Menjadi <span class="bg-gradient-to-r from-primary to-[#0E9BDF] bg-clip-text text-transparent">Era Baru Pendidikan</span>
                     </h2>
                     <p class="text-base md:text-lg text-on-surface-variant leading-relaxed">
                         NLS (Next Level Study) adalah perusahaan edukasi berbasis komunitas belajar yang didirikan pada Juli 2022. Kami berdedikasi membangun pelatihan berkualitas tinggi untuk mencerdaskan generasi bangsa.
                     </p>
                     <p class="text-base md:text-lg text-on-surface-variant leading-relaxed">
-                        Tim ahli berdedikasi tinggi kami hadir untuk membantu membimbing jalan setiap siswa meraih impian kuliah di PTN dan medali Olimpiade.
+                        Tim ahli berdedikasi tinggi kami hadir untuk membantu membimbing jalan setiap siswa meraih impian kuliah di PTN dan medali Olimpiade Sains.
                     </p>
 
-                    <div class="grid sm:grid-cols-3 gap-4 pt-4">
-                        <div class="bg-surface-container-lowest rounded-2xl border border-surface-container p-5 flex flex-col gap-2 hover:border-primary/30 hover:shadow-md transition-all group">
+                    <div class="grid sm:grid-cols-3 gap-4 pt-2">
+                        <div class="bg-blue-50/50 rounded-2xl border border-blue-100 p-5 flex flex-col gap-2 hover:border-primary/40 hover:shadow-md transition-all group">
                             <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
-                                <span class="icon-[mdi--wallet] text-[20px]"></span>
+                                <span class="icon-[mdi--wallet-outline] text-[20px]"></span>
                             </div>
                             <h4 class="text-sm font-bold text-on-surface">Kala Biaya Bukan Hambatan</h4>
-                            <p class="text-xs text-on-surface-variant leading-relaxed">Pelatihan premium dengan program transparan dan terjangkau.</p>
+                            <p class="text-xs text-on-surface-variant leading-relaxed">Program transparan, terjangkau, dan skema beasiswa bagi siswa berpotensi.</p>
                         </div>
-                        <div class="bg-surface-container-lowest rounded-2xl border border-surface-container p-5 flex flex-col gap-2 hover:border-primary/30 hover:shadow-md transition-all group">
+                        <div class="bg-blue-50/50 rounded-2xl border border-blue-100 p-5 flex flex-col gap-2 hover:border-primary/40 hover:shadow-md transition-all group">
                             <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
-                                <span class="icon-[mdi--medal] text-[20px]"></span>
+                                <span class="icon-[mdi--medal-outline] text-[20px]"></span>
                             </div>
-                            <h4 class="text-sm font-bold text-on-surface">Spesialisasi Olimpiade &amp; PTN</h4>
-                            <p class="text-xs text-on-surface-variant leading-relaxed">Fokus mendalam pada OSN, TKA, dan SNBT.</p>
+                            <h4 class="text-sm font-bold text-on-surface">Spesialisasi OSN &amp; PTN</h4>
+                            <p class="text-xs text-on-surface-variant leading-relaxed">Fokus mendalam pada OSN 9 bidang, TKA Akademik, dan UTBK-SNBT sistem IRT.</p>
                         </div>
-                        <div class="bg-surface-container-lowest rounded-2xl border border-surface-container p-5 flex flex-col gap-2 hover:border-primary/30 hover:shadow-md transition-all group">
+                        <div class="bg-blue-50/50 rounded-2xl border border-blue-100 p-5 flex flex-col gap-2 hover:border-primary/40 hover:shadow-md transition-all group">
                             <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
                                 <span class="icon-[mdi--devices] text-[20px]"></span>
                             </div>
                             <h4 class="text-sm font-bold text-on-surface">Ekosistem Digital Modern</h4>
-                            <p class="text-xs text-on-surface-variant leading-relaxed">Super website dengan modul interaktif &amp; tryout rutin.</p>
+                            <p class="text-xs text-on-surface-variant leading-relaxed">Platform super website dengan simulasi CBT interaktif dan materi terupdate.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ===== 3. VISI, MISI & 4 NILAI INTI ===== -->
-        <section class="py-20 md:py-28 px-4 md:px-8 bg-surface-bright">
+        <!-- ===== 3. DOKUMENTASI & GALERI KEGIATAN NYATA (NEW) ===== -->
+        <section id="galeri-kegiatan" class="py-20 md:py-28 px-4 md:px-8 bg-surface-bright scroll-mt-20">
             <div class="container-max flex flex-col gap-12">
                 <div class="flex flex-col gap-4 text-center max-w-2xl mx-auto">
-                    <div class="inline-flex items-center gap-2 bg-white text-primary text-xs font-bold px-3 py-1.5 rounded-full w-max mx-auto uppercase tracking-wider shadow-sm border border-primary/10">
+                    <div class="inline-flex items-center gap-2 bg-white text-primary text-xs font-bold px-3.5 py-1.5 rounded-full w-max mx-auto uppercase tracking-wider shadow-xs border border-primary/15">
+                        <span class="icon-[mdi--camera-outline] text-[16px]"></span>
+                        Dokumentasi &amp; Galeri Nyata
+                    </div>
+                    <h2 class="text-[28px] md:text-[42px] font-bold leading-tight tracking-tight text-deep-navy">
+                        Melihat Lebih Dekat Semangat Belajar NLS
+                    </h2>
+                    <p class="text-sm md:text-base text-on-surface-variant leading-relaxed">
+                        Dokumentasi kegiatan intensif, workshop, karantina olimpiade, pembinaan dinas, dan momen kebersamaan siswa bersama mentor di berbagai kota.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Photo 1: OSN Camp -->
+                    <div class="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="/images/home/program-osn.jpg" alt="Pelatihan Intensif & Karantina OSN" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500" loading="lazy" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 bg-primary text-white text-[10px] font-extrabold uppercase px-3 py-1 rounded-full shadow-sm">Olimpiade Sains</span>
+                        </div>
+                        <div class="p-6 flex flex-col gap-2 flex-grow">
+                            <h3 class="text-lg font-bold text-deep-navy group-hover:text-primary transition-colors">Pelatihan Intensif &amp; Karantina OSN</h3>
+                            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+                                Sesi pendalaman konsep tingkat lanjut 9 bidang sains bersama mentor medalis nasional untuk persiapan OSN-K, OSN-P, dan OSN Nasional.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Photo 2: Jakarta Science Summit -->
+                    <div class="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="/images/osn/jakarta-science-summit.jpg" alt="Jakarta Science Summit" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500" loading="lazy" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 bg-blue-600 text-white text-[10px] font-extrabold uppercase px-3 py-1 rounded-full shadow-sm">Summit &amp; Seminar</span>
+                        </div>
+                        <div class="p-6 flex flex-col gap-2 flex-grow">
+                            <h3 class="text-lg font-bold text-deep-navy group-hover:text-primary transition-colors">Jakarta Science Summit &amp; Dinas</h3>
+                            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+                                Acara akbar pembinaan talenta sains berskala regional dan nasional dalam kemitraan resmi bersama institusi pendidikan.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Photo 3: SNBT Tryout -->
+                    <div class="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="/images/home/program-snbt.jpg" alt="Simulasi SNBT Berbasis IRT" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500" loading="lazy" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 bg-[#FF8A00] text-white text-[10px] font-extrabold uppercase px-3 py-1 rounded-full shadow-sm">Simulasi CBT PTN</span>
+                        </div>
+                        <div class="p-6 flex flex-col gap-2 flex-grow">
+                            <h3 class="text-lg font-bold text-deep-navy group-hover:text-primary transition-colors">Simulasi Try Out CBT Berbasis IRT</h3>
+                            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+                                Ribuan siswa menguji kemampuan penalaran umum, literasi, dan kuantitatif dengan sistem pembobotan IRT akurat standar UTBK SNBT.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Photo 4: Student Collaboration -->
+                    <div class="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="/images/osn/students-collaborating.jpg" alt="Kolaborasi & Diskusi Siswa" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500" loading="lazy" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 bg-emerald-600 text-white text-[10px] font-extrabold uppercase px-3 py-1 rounded-full shadow-sm">Komunitas Belajar</span>
+                        </div>
+                        <div class="p-6 flex flex-col gap-2 flex-grow">
+                            <h3 class="text-lg font-bold text-deep-navy group-hover:text-primary transition-colors">Kolaborasi Aktif &amp; Bedah Soal Trik Cepat</h3>
+                            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+                                Suasana belajar interaktif yang mengasah logika berpikir kritis, pemahaman konsep fundamental, dan strategi menaklukkan soal rumit.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Photo 5: Award Ceremony -->
+                    <div class="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="/images/osn/achievement-trophy.jpg" alt="Penganugerahan Medali Juara" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500" loading="lazy" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 bg-amber-500 text-white text-[10px] font-extrabold uppercase px-3 py-1 rounded-full shadow-sm">Prestasi Medalis</span>
+                        </div>
+                        <div class="p-6 flex flex-col gap-2 flex-grow">
+                            <h3 class="text-lg font-bold text-deep-navy group-hover:text-primary transition-colors">Panggung Apresiasi &amp; Juara Medalis</h3>
+                            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+                                Apresiasi nyata atas kerja keras siswa binaan yang berhasil membawa pulang medali emas, perak, dan perunggu di panggung nasional &amp; internasional.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Photo 6: 1-on-1 Privat Mentoring -->
+                    <div class="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="/images/privat/fokus-internasional.jpg" alt="Mentoring Eksklusif Kurikulum Internasional" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500" loading="lazy" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 bg-indigo-600 text-white text-[10px] font-extrabold uppercase px-3 py-1 rounded-full shadow-sm">Privat Eksklusif</span>
+                        </div>
+                        <div class="p-6 flex flex-col gap-2 flex-grow">
+                            <h3 class="text-lg font-bold text-deep-navy group-hover:text-primary transition-colors">Mentoring Kurikulum Nasional &amp; Cambridge/IB</h3>
+                            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+                                Pendampingan personal 1-on-1 intensif untuk siswa SD, SMP, hingga SMA yang disesuaikan dengan kurikulum sekolah dan target kompetisi internasional.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 4. VISI, MISI & 4 NILAI INTI ===== -->
+        <section class="py-20 md:py-28 px-4 md:px-8 bg-white">
+            <div class="container-max flex flex-col gap-12">
+                <div class="flex flex-col gap-4 text-center max-w-2xl mx-auto">
+                    <div class="inline-flex items-center gap-2 bg-surface-container-low text-primary text-xs font-bold px-3.5 py-1.5 rounded-full w-max mx-auto uppercase tracking-wider border border-primary/10">
                         <span class="icon-[mdi--bullseye-arrow] text-[16px]"></span>
                         Visi, Misi &amp; Nilai Inti
                     </div>
@@ -477,136 +655,65 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-gradient-to-br from-primary via-primary-container to-primary p-[2px] rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
+                    <div class="bg-gradient-to-br from-primary via-[#0E9BDF] to-primary p-[2px] rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
                         <div class="bg-white rounded-[calc(1.5rem-2px)] p-8 md:p-9 h-full flex flex-col gap-4">
-                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-[#0E9BDF] text-white flex items-center justify-center shadow-md">
                                 <span class="icon-[mdi--eye-outline] text-[28px]"></span>
                             </div>
                             <div>
-                                <span class="text-xs font-bold text-primary uppercase tracking-wider mb-1 block">Visi</span>
+                                <span class="text-xs font-bold text-primary uppercase tracking-wider mb-1 block">Visi Utama</span>
                                 <h3 class="text-2xl font-bold text-deep-navy">Menjadi Ekosistem Pendidikan Terbaik Indonesia</h3>
                             </div>
                             <p class="text-sm md:text-base text-on-surface-variant leading-relaxed">
-                                Menghadirkan "Era Baru Pendidikan" yang memberdayakan masa depan cerah anak bangsa melalui pelatihan berkualitas tinggi dan ekosistem yang terintegrasi.
+                                Menghadirkan "Era Baru Pendidikan" yang memberdayakan masa depan cerah anak bangsa melalui pelatihan berkualitas tinggi, teknologi interaktif, dan ekosistem bimbingan yang terintegrasi.
                             </p>
                         </div>
                     </div>
-                    <div class="bg-gradient-to-br from-primary via-primary-container to-primary p-[2px] rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
+                    <div class="bg-gradient-to-br from-primary via-[#FF8A00] to-primary p-[2px] rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
                         <div class="bg-white rounded-[calc(1.5rem-2px)] p-8 md:p-9 h-full flex flex-col gap-4">
-                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#FF8A00] to-[#FF6B00] text-white flex items-center justify-center shadow-md">
                                 <span class="icon-[mdi--target] text-[28px]"></span>
                             </div>
                             <div>
-                                <span class="text-xs font-bold text-primary uppercase tracking-wider mb-1 block">Misi</span>
+                                <span class="text-xs font-bold text-[#FF8A00] uppercase tracking-wider mb-1 block">Misi Nyata</span>
                                 <h3 class="text-2xl font-bold text-deep-navy">Membimbing Siswa ke PTN &amp; Medali Olimpiade</h3>
                             </div>
                             <p class="text-sm md:text-base text-on-surface-variant leading-relaxed">
-                                Membimbing siswa SD, SMP, hingga SMA meraih kuliah di PTN dan medali Olimpiade, serta bermitra dengan sekolah dan dinas untuk mencerdaskan generasi bangsa secara menyeluruh.
+                                Membimbing siswa SD, SMP, hingga SMA meraih kuliah di PTN impian dan menyabet medali Olimpiade Sains, serta bermitra dengan sekolah dan dinas untuk mencerdaskan generasi bangsa secara menyeluruh.
                             </p>
                         </div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                                                <div class="group bg-surface-container-lowest rounded-3xl p-7 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
-                            <div class="w-12 h-12 rounded-2xl bg-green-100 text-green-700 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <span class="icon-[mdi--shield-check] text-[24px]"></span>
-                            </div>
-                            <h4 class="text-lg font-bold text-deep-navy leading-snug">Pelatihan Premium &amp; Anti-Korupsi</h4>
-                            <p class="text-sm text-on-surface-variant leading-relaxed flex-grow">Integritas transparan: edukasi jujur, materi intensif, dan program yang jelas dalam setiap layanan.</p>
+                    <div class="group bg-surface-container-lowest rounded-3xl p-7 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <span class="icon-[mdi--shield-check] text-[24px]"></span>
                         </div>
-                                            <div class="group bg-surface-container-lowest rounded-3xl p-7 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
-                            <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <span class="icon-[mdi--account-group] text-[24px]"></span>
-                            </div>
-                            <h4 class="text-lg font-bold text-deep-navy leading-snug">Komunitas Belajar Interaktif</h4>
-                            <p class="text-sm text-on-surface-variant leading-relaxed flex-grow">Lingkungan suportif untuk terus berkembang bagi siswa SD, SMP, hingga SMA.</p>
-                        </div>
-                                            <div class="group bg-surface-container-lowest rounded-3xl p-7 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
-                            <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <span class="icon-[mdi--medal] text-[24px]"></span>
-                            </div>
-                            <h4 class="text-lg font-bold text-deep-navy leading-snug">Mentor Juara</h4>
-                            <p class="text-sm text-on-surface-variant leading-relaxed flex-grow">Medalis nasional &amp;amp; internasional yang memahami strategi dan pola soal kompetisi.</p>
-                        </div>
-                                            <div class="group bg-surface-container-lowest rounded-3xl p-7 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
-                            <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <span class="icon-[mdi--monitor-dashboard] text-[24px]"></span>
-                            </div>
-                            <h4 class="text-lg font-bold text-deep-navy leading-snug">Super Website</h4>
-                            <p class="text-sm text-on-surface-variant leading-relaxed flex-grow">Platform interaktif &amp;amp; adaptif: modul belajar, tryout rutin, dan competitive programming.</p>
-                        </div>
-                                    </div>
-            </div>
-        </section>
-
-        <!-- ===== 4. LINIMASA PERJALANAN ===== -->
-        <section class="py-20 md:py-28 px-4 md:px-8 bg-white">
-            <div class="container-max flex flex-col gap-12">
-                <div class="flex flex-col gap-4 text-center max-w-2xl mx-auto">
-                    <div class="inline-flex items-center gap-2 bg-surface-container-low text-primary text-xs font-bold px-3 py-1.5 rounded-full w-max mx-auto uppercase tracking-wider">
-                        <span class="icon-[mdi--road-variant] text-[16px]"></span>
-                        Linimasa Perjalanan
+                        <h4 class="text-lg font-bold text-deep-navy leading-snug">Pelatihan Premium &amp; Integritas</h4>
+                        <p class="text-sm text-on-surface-variant leading-relaxed flex-grow">Edukasi jujur, materi intensif, dan program yang transparan dalam setiap layanan tanpa biaya terselubung.</p>
                     </div>
-                    <h2 class="text-[28px] md:text-[42px] font-bold leading-tight tracking-tight text-deep-navy">Rekam Jejak Menuju Era Baru</h2>
-                </div>
-
-                <div class="max-w-3xl mx-auto w-full">
-                    <ol class="relative border-s-2 border-primary/20 ms-4 space-y-10">
-                                                                            <li class="ms-6 relative">
-                                <span class="absolute -start-[37px] top-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md z-10">
-                                    <span class="icon-[mdi--calendar-star] text-[18px]"></span>
-                                </span>
-                                <div class="bg-surface-container-lowest rounded-2xl border border-surface-container p-6 hover:border-primary/30 hover:shadow-lg transition-all">
-                                    <span class="inline-flex items-center gap-2 bg-primary/10 text-primary text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider mb-3">
-                                        <span class="icon-[mdi--clock-outline] text-[14px]"></span>
-                                        Juli 2022
-                                    </span>
-                                    <h3 class="text-lg font-bold text-deep-navy mb-1">Kelahiran Komunitas Belajar NLS</h3>
-                                    <p class="text-sm text-on-surface-variant leading-relaxed">Berawal dari komunitas belajar yang hangat dan suportif, NLS resmi berdiri sebagai perusahaan edukasi berbasis komunitas.</p>
-                                </div>
-                                                            </li>
-                                                    <li class="ms-6 relative">
-                                <span class="absolute -start-[37px] top-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md z-10">
-                                    <span class="icon-[mdi--trophy] text-[18px]"></span>
-                                </span>
-                                <div class="bg-surface-container-lowest rounded-2xl border border-surface-container p-6 hover:border-primary/30 hover:shadow-lg transition-all">
-                                    <span class="inline-flex items-center gap-2 bg-primary/10 text-primary text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider mb-3">
-                                        <span class="icon-[mdi--clock-outline] text-[14px]"></span>
-                                        2023
-                                    </span>
-                                    <h3 class="text-lg font-bold text-deep-navy mb-1">Medali OSN &amp; Lulusan PTN Top</h3>
-                                    <p class="text-sm text-on-surface-variant leading-relaxed">Siswa binaan meraih medali Olimpiade Sains Nasional serta diterima di PTN top: UI, ITB, dan UGM.</p>
-                                </div>
-                                                            </li>
-                                                    <li class="ms-6 relative">
-                                <span class="absolute -start-[37px] top-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md z-10">
-                                    <span class="icon-[mdi--monitor-dashboard] text-[18px]"></span>
-                                </span>
-                                <div class="bg-surface-container-lowest rounded-2xl border border-surface-container p-6 hover:border-primary/30 hover:shadow-lg transition-all">
-                                    <span class="inline-flex items-center gap-2 bg-primary/10 text-primary text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider mb-3">
-                                        <span class="icon-[mdi--clock-outline] text-[14px]"></span>
-                                        2024
-                                    </span>
-                                    <h3 class="text-lg font-bold text-deep-navy mb-1">Digitalisasi Platform &amp; Super Website</h3>
-                                    <p class="text-sm text-on-surface-variant leading-relaxed">Peluncuran super website dengan modul interaktif, tryout rutin, dan competitive programming.</p>
-                                </div>
-                                                            </li>
-                                                    <li class="ms-6 relative">
-                                <span class="absolute -start-[37px] top-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md z-10">
-                                    <span class="icon-[mdi--file-check] text-[18px]"></span>
-                                </span>
-                                <div class="bg-surface-container-lowest rounded-2xl border border-surface-container p-6 hover:border-primary/30 hover:shadow-lg transition-all">
-                                    <span class="inline-flex items-center gap-2 bg-primary/10 text-primary text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider mb-3">
-                                        <span class="icon-[mdi--clock-outline] text-[14px]"></span>
-                                        2025 - Sekarang
-                                    </span>
-                                    <h3 class="text-lg font-bold text-deep-navy mb-1">Ekosistem Terpadu &amp; Terdaftar di SIPLah</h3>
-                                    <p class="text-sm text-on-surface-variant leading-relaxed">Empat pilar program terintegrasi dan terdaftar resmi di SIPLah Kemendikbudristek untuk pengadaan sekolah &amp;amp; dinas.</p>
-                                </div>
-                                                                    <span class="absolute -start-[25px] -bottom-2 w-6 h-6 bg-primary/20 rounded-full animate-ping pointer-events-none"></span>
-                                                            </li>
-                                            </ol>
+                    <div class="group bg-surface-container-lowest rounded-3xl p-7 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <span class="icon-[mdi--account-group] text-[24px]"></span>
+                        </div>
+                        <h4 class="text-lg font-bold text-deep-navy leading-snug">Komunitas Belajar Interaktif</h4>
+                        <p class="text-sm text-on-surface-variant leading-relaxed flex-grow">Lingkungan suportif untuk saling memotivasi dan terus berkembang bagi siswa SD, SMP, hingga SMA.</p>
+                    </div>
+                    <div class="group bg-surface-container-lowest rounded-3xl p-7 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <span class="icon-[mdi--medal] text-[24px]"></span>
+                        </div>
+                        <h4 class="text-lg font-bold text-deep-navy leading-snug">Mentor Medalis Juara</h4>
+                        <p class="text-sm text-on-surface-variant leading-relaxed flex-grow">Dibimbing langsung oleh medalis nasional &amp; internasional yang memahami strategi dan bedah tipe soal terkini.</p>
+                    </div>
+                    <div class="group bg-surface-container-lowest rounded-3xl p-7 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <span class="icon-[mdi--monitor-dashboard] text-[24px]"></span>
+                        </div>
+                        <h4 class="text-lg font-bold text-deep-navy leading-snug">Super Website &amp; LMS</h4>
+                        <p class="text-sm text-on-surface-variant leading-relaxed flex-grow">Platform interaktif: modul digital, simulasi CBT rutin dengan peringkat nasional, dan materi terstruktur.</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -615,128 +722,139 @@
         <section id="pilar-program" class="py-20 md:py-28 px-4 md:px-8 bg-surface-bright scroll-mt-20">
             <div class="container-max flex flex-col gap-12">
                 <div class="flex flex-col gap-4 text-center max-w-2xl mx-auto">
-                    <div class="inline-flex items-center gap-2 bg-white text-primary text-xs font-bold px-3 py-1.5 rounded-full w-max mx-auto uppercase tracking-wider shadow-sm border border-primary/10">
+                    <div class="inline-flex items-center gap-2 bg-white text-primary text-xs font-bold px-3.5 py-1.5 rounded-full w-max mx-auto uppercase tracking-wider shadow-xs border border-primary/10">
                         <span class="icon-[mdi--layers-triple] text-[16px]"></span>
-                        Ekosistem Program
+                        Ekosistem Program NLS
                     </div>
-                    <h2 class="text-[28px] md:text-[42px] font-bold leading-tight tracking-tight text-deep-navy">Empat Pilar Program NLS</h2>
-                    <p class="text-sm md:text-base text-on-surface-variant leading-relaxed">Solusi pendidikan menyeluruh untuk siswa, sekolah, dinas, hingga instansi.</p>
+                    <h2 class="text-[28px] md:text-[42px] font-bold leading-tight tracking-tight text-deep-navy">Empat Pilar Program Utama</h2>
+                    <p class="text-sm md:text-base text-on-surface-variant leading-relaxed">Solusi pendidikan menyeluruh untuk siswa, sekolah, dinas, hingga instansi pemerintah.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                                                <div class="group bg-surface-container-lowest rounded-3xl p-7 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                                    <span class="icon-[mdi--school] text-[26px]"></span>
-                                </div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-wider bg-blue-100 text-blue-700 px-3 py-1 rounded-full">B2B</span>
-                            </div>
-                            <h3 class="text-lg font-bold text-deep-navy leading-snug">Mitra Sekolah</h3>
-                            <ul class="flex flex-col gap-2 flex-grow">
-                                                                    <li class="flex items-start gap-2 text-sm text-on-surface-variant">
-                                        <span class="icon-[mdi--check-circle] text-primary text-[16px] mt-0.5 shrink-0"></span>
-                                        <span>Layanan CBT khusus sekolah</span>
-                                    </li>
-                                                                    <li class="flex items-start gap-2 text-sm text-on-surface-variant">
-                                        <span class="icon-[mdi--check-circle] text-primary text-[16px] mt-0.5 shrink-0"></span>
-                                        <span>In-House Training guru</span>
-                                    </li>
-                                                                    <li class="flex items-start gap-2 text-sm text-on-surface-variant">
-                                        <span class="icon-[mdi--check-circle] text-primary text-[16px] mt-0.5 shrink-0"></span>
-                                        <span>Pembinaan OSN &amp; SNBT</span>
-                                    </li>
-                                                            </ul>
+                    <!-- Pilar 1: Mitra Sekolah -->
+                    <div class="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col">
+                        <div class="h-44 overflow-hidden relative">
+                            <img src="/images/stitch/pillar-study.jpg" alt="Mitra Sekolah" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent"></div>
+                            <span class="absolute top-3 right-3 text-[10px] font-extrabold uppercase tracking-wider bg-blue-600 text-white px-2.5 py-1 rounded-full shadow-xs">B2B Kemitraan</span>
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow gap-3">
+                            <h3 class="text-lg font-bold text-deep-navy">Mitra Sekolah</h3>
+                            <ul class="flex flex-col gap-2 flex-grow text-xs sm:text-sm text-on-surface-variant">
+                                <li class="flex items-start gap-2">
+                                    <span class="icon-[mdi--check-circle] text-primary text-[16px] mt-0.5 shrink-0"></span>
+                                    <span>Layanan CBT khusus sekolah</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="icon-[mdi--check-circle] text-primary text-[16px] mt-0.5 shrink-0"></span>
+                                    <span>In-House Training &amp; Pelatihan Guru</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="icon-[mdi--check-circle] text-primary text-[16px] mt-0.5 shrink-0"></span>
+                                    <span>Pembinaan OSN &amp; SNBT Terpadu</span>
+                                </li>
+                            </ul>
                             <a href="/mitra"
-                                class="inline-flex items-center justify-center gap-2 bg-primary/5 hover:bg-primary text-primary hover:text-white font-bold text-sm px-5 py-3 rounded-full transition-all">
+                                class="inline-flex items-center justify-center gap-2 bg-blue-50 hover:bg-primary text-primary hover:text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-full transition-all mt-2">
                                 Lihat Kemitraan
-                                <span class="icon-[mdi--arrow-right] group-hover:translate-x-1 transition-transform"></span>
+                                <span class="icon-[mdi--arrow-right]"></span>
                             </a>
                         </div>
-                                            <div class="group bg-surface-container-lowest rounded-3xl p-7 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                                    <span class="icon-[mdi--office-building] text-[26px]"></span>
-                                </div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-wider bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full">B2G</span>
-                            </div>
-                            <h3 class="text-lg font-bold text-deep-navy leading-snug">Mitra Dinas &amp; Lembaga</h3>
-                            <ul class="flex flex-col gap-2 flex-grow">
-                                                                    <li class="flex items-start gap-2 text-sm text-on-surface-variant">
-                                        <span class="icon-[mdi--check-circle] text-primary text-[16px] mt-0.5 shrink-0"></span>
-                                        <span>Program pelatihan berskala nasional</span>
-                                    </li>
-                                                                    <li class="flex items-start gap-2 text-sm text-on-surface-variant">
-                                        <span class="icon-[mdi--check-circle] text-primary text-[16px] mt-0.5 shrink-0"></span>
-                                        <span>Kolaborasi Dinas Pendidikan</span>
-                                    </li>
-                                                                    <li class="flex items-start gap-2 text-sm text-on-surface-variant">
-                                        <span class="icon-[mdi--check-circle] text-primary text-[16px] mt-0.5 shrink-0"></span>
-                                        <span>Pengadaan via SIPLah</span>
-                                    </li>
-                                                            </ul>
+                    </div>
+
+                    <!-- Pilar 2: Mitra Dinas -->
+                    <div class="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col">
+                        <div class="h-44 overflow-hidden relative">
+                            <img src="/images/stitch/jss-main.jpg" alt="Mitra Dinas & Lembaga" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent"></div>
+                            <span class="absolute top-3 right-3 text-[10px] font-extrabold uppercase tracking-wider bg-emerald-600 text-white px-2.5 py-1 rounded-full shadow-xs">B2G Lembaga</span>
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow gap-3">
+                            <h3 class="text-lg font-bold text-deep-navy">Mitra Dinas &amp; Lembaga</h3>
+                            <ul class="flex flex-col gap-2 flex-grow text-xs sm:text-sm text-on-surface-variant">
+                                <li class="flex items-start gap-2">
+                                    <span class="icon-[mdi--check-circle] text-emerald-600 text-[16px] mt-0.5 shrink-0"></span>
+                                    <span>Program pelatihan skala daerah/nasional</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="icon-[mdi--check-circle] text-emerald-600 text-[16px] mt-0.5 shrink-0"></span>
+                                    <span>Kolaborasi Dinas Pendidikan</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="icon-[mdi--check-circle] text-emerald-600 text-[16px] mt-0.5 shrink-0"></span>
+                                    <span>Pengadaan resmi via SIPLah</span>
+                                </li>
+                            </ul>
                             <a href="/mitra"
-                                class="inline-flex items-center justify-center gap-2 bg-primary/5 hover:bg-primary text-primary hover:text-white font-bold text-sm px-5 py-3 rounded-full transition-all">
+                                class="inline-flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-full transition-all mt-2">
                                 Lihat Kemitraan
-                                <span class="icon-[mdi--arrow-right] group-hover:translate-x-1 transition-transform"></span>
+                                <span class="icon-[mdi--arrow-right]"></span>
                             </a>
                         </div>
-                                            <div class="group bg-surface-container-lowest rounded-3xl p-7 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                                    <span class="icon-[mdi--laptop-account] text-[26px]"></span>
-                                </div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-wider bg-amber-100 text-amber-700 px-3 py-1 rounded-full">Intensif</span>
-                            </div>
-                            <h3 class="text-lg font-bold text-deep-navy leading-snug">Bimbel Online &amp; Offline</h3>
-                            <ul class="flex flex-col gap-2 flex-grow">
-                                                                    <li class="flex items-start gap-2 text-sm text-on-surface-variant">
-                                        <span class="icon-[mdi--check-circle] text-primary text-[16px] mt-0.5 shrink-0"></span>
-                                        <span>Bimbel OSN</span>
-                                    </li>
-                                                                    <li class="flex items-start gap-2 text-sm text-on-surface-variant">
-                                        <span class="icon-[mdi--check-circle] text-primary text-[16px] mt-0.5 shrink-0"></span>
-                                        <span>Bimbel TKA</span>
-                                    </li>
-                                                                    <li class="flex items-start gap-2 text-sm text-on-surface-variant">
-                                        <span class="icon-[mdi--check-circle] text-primary text-[16px] mt-0.5 shrink-0"></span>
-                                        <span>Bimbel SNBT</span>
-                                    </li>
-                                                            </ul>
-                            <a href="/programs"
-                                class="inline-flex items-center justify-center gap-2 bg-primary/5 hover:bg-primary text-primary hover:text-white font-bold text-sm px-5 py-3 rounded-full transition-all">
+                    </div>
+
+                    <!-- Pilar 3: Bimbel Online & Offline -->
+                    <div class="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col">
+                        <div class="h-44 overflow-hidden relative">
+                            <img src="/images/home/program-osn.jpg" alt="Bimbel Online & Offline" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent"></div>
+                            <span class="absolute top-3 right-3 text-[10px] font-extrabold uppercase tracking-wider bg-amber-500 text-white px-2.5 py-1 rounded-full shadow-xs">B2C Intensif</span>
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow gap-3">
+                            <h3 class="text-lg font-bold text-deep-navy">Bimbel Online &amp; Offline</h3>
+                            <ul class="flex flex-col gap-2 flex-grow text-xs sm:text-sm text-on-surface-variant">
+                                <li class="flex items-start gap-2">
+                                    <span class="icon-[mdi--check-circle] text-amber-500 text-[16px] mt-0.5 shrink-0"></span>
+                                    <span>Bimbel OSN 9 Bidang Sains</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="icon-[mdi--check-circle] text-amber-500 text-[16px] mt-0.5 shrink-0"></span>
+                                    <span>Bimbel TKA &amp; SNBT UTBK</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="icon-[mdi--check-circle] text-amber-500 text-[16px] mt-0.5 shrink-0"></span>
+                                    <span>Nexgen Academy (Offline Bekasi)</span>
+                                </li>
+                            </ul>
+                            <a href="/#bimbel"
+                                class="inline-flex items-center justify-center gap-2 bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-full transition-all mt-2">
                                 Lihat Program
-                                <span class="icon-[mdi--arrow-right] group-hover:translate-x-1 transition-transform"></span>
+                                <span class="icon-[mdi--arrow-right]"></span>
                             </a>
                         </div>
-                                            <div class="group bg-surface-container-lowest rounded-3xl p-7 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                                    <span class="icon-[mdi--account-star] text-[26px]"></span>
-                                </div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-wider bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full">Eksklusif</span>
-                            </div>
-                            <h3 class="text-lg font-bold text-deep-navy leading-snug">Privat 1-on-1</h3>
-                            <ul class="flex flex-col gap-2 flex-grow">
-                                                                    <li class="flex items-start gap-2 text-sm text-on-surface-variant">
-                                        <span class="icon-[mdi--check-circle] text-primary text-[16px] mt-0.5 shrink-0"></span>
-                                        <span>Mentoring personal</span>
-                                    </li>
-                                                                    <li class="flex items-start gap-2 text-sm text-on-surface-variant">
-                                        <span class="icon-[mdi--check-circle] text-primary text-[16px] mt-0.5 shrink-0"></span>
-                                        <span>Jadwal fleksibel</span>
-                                    </li>
-                                                                    <li class="flex items-start gap-2 text-sm text-on-surface-variant">
-                                        <span class="icon-[mdi--check-circle] text-primary text-[16px] mt-0.5 shrink-0"></span>
-                                        <span>Kurikulum disesuaikan</span>
-                                    </li>
-                                                            </ul>
+                    </div>
+
+                    <!-- Pilar 4: Privat 1-on-1 -->
+                    <div class="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col">
+                        <div class="h-44 overflow-hidden relative">
+                            <img src="/images/privat/fokus-internasional.jpg" alt="Privat 1-on-1 Eksklusif" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent"></div>
+                            <span class="absolute top-3 right-3 text-[10px] font-extrabold uppercase tracking-wider bg-indigo-600 text-white px-2.5 py-1 rounded-full shadow-xs">Eksklusif</span>
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow gap-3">
+                            <h3 class="text-lg font-bold text-deep-navy">Privat 1-on-1</h3>
+                            <ul class="flex flex-col gap-2 flex-grow text-xs sm:text-sm text-on-surface-variant">
+                                <li class="flex items-start gap-2">
+                                    <span class="icon-[mdi--check-circle] text-indigo-600 text-[16px] mt-0.5 shrink-0"></span>
+                                    <span>Mentoring personal 1 mentor 1 siswa</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="icon-[mdi--check-circle] text-indigo-600 text-[16px] mt-0.5 shrink-0"></span>
+                                    <span>Jadwal fleksibel &amp; kurikulum kustom</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="icon-[mdi--check-circle] text-indigo-600 text-[16px] mt-0.5 shrink-0"></span>
+                                    <span>Persiapan OSN, SNBT, Cambridge/IB</span>
+                                </li>
+                            </ul>
                             <a href="/privat"
-                                class="inline-flex items-center justify-center gap-2 bg-primary/5 hover:bg-primary text-primary hover:text-white font-bold text-sm px-5 py-3 rounded-full transition-all">
+                                class="inline-flex items-center justify-center gap-2 bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-full transition-all mt-2">
                                 Cari Mentor
-                                <span class="icon-[mdi--arrow-right] group-hover:translate-x-1 transition-transform"></span>
+                                <span class="icon-[mdi--arrow-right]"></span>
                             </a>
                         </div>
-                                    </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -744,84 +862,256 @@
         <section class="py-20 md:py-28 px-4 md:px-8 bg-white">
             <div class="container-max flex flex-col gap-12">
                 <div class="flex flex-col gap-4 text-center max-w-2xl mx-auto">
-                    <div class="inline-flex items-center gap-2 bg-surface-container-low text-primary text-xs font-bold px-3 py-1.5 rounded-full w-max mx-auto uppercase tracking-wider">
+                    <div class="inline-flex items-center gap-2 bg-surface-container-low text-primary text-xs font-bold px-3.5 py-1.5 rounded-full w-max mx-auto uppercase tracking-wider border border-primary/10">
                         <span class="icon-[mdi--trophy-award] text-[16px]"></span>
                         Wall of Excellence
                     </div>
                     <h2 class="text-[28px] md:text-[42px] font-bold leading-tight tracking-tight text-deep-navy">Prestasi Mereka, Bukti Kualitas Kami</h2>
-                    <p class="text-sm md:text-base text-on-surface-variant leading-relaxed">Sebagian siswa binaan NLS yang membawa nama Indonesia di kompetisi nasional hingga internasional.</p>
+                    <p class="text-sm md:text-base text-on-surface-variant leading-relaxed">Sebagian siswa binaan NLS yang berhasil mengukir prestasi emas di kompetisi nasional hingga internasional.</p>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                                                                <div class="group bg-surface-container-lowest rounded-3xl overflow-hidden border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col">
-                            <div class="h-56 overflow-hidden relative">
-                                <img src="/images/stitch/alumni-rocheline.jpg" alt="Rocheline S" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                                <div class="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent opacity-70"></div>
-                                <span class="absolute bottom-3 left-3 bg-white/90 backdrop-blur text-primary text-[10px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-sm">Perak IBO 2025</span>
-                            </div>
-                            <div class="p-6 flex flex-col flex-grow gap-2">
-                                <div class="flex items-center justify-between">
-                                    <h3 class="text-lg font-bold text-deep-navy">Rocheline S</h3>
-                                    <span class="icon-[mdi--star-circle] text-amber-400 text-xl"></span>
-                                </div>
-                                <p class="text-xs text-on-surface-variant font-medium">SMAN 8 Jakarta</p>
-                                <p class="text-sm text-on-surface-variant italic leading-relaxed mt-1 flex-grow">&quot;NLS membantu saya memahami biologi dengan sangat jelas, terutama untuk kak Rendy.&quot;</p>
-                            </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Alumni 1: Rocheline -->
+                    <div class="group bg-surface-container-lowest rounded-3xl overflow-hidden border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col">
+                        <div class="h-60 overflow-hidden relative">
+                            <img src="/images/stitch/alumni-rocheline.jpg" alt="Rocheline S" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-primary/70 via-transparent to-transparent"></div>
+                            <span class="absolute bottom-3 left-3 bg-white/95 backdrop-blur text-primary text-[10px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-sm">Perak IBO 2025 &bull; Emas OSN</span>
                         </div>
-                                            <div class="group bg-surface-container-lowest rounded-3xl overflow-hidden border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col">
-                            <div class="h-56 overflow-hidden relative">
-                                <img src="/images/stitch/alumni-axell.jpg" alt="Axell Chandra" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                                <div class="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent opacity-70"></div>
-                                <span class="absolute bottom-3 left-3 bg-white/90 backdrop-blur text-primary text-[10px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-sm">Perak OSN Matematika SMP 2025</span>
+                        <div class="p-6 flex flex-col flex-grow gap-2">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-bold text-deep-navy">Rocheline S</h3>
+                                <span class="icon-[mdi--star-circle] text-amber-400 text-xl"></span>
                             </div>
-                            <div class="p-6 flex flex-col flex-grow gap-2">
-                                <div class="flex items-center justify-between">
-                                    <h3 class="text-lg font-bold text-deep-navy">Axell Chandra</h3>
-                                    <span class="icon-[mdi--star-circle] text-amber-400 text-xl"></span>
-                                </div>
-                                <p class="text-xs text-on-surface-variant font-medium">SMP Pelita Bangsa, Lampung</p>
-                                <p class="text-sm text-on-surface-variant italic leading-relaxed mt-1 flex-grow">&quot;Metode pemecahan masalah yang logis membantu saya menaklukkan soal olimpiade.&quot;</p>
-                            </div>
+                            <p class="text-xs text-on-surface-variant font-semibold">SMAN 8 Jakarta</p>
+                            <p class="text-sm text-on-surface-variant italic leading-relaxed mt-1 flex-grow">&quot;NLS membantu saya memahami konsep biologi tingkat lanjut dengan sangat mendalam dan taktis.&quot;</p>
                         </div>
-                                            <div class="group bg-surface-container-lowest rounded-3xl overflow-hidden border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col">
-                            <div class="h-56 overflow-hidden relative">
-                                <img src="/images/stitch/alumni-rafi.jpg" alt="Rafi Qsan" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                                <div class="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent opacity-70"></div>
-                                <span class="absolute bottom-3 left-3 bg-white/90 backdrop-blur text-primary text-[10px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-sm">Perak IEO 2026</span>
-                            </div>
-                            <div class="p-6 flex flex-col flex-grow gap-2">
-                                <div class="flex items-center justify-between">
-                                    <h3 class="text-lg font-bold text-deep-navy">Rafi Qsan</h3>
-                                    <span class="icon-[mdi--star-circle] text-amber-400 text-xl"></span>
-                                </div>
-                                <p class="text-xs text-on-surface-variant font-medium">SMA Kharisma Bangsa, Banten</p>
-                                <p class="text-sm text-on-surface-variant italic leading-relaxed mt-1 flex-grow">&quot;Bimbingan intensif membuat konsep ekonomi yang rumit jadi jauh lebih mudah dikuasai.&quot;</p>
-                            </div>
+                    </div>
+
+                    <!-- Alumni 2: Team Math DKI -->
+                    <div class="group bg-surface-container-lowest rounded-3xl overflow-hidden border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col">
+                        <div class="h-60 overflow-hidden relative">
+                            <img src="/images/home/alumni-team-math.jpg" alt="Team Math OSN DKI" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-primary/70 via-transparent to-transparent"></div>
+                            <span class="absolute bottom-3 left-3 bg-white/95 backdrop-blur text-primary text-[10px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-sm">Absolute Winner &bull; 6 Medali OSN</span>
                         </div>
-                                            <div class="group bg-surface-container-lowest rounded-3xl overflow-hidden border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col">
-                            <div class="h-56 overflow-hidden relative">
-                                <img src="/images/stitch/alumni-timothy.jpg" alt="Timothy Matthew" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                                <div class="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent opacity-70"></div>
-                                <span class="absolute bottom-3 left-3 bg-white/90 backdrop-blur text-primary text-[10px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-sm">IMSO 2027</span>
+                        <div class="p-6 flex flex-col flex-grow gap-2">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-bold text-deep-navy">TEAM MATH OSN DKI</h3>
+                                <span class="icon-[mdi--star-circle] text-amber-400 text-xl"></span>
                             </div>
-                            <div class="p-6 flex flex-col flex-grow gap-2">
-                                <div class="flex items-center justify-between">
-                                    <h3 class="text-lg font-bold text-deep-navy">Timothy Matthew</h3>
-                                    <span class="icon-[mdi--star-circle] text-amber-400 text-xl"></span>
-                                </div>
-                                <p class="text-xs text-on-surface-variant font-medium">SD Wonder Kidz, Jawa Tengah</p>
-                                <p class="text-sm text-on-surface-variant italic leading-relaxed mt-1 flex-grow">&quot;Materi bimbingannya seru dan mudah dipahami oleh saya yang masih SD.&quot;</p>
-                            </div>
+                            <p class="text-xs text-on-surface-variant font-semibold">Kontingen OSN DKI Jakarta</p>
+                            <p class="text-sm text-on-surface-variant italic leading-relaxed mt-1 flex-grow">&quot;Pembinaan intensif dengan kurikulum terarah mengantarkan kami mendominasi podium OSN Matematika.&quot;</p>
                         </div>
-                                    </div>
+                    </div>
+
+                    <!-- Alumni 3: Axell Chandra -->
+                    <div class="group bg-surface-container-lowest rounded-3xl overflow-hidden border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col">
+                        <div class="h-60 overflow-hidden relative">
+                            <img src="/images/stitch/alumni-axell.jpg" alt="Axell Chandra" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-primary/70 via-transparent to-transparent"></div>
+                            <span class="absolute bottom-3 left-3 bg-white/95 backdrop-blur text-primary text-[10px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-sm">Perak OSN Matematika SMP 2025</span>
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow gap-2">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-bold text-deep-navy">Axell Chandra</h3>
+                                <span class="icon-[mdi--star-circle] text-amber-400 text-xl"></span>
+                            </div>
+                            <p class="text-xs text-on-surface-variant font-semibold">SMP Pelita Bangsa, Lampung</p>
+                            <p class="text-sm text-on-surface-variant italic leading-relaxed mt-1 flex-grow">&quot;Metode pemecahan masalah yang logis membantu saya menaklukkan soal-soal olimpiade yang rumit.&quot;</p>
+                        </div>
+                    </div>
+
+                    <!-- Alumni 4: Oslando FK UNPAD -->
+                    <div class="group bg-surface-container-lowest rounded-3xl overflow-hidden border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col">
+                        <div class="h-60 overflow-hidden relative">
+                            <img src="/images/home/alumni-oslando.jpg" alt="Oslando" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-primary/70 via-transparent to-transparent"></div>
+                            <span class="absolute bottom-3 left-3 bg-white/95 backdrop-blur text-primary text-[10px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-sm">Lolos FK UNPAD via SNBT</span>
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow gap-2">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-bold text-deep-navy">Oslando</h3>
+                                <span class="icon-[mdi--star-circle] text-amber-400 text-xl"></span>
+                            </div>
+                            <p class="text-xs text-on-surface-variant font-semibold">Fakultas Kedokteran UNPAD</p>
+                            <p class="text-sm text-on-surface-variant italic leading-relaxed mt-1 flex-grow">&quot;Simulasi tryout rutin dengan sistem IRT dan evaluasi peluang benar-benar akurat meloloskan saya.&quot;</p>
+                        </div>
+                    </div>
+
+                    <!-- Alumni 5: Rafi Qsan -->
+                    <div class="group bg-surface-container-lowest rounded-3xl overflow-hidden border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col">
+                        <div class="h-60 overflow-hidden relative">
+                            <img src="/images/stitch/alumni-rafi.jpg" alt="Rafi Qsan" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-primary/70 via-transparent to-transparent"></div>
+                            <span class="absolute bottom-3 left-3 bg-white/95 backdrop-blur text-primary text-[10px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-sm">Perak IEO 2026</span>
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow gap-2">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-bold text-deep-navy">Rafi Qsan</h3>
+                                <span class="icon-[mdi--star-circle] text-amber-400 text-xl"></span>
+                            </div>
+                            <p class="text-xs text-on-surface-variant font-semibold">SMA Kharisma Bangsa, Banten</p>
+                            <p class="text-sm text-on-surface-variant italic leading-relaxed mt-1 flex-grow">&quot;Bimbingan intensif membuat konsep ekonomi yang rumit jadi jauh lebih mudah dikuasai dengan cepat.&quot;</p>
+                        </div>
+                    </div>
+
+                    <!-- Alumni 6: Timothy Matthew -->
+                    <div class="group bg-surface-container-lowest rounded-3xl overflow-hidden border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col">
+                        <div class="h-60 overflow-hidden relative">
+                            <img src="/images/stitch/alumni-timothy.jpg" alt="Timothy Matthew" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-primary/70 via-transparent to-transparent"></div>
+                            <span class="absolute bottom-3 left-3 bg-white/95 backdrop-blur text-primary text-[10px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-sm">Juara IMSO 2027</span>
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow gap-2">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-bold text-deep-navy">Timothy Matthew</h3>
+                                <span class="icon-[mdi--star-circle] text-amber-400 text-xl"></span>
+                            </div>
+                            <p class="text-xs text-on-surface-variant font-semibold">SD Wonder Kidz, Jawa Tengah</p>
+                            <p class="text-sm text-on-surface-variant italic leading-relaxed mt-1 flex-grow">&quot;Materi bimbingannya seru, aplikatif, dan mudah dipahami bahkan untuk jenjang sekolah dasar.&quot;</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- ===== 7. JARINGAN KONTAK (EXECUTIVE DIRECTORY) ===== -->
+        <!-- ===== 7. JARINGAN MITRA & KOLABORASI RESMI ===== -->
+        <section class="py-16 md:py-24 px-4 md:px-8 bg-surface-bright border-y border-gray-100">
+            <div class="container-max flex flex-col gap-10">
+                <div class="text-center max-w-2xl mx-auto flex flex-col gap-3">
+                    <div class="inline-flex items-center gap-2 bg-white text-primary text-xs font-bold px-3.5 py-1.5 rounded-full w-max mx-auto uppercase tracking-wider shadow-xs border border-primary/10">
+                        <span class="icon-[mdi--handshake-outline] text-[16px]"></span>
+                        Jaringan Kemitraan
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-deep-navy">Dipercaya oleh Ratusan Sekolah &amp; Lembaga</h2>
+                    <p class="text-xs sm:text-sm text-on-surface-variant">Next Level Study menjalin kemitraan erat bersama sekolah unggulan dan institusi pendidikan di seluruh Indonesia.</p>
+                </div>
+
+                <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4 sm:gap-6 items-center justify-items-center">
+                    <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs hover:shadow-md transition-all w-full flex items-center justify-center aspect-square">
+                        <img src="/images/mitra/partner-01.jpg" alt="Partner Sekolah NLS" class="max-h-14 max-w-full object-contain grayscale hover:grayscale-0 transition-all">
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs hover:shadow-md transition-all w-full flex items-center justify-center aspect-square">
+                        <img src="/images/mitra/partner-02.jpg" alt="Partner Sekolah NLS" class="max-h-14 max-w-full object-contain grayscale hover:grayscale-0 transition-all">
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs hover:shadow-md transition-all w-full flex items-center justify-center aspect-square">
+                        <img src="/images/mitra/partner-03.jpg" alt="Partner Sekolah NLS" class="max-h-14 max-w-full object-contain grayscale hover:grayscale-0 transition-all">
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs hover:shadow-md transition-all w-full flex items-center justify-center aspect-square">
+                        <img src="/images/mitra/partner-04.jpg" alt="Partner Sekolah NLS" class="max-h-14 max-w-full object-contain grayscale hover:grayscale-0 transition-all">
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs hover:shadow-md transition-all w-full flex items-center justify-center aspect-square">
+                        <img src="/images/mitra/partner-05.jpg" alt="Partner Sekolah NLS" class="max-h-14 max-w-full object-contain grayscale hover:grayscale-0 transition-all">
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs hover:shadow-md transition-all w-full flex items-center justify-center aspect-square">
+                        <img src="/images/mitra/partner-06.png" alt="Partner Sekolah NLS" class="max-h-14 max-w-full object-contain grayscale hover:grayscale-0 transition-all">
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs hover:shadow-md transition-all w-full flex items-center justify-center aspect-square">
+                        <img src="/images/mitra/partner-07.jpg" alt="Partner Sekolah NLS" class="max-h-14 max-w-full object-contain grayscale hover:grayscale-0 transition-all">
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs hover:shadow-md transition-all w-full flex items-center justify-center aspect-square">
+                        <img src="/images/mitra/partner-08.jpg" alt="Partner Sekolah NLS" class="max-h-14 max-w-full object-contain grayscale hover:grayscale-0 transition-all">
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs hover:shadow-md transition-all w-full flex items-center justify-center aspect-square">
+                        <img src="/images/mitra/partner-09.jpg" alt="Partner Sekolah NLS" class="max-h-14 max-w-full object-contain grayscale hover:grayscale-0 transition-all">
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs hover:shadow-md transition-all w-full flex items-center justify-center aspect-square">
+                        <img src="/images/mitra/partner-10.jpg" alt="Partner Sekolah NLS" class="max-h-14 max-w-full object-contain grayscale hover:grayscale-0 transition-all">
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs hover:shadow-md transition-all w-full flex items-center justify-center aspect-square">
+                        <img src="/images/mitra/partner-11.png" alt="Partner Sekolah NLS" class="max-h-14 max-w-full object-contain grayscale hover:grayscale-0 transition-all">
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs hover:shadow-md transition-all w-full flex items-center justify-center aspect-square">
+                        <img src="/images/mitra/partner-12.jpg" alt="Partner Sekolah NLS" class="max-h-14 max-w-full object-contain grayscale hover:grayscale-0 transition-all">
+                    </div>
+                </div>
+
+                <div class="text-center pt-2">
+                    <a href="/mitra" class="inline-flex items-center gap-2 text-primary font-bold text-sm hover:underline">
+                        <span>Lihat seluruh daftar mitra sekolah &amp; kerja sama dinas</span>
+                        <span class="icon-[mdi--arrow-right]"></span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 8. LINIMASA PERJALANAN ===== -->
+        <section class="py-20 md:py-28 px-4 md:px-8 bg-white">
+            <div class="container-max flex flex-col gap-12">
+                <div class="flex flex-col gap-4 text-center max-w-2xl mx-auto">
+                    <div class="inline-flex items-center gap-2 bg-surface-container-low text-primary text-xs font-bold px-3.5 py-1.5 rounded-full w-max mx-auto uppercase tracking-wider border border-primary/10">
+                        <span class="icon-[mdi--road-variant] text-[16px]"></span>
+                        Linimasa Perjalanan
+                    </div>
+                    <h2 class="text-[28px] md:text-[42px] font-bold leading-tight tracking-tight text-deep-navy">Rekam Jejak Menuju Era Baru</h2>
+                </div>
+
+                <div class="max-w-3xl mx-auto w-full">
+                    <ol class="relative border-s-2 border-primary/20 ms-4 space-y-10">
+                        <li class="ms-6 relative">
+                            <span class="absolute -start-[37px] top-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md z-10">
+                                <span class="icon-[mdi--calendar-star] text-[18px]"></span>
+                            </span>
+                            <div class="bg-surface-container-lowest rounded-2xl border border-surface-container p-6 hover:border-primary/30 hover:shadow-lg transition-all">
+                                <span class="inline-flex items-center gap-2 bg-primary/10 text-primary text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider mb-3">
+                                    <span class="icon-[mdi--clock-outline] text-[14px]"></span>
+                                    Juli 2022
+                                </span>
+                                <h3 class="text-lg font-bold text-deep-navy mb-1">Kelahiran Komunitas Belajar NLS</h3>
+                                <p class="text-sm text-on-surface-variant leading-relaxed">Berawal dari komunitas belajar yang hangat dan suportif, NLS resmi berdiri sebagai perusahaan edukasi berbasis komunitas.</p>
+                            </div>
+                        </li>
+                        <li class="ms-6 relative">
+                            <span class="absolute -start-[37px] top-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md z-10">
+                                <span class="icon-[mdi--trophy] text-[18px]"></span>
+                            </span>
+                            <div class="bg-surface-container-lowest rounded-2xl border border-surface-container p-6 hover:border-primary/30 hover:shadow-lg transition-all">
+                                <span class="inline-flex items-center gap-2 bg-primary/10 text-primary text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider mb-3">
+                                    <span class="icon-[mdi--clock-outline] text-[14px]"></span>
+                                    2023
+                                </span>
+                                <h3 class="text-lg font-bold text-deep-navy mb-1">Medali OSN &amp; Lulusan PTN Top</h3>
+                                <p class="text-sm text-on-surface-variant leading-relaxed">Siswa binaan meraih medali Olimpiade Sains Nasional serta diterima di PTN top: UI, ITB, dan UGM.</p>
+                            </div>
+                        </li>
+                        <li class="ms-6 relative">
+                            <span class="absolute -start-[37px] top-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md z-10">
+                                <span class="icon-[mdi--monitor-dashboard] text-[18px]"></span>
+                            </span>
+                            <div class="bg-surface-container-lowest rounded-2xl border border-surface-container p-6 hover:border-primary/30 hover:shadow-lg transition-all">
+                                <span class="inline-flex items-center gap-2 bg-primary/10 text-primary text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider mb-3">
+                                    <span class="icon-[mdi--clock-outline] text-[14px]"></span>
+                                    2024
+                                </span>
+                                <h3 class="text-lg font-bold text-deep-navy mb-1">Digitalisasi Platform &amp; Super Website</h3>
+                                <p class="text-sm text-on-surface-variant leading-relaxed">Peluncuran super website dengan modul interaktif, tryout rutin, dan competitive learning.</p>
+                            </div>
+                        </li>
+                        <li class="ms-6 relative">
+                            <span class="absolute -start-[37px] top-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md z-10">
+                                <span class="icon-[mdi--file-check] text-[18px]"></span>
+                            </span>
+                            <div class="bg-surface-container-lowest rounded-2xl border border-surface-container p-6 hover:border-primary/30 hover:shadow-lg transition-all">
+                                <span class="inline-flex items-center gap-2 bg-primary/10 text-primary text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider mb-3">
+                                    <span class="icon-[mdi--clock-outline] text-[14px]"></span>
+                                    2025 - Sekarang
+                                </span>
+                                <h3 class="text-lg font-bold text-deep-navy mb-1">Ekosistem Terpadu &amp; Terdaftar di SIPLah</h3>
+                                <p class="text-sm text-on-surface-variant leading-relaxed">Empat pilar program terintegrasi dan terdaftar resmi di SIPLah Kemendikbudristek untuk pengadaan sekolah &amp; dinas.</p>
+                            </div>
+                            <span class="absolute -start-[25px] -bottom-2 w-6 h-6 bg-primary/20 rounded-full animate-ping pointer-events-none"></span>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 9. JARINGAN KONTAK (EXECUTIVE DIRECTORY) ===== -->
         <section id="kontak-wilayah" class="py-20 md:py-28 px-4 md:px-8 bg-surface-bright scroll-mt-20">
             <div class="container-max flex flex-col gap-12">
                 <div class="flex flex-col gap-4 text-center max-w-2xl mx-auto">
-                    <div class="inline-flex items-center gap-2 bg-white text-primary text-xs font-bold px-3 py-1.5 rounded-full w-max mx-auto uppercase tracking-wider shadow-sm border border-primary/10">
+                    <div class="inline-flex items-center gap-2 bg-white text-primary text-xs font-bold px-3.5 py-1.5 rounded-full w-max mx-auto uppercase tracking-wider shadow-xs border border-primary/10">
                         <span class="icon-[mdi--map-marker-radius] text-[16px]"></span>
                         Executive Directory
                     </div>
@@ -830,116 +1120,116 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                                                <div class="group bg-surface-container-lowest rounded-3xl p-6 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                                    <span class="icon-[mdi--map-marker] text-[22px]"></span>
-                                </div>
-                                <span class="text-[10px] font-bold uppercase tracking-wider bg-surface-container-low text-primary px-3 py-1 rounded-full">Kantor Pusat</span>
+                    <div class="group bg-surface-container-lowest rounded-3xl p-6 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                <span class="icon-[mdi--map-marker] text-[22px]"></span>
                             </div>
-                            <div class="flex flex-col gap-0.5">
-                                <h4 class="text-lg font-bold text-deep-navy">Pusat Bekasi</h4>
-                                <p class="text-sm text-on-surface-variant font-medium">PIC: ADMIN</p>
-                            </div>
-                            <a href="https://wa.me/6285163070002" target="_blank" rel="noopener noreferrer"
-                                class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-container text-white font-bold text-sm px-5 py-3 rounded-full transition-all">
-                                <span class="icon-[mdi--whatsapp] text-[18px]"></span>
-                                0851 6307 0002
-                            </a>
+                            <span class="text-[10px] font-bold uppercase tracking-wider bg-surface-container-low text-primary px-3 py-1 rounded-full">Kantor Pusat</span>
                         </div>
-                                            <div class="group bg-surface-container-lowest rounded-3xl p-6 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                                    <span class="icon-[mdi--city] text-[22px]"></span>
-                                </div>
-                                <span class="text-[10px] font-bold uppercase tracking-wider bg-surface-container-low text-primary px-3 py-1 rounded-full">Wilayah Jakarta</span>
-                            </div>
-                            <div class="flex flex-col gap-0.5">
-                                <h4 class="text-lg font-bold text-deep-navy">Jakarta</h4>
-                                <p class="text-sm text-on-surface-variant font-medium">PIC: Hanip</p>
-                            </div>
-                            <a href="https://wa.me/6285156766412" target="_blank" rel="noopener noreferrer"
-                                class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-container text-white font-bold text-sm px-5 py-3 rounded-full transition-all">
-                                <span class="icon-[mdi--whatsapp] text-[18px]"></span>
-                                0851 5676 6412
-                            </a>
+                        <div class="flex flex-col gap-0.5">
+                            <h4 class="text-lg font-bold text-deep-navy">Pusat Bekasi</h4>
+                            <p class="text-sm text-on-surface-variant font-medium">PIC: ADMIN</p>
                         </div>
-                                            <div class="group bg-surface-container-lowest rounded-3xl p-6 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                                    <span class="icon-[mdi--map] text-[22px]"></span>
-                                </div>
-                                <span class="text-[10px] font-bold uppercase tracking-wider bg-surface-container-low text-primary px-3 py-1 rounded-full">Wilayah Jawa Barat</span>
+                        <a href="https://wa.me/6285163070002" target="_blank" rel="noopener noreferrer"
+                            class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-container text-white font-bold text-sm px-5 py-3 rounded-full transition-all">
+                            <span class="icon-[mdi--whatsapp] text-[18px]"></span>
+                            0851 6307 0002
+                        </a>
+                    </div>
+                    <div class="group bg-surface-container-lowest rounded-3xl p-6 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                <span class="icon-[mdi--city] text-[22px]"></span>
                             </div>
-                            <div class="flex flex-col gap-0.5">
-                                <h4 class="text-lg font-bold text-deep-navy">Jawa Barat</h4>
-                                <p class="text-sm text-on-surface-variant font-medium">PIC: Agung</p>
-                            </div>
-                            <a href="https://wa.me/6281388122695" target="_blank" rel="noopener noreferrer"
-                                class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-container text-white font-bold text-sm px-5 py-3 rounded-full transition-all">
-                                <span class="icon-[mdi--whatsapp] text-[18px]"></span>
-                                0813 8812 2695
-                            </a>
+                            <span class="text-[10px] font-bold uppercase tracking-wider bg-surface-container-low text-primary px-3 py-1 rounded-full">Wilayah Jakarta</span>
                         </div>
-                                            <div class="group bg-surface-container-lowest rounded-3xl p-6 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                                    <span class="icon-[mdi--account-star] text-[22px]"></span>
-                                </div>
-                                <span class="text-[10px] font-bold uppercase tracking-wider bg-surface-container-low text-primary px-3 py-1 rounded-full">Privat 1-on-1</span>
-                            </div>
-                            <div class="flex flex-col gap-0.5">
-                                <h4 class="text-lg font-bold text-deep-navy">Divisi Privat</h4>
-                                <p class="text-sm text-on-surface-variant font-medium">PIC: Seno</p>
-                            </div>
-                            <a href="https://wa.me/628170100788" target="_blank" rel="noopener noreferrer"
-                                class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-container text-white font-bold text-sm px-5 py-3 rounded-full transition-all">
-                                <span class="icon-[mdi--whatsapp] text-[18px]"></span>
-                                0817 0100 788
-                            </a>
+                        <div class="flex flex-col gap-0.5">
+                            <h4 class="text-lg font-bold text-deep-navy">Jakarta</h4>
+                            <p class="text-sm text-on-surface-variant font-medium">PIC: Hanip</p>
                         </div>
-                                            <div class="group bg-surface-container-lowest rounded-3xl p-6 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                                    <span class="icon-[mdi--laptop] text-[22px]"></span>
-                                </div>
-                                <span class="text-[10px] font-bold uppercase tracking-wider bg-surface-container-low text-primary px-3 py-1 rounded-full">Divisi Online</span>
+                        <a href="https://wa.me/6285156766412" target="_blank" rel="noopener noreferrer"
+                            class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-container text-white font-bold text-sm px-5 py-3 rounded-full transition-all">
+                            <span class="icon-[mdi--whatsapp] text-[18px]"></span>
+                            0851 5676 6412
+                        </a>
+                    </div>
+                    <div class="group bg-surface-container-lowest rounded-3xl p-6 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                <span class="icon-[mdi--map] text-[22px]"></span>
                             </div>
-                            <div class="flex flex-col gap-0.5">
-                                <h4 class="text-lg font-bold text-deep-navy">Bimbel Online</h4>
-                                <p class="text-sm text-on-surface-variant font-medium">PIC: Fasya</p>
-                            </div>
-                            <a href="https://wa.me/6285810464960" target="_blank" rel="noopener noreferrer"
-                                class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-container text-white font-bold text-sm px-5 py-3 rounded-full transition-all">
-                                <span class="icon-[mdi--whatsapp] text-[18px]"></span>
-                                0858 1046 4960
-                            </a>
+                            <span class="text-[10px] font-bold uppercase tracking-wider bg-surface-container-low text-primary px-3 py-1 rounded-full">Wilayah Jawa Barat</span>
                         </div>
-                                            <div class="group bg-surface-container-lowest rounded-3xl p-6 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                                    <span class="icon-[mdi--school] text-[22px]"></span>
-                                </div>
-                                <span class="text-[10px] font-bold uppercase tracking-wider bg-surface-container-low text-primary px-3 py-1 rounded-full">Divisi Offline</span>
-                            </div>
-                            <div class="flex flex-col gap-0.5">
-                                <h4 class="text-lg font-bold text-deep-navy">Bimbel Offline</h4>
-                                <p class="text-sm text-on-surface-variant font-medium">PIC: Olla</p>
-                            </div>
-                            <a href="https://wa.me/6281286096600" target="_blank" rel="noopener noreferrer"
-                                class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-container text-white font-bold text-sm px-5 py-3 rounded-full transition-all">
-                                <span class="icon-[mdi--whatsapp] text-[18px]"></span>
-                                0812 8609 6600
-                            </a>
+                        <div class="flex flex-col gap-0.5">
+                            <h4 class="text-lg font-bold text-deep-navy">Jawa Barat</h4>
+                            <p class="text-sm text-on-surface-variant font-medium">PIC: Agung</p>
                         </div>
-                                    </div>
+                        <a href="https://wa.me/6281388122695" target="_blank" rel="noopener noreferrer"
+                            class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-container text-white font-bold text-sm px-5 py-3 rounded-full transition-all">
+                            <span class="icon-[mdi--whatsapp] text-[18px]"></span>
+                            0813 8812 2695
+                        </a>
+                    </div>
+                    <div class="group bg-surface-container-lowest rounded-3xl p-6 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                <span class="icon-[mdi--account-star] text-[22px]"></span>
+                            </div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider bg-surface-container-low text-primary px-3 py-1 rounded-full">Privat 1-on-1</span>
+                        </div>
+                        <div class="flex flex-col gap-0.5">
+                            <h4 class="text-lg font-bold text-deep-navy">Divisi Privat</h4>
+                            <p class="text-sm text-on-surface-variant font-medium">PIC: Seno</p>
+                        </div>
+                        <a href="https://wa.me/628170100788" target="_blank" rel="noopener noreferrer"
+                            class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-container text-white font-bold text-sm px-5 py-3 rounded-full transition-all">
+                            <span class="icon-[mdi--whatsapp] text-[18px]"></span>
+                            0817 0100 788
+                        </a>
+                    </div>
+                    <div class="group bg-surface-container-lowest rounded-3xl p-6 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                <span class="icon-[mdi--laptop] text-[22px]"></span>
+                            </div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider bg-surface-container-low text-primary px-3 py-1 rounded-full">Divisi Online</span>
+                        </div>
+                        <div class="flex flex-col gap-0.5">
+                            <h4 class="text-lg font-bold text-deep-navy">Bimbel Online</h4>
+                            <p class="text-sm text-on-surface-variant font-medium">PIC: Fasya</p>
+                        </div>
+                        <a href="https://wa.me/6285810464960" target="_blank" rel="noopener noreferrer"
+                            class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-container text-white font-bold text-sm px-5 py-3 rounded-full transition-all">
+                            <span class="icon-[mdi--whatsapp] text-[18px]"></span>
+                            0858 1046 4960
+                        </a>
+                    </div>
+                    <div class="group bg-surface-container-lowest rounded-3xl p-6 border border-surface-container hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col gap-4">
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                <span class="icon-[mdi--school] text-[22px]"></span>
+                            </div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider bg-surface-container-low text-primary px-3 py-1 rounded-full">Divisi Offline</span>
+                        </div>
+                        <div class="flex flex-col gap-0.5">
+                            <h4 class="text-lg font-bold text-deep-navy">Bimbel Offline</h4>
+                            <p class="text-sm text-on-surface-variant font-medium">PIC: Olla</p>
+                        </div>
+                        <a href="https://wa.me/6281286096600" target="_blank" rel="noopener noreferrer"
+                            class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-container text-white font-bold text-sm px-5 py-3 rounded-full transition-all">
+                            <span class="icon-[mdi--whatsapp] text-[18px]"></span>
+                            0812 8609 6600
+                        </a>
+                    </div>
+                </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-surface-container-lowest rounded-3xl p-6 border border-surface-container flex items-start gap-4 hover:border-primary/30 transition-all">
                         <span class="icon-[mdi--map-marker] text-primary text-[28px] mt-1"></span>
                         <div class="flex flex-col gap-1">
                             <h4 class="font-bold text-deep-navy">Kantor Pusat</h4>
-                            <p class="text-sm text-on-surface-variant leading-relaxed">Jl. Pahlawan nomor 26, Bekasi Timur</p>
+                            <p class="text-sm text-on-surface-variant leading-relaxed">Jl. Pahlawan nomor 26, Duren Jaya, Bekasi Timur</p>
                         </div>
                     </div>
                     <div class="bg-surface-container-lowest rounded-3xl p-6 border border-surface-container flex items-start gap-4 hover:border-primary/30 transition-all">
@@ -952,7 +1242,7 @@
                     <div class="bg-surface-container-lowest rounded-3xl p-6 border border-surface-container flex items-start gap-4 hover:border-primary/30 transition-all">
                         <span class="icon-[mdi--instagram] text-primary text-[28px] mt-1"></span>
                         <div class="flex flex-col gap-1">
-                            <h4 class="font-bold text-deep-navy">Instagram</h4>
+                            <h4 class="font-bold text-deep-navy">Instagram Resmi</h4>
                             <a href="https://instagram.com/nextlevelstudyindonesia" target="_blank" rel="noopener noreferrer" class="text-sm text-on-surface-variant hover:text-primary hover:underline">@nextlevelstudyindonesia</a>
                         </div>
                     </div>
@@ -960,46 +1250,46 @@
             </div>
         </section>
 
-        <!-- ===== 8. KEPATUHAN & SIPLah ===== -->
+        <!-- ===== 10. KEPATUHAN & SIPLah ===== -->
         <section class="py-16 md:py-20 px-4 md:px-8 bg-white">
-            <div class="container-max bg-gradient-to-br from-surface-container-low to-surface-container-lowest rounded-3xl border border-primary/10 p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 md:gap-12">
-                <div class="w-56 md:w-64 shrink-0">
-                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsIIjZGjj68OuxIawBFfJdtzdmxf7vcd6DEWWxXOuANidaixpnoHpyY2VEJJ8yAFZD3ygAqdu0lRNBErQ0kIQBHlpXX70afGTHL3bac6QO5B_NbM7oDolzlr2LSRgp5TeBCqpQwEzuKaeSpqcUY8ugUUBRzO2lKrJ8lsKG_pAUtfdvSZmaFZmGGzhVGGTBssE9wA6iOFE1NAnYh0kNeSFuUgfXxl9W0LFaYVTtybB2wpbfqluwx7c5" alt="Logo SIPLah Kemendikbudristek" class="w-full h-auto object-contain" loading="lazy" />
+            <div class="container-max bg-gradient-to-br from-surface-container-low to-surface-container-lowest rounded-3xl border border-primary/10 p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 md:gap-12 shadow-sm">
+                <div class="w-48 sm:w-60 shrink-0 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-center">
+                    <img src="/images/mitra/siplah.jpg" alt="Logo SIPLah Kemendikbudristek" class="w-full h-auto max-h-24 object-contain" loading="lazy" />
                 </div>
                 <div class="flex flex-col gap-3 text-center md:text-left">
-                    <div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1.5 rounded-full w-max mx-auto md:mx-0 border border-emerald-100">
-                        <span class="icon-[mdi--file-check] text-[16px]"></span>
-                        Kepatuhan &amp; Legalitas
+                    <div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 text-xs font-bold px-3.5 py-1.5 rounded-full w-max mx-auto md:mx-0 border border-emerald-100">
+                        <span class="icon-[mdi--shield-check] text-[16px]"></span>
+                        Kepatuhan &amp; Legalitas Pengadaan
                     </div>
                     <h2 class="text-[24px] md:text-[32px] font-bold leading-tight tracking-tight text-deep-navy">
                         Terintegrasi Resmi dengan SIPLah Kemendikbudristek
                     </h2>
                     <p class="text-sm md:text-base text-on-surface-variant leading-relaxed max-w-2xl">
-                        Kami mendukung kemudahan pengadaan sarana pendidikan melalui sistem SIPLah (Sistem Informasi Pengadaan di Sekolah) yang aman dan transparan sesuai regulasi Kemendikbudristek.
+                        Kami mendukung kemudahan pengadaan sarana pelatihan, bimbingan olimpiade, dan modul pendidikan melalui sistem SIPLah (Sistem Informasi Pengadaan di Sekolah) yang aman, transparan, dan sesuai regulasi Kemendikbudristek.
                     </p>
                 </div>
             </div>
         </section>
 
-        <!-- ===== 9. FINAL CTA & SHARE ===== -->
-        <section class="py-20 md:py-28 px-4 md:px-8 bg-[linear-gradient(120deg,#006493_0%,#0e9bdf_100%)]">
+        <!-- ===== 11. FINAL CTA & SHARE ===== -->
+        <section class="py-20 md:py-28 px-4 md:px-8 bg-[linear-gradient(120deg,#004B70_0%,#0E9BDF_100%)]">
             <div class="container-max flex flex-col items-center text-center gap-8 relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-72 h-72 bg-white rounded-full opacity-10 blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
                 <div class="absolute bottom-0 left-0 w-72 h-72 bg-surface-container-low rounded-full opacity-10 blur-3xl translate-y-1/2 -translate-x-1/3 pointer-events-none"></div>
                 <div class="flex flex-col gap-4 z-10 max-w-2xl">
-                    <h2 class="text-[28px] md:text-[44px] font-bold text-white leading-tight">Mulai Perjalanan "Era Baru Pendidikan" Anda</h2>
+                    <h2 class="text-[28px] md:text-[44px] font-bold text-white leading-tight">Mulai Perjalanan "Era Baru Pendidikan" Bersama NLS</h2>
                     <p class="text-base md:text-lg text-white/85 leading-relaxed">
-                        Konsultasikan kebutuhan belajar atau pendaftaran program dengan tim kami sekarang.
+                        Konsultasikan kebutuhan belajar, pembinaan olimpiade sains sekolah, atau pendaftaran bimbel sekarang bersama tim profesional kami.
                     </p>
                 </div>
                 <div class="flex flex-col sm:flex-row gap-4 z-10">
                     <a href="https://wa.me/6285163070002" target="_blank" rel="noopener noreferrer"
-                        class="bg-white text-primary font-bold text-sm h-[54px] px-9 rounded-full hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
+                        class="bg-white text-primary font-bold text-sm h-[54px] px-9 rounded-full hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center gap-2">
                         <span class="icon-[mdi--whatsapp] text-[20px]"></span>
                         Daftar / Konsultasi Sekarang
                     </a>
                     <button type="button" onclick="nlsSharePage()"
-                        class="border-2 border-white/60 text-white font-bold text-sm h-[54px] px-9 rounded-full hover:bg-white/10 transition-all flex items-center justify-center gap-2">
+                        class="border-2 border-white/60 text-white font-bold text-sm h-[54px] px-9 rounded-full hover:bg-white/10 transition-all flex items-center justify-center gap-2 cursor-pointer">
                         <span class="icon-[mdi--share-variant] text-[20px]"></span>
                         Bagikan Halaman Ini
                     </button>
