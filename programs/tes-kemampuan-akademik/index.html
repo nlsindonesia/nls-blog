@@ -86,6 +86,13 @@
                            @click="activeDesktopMenu = null">
                             <p class="font-bold text-on-background">Bimbel SNBT</p>
                             <p class="text-xs text-on-surface-variant">Bimbingan Seleksi Nasional Berbasis Tes.</p>
+                        </a>
+                        <a href="https://wa.me/6285163070002?text=Halo%20Next%20Level%20Study,%20saya%20tertarik%20dengan%20program%20Bimbel%20Offline%20Nexgen%20Academy"
+                           target="_blank"
+                           class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
+                           @click="activeDesktopMenu = null">
+                            <p class="font-bold text-on-background">Nexgen Academy</p>
+                            <p class="text-xs text-on-surface-variant">Bimbel offline produk Next Level Study Indonesia.</p>
                         </a>
                     </div>
                 </div>
@@ -205,7 +212,10 @@
                     <a href="https://tka.next-level-study.com/" @click="isMobileMenuOpen = false"
                        class="text-on-surface-variant font-medium py-1 text-sm">Bimbel TKA</a>
                     <a href="https://snbt.next-level-study.com/" @click="isMobileMenuOpen = false"
-                       class="text-on-surface-variant font-medium py-1 text-sm">Bimbel SNBT</a>
+                       class="text-on-surface-variant font-medium py-1 text-sm">Bimbel SNBT</a>
+                        <a href="https://wa.me/6285163070002?text=Halo%20Next%20Level%20Study,%20saya%20tertarik%20dengan%20program%20Bimbel%20Offline%20Nexgen%20Academy"
+                           target="_blank" @click="isMobileMenuOpen = false"
+                           class="text-on-surface-variant font-medium py-1 text-sm">Nexgen Academy (Bimbel Offline)</a>
                 </div>
             </div>
             <div x-data="{ tryoutOpen: false }">
