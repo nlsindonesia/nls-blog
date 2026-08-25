@@ -341,7 +341,71 @@ html.dark [x-show="isMobileMenuOpen"] .border-gray-100 {
 }
 
 /* ==========================================================================
-   6. BORDERS & DIVIDERS
+   6. FOOTER IN DARK MODE (COMPLETELY CLEAN & CRISP)
+   ========================================================================== */
+
+html.dark footer,
+html.dark footer.bg-\[\#D8E6FF\],
+html.dark footer#kontak,
+html.dark .bg-\[\#D8E6FF\] {
+    background-color: #070e1f !important;
+    background-image: none !important;
+    border-top: 1px solid #1e293b !important;
+    color: #cbd5e1 !important;
+}
+
+html.dark footer h2,
+html.dark footer h3,
+html.dark footer .text-\[\#0B5A8A\] {
+    color: #38bdf8 !important;
+}
+
+html.dark footer p,
+html.dark footer span,
+html.dark footer li,
+html.dark footer div {
+    color: #cbd5e1 !important;
+}
+
+html.dark footer a {
+    color: #cbd5e1 !important;
+    transition: color 0.15s ease;
+}
+
+html.dark footer a:hover {
+    color: #38bdf8 !important;
+}
+
+html.dark footer .icon-\[mdi--map-marker\],
+html.dark footer .icon-\[mdi--phone\],
+html.dark footer .icon-\[mdi--email\],
+html.dark footer .icon-\[mdi--camera\] {
+    color: #38bdf8 !important;
+}
+
+html.dark footer button.bg-\[\#0B5A8A\],
+html.dark footer a.bg-\[\#0B5A8A\] {
+    background-color: #0284c7 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3) !important;
+}
+
+html.dark footer button.bg-\[\#0B5A8A\]:hover,
+html.dark footer a.bg-\[\#0B5A8A\]:hover {
+    background-color: #0369a1 !important;
+}
+
+html.dark footer .border-\[\#B9D5FA\] {
+    border-color: #1e293b !important;
+}
+
+html.dark footer .text-slate-600,
+html.dark footer .text-slate-700 {
+    color: #94a3b8 !important;
+}
+
+/* ==========================================================================
+   7. BORDERS & DIVIDERS
    ========================================================================== */
 
 html.dark .border-outline-variant,
@@ -357,7 +421,7 @@ html.dark .border-y {
 }
 
 /* ==========================================================================
-   7. PARTNER LOGOS (ENSURE 100% VISIBILITY)
+   8. PARTNER LOGOS (ENSURE 100% VISIBILITY)
    ========================================================================== */
 
 html.dark .group:has(img[src*="/images/mitra/"]),
@@ -374,7 +438,7 @@ html.dark .group:has(img[src*="/images/mitra/"]) span {
 }
 
 /* ==========================================================================
-   8. ACCORDIONS, FAQS & FORMS
+   9. ACCORDIONS, FAQS & FORMS
    ========================================================================== */
 
 html.dark details,
@@ -399,7 +463,7 @@ html.dark textarea::placeholder {
 }
 
 /* ==========================================================================
-   9. THEME TOGGLE BUTTON
+   10. THEME TOGGLE BUTTON
    ========================================================================== */
 
 .theme-toggle-btn {
