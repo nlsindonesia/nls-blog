@@ -1,0 +1,130 @@
+/* Global Dark / Light Theme Styling */
+:root {
+    --theme-transition: background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease, box-shadow 0.25s ease;
+}
+
+body {
+    transition: var(--theme-transition);
+}
+
+/* Dark Theme Overrides */
+html.dark {
+    color-scheme: dark;
+}
+
+html.dark body {
+    background-color: #0b132b !important;
+    color: #e2e8f0 !important;
+}
+
+/* Navbars & Headers */
+html.dark nav,
+html.dark header {
+    background-color: rgba(11, 19, 43, 0.96) !important;
+    border-color: rgba(51, 65, 85, 0.8) !important;
+}
+
+/* Dropdown Menus */
+html.dark .absolute.bg-white,
+html.dark [x-show="activeDesktopMenu"],
+html.dark [x-show="isMobileMenuOpen"] {
+    background-color: #131d38 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Cards & Surfaces */
+html.dark .bg-white {
+    background-color: #131d38 !important;
+    border-color: #1e293b !important;
+}
+
+html.dark .bg-surface,
+html.dark .bg-surface-bright,
+html.dark .bg-surface-container-lowest,
+html.dark .bg-surface-container-low,
+html.dark .bg-slate-50,
+html.dark .bg-emerald-50\/60,
+html.dark .bg-blue-50\/50,
+html.dark .bg-blue-50\/60,
+html.dark .bg-amber-50\/60,
+html.dark .bg-emerald-50\/70,
+html.dark .bg-blue-50\/70,
+html.dark .bg-amber-50\/70,
+html.dark .bg-rose-50\/70 {
+    background-color: #0f182e !important;
+    border-color: #334155 !important;
+}
+
+/* Text Colors */
+html.dark .text-deep-navy,
+html.dark .text-\[\#0A2540\],
+html.dark .text-slate-900,
+html.dark .text-slate-800,
+html.dark .text-on-surface,
+html.dark .text-on-background,
+html.dark .font-headline-lg,
+html.dark .font-headline-md,
+html.dark h1, html.dark h2, html.dark h3, html.dark h4, html.dark h5 {
+    color: #f8fafc !important;
+}
+
+html.dark .text-slate-700,
+html.dark .text-slate-600,
+html.dark .text-on-surface-variant {
+    color: #cbd5e1 !important;
+}
+
+html.dark .text-slate-500,
+html.dark .text-slate-400 {
+    color: #94a3b8 !important;
+}
+
+/* Borders */
+html.dark .border-gray-100,
+html.dark .border-slate-100,
+html.dark .border-slate-200,
+html.dark .border-slate-200\/80,
+html.dark .border-slate-200\/60,
+html.dark .border-slate-200\/70,
+html.dark .border-outline-variant,
+html.dark .border-surface-container {
+    border-color: rgba(51, 65, 85, 0.7) !important;
+}
+
+/* Toggle Button Styling */
+.theme-toggle-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    border: 1.5px solid #e2e8f0;
+    background: #ffffff;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.theme-toggle-btn:hover {
+    border-color: #006493;
+    color: #006493;
+    transform: scale(1.05);
+    background: #f8fafc;
+}
+
+html.dark .theme-toggle-btn {
+    border-color: #334155;
+    background: #1e293b;
+    color: #f59e0b;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+html.dark .theme-toggle-btn:hover {
+    border-color: #f59e0b;
+    color: #fbbf24;
+    background: #273549;
+}

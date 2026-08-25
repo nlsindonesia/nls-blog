@@ -162,6 +162,8 @@
     <script type="module" src="/build/assets/app-Bzd4avQC.js" data-navigate-track="reload"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="/theme.css" />
+    <script src="/theme.js"></script>
 </head>
 <body class="min-h-screen bg-surface font-sans selection:bg-primary-fixed selection:text-on-primary-fixed overflow-x-hidden flex flex-col text-on-surface">
 
@@ -336,7 +338,11 @@
             </div>
         </div>
 
-        <div class="hidden lg:flex items-center gap-4">
+                <div class="hidden lg:flex items-center gap-3">
+            <button type="button" class="theme-toggle-btn w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all" aria-label="Ubah Tema Gelap/Terang" title="Ubah Tema Gelap/Terang">
+                <svg class="theme-toggle-dark-icon w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                <svg class="theme-toggle-light-icon w-5 h-5 hidden text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            </button>
             <a href="/admin/login" class="text-primary text-sm font-bold px-4 py-2 rounded-lg hover:bg-primary/5 transition-all">
                 Masuk
             </a>
@@ -345,7 +351,11 @@
             </a>
         </div>
 
-        <div class="flex items-center lg:hidden">
+                <div class="flex items-center gap-2 lg:hidden">
+            <button type="button" class="theme-toggle-btn w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-all" aria-label="Ubah Tema Gelap/Terang" title="Ubah Tema Gelap/Terang">
+                <svg class="theme-toggle-dark-icon w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                <svg class="theme-toggle-light-icon w-4 h-4 hidden text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            </button>
             <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="p-2 text-on-surface-variant hover:text-primary focus:outline-none cursor-pointer" aria-label="Toggle menu">
                 <svg x-show="!isMobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 <svg x-show="isMobileMenuOpen" x-cloak class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
