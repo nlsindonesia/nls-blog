@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NEXT LEVEL STUDY - COMPREHENSIVE DARK & LIGHT THEME ENGINE
+   NEXT LEVEL STUDY - COMPLETE ULTRA-HIGH CONTRAST DARK THEME ENGINE
    ========================================================================== */
 
 :root {
@@ -11,69 +11,103 @@ body {
 }
 
 /* ==========================================================================
-   DARK MODE SYSTEM-WIDE STYLING
+   DARK THEME BASE & DOCUMENT
    ========================================================================== */
 
 html.dark {
     color-scheme: dark;
 }
 
-/* Core Document Background & Text */
 html.dark body {
     background-color: #0b132b !important;
     color: #e2e8f0 !important;
 }
 
-html.dark main,
-html.dark section {
-    transition: var(--theme-transition);
+html.dark main {
+    background-color: #0b132b !important;
 }
 
-/* --------------------------------------------------------------------------
-   1. Navbars, Headers, Mobile Drawer & Dropdowns
-   -------------------------------------------------------------------------- */
-html.dark nav,
-html.dark header,
-html.dark .fixed.top-0,
-html.dark .sticky.top-0 {
-    background-color: rgba(11, 19, 43, 0.96) !important;
-    border-color: rgba(51, 65, 85, 0.8) !important;
-}
+/* ==========================================================================
+   1. SECTIONS & BACKGROUND CONTAINERS
+   ========================================================================== */
 
-/* Mega-Menu Dropdowns Desktop */
-html.dark .absolute.bg-white,
-html.dark [x-show="activeDesktopMenu"] {
-    background-color: #131d38 !important;
-    border-color: #334155 !important;
-    box-shadow: 0 20px 30px -5px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
-}
-
-/* Dropdown Menu Item Hover */
-html.dark [x-show="activeDesktopMenu"] a:hover {
-    background-color: rgba(30, 41, 59, 0.8) !important;
-}
-
-/* Mobile Menu Drawer */
-html.dark [x-show="isMobileMenuOpen"] {
-    background-color: #0d162f !important;
-    border-color: #334155 !important;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8) !important;
-}
-
-html.dark [x-show="isMobileMenuOpen"] .border-b,
-html.dark [x-show="isMobileMenuOpen"] .border-gray-100 {
+html.dark section,
+html.dark .bg-surface,
+html.dark .bg-surface-bright,
+html.dark .bg-surface-container-lowest,
+html.dark .bg-surface-container-low,
+html.dark .bg-surface-container,
+html.dark .bg-surface-container-high,
+html.dark .bg-surface-container-highest,
+html.dark .bg-slate-50,
+html.dark .bg-slate-100,
+html.dark .bg-gray-50,
+html.dark .bg-gray-100,
+html.dark section[class*="bg-[linear-gradient"],
+html.dark section[class*="bg-gradient-to"],
+html.dark div[class*="bg-gradient-to-b from-[#F0F7FF]"],
+html.dark div[class*="bg-gradient-to-b from-surface"] {
+    background-color: #0b132b !important;
+    background-image: none !important;
     border-color: #1e293b !important;
 }
 
-/* --------------------------------------------------------------------------
-   2. Typography & Headings (High-Contrast & Vibrant)
-   -------------------------------------------------------------------------- */
+/* Alternating Section Background for depth */
+html.dark section:nth-of-type(even),
+html.dark #bimbel,
+html.dark #testimoni,
+html.dark #keunggulan,
+html.dark #faq {
+    background-color: #0f182e !important;
+}
+
+/* ==========================================================================
+   2. CARDS & ELEVATED SURFACES (CRITICAL FIX FOR INVISIBLE TEXT)
+   ========================================================================== */
+
+/* Every card and content wrapper turns dark with subtle border */
+html.dark .tonal-card,
+html.dark .elevated-card,
+html.dark .card,
+html.dark .bg-white:not(.partner-logo-card):not(.keep-white),
+html.dark .shadow-sm.bg-white,
+html.dark .shadow-md.bg-white,
+html.dark .shadow-lg.bg-white,
+html.dark .rounded-2xl.border,
+html.dark .rounded-xl.border,
+html.dark .rounded-3xl.border,
+html.dark [class*="p-6 rounded"],
+html.dark [class*="p-8 rounded"],
+html.dark .bg-emerald-50\/60,
+html.dark .bg-blue-50\/50,
+html.dark .bg-blue-50\/60,
+html.dark .bg-amber-50\/60 {
+    background-color: #131d38 !important;
+    border-color: #2a3a5a !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Card hover effect */
+html.dark .tonal-card:hover,
+html.dark .elevated-card:hover,
+html.dark .bg-white:hover {
+    border-color: #0284c7 !important;
+    box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* ==========================================================================
+   3. TYPOGRAPHY & TEXT (CRISP, SHARP & HIGH CONTRAST)
+   ========================================================================== */
+
+/* All Headings & Primary Titles -> Crisp Pure White */
 html.dark h1,
 html.dark h2,
 html.dark h3,
 html.dark h4,
 html.dark h5,
 html.dark h6,
+html.dark .text-on-background,
+html.dark .text-on-surface,
 html.dark .text-deep-navy,
 html.dark .text-\[\#0A2540\],
 html.dark .text-\[\#06152B\],
@@ -81,22 +115,32 @@ html.dark .text-slate-900,
 html.dark .text-slate-800,
 html.dark .text-gray-900,
 html.dark .text-gray-800,
-html.dark .text-on-surface,
-html.dark .text-on-background,
 html.dark .font-headline-lg,
 html.dark .font-headline-md,
-html.dark .font-headline-sm {
+html.dark .font-headline-sm,
+html.dark .text-display-sm,
+html.dark .text-display-md,
+html.dark .text-body-lg.font-bold,
+html.dark .text-body-md.font-bold {
     color: #ffffff !important;
 }
 
+/* Subheadings & Body Text -> Slate 200/300 */
+html.dark p,
+html.dark li,
+html.dark span:not([class*="bg-"]):not([class*="text-amber"]):not([class*="text-emerald"]):not([class*="text-rose"]):not([class*="text-primary"]):not([class*="text-success"]),
+html.dark .text-on-surface-variant,
 html.dark .text-slate-700,
 html.dark .text-slate-600,
 html.dark .text-gray-700,
 html.dark .text-gray-600,
-html.dark .text-on-surface-variant {
+html.dark .text-body-lg,
+html.dark .text-body-md,
+html.dark .text-body-sm {
     color: #cbd5e1 !important;
 }
 
+/* Muted / Secondary Details */
 html.dark .text-slate-500,
 html.dark .text-slate-400,
 html.dark .text-gray-500,
@@ -105,46 +149,114 @@ html.dark .text-muted-foreground {
     color: #94a3b8 !important;
 }
 
-/* Text Primary & Gradient Text Enhancement in Dark Mode */
+/* Primary Cyan & Blue Accents */
 html.dark .text-primary {
     color: #38bdf8 !important;
 }
 
-/* --------------------------------------------------------------------------
-   3. Cards, Containers, Sections & Surfaces
-   -------------------------------------------------------------------------- */
-html.dark .bg-white:not(.keep-light):not(.partner-badge) {
-    background-color: #131d38 !important;
-    border-color: #273549 !important;
+html.dark a.text-primary:hover {
+    color: #7dd3fc !important;
 }
 
-html.dark .bg-surface,
-html.dark .bg-surface-bright,
-html.dark .bg-surface-container-lowest,
-html.dark .bg-surface-container-low,
-html.dark .bg-slate-50,
-html.dark .bg-gray-50,
-html.dark .bg-gray-100 {
-    background-color: #0f182e !important;
+/* Success Checkmarks & Status */
+html.dark .text-success-teal,
+html.dark .icon-\[mdi--check-circle\],
+html.dark .icon-\[mdi--check\] {
+    color: #10b981 !important;
+}
+
+/* ==========================================================================
+   4. NAVIGATION & DROPDOWNS
+   ========================================================================== */
+
+html.dark nav,
+html.dark header,
+html.dark .fixed.top-0,
+html.dark .sticky.top-0 {
+    background-color: rgba(11, 19, 43, 0.96) !important;
+    border-color: rgba(51, 65, 85, 0.8) !important;
+}
+
+/* Desktop Dropdown Mega-Menu */
+html.dark .absolute.bg-white,
+html.dark [x-show="activeDesktopMenu"] {
+    background-color: #131d38 !important;
+    border-color: #334155 !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8) !important;
+}
+
+html.dark [x-show="activeDesktopMenu"] a:hover {
+    background-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+/* Mobile Drawer */
+html.dark [x-show="isMobileMenuOpen"] {
+    background-color: #0d162f !important;
     border-color: #334155 !important;
 }
 
-/* Sections with Custom Light Gradients */
-html.dark section[class*="bg-[linear-gradient"],
-html.dark section[class*="bg-gradient-to"],
-html.dark div[class*="bg-gradient-to-b from-[#F0F7FF]"],
-html.dark .bg-emerald-50\/60,
-html.dark .bg-blue-50\/50,
-html.dark .bg-blue-50\/60,
-html.dark .bg-amber-50\/60 {
-    background: #0f182e !important;
+html.dark [x-show="isMobileMenuOpen"] .border-b,
+html.dark [x-show="isMobileMenuOpen"] .border-gray-100 {
     border-color: #1e293b !important;
 }
 
-/* --------------------------------------------------------------------------
-   4. Partner School Logos (Preserve 100% Crisp Visibility)
-   -------------------------------------------------------------------------- */
-/* Ensure school partner logos & dark emblem graphics are crystal clear */
+/* ==========================================================================
+   5. PILLS, CATEGORY BADGES & TAGS
+   ========================================================================== */
+
+/* Category OSN Pill */
+html.dark span.bg-primary,
+html.dark .text-on-primary.bg-primary {
+    background-color: #0284c7 !important;
+    color: #ffffff !important;
+}
+
+/* Category SNBT Pill */
+html.dark span.bg-secondary-container,
+html.dark .text-on-secondary-container.bg-secondary-container {
+    background-color: #ea580c !important;
+    color: #ffffff !important;
+}
+
+/* Category TKA Pill */
+html.dark span.bg-tertiary-container,
+html.dark .text-on-tertiary-container.bg-tertiary-container {
+    background-color: #0d9488 !important;
+    color: #ffffff !important;
+}
+
+/* Live Badge / Community Icon Box */
+html.dark .bg-primary-container {
+    background-color: #1e293b !important;
+    border: 1px solid #334155 !important;
+    color: #38bdf8 !important;
+}
+
+html.dark .text-on-primary-container {
+    color: #38bdf8 !important;
+}
+
+/* ==========================================================================
+   6. BORDERS & DIVIDERS
+   ========================================================================== */
+
+html.dark .border-outline-variant,
+html.dark .border-gray-100,
+html.dark .border-slate-100,
+html.dark .border-slate-200,
+html.dark .border-slate-200\/80,
+html.dark .border-slate-200\/70,
+html.dark .border-slate-200\/60,
+html.dark .border-surface-container,
+html.dark .border-y {
+    border-color: rgba(51, 65, 85, 0.7) !important;
+}
+
+/* ==========================================================================
+   7. PARTNER LOGOS (ENSURE 100% VISIBILITY)
+   ========================================================================== */
+
+/* Keep school partner cards crisp on white backdrop */
 html.dark .group:has(img[src*="/images/mitra/"]),
 html.dark div:has(> img[src*="/images/mitra/"]),
 html.dark [class*="grid"]:has(img[src*="/images/mitra/"]) > div {
@@ -158,88 +270,10 @@ html.dark .group:has(img[src*="/images/mitra/"]) span {
     color: #0f172a !important;
 }
 
-/* --------------------------------------------------------------------------
-   5. Interactive Pills, Badges & Highlights
-   -------------------------------------------------------------------------- */
-html.dark .bg-emerald-50,
-html.dark .bg-emerald-50\/70,
-html.dark .bg-emerald-100 {
-    background-color: rgba(6, 78, 59, 0.4) !important;
-    border-color: rgba(5, 150, 105, 0.6) !important;
-    color: #6ee7b7 !important;
-}
-html.dark .text-emerald-800,
-html.dark .text-emerald-900,
-html.dark .text-emerald-700 {
-    color: #6ee7b7 !important;
-}
+/* ==========================================================================
+   8. ACCORDIONS, FAQS & FORMS
+   ========================================================================== */
 
-html.dark .bg-rose-50,
-html.dark .bg-rose-50\/70,
-html.dark .bg-rose-100 {
-    background-color: rgba(136, 19, 55, 0.4) !important;
-    border-color: rgba(225, 29, 72, 0.6) !important;
-    color: #fda4af !important;
-}
-html.dark .text-rose-700,
-html.dark .text-rose-800,
-html.dark .text-rose-900 {
-    color: #fda4af !important;
-}
-
-html.dark .bg-blue-50,
-html.dark .bg-blue-50\/70,
-html.dark .bg-blue-100,
-html.dark .bg-sky-50 {
-    background-color: rgba(30, 58, 138, 0.4) !important;
-    border-color: rgba(37, 99, 235, 0.6) !important;
-    color: #93c5fd !important;
-}
-html.dark .text-blue-800,
-html.dark .text-blue-900,
-html.dark .text-sky-800 {
-    color: #93c5fd !important;
-}
-
-html.dark .bg-amber-50,
-html.dark .bg-amber-50\/70,
-html.dark .bg-amber-100,
-html.dark .bg-yellow-50 {
-    background-color: rgba(120, 53, 15, 0.4) !important;
-    border-color: rgba(217, 119, 6, 0.6) !important;
-    color: #fde047 !important;
-}
-html.dark .text-amber-800,
-html.dark .text-amber-900 {
-    color: #fde047 !important;
-}
-
-html.dark .bg-purple-50,
-html.dark .bg-purple-50\/70,
-html.dark .bg-purple-100 {
-    background-color: rgba(88, 28, 135, 0.4) !important;
-    border-color: rgba(147, 51, 234, 0.6) !important;
-    color: #d8b4fe !important;
-}
-
-/* --------------------------------------------------------------------------
-   6. Borders & Dividers
-   -------------------------------------------------------------------------- */
-html.dark .border-gray-100,
-html.dark .border-slate-100,
-html.dark .border-slate-200,
-html.dark .border-slate-200\/80,
-html.dark .border-slate-200\/70,
-html.dark .border-slate-200\/60,
-html.dark .border-outline-variant,
-html.dark .border-surface-container,
-html.dark .border-y {
-    border-color: rgba(51, 65, 85, 0.7) !important;
-}
-
-/* --------------------------------------------------------------------------
-   7. Accordions, FAQs & Details
-   -------------------------------------------------------------------------- */
 html.dark details,
 html.dark .faq-card,
 html.dark [x-data*="open"],
@@ -248,9 +282,6 @@ html.dark [x-data*="faq"] {
     border-color: #334155 !important;
 }
 
-/* --------------------------------------------------------------------------
-   8. Form Inputs & Selects
-   -------------------------------------------------------------------------- */
 html.dark input:not([type="submit"]):not([type="button"]),
 html.dark select,
 html.dark textarea {
@@ -264,21 +295,10 @@ html.dark textarea::placeholder {
     color: #94a3b8 !important;
 }
 
-/* --------------------------------------------------------------------------
-   9. Shadows & Elevation
-   -------------------------------------------------------------------------- */
-html.dark .shadow-xs,
-html.dark .shadow-sm,
-html.dark .shadow-md,
-html.dark .shadow-lg,
-html.dark .shadow-xl,
-html.dark .shadow-2xl {
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.6) !important;
-}
+/* ==========================================================================
+   9. THEME TOGGLE BUTTON
+   ========================================================================== */
 
-/* --------------------------------------------------------------------------
-   10. Theme Toggle Button
-   -------------------------------------------------------------------------- */
 .theme-toggle-btn {
     position: relative;
     display: inline-flex;
