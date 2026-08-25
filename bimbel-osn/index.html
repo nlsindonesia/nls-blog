@@ -732,60 +732,129 @@
 </section>
 </main>
 <!-- Footer -->
-<footer class="bg-inverse-surface text-white">
-<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter-desktop py-20 px-margin-mobile md:px-margin-desktop container-max mx-auto w-full">
-<div>
-<div class="text-headline-md font-extrabold text-action-blue mb-6">Next Level Study</div>
-<p class="text-body-md text-white/70 mb-8 max-w-xs">Platform belajar persiapan kompetisi sains dan ujian masuk perguruan tinggi terbaik di Indonesia. Memberdayakan masa depan cerah anak bangsa.</p>
-<div class="flex gap-4">
-<a class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center hover:bg-action-blue transition-all" href="javascript:void(0)"><span class="material-symbols-outlined text-[20px]">share</span></a>
-<a class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center hover:bg-action-blue transition-all" href="javascript:void(0)"><span class="material-symbols-outlined text-[20px]">mail</span></a>
-<a class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center hover:bg-action-blue transition-all" href="javascript:void(0)"><span class="material-symbols-outlined text-[20px]">language</span></a>
-</div>
-</div>
-<div>
-<h4 class="text-label-md font-bold mb-6 uppercase tracking-wider text-action-blue">Program Kami</h4>
-<ul class="space-y-4">
-<li class=""><a class="text-white/70 hover:text-action-blue transition-colors text-body-md" href="/mitra">Mitra sekolah</a></li>
-<li class=""><a class="text-white/70 hover:text-action-blue transition-colors text-body-md" href="/mitra">Mitra Dinas</a></li>
-<li class=""><a class="text-white/70 hover:text-action-blue transition-colors text-body-md" href="/osn">Bimbel</a></li>
-<li class=""><a class="text-white/70 hover:text-action-blue transition-colors text-body-md" href="/privat">Privat</a></li>
-</ul>
-</div>
-<div>
-<h4 class="text-label-md font-bold mb-6 uppercase tracking-wider text-action-blue">Hubungi Kami</h4>
-<ul class="space-y-4">
-<li class="flex gap-3">
-<span class="material-symbols-outlined text-action-blue">location_on</span>
-<span class="text-white/70 text-body-md">Jl. Pahlawan nomor 26, Bekasi Timur</span>
-</li>
-<li class="flex gap-3">
-<span class="material-symbols-outlined text-action-blue">call</span>
-<span class="text-white/70 text-body-md">+62 851 - 630 - 7000 - 2</span>
-</li>
-<li class="flex gap-3">
-<span class="material-symbols-outlined text-action-blue">mail</span>
-<span class="text-white/70 text-body-md">nextlevelstudyindonesia@gmail.com</span>
-</li>
-</ul>
-</div>
-<div>
-<h4 class="text-label-md font-bold mb-6 uppercase tracking-wider text-action-blue">Newsletter</h4>
-<p class="text-body-md text-white/70 mb-6">Dapatkan info beasiswa dan promo bimbingan terbaru.</p>
-<form class="flex flex-col gap-3">
-<input class="bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-action-blue transition-all" placeholder="Email Anda" type="email">
-<button class="bg-action-blue text-white py-3 rounded-lg text-label-md font-bold btn-hover shadow-lg">Berlangganan</button>
-</form>
-</div>
-</div>
-<div class="border-t border-white/10 py-8 px-margin-mobile md:px-margin-desktop container-max mx-auto w-full flex flex-col md:flex-row justify-between items-center gap-4">
-<p class="text-body-sm text-white/50">© 2024 Next Level Study. OSN Specialist Tutoring. All rights reserved.</p>
-<div class="flex gap-8">
-<a class="text-label-sm text-white/50 hover:text-white transition-colors" href="/privacy">Kebijakan Privasi</a>
-<a class="text-label-sm text-white/50 hover:text-white transition-colors" href="/terms">Syarat &amp; Ketentuan</a>
-</div>
-</div>
-</footer>
+<footer id="kontak" class="bg-[#D8E6FF] text-slate-800 scroll-mt-20 w-full">
+    <div class="container-max mx-auto w-full px-4 md:px-6 py-12 md:py-16">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
+            <div class="md:col-span-5 lg:col-span-5">
+                <h2 class="text-2xl md:text-[26px] font-extrabold text-[#0B5A8A] mb-4 tracking-tight">
+                    Next Level Study
+                </h2>
+                <p class="text-sm md:text-[15px] text-slate-700 leading-relaxed mb-6 max-w-md">
+                    Platform belajar persiapan kompetisi sains dan ujian masuk perguruan tinggi terbaik di Indonesia. Memberdayakan masa depan cerah anak bangsa.
+                </p>
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="nlsSharePage()"
+                        class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm"
+                        title="Bagikan">
+                        <span class="icon-[mdi--share-variant] text-[20px]"></span>
+                    </button>
+                    <a href="mailto:nextlevelstudyindonesia@gmail.com"
+                        class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm"
+                        title="Kirim Email">
+                        <span class="icon-[mdi--email] text-[20px]"></span>
+                    </a>
+                    <a href="https://next-level-study.com" target="_blank" rel="noopener noreferrer"
+                        class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm"
+                        title="Website">
+                        <span class="icon-[mdi--web] text-[20px]"></span>
+                    </a>
+                    <a href="/achievements"
+                        class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm"
+                        title="Pengumuman & Event">
+                        <span class="icon-[mdi--bullhorn] text-[20px]"></span>
+                    </a>
+                    <a href="https://wa.me/6285163070002" target="_blank" rel="noopener noreferrer"
+                        class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm"
+                        title="Tanya CS">
+                        <span class="icon-[mdi--chat] text-[20px]"></span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="md:col-span-3 lg:col-span-3">
+                <h3 class="text-base md:text-lg font-bold text-[#0B5A8A] mb-4">
+                    Program Kami
+                </h3>
+                <ul class="space-y-3 text-sm font-medium text-slate-700">
+                    <li>
+                        <a href="/programs" class="hover:text-[#0B5A8A] transition-colors">Mitra sekolah</a>
+                    </li>
+                    <li>
+                        <a href="/programs" class="hover:text-[#0B5A8A] transition-colors">Mitra Dinas</a>
+                    </li>
+                    <li>
+                        <a href="/#bimbel" class="hover:text-[#0B5A8A] transition-colors">Bimbel Online/Offline</a>
+                    </li>
+                    <li>
+                        <a href="/belajar" class="hover:text-[#0B5A8A] transition-colors">Privat Online/Offline</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="md:col-span-4 lg:col-span-4">
+                <h3 class="text-base md:text-lg font-bold text-[#0B5A8A] mb-4">
+                    Hubungi Kami
+                </h3>
+                <div class="space-y-3.5 text-sm text-slate-700">
+                    <div class="flex items-start gap-2.5">
+                        <span class="icon-[mdi--map-marker] text-[#0B5A8A] text-[20px] mt-0.5 shrink-0"></span>
+                        <span>Jl. Pahlawan nomor 26, Bekasi Timur</span>
+                    </div>
+
+                    <div class="flex items-start gap-2.5">
+                        <span class="icon-[mdi--phone] text-[#0B5A8A] text-[20px] mt-0.5 shrink-0"></span>
+                        <div class="space-y-1">
+                            <div>Pusat: <a href="https://wa.me/6285163070002" target="_blank" class="hover:underline font-medium">085163070002 (ADMIN)</a></div>
+                            <div>Jakarta: <a href="https://wa.me/6285156766412" target="_blank" class="hover:underline font-medium">085156766412 (Hanip)</a></div>
+                            <div>Jawa Barat: <a href="https://wa.me/6281388122695" target="_blank" class="hover:underline font-medium">081388122695 (Agung)</a></div>
+                            <div>Privat: <a href="https://wa.me/628170100788" target="_blank" class="hover:underline font-medium">08170100788 (Seno)</a></div>
+                            <div>Bimbel Online: <a href="https://wa.me/6285810464960" target="_blank" class="hover:underline font-medium">085810464960 (Fasya)</a></div>
+                            <div>Bimbel Offline: <a href="https://wa.me/6281286096600" target="_blank" class="hover:underline font-medium">081286096600 (Olla)</a></div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2.5">
+                        <span class="icon-[mdi--email] text-[#0B5A8A] text-[20px] shrink-0"></span>
+                        <a href="mailto:nextlevelstudyindonesia@gmail.com" class="hover:underline">
+                            nextlevelstudyindonesia@gmail.com
+                        </a>
+                    </div>
+
+                    <div class="flex items-center gap-2.5">
+                        <span class="icon-[mdi--camera] text-[#0B5A8A] text-[20px] shrink-0"></span>
+                        <a href="https://instagram.com/nextlevelstudyindonesia" target="_blank" rel="noopener noreferrer" class="hover:underline font-medium">
+                            @nextlevelstudyindonesia
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-[#B9D5FA] my-8"></div>
+
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs md:text-sm text-slate-600 font-medium">
+            <p>&copy; 2026 Next Level Study : Era Baru Pendidikan</p>
+            <div class="flex items-center gap-6">
+                <a href="/privacy" class="hover:text-[#0B5A8A] transition-colors">Kebijakan Privasi</a>
+                <a href="/terms" class="hover:text-[#0B5A8A] transition-colors">Syarat &amp; Ketentuan</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function nlsSharePage() {
+        if (navigator.share) {
+            navigator.share({
+                title: "Next Level Study - Era Baru Pendidikan",
+                url: window.location.href
+            }).catch(() => {});
+        } else {
+            navigator.clipboard.writeText(window.location.href);
+            alert("Tautan berhasil disalin ke clipboard!");
+        }
+    }
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const observerOptions = {
