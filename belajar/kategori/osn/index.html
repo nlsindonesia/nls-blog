@@ -102,11 +102,16 @@
 
             <div class="relative">
                 <button type="button"
-                    class="inline-flex items-center gap-1.5 border-b-2 border-transparent pb-1 transition-colors hover:text-primary cursor-pointer"
-                    :class="activeDesktopMenu === 'tryout' ? 'text-primary font-bold border-primary' : ''"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50/90 hover:bg-blue-100/90 text-[#004B70] border border-blue-200 transition-all shadow-xs cursor-pointer group"
+                    :class="activeDesktopMenu === 'tryout' ? 'ring-2 ring-primary/20 bg-blue-100 font-bold border-primary text-primary' : 'font-semibold'"
                     @click.stop="activeDesktopMenu = activeDesktopMenu === 'tryout' ? null : 'tryout'">
-                    <span>Try Out</span>
-                    <svg class="w-4 h-4 transition-transform duration-200" :class="activeDesktopMenu === 'tryout' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    <span class="flex h-2 w-2 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF8A00] opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-[#FF8A00]"></span>
+                    </span>
+                    <span class="text-sm font-bold text-slate-800 group-hover:text-primary">Try Out</span>
+                    <span class="px-1.5 py-0.5 rounded-md bg-gradient-to-r from-[#FF8A00] to-[#FF6B00] text-white text-[10px] font-extrabold tracking-wide uppercase shadow-xs">CBT</span>
+                    <svg class="w-3.5 h-3.5 text-slate-500 transition-transform duration-200 group-hover:text-primary" :class="activeDesktopMenu === 'tryout' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
 
                 <div x-show="activeDesktopMenu === 'tryout'"
@@ -117,35 +122,47 @@
                     x-transition:leave="transition ease-in duration-100"
                     x-transition:leave-start="opacity-100 translate-y-0"
                     x-transition:leave-end="opacity-0 translate-y-1"
-                    class="absolute left-0 top-full mt-2 w-64 rounded-2xl border border-gray-100 bg-white p-3 shadow-xl z-50">
+                    class="absolute left-0 top-full mt-2 w-72 rounded-2xl border border-gray-100 bg-white p-3 shadow-2xl z-50">
                     <div class="flex flex-col gap-1">
                         <a href="/osn"
                            class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
                            @click="activeDesktopMenu = null">
-                            <p class="font-bold text-on-background">Try Out OSN</p>
+                            <p class="font-bold text-on-background flex items-center justify-between">
+                                <span>Try Out OSN</span>
+                                <span class="text-[10px] font-semibold bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full border border-amber-200">Olimpiade</span>
+                            </p>
                             <p class="text-xs text-on-surface-variant">Simulasi &amp; latihan Olimpiade Sains Nasional.</p>
                         </a>
                         <a href="/tka"
                            class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
                            @click="activeDesktopMenu = null">
-                            <p class="font-bold text-on-background">Try Out TKA</p>
-                            <p class="text-xs text-on-surface-variant">Simulasi Tes Kemampuan Akademik.</p>
+                            <p class="font-bold text-on-background flex items-center justify-between">
+                                <span>Try Out TKA</span>
+                                <span class="text-[10px] font-semibold bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full border border-blue-200">Akademik</span>
+                            </p>
+                            <p class="text-xs text-on-surface-variant">Simulasi Tes Kemampuan Akademik &amp; SNBP.</p>
                         </a>
                         <a href="/snbt"
                            class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
                            @click="activeDesktopMenu = null">
-                            <p class="font-bold text-on-background">Try Out SNBT</p>
-                            <p class="text-xs text-on-surface-variant">Simulasi Seleksi Nasional Berbasis Tes.</p>
+                            <p class="font-bold text-on-background flex items-center justify-between">
+                                <span>Try Out SNBT</span>
+                                <span class="text-[10px] font-semibold bg-green-50 text-green-700 px-2 py-0.5 rounded-full border border-green-200">Sistem IRT</span>
+                            </p>
+                            <p class="text-xs text-on-surface-variant">Simulasi UTBK &amp; Seleksi Nasional PTN.</p>
                         </a>
                         <a href="https://lms.next-level-study.com/"
                            target="_blank"
-                           class="block rounded-xl p-3 transition-colors hover:bg-primary/5 border-t border-gray-100"
+                           class="block rounded-xl p-3 bg-gradient-to-br from-primary/5 to-[#FF8A00]/5 border border-primary/20 hover:border-primary transition-all mt-1"
                            @click="activeDesktopMenu = null">
                             <p class="font-bold text-primary flex items-center justify-between">
-                                <span>Platform CBT Online</span>
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                <span class="flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-[#FF8A00] animate-pulse"></span>
+                                    <span>Platform CBT Online</span>
+                                </span>
+                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                             </p>
-                            <p class="text-xs text-on-surface-variant">Akses ujian dan tryout mandiri di LMS.</p>
+                            <p class="text-xs text-slate-600 mt-0.5">Akses ujian &amp; tryout interaktif di LMS NLS.</p>
                         </a>
                     </div>
                 </div>
@@ -248,23 +265,42 @@
                     <a href="/nexgen" @click="isMobileMenuOpen = false" class="text-on-surface-variant font-medium py-1 text-sm">Nexgen Academy (Bimbel Offline)</a>
                 </div>
             </div>
-            <div x-data="{ tryoutOpen: false }">
+            <div x-data="{ tryoutOpen: false }" class="rounded-xl border border-blue-200/70 bg-blue-50/50 p-2 my-1">
                 <button @click="tryoutOpen = !tryoutOpen"
-                    class="w-full flex justify-between items-center py-1 text-sm font-medium text-on-surface-variant cursor-pointer">
-                    <span>Try Out</span>
-                    <svg class="w-4 h-4 transition-transform duration-200" :class="tryoutOpen ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    class="w-full flex justify-between items-center py-1 px-2 text-sm font-bold text-slate-800 cursor-pointer">
+                    <div class="flex items-center gap-2">
+                        <span class="flex h-2 w-2 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF8A00] opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-[#FF8A00]"></span>
+                        </span>
+                        <span>Try Out</span>
+                        <span class="px-1.5 py-0.5 rounded-md bg-[#FF8A00] text-white text-[10px] font-extrabold uppercase">CBT Online</span>
+                    </div>
+                    <svg class="w-4 h-4 transition-transform duration-200 text-primary" :class="tryoutOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
-                <div x-show="tryoutOpen" x-collapse class="pl-4 flex flex-col gap-1 mt-1">
+                <div x-show="tryoutOpen" x-collapse class="pl-3 pr-1 flex flex-col gap-1.5 mt-2 pt-2 border-t border-blue-100">
                     <a href="/osn" @click="isMobileMenuOpen = false"
-                       class="text-on-surface-variant font-medium py-1 text-sm">Try Out OSN</a>
+                       class="text-on-surface-variant font-medium py-1 text-sm flex justify-between items-center">
+                       <span>Try Out OSN</span>
+                       <span class="text-[10px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">Olimpiade</span>
+                    </a>
                     <a href="/tka" @click="isMobileMenuOpen = false"
-                       class="text-on-surface-variant font-medium py-1 text-sm">Try Out TKA</a>
+                       class="text-on-surface-variant font-medium py-1 text-sm flex justify-between items-center">
+                       <span>Try Out TKA</span>
+                       <span class="text-[10px] text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded">Akademik</span>
+                    </a>
                     <a href="/snbt" @click="isMobileMenuOpen = false"
-                       class="text-on-surface-variant font-medium py-1 text-sm">Try Out SNBT</a>
+                       class="text-on-surface-variant font-medium py-1 text-sm flex justify-between items-center">
+                       <span>Try Out SNBT</span>
+                       <span class="text-[10px] text-green-700 bg-green-50 px-1.5 py-0.5 rounded">Sistem IRT</span>
+                    </a>
                     <a href="https://lms.next-level-study.com/" @click="isMobileMenuOpen = false"
-                       class="text-primary font-bold py-1 text-sm flex items-center justify-between">
-                        <span>Platform CBT Online</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                       class="text-primary font-bold py-1.5 px-2.5 rounded-lg bg-white border border-primary/20 text-sm flex items-center justify-between mt-1">
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-[#FF8A00]"></span>
+                            <span>Platform CBT Online</span>
+                        </span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                     </a>
                 </div>
             </div>
@@ -702,128 +738,128 @@
   </main>
     </div>
 
-    <footer id="kontak" class="bg-[#D8E6FF] text-slate-800 scroll-mt-20 w-full">
-    <div class="container-max mx-auto w-full px-4 md:px-6 py-12 md:py-16">
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
-            <div class="md:col-span-5 lg:col-span-5">
-                <h2 class="text-2xl md:text-[26px] font-extrabold text-[#0B5A8A] mb-4 tracking-tight">
-                    Next Level Study
-                </h2>
-                <p class="text-sm md:text-[15px] text-slate-700 leading-relaxed mb-6 max-w-md">
-                    Platform belajar persiapan kompetisi sains dan ujian masuk perguruan tinggi terbaik di Indonesia. Memberdayakan masa depan cerah anak bangsa.
-                </p>
-                <div class="flex items-center gap-3">
-                    <button type="button" onclick="nlsSharePage()"
-                        class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm"
-                        title="Bagikan">
-                        <span class="icon-[mdi--share-variant] text-[20px]"></span>
-                    </button>
-                    <a href="mailto:nextlevelstudyindonesia@gmail.com"
-                        class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm"
-                        title="Kirim Email">
-                        <span class="icon-[mdi--email] text-[20px]"></span>
-                    </a>
-                    <a href="https://next-level-study.com" target="_blank" rel="noopener noreferrer"
-                        class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm"
-                        title="Website">
-                        <span class="icon-[mdi--web] text-[20px]"></span>
-                    </a>
-                    <a href="/achievements"
-                        class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm"
-                        title="Pengumuman & Event">
-                        <span class="icon-[mdi--bullhorn] text-[20px]"></span>
-                    </a>
-                    <a href="https://wa.me/6285163070002" target="_blank" rel="noopener noreferrer"
-                        class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm"
-                        title="Tanya CS">
-                        <span class="icon-[mdi--chat] text-[20px]"></span>
-                    </a>
-                </div>
-            </div>
-
-            <div class="md:col-span-3 lg:col-span-3">
-                <h3 class="text-base md:text-lg font-bold text-[#0B5A8A] mb-4">
-                    Program Kami
-                </h3>
-                <ul class="space-y-3 text-sm font-medium text-slate-700">
-                    <li>
-                        <a href="/programs" class="hover:text-[#0B5A8A] transition-colors">Mitra sekolah</a>
-                    </li>
-                    <li>
-                        <a href="/programs" class="hover:text-[#0B5A8A] transition-colors">Mitra Dinas</a>
-                    </li>
-                    <li>
-                        <a href="/#bimbel" class="hover:text-[#0B5A8A] transition-colors">Bimbel Online/Offline</a>
-                    </li>
-                    <li>
-                        <a href="/belajar" class="hover:text-[#0B5A8A] transition-colors">Privat Online/Offline</a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="md:col-span-4 lg:col-span-4">
-                <h3 class="text-base md:text-lg font-bold text-[#0B5A8A] mb-4">
-                    Hubungi Kami
-                </h3>
-                <div class="space-y-3.5 text-sm text-slate-700">
-                    <div class="flex items-start gap-2.5">
-                        <span class="icon-[mdi--map-marker] text-[#0B5A8A] text-[20px] mt-0.5 shrink-0"></span>
-                        <span>Jl. Pahlawan nomor 26, Bekasi Timur</span>
-                    </div>
-
-                    <div class="flex items-start gap-2.5">
-                        <span class="icon-[mdi--phone] text-[#0B5A8A] text-[20px] mt-0.5 shrink-0"></span>
-                        <div class="space-y-1">
-                            <div>Pusat: <a href="https://wa.me/6285163070002" target="_blank" class="hover:underline font-medium">085163070002 (ADMIN)</a></div>
-                            <div>Jakarta: <a href="https://wa.me/6285156766412" target="_blank" class="hover:underline font-medium">085156766412 (Hanip)</a></div>
-                            <div>Jawa Barat: <a href="https://wa.me/6281388122695" target="_blank" class="hover:underline font-medium">081388122695 (Agung)</a></div>
-                            <div>Privat: <a href="https://wa.me/628170100788" target="_blank" class="hover:underline font-medium">08170100788 (Seno)</a></div>
-                            <div>Bimbel Online: <a href="https://wa.me/6285810464960" target="_blank" class="hover:underline font-medium">085810464960 (Fasya)</a></div>
-                            <div>Bimbel Offline: <a href="https://wa.me/6281286096600" target="_blank" class="hover:underline font-medium">081286096600 (Olla)</a></div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-2.5">
-                        <span class="icon-[mdi--email] text-[#0B5A8A] text-[20px] shrink-0"></span>
-                        <a href="mailto:nextlevelstudyindonesia@gmail.com" class="hover:underline">
-                            nextlevelstudyindonesia@gmail.com
-                        </a>
-                    </div>
-
-                    <div class="flex items-center gap-2.5">
-                        <span class="icon-[mdi--camera] text-[#0B5A8A] text-[20px] shrink-0"></span>
-                        <a href="https://instagram.com/nextlevelstudyindonesia" target="_blank" rel="noopener noreferrer" class="hover:underline font-medium">
-                            @nextlevelstudyindonesia
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="border-t border-[#B9D5FA] my-8"></div>
-
-        <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs md:text-sm text-slate-600 font-medium">
-            <p>&copy; 2026 Next Level Study : Era Baru Pendidikan</p>
-            <div class="flex items-center gap-6">
-                <a href="/privacy" class="hover:text-[#0B5A8A] transition-colors">Kebijakan Privasi</a>
-                <a href="/terms" class="hover:text-[#0B5A8A] transition-colors">Syarat &amp; Ketentuan</a>
-            </div>
-        </div>
-    </div>
-</footer>
-
-<script>
-    function nlsSharePage() {
-        if (navigator.share) {
-            navigator.share({
-                title: "Next Level Study - Era Baru Pendidikan",
-                url: window.location.href
-            }).catch(() => {});
-        } else {
-            navigator.clipboard.writeText(window.location.href);
-            alert("Tautan berhasil disalin ke clipboard!");
-        }
-    }
+    <footer id="kontak" class="bg-[#D8E6FF] text-slate-800 scroll-mt-20 w-full">
+    <div class="container-max mx-auto w-full px-4 md:px-6 py-12 md:py-16">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
+            <div class="md:col-span-5 lg:col-span-5">
+                <h2 class="text-2xl md:text-[26px] font-extrabold text-[#0B5A8A] mb-4 tracking-tight">
+                    Next Level Study
+                </h2>
+                <p class="text-sm md:text-[15px] text-slate-700 leading-relaxed mb-6 max-w-md">
+                    Platform belajar persiapan kompetisi sains dan ujian masuk perguruan tinggi terbaik di Indonesia. Memberdayakan masa depan cerah anak bangsa.
+                </p>
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="nlsSharePage()"
+                        class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm"
+                        title="Bagikan">
+                        <span class="icon-[mdi--share-variant] text-[20px]"></span>
+                    </button>
+                    <a href="mailto:nextlevelstudyindonesia@gmail.com"
+                        class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm"
+                        title="Kirim Email">
+                        <span class="icon-[mdi--email] text-[20px]"></span>
+                    </a>
+                    <a href="https://next-level-study.com" target="_blank" rel="noopener noreferrer"
+                        class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm"
+                        title="Website">
+                        <span class="icon-[mdi--web] text-[20px]"></span>
+                    </a>
+                    <a href="/achievements"
+                        class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm"
+                        title="Pengumuman & Event">
+                        <span class="icon-[mdi--bullhorn] text-[20px]"></span>
+                    </a>
+                    <a href="https://wa.me/6285163070002" target="_blank" rel="noopener noreferrer"
+                        class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm"
+                        title="Tanya CS">
+                        <span class="icon-[mdi--chat] text-[20px]"></span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="md:col-span-3 lg:col-span-3">
+                <h3 class="text-base md:text-lg font-bold text-[#0B5A8A] mb-4">
+                    Program Kami
+                </h3>
+                <ul class="space-y-3 text-sm font-medium text-slate-700">
+                    <li>
+                        <a href="/programs" class="hover:text-[#0B5A8A] transition-colors">Mitra sekolah</a>
+                    </li>
+                    <li>
+                        <a href="/programs" class="hover:text-[#0B5A8A] transition-colors">Mitra Dinas</a>
+                    </li>
+                    <li>
+                        <a href="/#bimbel" class="hover:text-[#0B5A8A] transition-colors">Bimbel Online/Offline</a>
+                    </li>
+                    <li>
+                        <a href="/belajar" class="hover:text-[#0B5A8A] transition-colors">Privat Online/Offline</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="md:col-span-4 lg:col-span-4">
+                <h3 class="text-base md:text-lg font-bold text-[#0B5A8A] mb-4">
+                    Hubungi Kami
+                </h3>
+                <div class="space-y-3.5 text-sm text-slate-700">
+                    <div class="flex items-start gap-2.5">
+                        <span class="icon-[mdi--map-marker] text-[#0B5A8A] text-[20px] mt-0.5 shrink-0"></span>
+                        <span>Jl. Pahlawan nomor 26, Bekasi Timur</span>
+                    </div>
+
+                    <div class="flex items-start gap-2.5">
+                        <span class="icon-[mdi--phone] text-[#0B5A8A] text-[20px] mt-0.5 shrink-0"></span>
+                        <div class="space-y-1">
+                            <div>Pusat: <a href="https://wa.me/6285163070002" target="_blank" class="hover:underline font-medium">085163070002 (ADMIN)</a></div>
+                            <div>Jakarta: <a href="https://wa.me/6285156766412" target="_blank" class="hover:underline font-medium">085156766412 (Hanip)</a></div>
+                            <div>Jawa Barat: <a href="https://wa.me/6281388122695" target="_blank" class="hover:underline font-medium">081388122695 (Agung)</a></div>
+                            <div>Privat: <a href="https://wa.me/628170100788" target="_blank" class="hover:underline font-medium">08170100788 (Seno)</a></div>
+                            <div>Bimbel Online: <a href="https://wa.me/6285810464960" target="_blank" class="hover:underline font-medium">085810464960 (Fasya)</a></div>
+                            <div>Bimbel Offline: <a href="https://wa.me/6281286096600" target="_blank" class="hover:underline font-medium">081286096600 (Olla)</a></div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2.5">
+                        <span class="icon-[mdi--email] text-[#0B5A8A] text-[20px] shrink-0"></span>
+                        <a href="mailto:nextlevelstudyindonesia@gmail.com" class="hover:underline">
+                            nextlevelstudyindonesia@gmail.com
+                        </a>
+                    </div>
+
+                    <div class="flex items-center gap-2.5">
+                        <span class="icon-[mdi--camera] text-[#0B5A8A] text-[20px] shrink-0"></span>
+                        <a href="https://instagram.com/nextlevelstudyindonesia" target="_blank" rel="noopener noreferrer" class="hover:underline font-medium">
+                            @nextlevelstudyindonesia
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-[#B9D5FA] my-8"></div>
+
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs md:text-sm text-slate-600 font-medium">
+            <p>&copy; 2026 Next Level Study : Era Baru Pendidikan</p>
+            <div class="flex items-center gap-6">
+                <a href="/privacy" class="hover:text-[#0B5A8A] transition-colors">Kebijakan Privasi</a>
+                <a href="/terms" class="hover:text-[#0B5A8A] transition-colors">Syarat &amp; Ketentuan</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function nlsSharePage() {
+        if (navigator.share) {
+            navigator.share({
+                title: "Next Level Study - Era Baru Pendidikan",
+                url: window.location.href
+            }).catch(() => {});
+        } else {
+            navigator.clipboard.writeText(window.location.href);
+            alert("Tautan berhasil disalin ke clipboard!");
+        }
+    }
 </script>
 
 
