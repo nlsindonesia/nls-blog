@@ -775,7 +775,7 @@
                         Ya, jadwal belajar sangat fleksibel. Anda bisa mendiskusikan waktu terbaik langsung dengan mentor, mulai dari pagi hingga sesi malam hari.
                     </div>
                 </details>
-                <details class="group bg-white rounded-2xl border border-surface-container overflow-hidden">
+                                <details class="group bg-white rounded-2xl border border-surface-container overflow-hidden">
                     <summary class="flex items-center justify-between p-6 cursor-pointer list-none">
                         <span class="font-bold text-on-surface">Siapa saja mentor di Next Level Study?</span>
                         <span class="icon-[mdi--chevron-down] transition-transform group-open:rotate-180 text-primary"></span>
@@ -808,57 +808,6 @@
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a href="https://wa.me/6285163070002" target="_blank" rel="noopener noreferrer" class="bg-white text-primary px-8 py-4 rounded-xl font-bold hover:bg-surface transition-all">Daftar Sekarang</a>
                 <a href="https://wa.me/628170100788" target="_blank" rel="noopener noreferrer" class="border border-white/30 px-8 py-4 rounded-xl font-bold hover:bg-white/10 transition-all">Hubungi Admin</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Pendaftaran Murid Privat (Inline) -->
-    <section class="py-20 bg-surface-alt">
-        <div class="px-4 md:px-8 max-w-3xl mx-auto">
-            <div class="glass-card bg-white p-8 md:p-12 rounded-[40px] shadow-xl border border-surface-container">
-                <div class="text-center mb-10">
-                    <h2 class="text-3xl md:text-4xl font-bold text-primary mb-4">Pendaftaran Murid Privat</h2>
-                    <p class="text-on-surface-variant">Lengkapi formulir di bawah ini untuk memulai perjalanan akademik Anda bersama mentor terbaik kami.</p>
-                </div>
-                <form class="space-y-6" @submit.prevent="$store.daftarPrivat.submitForm()">
-                    <div class="grid grid-cols-1 gap-6">
-                        <div class="space-y-2">
-                            <label class="text-sm font-bold text-primary ml-1">Nama Lengkap</label>
-                            <input x-model="$store.daftarPrivat.form.nama" class="w-full bg-surface p-4 rounded-xl border border-surface-container focus:ring-2 focus:ring-primary focus:outline-none transition-all" placeholder="Contoh: Budi Santoso" type="text">
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="space-y-2">
-                                <label class="text-sm font-bold text-primary ml-1">Jenjang Pendidikan</label>
-                                <select x-model="$store.daftarPrivat.form.jenjang" class="w-full bg-surface p-4 rounded-xl border border-surface-container focus:ring-2 focus:ring-primary focus:outline-none transition-all">
-                                    <option>SD / Sederajat</option>
-                                    <option>SMP / Sederajat</option>
-                                    <option>SMA / Sederajat</option>
-                                    <option>Perguruan Tinggi</option>
-                                    <option>Umum</option>
-                                </select>
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-sm font-bold text-primary ml-1">Subjek yang Diminati</label>
-                                <input x-model="$store.daftarPrivat.form.subjek" class="w-full bg-surface p-4 rounded-xl border border-surface-container focus:ring-2 focus:ring-primary focus:outline-none transition-all" placeholder="Contoh: Matematika OSN" type="text">
-                            </div>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-sm font-bold text-primary ml-1">Nomor WhatsApp Orang Tua/Siswa</label>
-                            <input x-model="$store.daftarPrivat.form.wa" class="w-full bg-surface p-4 rounded-xl border border-surface-container focus:ring-2 focus:ring-primary focus:outline-none transition-all" placeholder="0812xxxxxxx" type="tel">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-sm font-bold text-primary ml-1">Catatan Tambahan</label>
-                            <textarea x-model="$store.daftarPrivat.form.catatan" class="w-full bg-surface p-4 rounded-xl border border-surface-container focus:ring-2 focus:ring-primary focus:outline-none transition-all" placeholder="Ceritakan kebutuhan belajar Anda..." rows="4"></textarea>
-                        </div>
-                    </div>
-                    <div class="pt-4">
-                        <button type="submit"
-                            class="w-full bg-primary text-on-primary py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:opacity-90 active:scale-95 transition-all shadow-lg cursor-pointer">
-                            <span class="icon-[mdi--send]"></span>
-                            Daftar Sekarang via WhatsApp
-                        </button>
-                    </div>
-                </form>
             </div>
         </div>
     </section>
