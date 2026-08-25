@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="light" lang="id">
 <head>
     <!-- Google tag (gtag.js) -->
@@ -694,43 +694,61 @@
 <section class="py-24 bg-surface-cream">
 <div class="max-w-3xl mx-auto px-margin-desktop">
 <div class="text-center mb-16">
-<h2 class="font-headline-lg text-headline-lg text-text-dark mb-4">Pertanyaan Umum (FAQ)</h2>
-<p class="font-body-md text-body-md text-on-surface-variant">Temukan jawaban untuk pertanyaan yang paling sering diajukan mengenai Nex Gen.</p>
+<h2 class="font-headline-lg text-headline-lg text-text-dark mb-4 font-bold">Pertanyaan Umum (FAQ)</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Temukan jawaban untuk pertanyaan yang paling sering diajukan mengenai Nex Gen Academy.</p>
 </div>
-<div class="space-y-4">
-<details class="faq-item group bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm" open="true">
-<summary class="flex justify-between items-center p-6 font-label-lg text-label-lg font-bold text-on-surface select-none pointer-events-none">
-<span class="">Apa yang membuat Nex Gen berbeda dari bimbel lain?</span>
+<div class="space-y-4" x-data="{ activeFaq: null }">
+    <!-- FAQ Item 1 -->
+    <div class="bg-white border border-outline-variant rounded-2xl overflow-hidden shadow-sm hover:border-primary/50 transition-colors">
+        <button type="button" 
+            @click="activeFaq = activeFaq === 1 ? null : 1" 
+            class="w-full flex justify-between items-center p-6 text-left font-bold text-on-surface hover:text-primary transition-colors cursor-pointer">
+            <span class="text-base md:text-lg pr-4">Apa yang membuat Nex Gen berbeda dari bimbel lain?</span>
+            <svg class="w-5 h-5 shrink-0 text-primary transition-transform duration-200" :class="activeFaq === 1 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+        <div x-show="activeFaq === 1" x-collapse x-cloak class="px-6 pb-6 text-on-surface-variant text-base leading-relaxed border-t border-gray-100 pt-4">
+            Nex Gen menggunakan metode "Adaptive Learning" yang menyesuaikan kecepatan belajar dengan kemampuan siswa. Kami juga membatasi kapasitas kelas hanya 6-10 siswa agar tutor dapat memberikan perhatian personal maksimal.
+        </div>
+    </div>
 
-</summary>
-<div class="px-6 pb-6 text-on-surface-variant font-body-md">
-                    Nex Gen menggunakan metode "Adaptive Learning" yang menyesuaikan kecepatan belajar dengan kemampuan siswa. Kami juga membatasi kapasitas kelas hanya 6-10 siswa agar tutor dapat memberikan perhatian personal maksimal.
-                </div>
-</details>
-<details class="faq-item group bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm" open="true">
-<summary class="flex justify-between items-center p-6 font-label-lg text-label-lg font-bold text-on-surface select-none pointer-events-none">
-<span class="">Bagaimana Nex Gen membantu meningkatkan nilai saya?</span>
+    <!-- FAQ Item 2 -->
+    <div class="bg-white border border-outline-variant rounded-2xl overflow-hidden shadow-sm hover:border-primary/50 transition-colors">
+        <button type="button" 
+            @click="activeFaq = activeFaq === 2 ? null : 2" 
+            class="w-full flex justify-between items-center p-6 text-left font-bold text-on-surface hover:text-primary transition-colors cursor-pointer">
+            <span class="text-base md:text-lg pr-4">Bagaimana Nex Gen membantu meningkatkan nilai saya?</span>
+            <svg class="w-5 h-5 shrink-0 text-primary transition-transform duration-200" :class="activeFaq === 2 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+        <div x-show="activeFaq === 2" x-collapse x-cloak class="px-6 pb-6 text-on-surface-variant text-base leading-relaxed border-t border-gray-100 pt-4">
+            Melalui Super Website, try out rutin dengan analisis mendalam, serta akses konsultasi 24/7, siswa didorong untuk memahami konsep secara fundamental, bukan sekadar menghafal rumus.
+        </div>
+    </div>
 
-</summary>
-<div class="px-6 pb-6 text-on-surface-variant font-body-md">
-                    Melalui Super Website, try out rutin dengan analisis mendalam, serta akses konsultasi 24/7, siswa didorong untuk memahami konsep secara fundamental, bukan sekadar menghafal rumus.
-                </div>
-</details>
-<details class="faq-item group bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm" open="true">
-<summary class="flex justify-between items-center p-6 font-label-lg text-label-lg font-bold text-on-surface select-none pointer-events-none">
-<span class="">Siapa saja Master Teacher di Nex Gen?</span>
+    <!-- FAQ Item 3 -->
+    <div class="bg-white border border-outline-variant rounded-2xl overflow-hidden shadow-sm hover:border-primary/50 transition-colors">
+        <button type="button" 
+            @click="activeFaq = activeFaq === 3 ? null : 3" 
+            class="w-full flex justify-between items-center p-6 text-left font-bold text-on-surface hover:text-primary transition-colors cursor-pointer">
+            <span class="text-base md:text-lg pr-4">Siapa saja Master Teacher di Nex Gen?</span>
+            <svg class="w-5 h-5 shrink-0 text-primary transition-transform duration-200" :class="activeFaq === 3 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+        <div x-show="activeFaq === 3" x-collapse x-cloak class="px-6 pb-6 text-on-surface-variant text-base leading-relaxed border-t border-gray-100 pt-4">
+            Tidak semua pengajar kami berasal dari PTN favorit seperti UI, UGM, ITB, dan UPI. Tutor Kami merupakan tutor yang memiliki rasa ingin terus berkembang yang sangat tinggi dan siap memberikan segala yang ia mampu untuk menunjang siswa. Ditunjang pendapatan yang mumpuni, mereka siap bekerja dengan sepenuh hati.
+        </div>
+    </div>
 
-</summary>
-<div class="px-6 pb-6 text-on-surface-variant font-body-md">
-                    Tidak semua pengajar kami berasal dari PTN favorit seperti UI, UGM, ITB, dan UPI. Tutor Kami merupakan tutor yang memiliki rasa ingin terus berkembang yang sangat tinggi dan siap memberikan segala yang ia mampu untuk menunjang siswa. Ditunjang pendapatan yang mumpuni, mereka siap bekerja dengan sepenuh hati.</div>
-</details>
-<details class="faq-item group bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm" open="true">
-<summary class="flex justify-between items-center p-6 font-label-lg text-label-lg font-bold text-on-surface select-none pointer-events-none">
-<span class="">Dimana sajakah cabang Nex Gen?</span>
-
-</summary>
-<div class="px-6 pb-6 text-on-surface-variant font-body-md">Nex Gen Academy hadir di Bekasi, tepatnya di Jalan Pahlawan No. 26, Duren Jaya, Bekasi Timur. Silakan hubungi kami bila anda tertarik membuka cabang untuk lokasi di kota Anda, namun pastikan tujuan anda membuka cabang untuk beramal pada pendidikan, ini bukanlah bisnis berbasis keuntungan.</div>
-</details>
+    <!-- FAQ Item 4 -->
+    <div class="bg-white border border-outline-variant rounded-2xl overflow-hidden shadow-sm hover:border-primary/50 transition-colors">
+        <button type="button" 
+            @click="activeFaq = activeFaq === 4 ? null : 4" 
+            class="w-full flex justify-between items-center p-6 text-left font-bold text-on-surface hover:text-primary transition-colors cursor-pointer">
+            <span class="text-base md:text-lg pr-4">Dimana sajakah cabang Nex Gen?</span>
+            <svg class="w-5 h-5 shrink-0 text-primary transition-transform duration-200" :class="activeFaq === 4 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+        <div x-show="activeFaq === 4" x-collapse x-cloak class="px-6 pb-6 text-on-surface-variant text-base leading-relaxed border-t border-gray-100 pt-4">
+            Nex Gen Academy hadir di Bekasi, tepatnya di Jalan Pahlawan No. 26, Duren Jaya, Bekasi Timur. Silakan hubungi kami bila anda tertarik membuka cabang untuk lokasi di kota Anda, namun pastikan tujuan anda membuka cabang untuk beramal pada pendidikan, ini bukanlah bisnis berbasis keuntungan.
+        </div>
+    </div>
 </div>
 </div>
 </section>
