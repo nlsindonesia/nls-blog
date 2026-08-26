@@ -50,6 +50,276 @@
         [x-cloak] {
             display: none !important;
         }
+
+        /* ==========================================================================
+           PREMIUM CALENDAR & CONTROLS DESIGN SYSTEM
+           ========================================================================== */
+        
+        .cal-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .calendar-main-card {
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1.75rem;
+            box-shadow: 0 20px 40px -15px rgba(0, 46, 71, 0.07), 0 0 1px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        html.dark .calendar-main-card {
+            background: #131d38;
+            border-color: #273549;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Filter Controls */
+        .filter-controls-row {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            width: 100%;
+        }
+        @media (min-width: 768px) {
+            .filter-controls-row {
+                flex-direction: row;
+                align-items: stretch;
+            }
+        }
+
+        .filter-field {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-select-input {
+            width: 100%;
+            height: 52px;
+            padding: 0 2.75rem 0 1.25rem;
+            border-radius: 1rem;
+            border: 1.5px solid #cbd5e1;
+            background-color: #f8fafc;
+            color: #0f172a;
+            font-size: 0.9375rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23006493' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1.25rem center;
+            background-size: 1.15rem;
+        }
+        html.dark .filter-select-input {
+            background-color: #1a2542;
+            border-color: #334155;
+            color: #ffffff;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2338bdf8' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        }
+        .filter-select-input:focus {
+            outline: none;
+            border-color: #006493;
+            box-shadow: 0 0 0 3px rgba(0, 100, 147, 0.2);
+            background-color: #ffffff;
+        }
+        html.dark .filter-select-input:focus {
+            background-color: #15203b;
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+        }
+
+        /* Calendar 7-Column Grid */
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 0.4rem;
+        }
+        @media (min-width: 640px) {
+            .cal-grid {
+                gap: 0.6rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            .cal-grid {
+                gap: 0.75rem;
+            }
+        }
+
+        .cal-day-header {
+            padding: 0.75rem 0.25rem;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #64748b;
+            border-radius: 0.75rem;
+            background: #f1f5f9;
+        }
+        html.dark .cal-day-header {
+            background: #1e293b;
+            color: #94a3b8;
+        }
+        .cal-day-header.weekend {
+            color: #ea580c;
+            background: #fff7ed;
+        }
+        html.dark .cal-day-header.weekend {
+            color: #fb923c;
+            background: #2d1810;
+        }
+
+        .cal-cell {
+            min-height: 78px;
+            border-radius: 1.125rem;
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            border: 1.5px solid #e2e8f0;
+            background: #ffffff;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            user-select: none;
+        }
+        @media (min-width: 640px) {
+            .cal-cell {
+                min-height: 95px;
+                padding: 0.625rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            .cal-cell {
+                min-height: 118px;
+                padding: 0.75rem;
+            }
+        }
+        html.dark .cal-cell {
+            background: #16223e;
+            border-color: #263654;
+        }
+
+        .cal-cell:hover:not(.empty) {
+            transform: translateY(-3px);
+            border-color: #006493;
+            box-shadow: 0 12px 25px -5px rgba(0, 100, 147, 0.18);
+            z-index: 10;
+        }
+        html.dark .cal-cell:hover:not(.empty) {
+            border-color: #38bdf8;
+            box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.6);
+        }
+
+        .cal-cell.weekend {
+            background: #fafbfc;
+        }
+        html.dark .cal-cell.weekend {
+            background: #111a30;
+        }
+
+        .cal-cell.today {
+            border-color: #006493 !important;
+            background: #f0f7ff !important;
+        }
+        html.dark .cal-cell.today {
+            background: #102347 !important;
+            border-color: #38bdf8 !important;
+        }
+
+        .cal-cell.has-events {
+            border-color: #93c5fd;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 100, 147, 0.06);
+        }
+        html.dark .cal-cell.has-events {
+            border-color: #1d4ed8;
+            background: #172445;
+        }
+
+        .cal-cell.selected {
+            border-color: #006493 !important;
+            background: #e0f2fe !important;
+            box-shadow: 0 0 0 3px rgba(0, 100, 147, 0.3) !important;
+            transform: scale(1.02);
+            z-index: 20;
+        }
+        html.dark .cal-cell.selected {
+            background: #172d57 !important;
+            border-color: #38bdf8 !important;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.35) !important;
+        }
+
+        /* Event Tag Pills inside cells */
+        .cal-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.45rem;
+            border-radius: 0.5rem;
+            font-size: 0.6875rem;
+            font-weight: 800;
+            line-height: 1.15;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 0.25rem;
+            border: 1px solid transparent;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .pill-osn { background: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
+        .pill-snbt { background: #ffedd5; color: #c2410c; border-color: #fed7aa; }
+        .pill-tka { background: #ccfbf1; color: #0f766e; border-color: #99f6e4; }
+        .pill-mitra { background: #f3e8ff; color: #6b21a8; border-color: #e9d5ff; }
+        .pill-dinas { background: #ffe4e6; color: #be123c; border-color: #fecdd3; }
+
+        html.dark .pill-osn { background: #082f49; color: #7dd3fc; border-color: #0369a1; }
+        html.dark .pill-snbt { background: #431407; color: #fdba74; border-color: #9a3412; }
+        html.dark .pill-tka { background: #042f2e; color: #5eead4; border-color: #115e59; }
+        html.dark .pill-mitra { background: #3b0764; color: #d8b4fe; border-color: #7e22ce; }
+        html.dark .pill-dinas { background: #4c0519; color: #fda4af; border-color: #9f1239; }
+
+        /* Quick Month Scroll Navigation */
+        .month-chip-bar {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+            scrollbar-width: thin;
+        }
+        .month-chip-btn {
+            flex-shrink: 0;
+            padding: 0.45rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            border: 1.5px solid #e2e8f0;
+            background: #ffffff;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        html.dark .month-chip-btn {
+            background: #1e293b;
+            border-color: #334155;
+            color: #cbd5e1;
+        }
+        .month-chip-btn.active {
+            background: #006493;
+            color: #ffffff;
+            border-color: #006493;
+            box-shadow: 0 4px 12px rgba(0, 100, 147, 0.3);
+            transform: scale(1.05);
+        }
+        html.dark .month-chip-btn.active {
+            background: #0284c7;
+            border-color: #38bdf8;
+            color: #ffffff;
+        }
     </style>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -329,211 +599,232 @@
     <div class="flex-grow" x-data="kalenderApp()">
         <main>
             <!-- Hero Header Section -->
-            <section class="relative overflow-hidden pt-12 pb-16 md:pt-16 md:pb-20 bg-gradient-to-b from-surface-container-lowest via-surface to-surface-container-low border-b border-outline-variant">
-                <div class="container-max px-margin-mobile md:px-margin-desktop relative z-10">
+            <section class="relative overflow-hidden pt-10 pb-12 md:pt-14 md:pb-16 bg-gradient-to-b from-surface-container-lowest via-surface to-surface-container-low border-b border-outline-variant">
+                <div class="cal-container px-4 sm:px-6 relative z-10">
                     <div class="max-w-4xl mx-auto text-center">
-                        <div class="inline-flex items-center gap-2 bg-primary-fixed text-primary px-4 py-2 rounded-full text-xs font-bold mb-4 shadow-xs">
+                        <div class="inline-flex items-center gap-2 bg-primary-fixed text-primary px-4 py-1.5 rounded-full text-xs font-extrabold mb-3 shadow-xs">
                             <span class="icon-[mdi--calendar-star] text-[18px]"></span>
-                            <span>Agenda Resmi Pendidikan 2026</span>
+                            <span>Agenda &amp; Jadwal Kegiatan Resmi 2026</span>
                         </div>
-                        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-deep-navy tracking-tight leading-tight mb-4">
-                            Kalender Kegiatan &amp; <span class="text-primary">Jadwal Belajar NLS</span>
+                        <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-deep-navy tracking-tight leading-tight mb-3">
+                            Kalender Agenda &amp; <span class="text-primary">Jadwal Event NLS</span>
                         </h1>
-                        <p class="text-base sm:text-lg text-on-surface-variant max-w-2xl mx-auto leading-relaxed mb-8">
-                            Temukan jadwal try out akbar, simulasi olimpiade, workshop bimbingan PTN, serta agenda kemitraan sekolah dan dinas pendidikan secara terpadu.
+                        <p class="text-sm sm:text-base text-on-surface-variant max-w-2xl mx-auto leading-relaxed mb-6 font-medium">
+                            Pantau jadwal try out, simulasi olimpiade, kelas bimbingan, serta kemitraan sekolah dan dinas pendidikan secara interaktif.
                         </p>
 
                         <!-- Quick Category Pills -->
-                        <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm font-bold">
+                        <div class="flex flex-wrap items-center justify-center gap-2 text-xs font-bold">
                             <button @click="setCategory('all')"
-                                class="px-4 py-2 rounded-full transition-all cursor-pointer border"
+                                class="px-3.5 py-1.5 rounded-full transition-all cursor-pointer border flex items-center gap-1.5"
                                 :class="selectedCategory === 'all' ? 'bg-primary text-white border-primary shadow-md scale-105' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-primary'">
-                                ✨ Semua Kegiatan (<span x-text="events.length"></span>)
+                                <span>✨ Semua</span>
+                                <span class="px-1.5 py-0.2 rounded-full text-[10px]" :class="selectedCategory === 'all' ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-700'" x-text="events.length"></span>
                             </button>
                             <button @click="setCategory('OSN')"
-                                class="px-4 py-2 rounded-full transition-all cursor-pointer border"
+                                class="px-3.5 py-1.5 rounded-full transition-all cursor-pointer border flex items-center gap-1.5"
                                 :class="selectedCategory === 'OSN' ? 'bg-[#0284c7] text-white border-[#0284c7] shadow-md scale-105' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-[#0284c7]'">
-                                🏆 OSN (<span x-text="countByCategory('OSN')"></span>)
+                                <span>🏆 OSN</span>
+                                <span class="px-1.5 py-0.2 rounded-full text-[10px]" :class="selectedCategory === 'OSN' ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-700'" x-text="countByCategory('OSN')"></span>
                             </button>
                             <button @click="setCategory('SNBT')"
-                                class="px-4 py-2 rounded-full transition-all cursor-pointer border"
+                                class="px-3.5 py-1.5 rounded-full transition-all cursor-pointer border flex items-center gap-1.5"
                                 :class="selectedCategory === 'SNBT' ? 'bg-[#ea580c] text-white border-[#ea580c] shadow-md scale-105' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-[#ea580c]'">
-                                🎯 SNBT (<span x-text="countByCategory('SNBT')"></span>)
+                                <span>🎯 SNBT</span>
+                                <span class="px-1.5 py-0.2 rounded-full text-[10px]" :class="selectedCategory === 'SNBT' ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-700'" x-text="countByCategory('SNBT')"></span>
                             </button>
                             <button @click="setCategory('TKA')"
-                                class="px-4 py-2 rounded-full transition-all cursor-pointer border"
+                                class="px-3.5 py-1.5 rounded-full transition-all cursor-pointer border flex items-center gap-1.5"
                                 :class="selectedCategory === 'TKA' ? 'bg-[#0d9488] text-white border-[#0d9488] shadow-md scale-105' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-[#0d9488]'">
-                                📚 TKA (<span x-text="countByCategory('TKA')"></span>)
+                                <span>📚 TKA</span>
+                                <span class="px-1.5 py-0.2 rounded-full text-[10px]" :class="selectedCategory === 'TKA' ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-700'" x-text="countByCategory('TKA')"></span>
                             </button>
                             <button @click="setCategory('Mitra Sekolah')"
-                                class="px-4 py-2 rounded-full transition-all cursor-pointer border"
+                                class="px-3.5 py-1.5 rounded-full transition-all cursor-pointer border flex items-center gap-1.5"
                                 :class="selectedCategory === 'Mitra Sekolah' ? 'bg-[#7c3aed] text-white border-[#7c3aed] shadow-md scale-105' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-[#7c3aed]'">
-                                🏫 Mitra Sekolah (<span x-text="countByCategory('Mitra Sekolah')"></span>)
+                                <span>🏫 Mitra Sekolah</span>
+                                <span class="px-1.5 py-0.2 rounded-full text-[10px]" :class="selectedCategory === 'Mitra Sekolah' ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-700'" x-text="countByCategory('Mitra Sekolah')"></span>
                             </button>
                             <button @click="setCategory('Event Dinas')"
-                                class="px-4 py-2 rounded-full transition-all cursor-pointer border"
+                                class="px-3.5 py-1.5 rounded-full transition-all cursor-pointer border flex items-center gap-1.5"
                                 :class="selectedCategory === 'Event Dinas' ? 'bg-[#e11d48] text-white border-[#e11d48] shadow-md scale-105' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-[#e11d48]'">
-                                🏛️ Event Dinas (<span x-text="countByCategory('Event Dinas')"></span>)
+                                <span>🏛️ Event Dinas</span>
+                                <span class="px-1.5 py-0.2 rounded-full text-[10px]" :class="selectedCategory === 'Event Dinas' ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-700'" x-text="countByCategory('Event Dinas')"></span>
                             </button>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Calendar Section & Filter Hub -->
-            <section class="py-12 md:py-16 bg-surface">
-                <div class="container-max px-margin-mobile md:px-margin-desktop">
+            <!-- Main Calendar Section -->
+            <section class="py-10 md:py-14 bg-surface">
+                <div class="cal-container px-4 sm:px-6">
                     
-                    <!-- Main Dual Filter Controls Card -->
-                    <div class="bg-white dark:bg-[#131d38] p-6 sm:p-8 rounded-3xl border border-outline-variant shadow-lg mb-10">
-                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-                            
+                    <!-- Dual Filter Control Hub -->
+                    <div class="bg-white dark:bg-[#131d38] p-6 sm:p-7 rounded-3xl border border-slate-200 dark:border-slate-700/80 shadow-md mb-8">
+                        <div class="filter-controls-row">
                             <!-- Filter 1: Jenis Kegiatan -->
-                            <div class="md:col-span-6 space-y-2">
-                                <label class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                                    <span class="icon-[mdi--shape-outline] text-primary text-base"></span>
+                            <div class="filter-field">
+                                <label class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
                                     Filter 1: Jenis Kegiatan
                                 </label>
-                                <div class="relative">
-                                    <select x-model="selectedCategory" @change="selectedDate = null"
-                                        class="w-full appearance-none bg-slate-50 dark:bg-[#1a2542] text-slate-900 dark:text-white px-4 py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 font-semibold text-sm focus:ring-2 focus:ring-primary focus:outline-none transition-all cursor-pointer shadow-xs pr-10">
-                                        <option value="all">🌟 Semua Jenis Kegiatan (OSN, SNBT, TKA, Mitra, Dinas)</option>
-                                        <option value="OSN">🏆 Olimpiade Sains Nasional (OSN)</option>
-                                        <option value="SNBT">🎯 Seleksi Nasional Masuk PTN (SNBT)</option>
-                                        <option value="TKA">📚 Tes Kemampuan Akademik (TKA)</option>
-                                        <option value="Mitra Sekolah">🏫 Mitra Sekolah (LDKS, IHT, Try Out Sekolah)</option>
-                                        <option value="Event Dinas">🏛️ Event Dinas (Pelatihan Guru &amp; Pembinaan Diknas)</option>
-                                    </select>
-                                    <span class="icon-[mdi--chevron-down] absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xl"></span>
-                                </div>
+                                <select x-model="selectedCategory" @change="selectedDate = null" class="filter-select-input">
+                                    <option value="all">🌟 Semua Jenis Kegiatan (OSN, SNBT, TKA, Mitra, Dinas)</option>
+                                    <option value="OSN">🏆 Olimpiade Sains Nasional (OSN)</option>
+                                    <option value="SNBT">🎯 Seleksi Nasional Masuk PTN (SNBT)</option>
+                                    <option value="TKA">📚 Tes Kemampuan Akademik (TKA)</option>
+                                    <option value="Mitra Sekolah">🏫 Mitra Sekolah (LDKS, IHT, Try Out Sekolah)</option>
+                                    <option value="Event Dinas">🏛️ Event Dinas (Pelatihan Guru &amp; Pembinaan Diknas)</option>
+                                </select>
                             </div>
 
                             <!-- Filter 2: Jenjang Pendidikan -->
-                            <div class="md:col-span-6 space-y-2">
-                                <label class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                                    <span class="icon-[mdi--school-outline] text-emerald-600 text-base"></span>
+                            <div class="filter-field">
+                                <label class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
                                     Filter 2: Jenjang Pendidikan
                                 </label>
-                                <div class="relative">
-                                    <select x-model="selectedJenjang" @change="selectedDate = null"
-                                        class="w-full appearance-none bg-slate-50 dark:bg-[#1a2542] text-slate-900 dark:text-white px-4 py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 font-semibold text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all cursor-pointer shadow-xs pr-10">
-                                        <option value="all">🎓 Semua Jenjang Pendidikan (SD, SMP, SMA, Guru &amp; Umum)</option>
-                                        <option value="SD">🎒 SD / MI / Sederajat</option>
-                                        <option value="SMP">📘 SMP / MTs / Sederajat</option>
-                                        <option value="SMA">🎓 SMA / MA / SMK / Gap Year</option>
-                                        <option value="Guru / Instansi">🏛️ Guru / Sekolah / Dinas / Umum</option>
-                                    </select>
-                                    <span class="icon-[mdi--chevron-down] absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xl"></span>
-                                </div>
+                                <select x-model="selectedJenjang" @change="selectedDate = null" class="filter-select-input">
+                                    <option value="all">🎓 Semua Jenjang Pendidikan (SD, SMP, SMA, Guru/Umum)</option>
+                                    <option value="SD">🎒 SD / MI / Sederajat</option>
+                                    <option value="SMP">📘 SMP / MTs / Sederajat</option>
+                                    <option value="SMA">🎓 SMA / MA / SMK / Gap Year</option>
+                                    <option value="Guru / Instansi">🏛️ Guru / Sekolah / Dinas / Umum</option>
+                                </select>
                             </div>
                         </div>
 
-                        <!-- Active Filter Summary Bar -->
+                        <!-- Active Filter Summary & Reset Bar -->
                         <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-700/60 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm">
-                            <div class="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+                            <div class="flex items-center gap-2 text-slate-600 dark:text-slate-300 flex-wrap">
                                 <span class="font-medium">Menampilkan:</span>
-                                <span class="font-bold text-primary" x-text="categoryLabel()"></span>
+                                <span class="font-black text-primary" x-text="categoryLabel()"></span>
                                 <span>•</span>
-                                <span class="font-bold text-emerald-600 dark:text-emerald-400" x-text="jenjangLabel()"></span>
-                                <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 font-bold text-slate-700 dark:text-slate-300 text-xs">
-                                    <span x-text="eventsInCurrentMonth().length"></span> agenda bulan ini
+                                <span class="font-black text-emerald-600 dark:text-emerald-400" x-text="jenjangLabel()"></span>
+                                <span class="px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 font-extrabold text-blue-700 dark:text-blue-300 text-xs border border-blue-200/60 dark:border-blue-800/50">
+                                    <span x-text="eventsInCurrentMonth().length"></span> agenda pada bulan ini
                                 </span>
                             </div>
 
                             <button @click="resetFilters()"
                                 x-show="selectedCategory !== 'all' || selectedJenjang !== 'all' || selectedDate !== null"
-                                class="inline-flex items-center gap-1.5 text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors cursor-pointer">
+                                class="inline-flex items-center gap-1.5 text-xs font-bold text-rose-600 dark:text-rose-400 hover:underline cursor-pointer">
                                 <span class="icon-[mdi--refresh] text-base"></span>
                                 Reset Filter &amp; Tanggal
                             </button>
                         </div>
                     </div>
 
-                    <!-- Interactive Calendar Main View -->
-                    <div class="bg-white dark:bg-[#131d38] rounded-3xl border border-outline-variant shadow-xl overflow-hidden mb-12">
-                        <!-- Calendar Header Bar -->
-                        <div class="p-6 sm:p-8 bg-surface-container-low dark:bg-[#0f182e] border-b border-outline-variant flex flex-wrap items-center justify-between gap-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center shadow-md">
-                                    <span class="icon-[mdi--calendar-month-outline] text-2xl"></span>
+                    <!-- Interactive Calendar Main Card -->
+                    <div class="calendar-main-card mb-12">
+                        
+                        <!-- Month Navigation Header Bar -->
+                        <div class="p-5 sm:p-7 bg-slate-50/90 dark:bg-[#0f182e] border-b border-slate-200 dark:border-slate-700 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-[#0B5A8A] text-white flex items-center justify-center shadow-md flex-shrink-0">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
                                 </div>
                                 <div>
-                                    <h2 class="text-xl sm:text-2xl font-black text-on-surface" x-text="monthLabel"></h2>
-                                    <p class="text-xs text-on-surface-variant font-medium">Klik tanggal bertanda khusus untuk melihat rincian agenda</p>
+                                    <div class="flex items-center gap-2.5">
+                                        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="monthLabel"></h2>
+                                        <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-primary/10 text-primary border border-primary/20 dark:bg-primary/20 dark:text-sky-300"
+                                            x-text="eventsInCurrentMonth().length + ' Agenda'"></span>
+                                    </div>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+                                        Pilih tanggal dengan penanda warna untuk melihat keterangan kegiatan
+                                    </p>
                                 </div>
                             </div>
 
-                            <!-- Month Navigation Buttons -->
-                            <div class="flex items-center gap-2">
+                            <!-- Prev / Today / Next Controls -->
+                            <div class="flex items-center gap-2 self-start md:self-auto">
                                 <button type="button" @click="goToToday()"
-                                    class="px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all cursor-pointer shadow-xs">
+                                    class="px-4 py-2.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all cursor-pointer shadow-xs">
                                     Hari Ini
                                 </button>
                                 <button type="button" @click="prevMonth()"
                                     class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-primary hover:text-white dark:hover:bg-primary transition-all flex items-center justify-center cursor-pointer shadow-xs"
-                                    title="Bulan Sebelumnya">
+                                    title="Bulan Sebelumnya" aria-label="Bulan Sebelumnya">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
                                 </button>
                                 <button type="button" @click="nextMonth()"
                                     class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-primary hover:text-white dark:hover:bg-primary transition-all flex items-center justify-center cursor-pointer shadow-xs"
-                                    title="Bulan Berikutnya">
+                                    title="Bulan Berikutnya" aria-label="Bulan Berikutnya">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Calendar Grid -->
-                        <div class="p-4 sm:p-8">
-                            <!-- Day Header Labels (Senin - Minggu) -->
-                            <div class="grid grid-cols-7 gap-1.5 sm:gap-3 text-center mb-3">
-                                <template x-for="dayName in dayNames" :key="dayName">
-                                    <div class="py-2 text-xs sm:text-sm font-black uppercase tracking-wider text-slate-500 dark:text-slate-400"
-                                        x-text="dayName"></div>
+                        <!-- Quick Month Jump Bar -->
+                        <div class="px-5 sm:px-7 py-3 bg-white dark:bg-[#131d38] border-b border-slate-100 dark:border-slate-800">
+                            <div class="month-chip-bar no-scrollbar">
+                                <template x-for="(mName, mIdx) in monthNames" :key="mIdx">
+                                    <button type="button"
+                                        @click="setMonth(mIdx)"
+                                        class="month-chip-btn"
+                                        :class="currentMonth === mIdx ? 'active' : ''"
+                                        x-text="mName">
+                                    </button>
                                 </template>
                             </div>
+                        </div>
 
-                            <!-- Calendar Day Cells -->
-                            <div class="grid grid-cols-7 gap-1.5 sm:gap-3">
+                        <!-- Calendar Grid Body -->
+                        <div class="p-4 sm:p-7">
+                            <!-- 7-Day Header (Senin - Minggu) -->
+                            <div class="cal-grid mb-2">
+                                <div class="cal-day-header">Senin</div>
+                                <div class="cal-day-header">Selasa</div>
+                                <div class="cal-day-header">Rabu</div>
+                                <div class="cal-day-header">Kamis</div>
+                                <div class="cal-day-header">Jumat</div>
+                                <div class="cal-day-header weekend">Sabtu</div>
+                                <div class="cal-day-header weekend">Minggu</div>
+                            </div>
+
+                            <!-- Day Cells Grid -->
+                            <div class="cal-grid">
                                 <template x-for="(cell, idx) in calendarCells" :key="idx">
-                                    <div class="min-h-[70px] sm:min-h-[105px] rounded-2xl transition-all relative flex flex-col p-1.5 sm:p-2.5"
+                                    <div class="cal-cell"
                                         :class="getCellClasses(cell)"
                                         @click="onCellClick(cell)">
                                         
+                                        <!-- Cell Top Row: Date Number & Badge -->
                                         <div class="flex items-center justify-between w-full">
-                                            <span class="text-xs sm:text-base font-bold"
+                                            <span class="text-xs sm:text-sm font-black"
                                                 :class="getDateNumberClasses(cell)"
                                                 x-text="cell.dayNumber || ''"></span>
 
-                                            <!-- Today indicator pill -->
+                                            <!-- Today Dot -->
                                             <template x-if="cell.isToday">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+                                                <span class="px-1.5 py-0.5 rounded-md bg-primary text-white text-[9px] font-black uppercase tracking-wider">Hari Ini</span>
+                                            </template>
+
+                                            <!-- Event Count Indicator -->
+                                            <template x-if="cell.hasEvents && !cell.isToday">
+                                                <span class="w-2 h-2 rounded-full"
+                                                    :class="getCategoryDotClass(cell.events[0].category)"></span>
                                             </template>
                                         </div>
 
-                                        <!-- Events list indicator within cell -->
-                                        <div class="mt-1 flex-1 flex flex-col gap-1 overflow-hidden" x-show="cell.events && cell.events.length > 0">
-                                            <!-- Desktop visible chips -->
+                                        <!-- Event Pills inside Cell (Desktop & Tablet) -->
+                                        <div class="mt-1 flex-1 flex flex-col gap-1 overflow-hidden" x-show="cell.hasEvents">
                                             <template x-for="evt in cell.events.slice(0, 2)" :key="evt.id">
-                                                <div class="hidden sm:flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold truncate border shadow-2xs"
-                                                    :class="getEventChipStyle(evt)">
-                                                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" :class="getEventDotStyle(evt)"></span>
+                                                <div class="cal-pill" :class="getPillClass(evt.category)" :title="evt.title">
+                                                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" :class="getCategoryDotClass(evt.category)"></span>
                                                     <span class="truncate" x-text="evt.title"></span>
                                                 </div>
                                             </template>
 
-                                            <!-- Overflow count chip for desktop -->
+                                            <!-- More indicator if > 2 events -->
                                             <template x-if="cell.events.length > 2">
-                                                <div class="hidden sm:block text-[9px] font-bold text-slate-500 dark:text-slate-400 pl-1">
-                                                    +<span x-text="cell.events.length - 2"></span> lagi
+                                                <div class="text-[9px] font-black text-primary dark:text-sky-400 pl-1">
+                                                    +<span x-text="cell.events.length - 2"></span> agenda lain
                                                 </div>
                                             </template>
-
-                                            <!-- Mobile compact dots -->
-                                            <div class="flex sm:hidden items-center justify-center gap-1 mt-auto flex-wrap">
-                                                <template x-for="evt in cell.events.slice(0, 3)" :key="evt.id">
-                                                    <span class="w-2 h-2 rounded-full ring-1 ring-white" :class="getEventDotStyle(evt)"></span>
-                                                </template>
-                                            </div>
                                         </div>
                                     </div>
                                 </template>
@@ -541,25 +832,25 @@
                         </div>
 
                         <!-- Legend Bar at bottom of calendar -->
-                        <div class="px-6 py-4 bg-slate-50 dark:bg-[#0c1427] border-t border-outline-variant flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs font-semibold">
-                            <span class="text-slate-500 dark:text-slate-400">Petunjuk Warna Kategori:</span>
-                            <div class="flex items-center gap-1.5">
+                        <div class="px-6 py-4 bg-slate-50 dark:bg-[#0c1427] border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs font-bold">
+                            <span class="text-slate-500 dark:text-slate-400">Petunjuk Kategori:</span>
+                            <div class="flex items-center gap-2 cursor-pointer hover:opacity-80" @click="setCategory('OSN')">
                                 <span class="w-3 h-3 rounded-full bg-[#0284c7]"></span>
                                 <span class="text-slate-800 dark:text-slate-200">OSN</span>
                             </div>
-                            <div class="flex items-center gap-1.5">
+                            <div class="flex items-center gap-2 cursor-pointer hover:opacity-80" @click="setCategory('SNBT')">
                                 <span class="w-3 h-3 rounded-full bg-[#ea580c]"></span>
                                 <span class="text-slate-800 dark:text-slate-200">SNBT</span>
                             </div>
-                            <div class="flex items-center gap-1.5">
+                            <div class="flex items-center gap-2 cursor-pointer hover:opacity-80" @click="setCategory('TKA')">
                                 <span class="w-3 h-3 rounded-full bg-[#0d9488]"></span>
                                 <span class="text-slate-800 dark:text-slate-200">TKA</span>
                             </div>
-                            <div class="flex items-center gap-1.5">
+                            <div class="flex items-center gap-2 cursor-pointer hover:opacity-80" @click="setCategory('Mitra Sekolah')">
                                 <span class="w-3 h-3 rounded-full bg-[#7c3aed]"></span>
                                 <span class="text-slate-800 dark:text-slate-200">Mitra Sekolah</span>
                             </div>
-                            <div class="flex items-center gap-1.5">
+                            <div class="flex items-center gap-2 cursor-pointer hover:opacity-80" @click="setCategory('Event Dinas')">
                                 <span class="w-3 h-3 rounded-full bg-[#e11d48]"></span>
                                 <span class="text-slate-800 dark:text-slate-200">Event Dinas</span>
                             </div>
@@ -570,43 +861,45 @@
                     <div id="detail-kegiatan" class="scroll-mt-24">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                             <div>
-                                <div class="inline-flex items-center gap-1.5 text-xs font-extrabold text-primary uppercase tracking-wider mb-1">
+                                <div class="inline-flex items-center gap-1.5 text-xs font-black text-primary uppercase tracking-wider mb-1">
                                     <span class="icon-[mdi--clipboard-text-clock-outline] text-base"></span>
-                                    <span>Rincian Informasi</span>
+                                    <span>Rincian &amp; Keterangan Kegiatan</span>
                                 </div>
-                                <h3 class="text-2xl sm:text-3xl font-extrabold text-on-surface">
-                                    Keterangan Kegiatan Terjadwal
+                                <h3 class="text-2xl sm:text-3xl font-black text-on-surface">
+                                    Agenda Terjadwal
                                 </h3>
                                 <p class="text-sm text-on-surface-variant font-medium mt-1">
                                     <template x-if="selectedDate">
-                                        <span>Menampilkan kegiatan pada tanggal: <strong class="text-primary" x-text="formatDateFull(selectedDate)"></strong></span>
+                                        <span>Menampilkan kegiatan pada tanggal: <strong class="text-primary font-bold" x-text="formatDateFull(selectedDate)"></strong></span>
                                     </template>
                                     <template x-if="!selectedDate">
-                                        <span>Menampilkan seluruh kegiatan bulan <strong class="text-primary" x-text="monthLabel"></strong></span>
+                                        <span>Menampilkan seluruh kegiatan bulan <strong class="text-primary font-bold" x-text="monthLabel"></strong></span>
                                     </template>
                                 </p>
                             </div>
 
                             <template x-if="selectedDate">
                                 <button @click="selectedDate = null"
-                                    class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-primary-fixed text-primary hover:bg-primary-fixed-dim transition-colors cursor-pointer self-start">
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold bg-primary text-white hover:bg-primary/90 transition-all cursor-pointer self-start shadow-sm">
                                     <span class="icon-[mdi--format-list-bulleted] text-base"></span>
-                                    Tampilkan Semua Agenda Bulan Ini
+                                    Tampilkan Semua Agenda Bulan <span x-text="monthNames[currentMonth]"></span>
                                 </button>
                             </template>
                         </div>
 
                         <!-- Event Cards Grid -->
-                        <div class="space-y-4">
+                        <div class="space-y-5">
                             <!-- Empty state if no events -->
                             <template x-if="displayedEvents().length === 0">
-                                <div class="bg-white dark:bg-[#131d38] p-10 sm:p-14 rounded-3xl border border-dashed border-outline-variant text-center">
+                                <div class="bg-white dark:bg-[#131d38] p-10 sm:p-14 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700 text-center">
                                     <div class="w-16 h-16 rounded-3xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto mb-4">
-                                        <span class="icon-[mdi--calendar-remove-outline] text-3xl"></span>
+                                        <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2zM10 14l2 2 4-4"/>
+                                        </svg>
                                     </div>
                                     <h4 class="text-lg font-bold text-on-surface mb-2">Tidak Ada Kegiatan yang Sesuai</h4>
                                     <p class="text-sm text-on-surface-variant max-w-md mx-auto mb-6 leading-relaxed">
-                                        Tidak ditemukan agenda pada kategori atau tanggal yang dipilih. Coba pilih bulan lain atau reset filter untuk melihat jadwal lainnya.
+                                        Tidak ditemukan agenda pada kategori atau tanggal yang dipilih. Silakan pilih bulan lain atau klik tombol reset di bawah.
                                     </p>
                                     <button @click="resetFilters()"
                                         class="px-6 py-2.5 rounded-full bg-primary text-white text-xs font-bold hover:opacity-90 transition-all cursor-pointer shadow-sm">
@@ -617,11 +910,11 @@
 
                             <!-- Event Card Template -->
                             <template x-for="event in displayedEvents()" :key="event.id">
-                                <div class="bg-white dark:bg-[#131d38] rounded-3xl border border-outline-variant p-6 sm:p-8 hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
+                                <div class="bg-white dark:bg-[#131d38] rounded-3xl border border-slate-200 dark:border-slate-700 p-6 sm:p-8 hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
                                     <!-- Left Category Color Accent Stripe -->
-                                    <div class="absolute left-0 top-0 bottom-0 w-2" :class="getCategoryStripe(event.category)"></div>
+                                    <div class="absolute left-0 top-0 bottom-0 w-2.5" :class="getCategoryStripe(event.category)"></div>
 
-                                    <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
+                                    <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6 pl-2">
                                         <!-- Event Core Info -->
                                         <div class="flex-1 space-y-4">
                                             <!-- Badges Header -->
@@ -647,7 +940,7 @@
                                                 x-text="event.title"></h4>
 
                                             <!-- Date, Time, Mode Meta -->
-                                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
+                                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
                                                 <div class="flex items-center gap-2">
                                                     <span class="icon-[mdi--calendar-clock] text-primary text-lg flex-shrink-0"></span>
                                                     <span x-text="formatDateFull(event.date)"></span>
@@ -668,8 +961,8 @@
 
                                             <!-- Highlights Bullet points -->
                                             <template x-if="event.highlights && event.highlights.length > 0">
-                                                <div class="bg-surface-container-low dark:bg-[#1a2542] p-4 rounded-2xl border border-outline-variant space-y-2">
-                                                    <p class="text-xs font-bold text-on-surface uppercase tracking-wider">Fokus &amp; Fasilitas Kegiatan:</p>
+                                                <div class="bg-slate-50 dark:bg-[#1a2542] p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 space-y-2">
+                                                    <p class="text-xs font-black text-on-surface uppercase tracking-wider">Fokus &amp; Fasilitas Kegiatan:</p>
                                                     <ul class="space-y-1.5">
                                                         <template x-for="(hl, hIdx) in event.highlights" :key="hIdx">
                                                             <li class="flex items-start gap-2 text-xs sm:text-sm text-on-surface-variant">
@@ -685,23 +978,24 @@
                                         <!-- Action CTA Box -->
                                         <div class="lg:w-72 flex-shrink-0 flex flex-col gap-3 justify-center pt-4 lg:pt-0 border-t lg:border-t-0 lg:border-l border-slate-100 dark:border-slate-800 lg:pl-6">
                                             <div class="text-left">
-                                                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Lokasi / Media Pelaksanaan:</p>
-                                                <p class="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-0.5" x-text="event.location"></p>
+                                                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Media Pelaksanaan:</p>
+                                                <p class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5" x-text="event.location"></p>
                                             </div>
 
                                             <!-- WhatsApp Direct Register Button -->
                                             <a :href="'https://wa.me/6285163070002?text=' + encodeURIComponent(event.whatsappMessage)"
                                                 target="_blank"
-                                                class="w-full py-3 px-4 rounded-2xl font-bold text-xs sm:text-sm bg-gradient-to-r from-[#FF8A00] to-[#EA580C] text-white shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                                                style="background: linear-gradient(135deg, #FF8A00 0%, #EA580C 100%) !important; color: #ffffff !important;"
+                                                class="w-full py-3.5 px-4 rounded-2xl font-black text-xs sm:text-sm shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer text-white">
                                                 <span class="icon-[mdi--whatsapp] text-xl"></span>
-                                                Daftar / Konsultasi
+                                                Daftar via WhatsApp
                                             </a>
 
                                             <!-- Form Modal Trigger -->
                                             <button type="button" @click="$store.daftarPrivat.modalOpen = true; $store.daftarPrivat.form.kebutuhan = getKebutuhanForCategory(event.category); $store.daftarPrivat.form.catatan = 'Pendaftaran agenda: ' + event.title + ' (' + event.date + ')'"
                                                 class="w-full py-2.5 px-4 rounded-2xl font-bold text-xs bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white dark:hover:bg-primary transition-all text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-1.5 cursor-pointer">
                                                 <span class="icon-[mdi--form-select] text-base"></span>
-                                                Isi Form Online
+                                                Isi Form Pendaftaran
                                             </button>
                                         </div>
                                     </div>
@@ -713,7 +1007,7 @@
                     <!-- Call to Action Banner -->
                     <div class="mt-16 bg-gradient-to-r from-primary via-[#0B5A8A] to-[#0A2540] rounded-3xl p-8 sm:p-12 text-white shadow-2xl relative overflow-hidden">
                         <div class="relative z-10 max-w-2xl">
-                            <span class="inline-block px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold text-white mb-4">
+                            <span class="inline-block px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-xs font-extrabold text-white mb-3">
                                 Butuh Agenda Khusus Sekolah Anda?
                             </span>
                             <h3 class="text-2xl sm:text-3xl font-black leading-tight mb-3">
@@ -990,7 +1284,7 @@
         function kalenderApp() {
             return {
                 currentYear: 2026,
-                currentMonth: 2, // 0-indexed: 2 = Maret 2026
+                currentMonth: 7, // 7 = Agustus 2026 (matching current context/active semester)
                 selectedCategory: 'all', // 'all', 'OSN', 'SNBT', 'TKA', 'Mitra Sekolah', 'Event Dinas'
                 selectedJenjang: 'all',  // 'all', 'SD', 'SMP', 'SMA', 'Guru / Instansi'
                 selectedDate: null,     // string 'YYYY-MM-DD'
@@ -998,7 +1292,6 @@
                     'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
                     'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
                 ],
-                dayNames: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
                 
                 // Comprehensive 2026 Events Dataset
                 events: [
@@ -1006,7 +1299,7 @@
                     {
                         id: 'evt-jan-1',
                         date: '2026-01-11',
-                        title: 'Kick-Off & Diagnostic Test Olimpiade Sains Nasional (OSN)',
+                        title: 'Kick-Off & Diagnostic Test OSN 9 Bidang Sains',
                         category: 'OSN',
                         jenjang: 'SMA',
                         jenjangLabel: 'SMA / MA / Sederajat',
@@ -1025,7 +1318,7 @@
                     {
                         id: 'evt-jan-2',
                         date: '2026-01-18',
-                        title: 'Webinar Strategi & Roadmap Lolos SNBT PTN Top Indonesia 2026',
+                        title: 'Webinar Strategi & Roadmap Lolos SNBT PTN Top 2026',
                         category: 'SNBT',
                         jenjang: 'SMA',
                         jenjangLabel: 'SMA / MA / SMK & Gap Year',
@@ -1044,7 +1337,7 @@
                     {
                         id: 'evt-jan-3',
                         date: '2026-01-25',
-                        title: 'In-House Training (IHT) Pengembangan Modul Kurikulum Merdeka',
+                        title: 'In-House Training (IHT) Modul Ajar Guru Mitra',
                         category: 'Mitra Sekolah',
                         jenjang: 'Guru / Instansi',
                         jenjangLabel: 'Guru & Tenaga Pendidik',
@@ -1103,7 +1396,7 @@
                     {
                         id: 'evt-feb-3',
                         date: '2026-02-22',
-                        title: 'Workshop Pembinaan Guru Pembimbing OSN Mitra Dinas Pendidikan',
+                        title: 'Workshop Pembinaan Guru Pembimbing OSN Mitra Dinas',
                         category: 'Event Dinas',
                         jenjang: 'Guru / Instansi',
                         jenjangLabel: 'Guru Sains SMP & SMA',
@@ -1181,7 +1474,7 @@
                     {
                         id: 'evt-mar-4',
                         date: '2026-03-28',
-                        title: 'Latihan Dasar Kepemimpinan Siswa (LDKS) & Character Building Mitra Sekolah',
+                        title: 'LDKS & Character Building Pengurus OSIS Mitra Sekolah',
                         category: 'Mitra Sekolah',
                         jenjang: 'SMA',
                         jenjangLabel: 'Pengurus OSIS & MPK SMA',
@@ -1261,7 +1554,7 @@
                     {
                         id: 'evt-mei-1',
                         date: '2026-05-10',
-                        title: 'Try Out Khusus Seleksi Mandiri PTN & Ujian Kedinasan (TKA + SKD)',
+                        title: 'Try Out Seleksi Mandiri PTN & Ujian Kedinasan (TKA + SKD)',
                         category: 'TKA',
                         jenjang: 'SMA',
                         jenjangLabel: 'SMA / MA / SMK & Gap Year',
@@ -1280,7 +1573,7 @@
                     {
                         id: 'evt-mei-2',
                         date: '2026-05-24',
-                        title: 'Seminar Nasional Transformasi Digital Asesmen Sekolah Bersama Disdik',
+                        title: 'Seminar Transformasi Digital Asesmen Sekolah Bersama Disdik',
                         category: 'Event Dinas',
                         jenjang: 'Guru / Instansi',
                         jenjangLabel: 'Kepala Sekolah & Operator Kurikulum',
@@ -1301,7 +1594,7 @@
                     {
                         id: 'evt-jun-1',
                         date: '2026-06-14',
-                        title: 'Summer Bootcamp OSN Nasional 2026 (Pelatda Menuju Medali)',
+                        title: 'Summer Bootcamp OSN Nasional 2026 (Pelatda Medalis)',
                         category: 'OSN',
                         jenjang: 'SMA',
                         jenjangLabel: 'Peserta OSN Nasional',
@@ -1341,7 +1634,7 @@
                     {
                         id: 'evt-jul-1',
                         date: '2026-07-19',
-                        title: 'Orientation & Academic Diagnostic Test Tahun Ajaran Baru 2026/2027',
+                        title: 'Orientation & Academic Diagnostic Test Tahun Ajaran Baru',
                         category: 'TKA',
                         jenjang: 'SMA',
                         jenjangLabel: 'Siswa Baru Kelas 10, 11, 12 SMA',
@@ -1360,7 +1653,7 @@
                     {
                         id: 'evt-jul-2',
                         date: '2026-07-26',
-                        title: 'Workshop Manajemen Bimbingan Belajar Sekolah Mitra (MPLS Academic Session)',
+                        title: 'Sesi Motivasi & Strategi Belajar Siswa Baru (MPLS Mitra Sekolah)',
                         category: 'Mitra Sekolah',
                         jenjang: 'SMA',
                         jenjangLabel: 'Siswa Baru SMA Mitra',
@@ -1381,7 +1674,7 @@
                     {
                         id: 'evt-agu-1',
                         date: '2026-08-16',
-                        title: 'Try Out Nasional Kemerdekaan SNBT & TKA 2027 Batch Early',
+                        title: 'Try Out Nasional Kemerdekaan SNBT 2027 (Batch Early)',
                         category: 'SNBT',
                         jenjang: 'SMA',
                         jenjangLabel: 'SMA Kelas 12 & Alumni',
@@ -1416,6 +1709,25 @@
                         ],
                         whatsappMessage: 'Halo Tim NLS, kami ingin mendaftar Pelatihan Guru Sains Dinas Pendidikan.'
                     },
+                    {
+                        id: 'evt-agu-3',
+                        date: '2026-08-27',
+                        title: 'Workshop Penguatan Literasi & Numerasi Berbasis CBT Sekolah',
+                        category: 'Mitra Sekolah',
+                        jenjang: 'SMP',
+                        jenjangLabel: 'Siswa SMP / MTs Mitra',
+                        time: '13:00 - 15:30 WIB',
+                        mode: 'Online (LMS CBT NLS)',
+                        location: 'Platform Digital NLS',
+                        badgeText: 'Mitra Sekolah',
+                        description: 'Penguatan penalaran dasar matematika dan literasi baca-tulis dalam format ujian berbasis komputer modern.',
+                        highlights: [
+                            'Latihan 50 soal literasi kontekstual',
+                            'Evaluasi realtime kecepatan pengerjaan per butir soal',
+                            'Sertifikat digital untuk seluruh peserta mitra'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, kami ingin mendaftar Workshop Literasi & Numerasi 27 Agustus 2026.'
+                    },
 
                     // --- SEPTEMBER 2026 ---
                     {
@@ -1440,7 +1752,7 @@
                     {
                         id: 'evt-sep-2',
                         date: '2026-09-27',
-                        title: 'Grand Pemetaan Akademik & Try Out Terpadu Mitra Sekolah Se-Jawa Barat',
+                        title: 'Grand Pemetaan Akademik & Try Out Terpadu Mitra Sekolah Se-Jabar',
                         category: 'Mitra Sekolah',
                         jenjang: 'SMA',
                         jenjangLabel: 'Siswa Kelas 10, 11, 12 Mitra',
@@ -1580,12 +1892,12 @@
 
                 // Init
                 init() {
-                    // Start on current month or default March 2026
+                    // Set active to August 2026 or current month
                     const now = new Date();
                     if (now.getFullYear() === 2026) {
                         this.currentMonth = now.getMonth();
                     } else {
-                        this.currentMonth = 2; // Maret 2026 default
+                        this.currentMonth = 7; // Agustus 2026 default
                     }
                 },
 
@@ -1627,6 +1939,11 @@
                     this.selectedDate = null;
                 },
 
+                setMonth(mIdx) {
+                    this.currentMonth = mIdx;
+                    this.selectedDate = null;
+                },
+
                 resetFilters() {
                     this.selectedCategory = 'all';
                     this.selectedJenjang = 'all';
@@ -1656,7 +1973,7 @@
                 goToToday() {
                     const now = new Date();
                     this.currentYear = 2026;
-                    this.currentMonth = now.getFullYear() === 2026 ? now.getMonth() : 2;
+                    this.currentMonth = now.getFullYear() === 2026 ? now.getMonth() : 7;
                     this.selectedDate = null;
                 },
 
@@ -1681,26 +1998,22 @@
                     return this.eventsInCurrentMonth();
                 },
 
-                // Calendar Cells Computation (7 Columns, Monday First)
+                // Calendar Cells Computation (7 Columns: Senin = 0, Minggu = 6)
                 get calendarCells() {
                     const cells = [];
                     const year = this.currentYear;
                     const month = this.currentMonth;
 
-                    // First day of month (0 = Sun, 1 = Mon, ..., 6 = Sat)
                     const firstDayObj = new Date(year, month, 1);
-                    let startDay = firstDayObj.getDay();
-                    // Shift so Monday = 0, Sunday = 6
-                    startDay = (startDay + 6) % 7;
+                    let startDay = firstDayObj.getDay(); // 0 = Sun, 1 = Mon ...
+                    startDay = (startDay + 6) % 7; // Monday = 0, Sunday = 6
 
-                    // Total days in current month
                     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-                    // Real today string
                     const now = new Date();
                     const realTodayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
-                    // Leading empty cells
+                    // Leading empty slots
                     for (let i = 0; i < startDay; i++) {
                         cells.push({
                             isEmpty: true,
@@ -1708,11 +2021,14 @@
                         });
                     }
 
-                    // Active month days
+                    // Days
                     for (let d = 1; d <= daysInMonth; d++) {
                         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                         const dayEvents = this.filteredEvents().filter(e => e.date === dateStr);
                         const isToday = (dateStr === realTodayStr);
+
+                        const dayOfWeek = (startDay + d - 1) % 7;
+                        const isWeekend = (dayOfWeek === 5 || dayOfWeek === 6); // Sabtu & Minggu
 
                         cells.push({
                             isEmpty: false,
@@ -1720,6 +2036,7 @@
                             dateStr: dateStr,
                             key: dateStr,
                             isToday: isToday,
+                            isWeekend: isWeekend,
                             events: dayEvents,
                             hasEvents: dayEvents.length > 0
                         });
@@ -1732,10 +2049,9 @@
                     if (cell.isEmpty) return;
                     if (cell.hasEvents) {
                         if (this.selectedDate === cell.dateStr) {
-                            this.selectedDate = null; // toggle off
+                            this.selectedDate = null;
                         } else {
                             this.selectedDate = cell.dateStr;
-                            // Smooth scroll to event detail section
                             const el = document.getElementById('detail-kegiatan');
                             if (el) {
                                 el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1746,55 +2062,44 @@
                     }
                 },
 
-                // Styling logic for calendar grid
                 getCellClasses(cell) {
                     if (cell.isEmpty) {
-                        return 'bg-transparent border-transparent opacity-0 pointer-events-none';
+                        return 'empty opacity-0 pointer-events-none border-transparent bg-transparent';
                     }
-
-                    const isSelected = this.selectedDate === cell.dateStr;
-                    let classes = 'border cursor-pointer ';
-
-                    if (isSelected) {
-                        classes += 'bg-primary/10 dark:bg-primary/20 border-primary ring-2 ring-primary shadow-md ';
-                    } else if (cell.hasEvents) {
-                        classes += 'bg-white dark:bg-[#1a2542] border-slate-300 dark:border-slate-600 hover:border-primary hover:shadow-md hover:scale-[1.02] ';
-                    } else {
-                        classes += 'bg-slate-50/70 dark:bg-[#0f172a]/50 border-slate-100 dark:border-slate-800 text-slate-400 hover:bg-white dark:hover:bg-[#1a2542] hover:border-slate-300 ';
-                    }
-
-                    return classes;
+                    let res = '';
+                    if (cell.isWeekend) res += ' weekend';
+                    if (cell.isToday) res += ' today';
+                    if (cell.hasEvents) res += ' has-events';
+                    if (this.selectedDate === cell.dateStr) res += ' selected';
+                    return res;
                 },
 
                 getDateNumberClasses(cell) {
                     if (this.selectedDate === cell.dateStr) {
-                        return 'text-primary font-black scale-110';
+                        return 'text-primary dark:text-sky-400 font-black scale-110';
                     }
                     if (cell.hasEvents) {
-                        return 'text-slate-900 dark:text-white font-extrabold';
+                        return 'text-slate-900 dark:text-white font-black';
                     }
-                    return 'text-slate-400 dark:text-slate-500 font-medium';
+                    if (cell.isWeekend) {
+                        return 'text-orange-600/80 dark:text-orange-400/80 font-bold';
+                    }
+                    return 'text-slate-600 dark:text-slate-400 font-semibold';
                 },
 
-                getEventChipStyle(evt) {
-                    switch (evt.category) {
-                        case 'OSN':
-                            return 'bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950/70 dark:text-sky-200 dark:border-sky-700';
-                        case 'SNBT':
-                            return 'bg-orange-100 text-orange-800 border-orange-300 dark:bg-orange-950/70 dark:text-orange-200 dark:border-orange-700';
-                        case 'TKA':
-                            return 'bg-teal-100 text-teal-800 border-teal-300 dark:bg-teal-950/70 dark:text-teal-200 dark:border-teal-700';
-                        case 'Mitra Sekolah':
-                            return 'bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-950/70 dark:text-purple-200 dark:border-purple-700';
-                        case 'Event Dinas':
-                            return 'bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950/70 dark:text-rose-200 dark:border-rose-700';
-                        default:
-                            return 'bg-slate-100 text-slate-800 border-slate-300';
+                getPillClass(cat) {
+                    switch (cat) {
+                        case 'OSN': return 'pill-osn';
+                        case 'SNBT': return 'pill-snbt';
+                        case 'TKA': return 'pill-tka';
+                        case 'Mitra Sekolah': return 'pill-mitra';
+                        case 'Event Dinas': return 'pill-dinas';
+                        default: return 'pill-osn';
                     }
                 },
 
-                getEventDotStyle(evt) {
-                    switch (evt.category) {
+                getCategoryDotClass(cat) {
+                    switch (cat) {
                         case 'OSN': return 'bg-[#0284c7]';
                         case 'SNBT': return 'bg-[#ea580c]';
                         case 'TKA': return 'bg-[#0d9488]';
