@@ -215,12 +215,14 @@ function initAlpineStores() {
                     this.formData.tingkatKelas = 'SMA Kelas 11';
                 }
                 this.showModal = true;
+                try { document.body.style.overflow = 'hidden'; } catch (e) {}
             },
             setPackage: function(pkgKey) {
                 this.activePackageKey = pkgKey;
             },
             close: function() {
                 this.showModal = false;
+                try { document.body.style.overflow = ''; } catch (e) {}
             },
             toggleArrayItem: function(arr, item) {
                 const idx = arr.indexOf(item);
