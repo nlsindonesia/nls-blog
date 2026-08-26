@@ -54,6 +54,37 @@
         [x-cloak] {
             display: none !important;
         }
+
+        .mentor-testimonial-card {
+            position: absolute;
+            bottom: -1.5rem;
+            right: -1rem;
+            max-width: 360px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1.5px solid rgba(226, 232, 240, 0.9);
+            border-radius: 1.5rem;
+            padding: 1.25rem 1.5rem;
+            box-shadow: 0 20px 40px -15px rgba(0, 46, 71, 0.2), 0 0 1px rgba(0,0,0,0.1);
+            z-index: 20;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: block !important;
+        }
+        @media (max-width: 767px) {
+            .mentor-testimonial-card {
+                position: relative;
+                bottom: auto;
+                right: auto;
+                max-width: 100%;
+                margin-top: 1rem;
+            }
+        }
+        html.dark .mentor-testimonial-card {
+            background: rgba(19, 29, 56, 0.95);
+            border-color: rgba(51, 65, 85, 0.9);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+        }
     </style>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -719,24 +750,22 @@
                                     src="/images/privat/mentor.jpg">
                             </div>
                             <!-- Testimonial Floating Card -->
-                            <div
-                                class="absolute -bottom-8 -right-4 sm:-right-8 bg-white/95 dark:bg-[#131d38]/95 backdrop-blur-xl p-5 sm:p-6 rounded-3xl max-w-[340px] sm:max-w-[370px] border border-slate-200/80 dark:border-slate-700/80 shadow-[0_20px_50px_rgba(0,46,71,0.16)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.6)] hidden md:block z-20 transition-all duration-300 hover:scale-[1.02]">
-                                
+                            <div class="mentor-testimonial-card">
                                 <!-- Testimonial Quote Text -->
                                 <p class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-200 font-semibold leading-relaxed mb-4">
                                     Disini mengajarkan cara prediksi soal, cara ambil soal bagus, cara manajemen waktu, baik waktu belajar ataupun waktu saat ujian. Gurunya pun cerdas dalam memainkan emosi kita, sehingga kita tidak cepat berpuas diri. Saya ambil privat intensif 1 bulan penuh. Saya tidak termasuk siswa eligible di sekolah.
                                 </p>
 
                                 <!-- Author Info -->
-                                <div class="flex items-center gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+                                <div class="flex items-center gap-3 pt-3 border-t border-slate-200/80 dark:border-slate-700/80">
                                     <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-sky-500 text-white flex items-center justify-center font-black text-sm shadow-xs shrink-0">
                                         <span class="icon-[mdi--account-school] text-xl"></span>
                                     </div>
                                     <div class="min-w-0">
                                         <h5 class="text-sm font-bold text-slate-900 dark:text-white leading-tight">Oslando</h5>
-                                        <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
+                                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
                                             Siswa privat lolos FK UNPAD via SNBT
-                                        </div>
+                                        </p>
                                     </div>
                                 </div>
                             </div>

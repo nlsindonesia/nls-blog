@@ -506,3 +506,35 @@ html.dark .theme-toggle-btn:hover {
     background: #273549;
     transform: scale(1.05);
 }
+
+/* Mentor Testimonial Floating Card on /privat */
+.mentor-testimonial-card {
+    position: absolute;
+    bottom: -1.5rem;
+    right: -1rem;
+    max-width: 360px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1.5px solid rgba(226, 232, 240, 0.9);
+    border-radius: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 20px 40px -15px rgba(0, 46, 71, 0.2), 0 0 1px rgba(0,0,0,0.1);
+    z-index: 20;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: block !important;
+}
+@media (max-width: 767px) {
+    .mentor-testimonial-card {
+        position: relative;
+        bottom: auto;
+        right: auto;
+        max-width: 100%;
+        margin-top: 1rem;
+    }
+}
+html.dark .mentor-testimonial-card {
+    background: rgba(19, 29, 56, 0.95);
+    border-color: rgba(51, 65, 85, 0.9);
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+}
