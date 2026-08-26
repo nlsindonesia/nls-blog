@@ -55,8 +55,72 @@ if (document.readyState === 'loading') {
 function initThemeButtons() {
     updateThemeIcons();
     document.querySelectorAll('.theme-toggle-btn').forEach(function(btn) {
-        // remove existing listeners if any
         btn.removeEventListener('click', toggleTheme);
         btn.addEventListener('click', toggleTheme);
     });
 }
+
+// Global Alpine Store for Program Registration & Consultation Modal
+document.addEventListener('alpine:init', function() {
+    if (window.Alpine) {
+        const defaultForm = {
+            kebutuhan: 'Privat',
+            nama: '',
+            jenjang: 'SD / Sederajat',
+            subjek: '',
+            wa: '',
+            catatan: ''
+        };
+
+        let savedForm = defaultForm;
+        try {
+            const raw = localStorage.getItem('nls_program_registration_form') || localStorage.getItem('nls_priv_registration_form');
+            if (raw) {
+                savedForm = Object.assign({}, defaultForm, JSON.parse(raw));
+            }
+        } catch (e) {}
+
+        window.Alpine.store('daftarPrivat', {
+            showRegistrationModal: false,
+            showToast: false,
+            toastMessage: 'Formulir berhasil diproses! Mengarahkan ke WhatsApp...',
+            form: savedForm,
+            submitForm: function() {
+                try {
+                    localStorage.setItem('nls_program_registration_form', JSON.stringify(this.form));
+                } catch (e) {}
+
+                const k = this.form.kebutuhan || 'Privat';
+                const n = this.form.nama || '-';
+                const j = this.form.jenjang || '-';
+                const s = this.form.subjek || '-';
+                const w = this.form.wa || '-';
+                const c = this.form.catatan || '-';
+
+                const lines = [
+                    'Halo Admin Next Level Study!',
+                    '',
+                    'Saya ingin mendaftar / konsultasi program:',
+                    `*Kebutuhan:* ${k}`,
+                    `*Nama / Instansi:* ${n}`,
+                    `*Jenjang Pendidikan:* ${j}`,
+                    `*Subjek yang Diminati:* ${s}`,
+                    `*Nomor WhatsApp:* ${w}`,
+                    `*Catatan Tambahan:* ${c}`,
+                    '',
+                    'Mohon informasi dan tindak lanjutnya. Terima kasih!'
+                ];
+
+                const waUrl = 'https://wa.me/6285163070002?text=' + encodeURIComponent(lines.join('\n'));
+                window.open(waUrl, '_blank');
+
+                this.showRegistrationModal = false;
+                this.showToast = true;
+                const self = this;
+                setTimeout(function() {
+                    self.showToast = false;
+                }, 4000);
+            }
+        });
+    }
+});
