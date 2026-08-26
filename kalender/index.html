@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -320,6 +320,109 @@
             border-color: #38bdf8;
             color: #ffffff;
         }
+
+        /* Category Filter Navigation Bar */
+        .category-filter-nav {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.375rem;
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 9999px;
+            box-shadow: 0 4px 20px -4px rgba(0, 46, 71, 0.08);
+        }
+        html.dark .category-filter-nav {
+            background: #131d38;
+            border-color: #273549;
+            box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.5);
+        }
+
+        .cat-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            height: 44px;
+            padding: 0 1.15rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 800;
+            color: #475569;
+            background: transparent;
+            border: 1.5px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            white-space: nowrap;
+        }
+        html.dark .cat-tab-btn {
+            color: #cbd5e1;
+        }
+        .cat-tab-btn:hover:not(.active) {
+            background: #f1f5f9;
+            color: #0f172a;
+            transform: translateY(-1px);
+        }
+        html.dark .cat-tab-btn:hover:not(.active) {
+            background: #1e293b;
+            color: #ffffff;
+        }
+
+        .cat-tab-btn .cat-count-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 24px;
+            height: 22px;
+            padding: 0 0.45rem;
+            border-radius: 9999px;
+            font-size: 0.6875rem;
+            font-weight: 800;
+            background: #f1f5f9;
+            color: #475569;
+            transition: all 0.2s ease;
+        }
+        html.dark .cat-tab-btn .cat-count-badge {
+            background: #1e293b;
+            color: #94a3b8;
+        }
+
+        /* Active States */
+        .cat-tab-btn.active {
+            transform: scale(1.02);
+            color: #ffffff !important;
+        }
+        .cat-tab-btn.active .cat-count-badge {
+            background: rgba(255, 255, 255, 0.25) !important;
+            color: #ffffff !important;
+        }
+
+        .cat-tab-btn.tab-all.active {
+            background: linear-gradient(135deg, #006493 0%, #004b70 100%);
+            box-shadow: 0 4px 14px rgba(0, 100, 147, 0.35);
+        }
+        .cat-tab-btn.tab-osn.active {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+        }
+        .cat-tab-btn.tab-snbt.active {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+        }
+        .cat-tab-btn.tab-tka.active {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+            box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35);
+        }
+        .cat-tab-btn.tab-mitra.active {
+            background: linear-gradient(135deg, #7c3aed 0%, #6b21a8 100%);
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+        }
+        .cat-tab-btn.tab-dinas.active {
+            background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+            box-shadow: 0 4px 14px rgba(225, 29, 72, 0.35);
+        }
     </style>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -615,44 +718,57 @@
                             Pantau jadwal try out, simulasi olimpiade, kelas bimbingan, serta kemitraan sekolah dan dinas pendidikan secara interaktif.
                         </p>
 
-                        <!-- Quick Category Pills -->
-                        <div class="flex flex-wrap items-center justify-center gap-2 text-xs font-bold">
-                            <button @click="setCategory('all')"
-                                class="px-3.5 py-1.5 rounded-full transition-all cursor-pointer border flex items-center gap-1.5"
-                                :class="selectedCategory === 'all' ? 'bg-primary text-white border-primary shadow-md scale-105' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-primary'">
-                                <span>✨ Semua</span>
-                                <span class="px-1.5 py-0.2 rounded-full text-[10px]" :class="selectedCategory === 'all' ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-700'" x-text="events.length"></span>
-                            </button>
-                            <button @click="setCategory('OSN')"
-                                class="px-3.5 py-1.5 rounded-full transition-all cursor-pointer border flex items-center gap-1.5"
-                                :class="selectedCategory === 'OSN' ? 'bg-[#0284c7] text-white border-[#0284c7] shadow-md scale-105' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-[#0284c7]'">
-                                <span>🏆 OSN</span>
-                                <span class="px-1.5 py-0.2 rounded-full text-[10px]" :class="selectedCategory === 'OSN' ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-700'" x-text="countByCategory('OSN')"></span>
-                            </button>
-                            <button @click="setCategory('SNBT')"
-                                class="px-3.5 py-1.5 rounded-full transition-all cursor-pointer border flex items-center gap-1.5"
-                                :class="selectedCategory === 'SNBT' ? 'bg-[#ea580c] text-white border-[#ea580c] shadow-md scale-105' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-[#ea580c]'">
-                                <span>🎯 SNBT</span>
-                                <span class="px-1.5 py-0.2 rounded-full text-[10px]" :class="selectedCategory === 'SNBT' ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-700'" x-text="countByCategory('SNBT')"></span>
-                            </button>
-                            <button @click="setCategory('TKA')"
-                                class="px-3.5 py-1.5 rounded-full transition-all cursor-pointer border flex items-center gap-1.5"
-                                :class="selectedCategory === 'TKA' ? 'bg-[#0d9488] text-white border-[#0d9488] shadow-md scale-105' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-[#0d9488]'">
-                                <span>📚 TKA</span>
-                                <span class="px-1.5 py-0.2 rounded-full text-[10px]" :class="selectedCategory === 'TKA' ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-700'" x-text="countByCategory('TKA')"></span>
-                            </button>
-                            <button @click="setCategory('Mitra Sekolah')"
-                                class="px-3.5 py-1.5 rounded-full transition-all cursor-pointer border flex items-center gap-1.5"
-                                :class="selectedCategory === 'Mitra Sekolah' ? 'bg-[#7c3aed] text-white border-[#7c3aed] shadow-md scale-105' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-[#7c3aed]'">
-                                <span>🏫 Mitra Sekolah</span>
-                                <span class="px-1.5 py-0.2 rounded-full text-[10px]" :class="selectedCategory === 'Mitra Sekolah' ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-700'" x-text="countByCategory('Mitra Sekolah')"></span>
-                            </button>
-                            <button @click="setCategory('Event Dinas')"
-                                class="px-3.5 py-1.5 rounded-full transition-all cursor-pointer border flex items-center gap-1.5"
-                                :class="selectedCategory === 'Event Dinas' ? 'bg-[#e11d48] text-white border-[#e11d48] shadow-md scale-105' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-[#e11d48]'">
-                                <span>🏛️ Event Dinas</span>
-                                <span class="px-1.5 py-0.2 rounded-full text-[10px]" :class="selectedCategory === 'Event Dinas' ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-700'" x-text="countByCategory('Event Dinas')"></span>
-                            </button>
+                        <!-- Quick Category Pills Nav -->
+                        <div class="flex justify-center mt-2">
+                            <div class="category-filter-nav">
+                                <button type="button" @click="setCategory('all')"
+                                    class="cat-tab-btn tab-all"
+                                    :class="selectedCategory === 'all' ? 'active' : ''">
+                                    <span class="text-base">✨</span>
+                                    <span>Semua</span>
+                                    <span class="cat-count-badge" x-text="events.length"></span>
+                                </button>
+
+                                <button type="button" @click="setCategory('OSN')"
+                                    class="cat-tab-btn tab-osn"
+                                    :class="selectedCategory === 'OSN' ? 'active' : ''">
+                                    <span class="text-base">🏆</span>
+                                    <span>OSN</span>
+                                    <span class="cat-count-badge" x-text="countByCategory('OSN')"></span>
+                                </button>
+
+                                <button type="button" @click="setCategory('SNBT')"
+                                    class="cat-tab-btn tab-snbt"
+                                    :class="selectedCategory === 'SNBT' ? 'active' : ''">
+                                    <span class="text-base">🎯</span>
+                                    <span>SNBT</span>
+                                    <span class="cat-count-badge" x-text="countByCategory('SNBT')"></span>
+                                </button>
+
+                                <button type="button" @click="setCategory('TKA')"
+                                    class="cat-tab-btn tab-tka"
+                                    :class="selectedCategory === 'TKA' ? 'active' : ''">
+                                    <span class="text-base">📚</span>
+                                    <span>TKA</span>
+                                    <span class="cat-count-badge" x-text="countByCategory('TKA')"></span>
+                                </button>
+
+                                <button type="button" @click="setCategory('Mitra Sekolah')"
+                                    class="cat-tab-btn tab-mitra"
+                                    :class="selectedCategory === 'Mitra Sekolah' ? 'active' : ''">
+                                    <span class="text-base">🏫</span>
+                                    <span>Mitra Sekolah</span>
+                                    <span class="cat-count-badge" x-text="countByCategory('Mitra Sekolah')"></span>
+                                </button>
+
+                                <button type="button" @click="setCategory('Event Dinas')"
+                                    class="cat-tab-btn tab-dinas"
+                                    :class="selectedCategory === 'Event Dinas' ? 'active' : ''">
+                                    <span class="text-base">🏛️</span>
+                                    <span>Event Dinas</span>
+                                    <span class="cat-count-badge" x-text="countByCategory('Event Dinas')"></span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
