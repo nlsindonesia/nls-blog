@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    NEXT LEVEL STUDY - COMPLETE ULTRA-HIGH CONTRAST DARK THEME ENGINE
    ========================================================================== */
 
@@ -537,4 +537,10 @@ html.dark .mentor-testimonial-card {
     background: rgba(19, 29, 56, 0.95);
     border-color: rgba(51, 65, 85, 0.9);
     box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+}
+
+
+/* Curved borders for Pricing Cards */
+.pricing-card-curved {
+    border-radius: 36px !important;
 }
