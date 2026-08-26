@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RDFS63LJMD"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-RDFS63LJMD');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/nls-logo.ico">
+    <link rel="canonical" href="https://next-level-study.com/cbt">
+    <meta name="description"
+        content="Platform Try Out CBT Online Terlengkap & Terakurat di Indonesia. Simulasi Ujian OSN, SNBT (UTBK IRT), dan TKA dengan soal asli, prediksi AI Next Level Study, soal kejutan, serta sistem ranking nasional & koin harian.">
+    <title>Try Out CBT Online - Simulasi Ujian OSN, SNBT & TKA Akurat | Next Level Study</title>
+
+    <!-- Open Graph / Meta -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Next Level Study">
+    <meta property="og:title" content="Try Out CBT Online - Simulasi Ujian OSN, SNBT & TKA Akurat | Next Level Study">
+    <meta property="og:description"
+        content="Simulasi CBT realistis untuk OSN, SNBT, dan TKA. Dilengkapi soal asli tahun lalu, soal prediksi alat khusus NLS, penilaian terbaru, dan ranking nasional. Akses gratis dengan koin login harian!">
+    <meta property="og:url" content="https://next-level-study.com/cbt">
+    <meta property="og:image" content="/nls-logo-300.png">
+    <meta property="og:locale" content="id_ID">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Try Out CBT Online - Simulasi Ujian OSN, SNBT & TKA | Next Level Study">
+    <meta name="twitter:description"
+        content="Platform Try Out CBT Online Terlengkap. Soal Asli, Prediksi AI, IRT Scoring, & Ranking Nasional.">
+    <meta name="twitter:image" content="/nls-logo-300.png">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind Config -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#006493",
+                        "primary-hover": "#004d73",
+                        "primary-fixed": "#cae6ff",
+                        "on-primary-fixed": "#001e30",
+                        "secondary": "#fe761b",
+                        "secondary-dark": "#9e4300",
+                        "surface": "#f8fafd",
+                        "surface-alt": "#eef3f8",
+                        "on-surface": "#181c1f",
+                        "on-surface-variant": "#495057",
+                        "deep-navy": "#0b1528",
+                        "cbt-amber": "#f59e0b",
+                        "cbt-emerald": "#10b981",
+                        "cbt-purple": "#8b5cf6"
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        html.dark .glass-panel {
+            background: rgba(19, 29, 56, 0.85);
+            border-color: rgba(51, 65, 85, 0.8);
+        }
+
+        .hero-glow {
+            background: radial-gradient(circle at 50% 30%, rgba(0, 100, 147, 0.15), transparent 70%);
+        }
+
+        .cbt-screen-grid {
+            background-size: 24px 24px;
+            background-image: linear-gradient(to right, rgba(0, 100, 147, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 100, 147, 0.05) 1px, transparent 1px);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+
+    <!-- Alpine.js & Theme JS -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="/theme.css" />
+    <script src="/theme.js"></script>
+</head>
+
+<body class="min-h-screen bg-surface font-sans text-on-surface flex flex-col selection:bg-primary selection:text-white"
+    x-data="{
+        activeCategory: 'snbt',
+        activeCbtQuestion: 1,
+        selectedAnswer: null,
+        isAnswerRagu: false,
+        coinClaimed: false,
+        coinBalance: 25,
+        streakDays: 4,
+        toOrderModal: false,
+        selectedPackage: 'Paket Intensif Try Out SNBT',
+        claimDailyCoin() {
+            if (!this.coinClaimed) {
+                this.coinBalance += 5;
+                this.streakDays += 1;
+                this.coinClaimed = true;
+            }
+        },
+        openOrder(pkgName) {
+            this.selectedPackage = pkgName;
+            this.toOrderModal = true;
+        }
+    }">
+
+    <!-- ===== NAVBAR ===== -->
+    <nav x-data="{ isMobileMenuOpen: false, activeDesktopMenu: null }" @click.outside="activeDesktopMenu = null"
+        class="sticky top-0 z-50 bg-white/95 dark:bg-[#0b132b]/95 backdrop-blur-md border-b border-gray-100 dark:border-slate-800 shadow-xs transition-colors">
+        <div class="max-w-7xl mx-auto flex justify-between items-center h-20 px-4 md:px-6">
+            <!-- Brand Logo -->
+            <a href="/" class="flex items-center gap-3 text-2xl font-extrabold text-primary tracking-tight hover:opacity-90 transition-opacity">
+                <img src="/nls-logo-300.png" alt="Next Level Study Logo" class="h-9 w-9 rounded-full object-cover shadow-xs">
+                <span class="dark:text-white">Next Level Study</span>
+            </a>
+
+            <!-- Desktop Menu -->
+            <div class="hidden lg:flex items-center gap-x-6 text-sm font-semibold text-on-surface-variant dark:text-slate-200">
+                <!-- Dropdown Bimbel -->
+                <div class="relative">
+                    <button type="button"
+                        class="inline-flex items-center gap-1.5 border-b-2 border-transparent pb-1 transition-colors hover:text-primary cursor-pointer"
+                        :class="activeDesktopMenu === 'bimbel' ? 'text-primary font-bold border-primary' : ''"
+                        @click.stop="activeDesktopMenu = activeDesktopMenu === 'bimbel' ? null : 'bimbel'">
+                        <span>Bimbel</span>
+                        <svg class="w-4 h-4 transition-transform duration-200" :class="activeDesktopMenu === 'bimbel' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+
+                    <div x-show="activeDesktopMenu === 'bimbel'" x-cloak
+                        x-transition:enter="transition ease-out duration-150"
+                        x-transition:enter-start="opacity-0 translate-y-1"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-100"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 translate-y-1"
+                        class="absolute left-0 top-full mt-2 w-64 rounded-2xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 shadow-xl z-50">
+                        <div class="flex flex-col gap-1">
+                            <a href="/osn" class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800" @click="activeDesktopMenu = null">
+                                <p class="font-bold text-on-background dark:text-white">Bimbel OSN</p>
+                                <p class="text-xs text-on-surface-variant dark:text-slate-400">Bimbingan Olimpiade Sains Nasional.</p>
+                            </a>
+                            <a href="/tka" class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800" @click="activeDesktopMenu = null">
+                                <p class="font-bold text-on-background dark:text-white">Bimbel TKA</p>
+                                <p class="text-xs text-on-surface-variant dark:text-slate-400">Bimbingan Tes Kemampuan Akademik.</p>
+                            </a>
+                            <a href="/snbt" class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800" @click="activeDesktopMenu = null">
+                                <p class="font-bold text-on-background dark:text-white">Bimbel SNBT</p>
+                                <p class="text-xs text-on-surface-variant dark:text-slate-400">Bimbingan Seleksi Nasional Berbasis Tes.</p>
+                            </a>
+                            <a href="/nexgen" class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800" @click="activeDesktopMenu = null">
+                                <p class="font-bold text-on-background dark:text-white">Nexgen Academy</p>
+                                <p class="text-xs text-on-surface-variant dark:text-slate-400">Bimbel offline produk Next Level Study Indonesia.</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Try Out CBT Menu Button -->
+                <div class="relative">
+                    <a href="/cbt"
+                        class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-100/90 dark:bg-sky-950/80 text-primary dark:text-sky-300 border border-primary/40 font-bold shadow-xs transition-all ring-2 ring-primary/20">
+                        <span class="flex h-2 w-2 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
+                        </span>
+                        <span class="text-sm">Try Out CBT</span>
+                        <span class="px-1.5 py-0.5 rounded-md bg-gradient-to-r from-secondary to-orange-600 text-white text-[10px] font-extrabold uppercase shadow-xs">PRO</span>
+                    </a>
+                </div>
+
+                <a href="/privat" class="border-b-2 border-transparent pb-1 transition-colors hover:text-primary">
+                    Privat
+                </a>
+
+                <a href="/tentang" class="border-b-2 border-transparent pb-1 transition-colors hover:text-primary">
+                    Tentang Kami
+                </a>
+
+                <!-- Dropdown Lainnya -->
+                <div class="relative">
+                    <button type="button"
+                        class="inline-flex items-center gap-1.5 border-b-2 border-transparent pb-1 transition-colors hover:text-primary cursor-pointer"
+                        :class="activeDesktopMenu === 'lainnya' ? 'text-primary font-bold border-primary' : ''"
+                        @click.stop="activeDesktopMenu = activeDesktopMenu === 'lainnya' ? null : 'lainnya'">
+                        <span>Lainnya</span>
+                        <svg class="w-4 h-4 transition-transform duration-200" :class="activeDesktopMenu === 'lainnya' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+
+                    <div x-show="activeDesktopMenu === 'lainnya'" x-cloak
+                        x-transition:enter="transition ease-out duration-150"
+                        x-transition:enter-start="opacity-0 translate-y-1"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-100"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 translate-y-1"
+                        class="absolute left-0 top-full mt-2 w-64 rounded-2xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 shadow-xl z-50">
+                        <div class="flex flex-col gap-1">
+                            <a href="/pengajar" class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800" @click="activeDesktopMenu = null">
+                                <p class="font-bold text-on-background dark:text-white">Profesional Teacher</p>
+                                <p class="text-xs text-on-surface-variant dark:text-slate-400">Tim guru &amp; mentor ahli berintegritas tinggi.</p>
+                            </a>
+                            <a href="/kalender" class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800" @click="activeDesktopMenu = null">
+                                <p class="font-bold text-on-background dark:text-white">Kalender Event</p>
+                                <p class="text-xs text-on-surface-variant dark:text-slate-400">Jadwal &amp; agenda kegiatan resmi Next Level Study Indonesia.</p>
+                            </a>
+                            <a href="/mitra" class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800" @click="activeDesktopMenu = null">
+                                <p class="font-bold text-on-background dark:text-white">Mitra</p>
+                                <p class="text-xs text-on-surface-variant dark:text-slate-400">Kemitraan sekolah, dinas, &amp; institusi.</p>
+                            </a>
+                            <a href="/blog" class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800" @click="activeDesktopMenu = null">
+                                <p class="font-bold text-on-background dark:text-white">Blog</p>
+                                <p class="text-xs text-on-surface-variant dark:text-slate-400">Artikel edukasi, tips, &amp; info kompetisi.</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header Action Controls -->
+            <div class="hidden lg:flex items-center gap-3">
+                <button type="button" class="theme-toggle-btn w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800" aria-label="Ubah Tema" title="Ubah Tema Gelap/Terang">
+                    <svg class="theme-toggle-dark-icon w-5 h-5 text-slate-700 dark:text-slate-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    <svg class="theme-toggle-light-icon w-5 h-5 hidden text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                </button>
+                <a href="https://wa.me/6285163070002?text=Halo%20Next%20Level%20Study,%20saya%20tertarik%20mengikuti%20Try%20Out%20CBT%20Online" target="_blank" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary to-sky-600 hover:from-primary-hover hover:to-sky-700 text-white font-bold text-sm shadow-md transition-all hover:scale-105 active:scale-95 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">play_circle</span>
+                    <span>Mulai CBT</span>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Hamburger Button -->
+            <div class="flex items-center gap-2 lg:hidden">
+                <button type="button" class="theme-toggle-btn w-9 h-9 rounded-full flex items-center justify-center border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800" aria-label="Ubah Tema">
+                    <svg class="theme-toggle-dark-icon w-4 h-4 text-slate-700 dark:text-slate-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    <svg class="theme-toggle-light-icon w-4 h-4 hidden text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                </button>
+                <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="p-2 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-800" aria-label="Buka Menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer -->
+        <div x-show="isMobileMenuOpen" x-cloak class="lg:hidden bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-4 py-4 space-y-3">
+            <a href="/cbt" class="block font-bold text-primary dark:text-sky-400 py-2 border-b border-gray-100 dark:border-slate-800">⚡ Try Out CBT Online (Aktif)</a>
+            <a href="/osn" class="block text-sm font-semibold py-1.5 text-slate-700 dark:text-slate-200">Bimbel OSN</a>
+            <a href="/tka" class="block text-sm font-semibold py-1.5 text-slate-700 dark:text-slate-200">Bimbel TKA</a>
+            <a href="/snbt" class="block text-sm font-semibold py-1.5 text-slate-700 dark:text-slate-200">Bimbel SNBT</a>
+            <a href="/privat" class="block text-sm font-semibold py-1.5 text-slate-700 dark:text-slate-200">Privat 1-on-1</a>
+            <a href="/kalender" class="block text-sm font-semibold py-1.5 text-slate-700 dark:text-slate-200">Kalender Event</a>
+            <a href="/pengajar" class="block text-sm font-semibold py-1.5 text-slate-700 dark:text-slate-200">Profil Mentor</a>
+            <a href="/tentang" class="block text-sm font-semibold py-1.5 text-slate-700 dark:text-slate-200">Tentang NLS</a>
+            <div class="pt-2">
+                <a href="https://wa.me/6285163070002?text=Halo%20Next%20Level%20Study,%20saya%20ingin%20daftar%20Try%20Out%20CBT" target="_blank" class="w-full py-2.5 bg-primary text-white font-bold rounded-xl text-center block text-sm shadow-md">
+                    Daftar Try Out via WhatsApp
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== HERO SECTION WITH LIVE CBT SIMULATION PREVIEW ===== -->
+    <header class="relative pt-12 pb-24 overflow-hidden hero-glow bg-gradient-to-b from-blue-50/60 via-white to-surface dark:from-slate-950 dark:via-[#0b132b] dark:to-slate-900">
+        <!-- Ambient decorative blobs -->
+        <div class="absolute top-10 left-1/2 -translate-x-1/2 w-[650px] h-[350px] bg-primary/10 dark:bg-sky-500/10 blur-[100px] rounded-full pointer-events-none -z-10"></div>
+        <div class="absolute top-40 right-10 w-72 h-72 bg-secondary/10 dark:bg-orange-500/10 blur-[80px] rounded-full pointer-events-none -z-10"></div>
+
+        <div class="max-w-7xl mx-auto px-4 md:px-6">
+            <!-- Header Badges -->
+            <div class="text-center max-w-3xl mx-auto space-y-5">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700">
+                    <span class="flex h-2.5 w-2.5 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                    </span>
+                    <span class="text-xs md:text-sm font-extrabold text-slate-800 dark:text-slate-100">
+                        Try Out Rutin Bulanan Resmi • Edisi 2026
+                    </span>
+                    <span class="px-2 py-0.5 rounded-full bg-secondary text-white text-[10px] font-black uppercase tracking-wider">
+                        Minimal 1x Sebulan
+                    </span>
+                </div>
+
+                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white leading-[1.15] tracking-tight">
+                    Simulasi CBT Paling <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-sky-500 to-secondary">Realistis &amp; Akurat</span> di Indonesia
+                </h1>
+
+                <p class="text-base sm:text-lg text-on-surface-variant dark:text-slate-300 leading-relaxed max-w-2xl mx-auto font-medium">
+                    Ukur kesiapanmu menghadapi seleksi sesungguhnya. Nikmati ribuan bank soal asli tahun lalu, soal prediksi alat khusus NLS, soal kejutan HOTS, sistem ranking nasional, serta sistem koin login gratis.
+                </p>
+
+                <!-- CTA Action Bar -->
+                <div class="flex flex-wrap justify-center items-center gap-4 pt-2">
+                    <a href="#cbt-simulasi" class="px-7 py-3.5 rounded-2xl bg-gradient-to-r from-primary to-sky-600 hover:from-primary-hover hover:to-sky-700 text-white font-bold text-sm sm:text-base shadow-lg shadow-primary/25 transition-all hover:scale-105 active:scale-95 flex items-center gap-2.5">
+                        <span class="material-symbols-outlined text-xl">play_arrow</span>
+                        <span>Coba Simulasi CBT Gratis</span>
+                    </a>
+                    <a href="#kategori-to" class="px-6 py-3.5 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-bold text-sm sm:text-base border border-slate-200 dark:border-slate-700 shadow-xs transition-all hover:scale-105 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-xl">category</span>
+                        <span>Pilih Jalur Ujian</span>
+                    </a>
+                    <a href="#sistem-koin" class="px-5 py-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 hover:bg-amber-100 font-bold text-sm sm:text-base border border-amber-200 dark:border-amber-800 transition-all flex items-center gap-2">
+                        <span class="material-symbols-outlined text-amber-500 text-xl">monetization_on</span>
+                        <span>Klaim Koin Harian</span>
+                    </a>
+                </div>
+
+                <!-- Daily Coin Claim Ribbon Widget -->
+                <div class="pt-4 max-w-xl mx-auto">
+                    <div class="p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 border border-amber-300/60 dark:border-amber-700/60 flex items-center justify-between gap-3 shadow-xs">
+                        <div class="flex items-center gap-3 text-left">
+                            <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-xs shrink-0 font-black">
+                                <span class="material-symbols-outlined text-2xl">stars</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">
+                                    Dompet Koin Belajar Kamu
+                                </div>
+                                <div class="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-1.5">
+                                    <span x-text="coinBalance">25</span> Koin NLS
+                                    <span class="text-xs text-slate-500 dark:text-slate-400 font-normal">
+                                        (Streak <span x-text="streakDays">4</span> Hari)
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <button @click="claimDailyCoin()"
+                            :disabled="coinClaimed"
+                            class="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-xs shrink-0"
+                            :class="coinClaimed ? 'bg-emerald-600 text-white cursor-default' : 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white hover:scale-105 active:scale-95 cursor-pointer'">
+                            <span x-show="!coinClaimed">+5 Koin Harian</span>
+                            <span x-show="coinClaimed">✓ Terklaim Hari Ini</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mock CBT Interface Card Preview -->
+            <div class="mt-14 max-w-5xl mx-auto" id="cbt-simulasi">
+                <div class="rounded-3xl bg-slate-900 border border-slate-800 shadow-[0_25px_60px_-15px_rgba(0,46,71,0.35)] overflow-hidden">
+                    <!-- Top CBT System Bar -->
+                    <div class="bg-slate-950 px-5 py-3.5 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 text-white">
+                        <div class="flex items-center gap-3">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            <span class="text-xs font-mono text-slate-400 font-bold ml-2">
+                                NLS CBT ENGINE v3.4 • SIMULASI RESMI
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-4 text-xs font-semibold">
+                            <span class="flex items-center gap-1.5 text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded-lg border border-emerald-800/60">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                                Sisa Waktu: 01:28:45
+                            </span>
+                            <span class="hidden sm:inline-block text-slate-400">Peserta: <strong class="text-white">Calon Juara NLS</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Main CBT Simulation Grid -->
+                    <div class="p-6 md:p-8 grid lg:grid-cols-12 gap-8 text-white cbt-screen-grid bg-slate-900">
+                        <!-- Left: Question Panel (8 Cols) -->
+                        <div class="lg:col-span-8 space-y-6">
+                            <!-- Question Header & Badges -->
+                            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-3 py-1 rounded-lg bg-primary text-white font-black text-sm">
+                                        Soal No. <span x-text="activeCbtQuestion">1</span>
+                                    </span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-purple-950 text-purple-300 border border-purple-800 text-xs font-bold">
+                                        🔥 Tipe HOTS Prediksi AI
+                                    </span>
+                                </div>
+                                <div class="text-xs text-slate-400 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[16px] text-amber-400">verified</span>
+                                    Format Resmi 2026
+                                </div>
+                            </div>
+
+                            <!-- Question Content -->
+                            <div class="space-y-4">
+                                <p class="text-sm sm:text-base text-slate-200 leading-relaxed font-medium">
+                                    Sebuah sistem pemeringkatan mengalokasikan bobot penalti dan tingkat kesulitan dinamis berbasis <em>Item Response Theory (IRT)</em>. Jika sebuah soal kategori kejutan memiliki tingkat diskriminasi tinggi (&alpha; = 1.85) dan tingkat kesukaran (&beta; = 1.20), strategi pemilihan soal manakah yang memberikan probabilitas peningkatan skor rasionalisasi PTN paling optimal?
+                                </p>
+
+                                <!-- Multiple Choice Radio Options -->
+                                <div class="space-y-2.5 pt-2">
+                                    <label @click="selectedAnswer = 'A'"
+                                        class="flex items-start gap-3.5 p-3.5 rounded-xl border transition-all cursor-pointer"
+                                        :class="selectedAnswer === 'A' ? 'bg-primary/20 border-primary text-white shadow-sm ring-1 ring-primary' : 'bg-slate-800/70 border-slate-700/80 hover:bg-slate-800 text-slate-300'">
+                                        <span class="w-6 h-6 rounded-full border flex items-center justify-center text-xs font-bold shrink-0 mt-0.5"
+                                            :class="selectedAnswer === 'A' ? 'bg-primary border-primary text-white' : 'border-slate-500 text-slate-400'">A</span>
+                                        <span class="text-xs sm:text-sm">Menuntaskan soal berbobot diskriminasi tinggi secara akurat dengan manajemen waktu terukur di 30 detik pertama.</span>
+                                    </label>
+
+                                    <label @click="selectedAnswer = 'B'"
+                                        class="flex items-start gap-3.5 p-3.5 rounded-xl border transition-all cursor-pointer"
+                                        :class="selectedAnswer === 'B' ? 'bg-primary/20 border-primary text-white shadow-sm ring-1 ring-primary' : 'bg-slate-800/70 border-slate-700/80 hover:bg-slate-800 text-slate-300'">
+                                        <span class="w-6 h-6 rounded-full border flex items-center justify-center text-xs font-bold shrink-0 mt-0.5"
+                                            :class="selectedAnswer === 'B' ? 'bg-primary border-primary text-white' : 'border-slate-500 text-slate-400'">B</span>
+                                        <span class="text-xs sm:text-sm">Melewati seluruh soal kejutan dan hanya berfokus pada soal dasar tanpa bobot IRT.</span>
+                                    </label>
+
+                                    <label @click="selectedAnswer = 'C'"
+                                        class="flex items-start gap-3.5 p-3.5 rounded-xl border transition-all cursor-pointer"
+                                        :class="selectedAnswer === 'C' ? 'bg-primary/20 border-primary text-white shadow-sm ring-1 ring-primary' : 'bg-slate-800/70 border-slate-700/80 hover:bg-slate-800 text-slate-300'">
+                                        <span class="w-6 h-6 rounded-full border flex items-center justify-center text-xs font-bold shrink-0 mt-0.5"
+                                            :class="selectedAnswer === 'C' ? 'bg-primary border-primary text-white' : 'border-slate-500 text-slate-400'">C</span>
+                                        <span class="text-xs sm:text-sm">Menjawab secara acak tanpa memperhatikan analisis distribusi peserta nasional.</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Bottom Action Navigation Controls -->
+                            <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-800">
+                                <button @click="activeCbtQuestion = Math.max(1, activeCbtQuestion - 1)" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 flex items-center gap-1 cursor-pointer">
+                                    <span class="material-symbols-outlined text-sm">arrow_back</span>
+                                    Sebelumnya
+                                </button>
+
+                                <button @click="isAnswerRagu = !isAnswerRagu"
+                                    class="px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+                                    :class="isAnswerRagu ? 'bg-amber-500 text-slate-950 font-black' : 'bg-amber-950/60 border border-amber-700 text-amber-300 hover:bg-amber-900/60'">
+                                    <span class="material-symbols-outlined text-sm">help_outline</span>
+                                    <span x-text="isAnswerRagu ? 'Ragu-ragu (Ditandai)' : 'Tandai Ragu-ragu'"></span>
+                                </button>
+
+                                <button @click="activeCbtQuestion = Math.min(20, activeCbtQuestion + 1)" class="px-5 py-2 rounded-xl bg-primary hover:bg-primary-hover text-xs font-bold text-white flex items-center gap-1 shadow-md cursor-pointer">
+                                    Selanjutnya
+                                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Right: Question Palette & Score Analytics (4 Cols) -->
+                        <div class="lg:col-span-4 bg-slate-950/90 p-5 rounded-2xl border border-slate-800 space-y-5 flex flex-col justify-between">
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Nomor Soal</h4>
+                                    <span class="text-[11px] text-emerald-400 font-semibold">20 Butir Soal</span>
+                                </div>
+
+                                <!-- Number Badges Grid (1-20) -->
+                                <div class="grid grid-cols-5 gap-2 text-xs font-bold">
+                                    <template x-for="i in 20" :key="i">
+                                        <button @click="activeCbtQuestion = i"
+                                            class="h-9 rounded-lg flex items-center justify-center transition-all cursor-pointer"
+                                            :class="{
+                                                'bg-primary text-white ring-2 ring-sky-400 font-black scale-105': activeCbtQuestion === i,
+                                                'bg-emerald-600 text-white': activeCbtQuestion !== i && i <= 3,
+                                                'bg-amber-500 text-slate-950 font-black': activeCbtQuestion !== i && i === 4 && isAnswerRagu,
+                                                'bg-slate-800 text-slate-400 hover:bg-slate-700': activeCbtQuestion !== i && i > 3
+                                            }"
+                                            x-text="i">
+                                        </button>
+                                    </template>
+                                </div>
+
+                                <!-- Legend -->
+                                <div class="grid grid-cols-3 gap-1.5 pt-2 text-[10px] text-slate-400">
+                                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-emerald-600"></span> Terjawab</span>
+                                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-amber-500"></span> Ragu-ragu</span>
+                                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-slate-800"></span> Belum</span>
+                                </div>
+                            </div>
+
+                            <!-- Live Assessment Feature Highlight Box -->
+                            <div class="p-3.5 rounded-xl bg-gradient-to-br from-primary/20 to-sky-900/30 border border-primary/40 space-y-2">
+                                <div class="flex items-center gap-1.5 text-xs font-extrabold text-sky-300">
+                                    <span class="material-symbols-outlined text-[16px]">leaderboard</span>
+                                    Live IRT &amp; Ranking Nasional
+                                </div>
+                                <p class="text-[11px] text-slate-300 leading-snug">
+                                    Hasil ujian langsung diproses dengan algoritma IRT resmi &amp; rasionalisasi pilihan prodi PTN impian.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== KEY VALUE PROPOSITIONS & KEUNGGULAN TRY OUT NEXT LEVEL ===== -->
+    <section class="py-20 md:py-28 bg-white dark:bg-[#0f182e] border-y border-slate-100 dark:border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 md:px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 dark:bg-sky-950/60 text-primary dark:text-sky-400 font-extrabold text-xs uppercase tracking-wider border border-primary/20">
+                    <span class="material-symbols-outlined text-[18px]">verified</span>
+                    Mengapa Harus Try Out di Next Level Study?
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+                    Standar Simulasi Terbaik untuk Hasil Ujian Nyata
+                </h2>
+                <p class="text-base text-on-surface-variant dark:text-slate-300 leading-relaxed font-medium">
+                    Kami merancang platform CBT bukan sekadar tempat latihan soal biasa, melainkan arena uji mental, akurasi, dan strategi waktu yang mencerminkan 100% atmosfer seleksi sebenarnya.
+                </p>
+            </div>
+
+            <!-- 6 Key Pillars Bento Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Pillar 1: Rutin Bulanan -->
+                <div class="p-8 rounded-3xl bg-surface dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
+                    <div class="w-14 h-14 rounded-2xl bg-blue-500/10 text-primary dark:text-sky-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-3xl">calendar_month</span>
+                    </div>
+                    <div class="inline-block px-2.5 py-1 rounded-md bg-blue-100 dark:bg-sky-950 text-primary dark:text-sky-300 text-[11px] font-black uppercase tracking-wider mb-3">
+                        Rutin &amp; Terjadwal
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">
+                        Try Out Rutin Bulanan
+                    </h3>
+                    <p class="text-sm text-on-surface-variant dark:text-slate-300 leading-relaxed">
+                        Diselenggarakan berkala minimal <strong>1 kali setiap bulan</strong> secara terstruktur. Memungkinkan siswa memantau progres kenaikan skor secara konsisten dari bulan ke bulan hingga hari H ujian.
+                    </p>
+                </div>
+
+                <!-- Pillar 2: Sistem Koin Gratis & Fleksibel -->
+                <div class="p-8 rounded-3xl bg-surface dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-3xl">toll</span>
+                    </div>
+                    <div class="inline-block px-2.5 py-1 rounded-md bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 text-[11px] font-black uppercase tracking-wider mb-3">
+                        Akses Fleksibel
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">
+                        Sistem Koin Login Harian
+                    </h3>
+                    <p class="text-sm text-on-surface-variant dark:text-slate-300 leading-relaxed">
+                        Nikmati try out secara <strong>GRATIS</strong> hanya dengan mengklaim koin login harian, atau beli paket koin tambahan dengan harga sangat terjangkau untuk akses paket ujian tanpa batas.
+                    </p>
+                </div>
+
+                <!-- Pillar 3: Tripple Source Question Bank -->
+                <div class="p-8 rounded-3xl bg-surface dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
+                    <div class="w-14 h-14 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-3xl">psychology</span>
+                    </div>
+                    <div class="inline-block px-2.5 py-1 rounded-md bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-300 text-[11px] font-black uppercase tracking-wider mb-3">
+                        Triple-Source Content
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">
+                        Soal Asli, Prediksi AI &amp; Kejutan
+                    </h3>
+                    <p class="text-sm text-on-surface-variant dark:text-slate-300 leading-relaxed">
+                        Kombinasi <strong>soal asli tahun lalu</strong>, <strong>soal prediksi tahun ini yang digenerate alat khusus NLS</strong>, dan <strong>soal kejutan berbobot HOTS</strong> untuk menguji daya adaptasi peserta.
+                    </p>
+                </div>
+
+                <!-- Pillar 4: 100% Mirip Situasi Asli -->
+                <div class="p-8 rounded-3xl bg-surface dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-3xl">devices</span>
+                    </div>
+                    <div class="inline-block px-2.5 py-1 rounded-md bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[11px] font-black uppercase tracking-wider mb-3">
+                        Format Realistis
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">
+                        Tampilan 100% Menyerupai Ujian
+                    </h3>
+                    <p class="text-sm text-on-surface-variant dark:text-slate-300 leading-relaxed">
+                        Tata letak nomor, tombol ragu-ragu, palet soal, hitung mundur waktu subtes, dan alur transisi dirancang persis menyerupai aplikasi resmi ujian SNPMB, Puspresnas, &amp; TKA.
+                    </p>
+                </div>
+
+                <!-- Pillar 5: Penilaian Aturan Terbaru -->
+                <div class="p-8 rounded-3xl bg-surface dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
+                    <div class="w-14 h-14 rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-3xl">tune</span>
+                    </div>
+                    <div class="inline-block px-2.5 py-1 rounded-md bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 text-[11px] font-black uppercase tracking-wider mb-3">
+                        Algoritma Resmi
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">
+                        Penilaian Sesuai Aturan Terbaru
+                    </h3>
+                    <p class="text-sm text-on-surface-variant dark:text-slate-300 leading-relaxed">
+                        Sistem skoring selalu di-update mengikuti kebijakan resmi penyelenggara, termasuk formula <strong>Item Response Theory (IRT)</strong> untuk UTBK dan standar passing grade olimpiade.
+                    </p>
+                </div>
+
+                <!-- Pillar 6: Ranking Nasional & Rasionalisasi PTN -->
+                <div class="p-8 rounded-3xl bg-surface dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
+                    <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-3xl">public</span>
+                    </div>
+                    <div class="inline-block px-2.5 py-1 rounded-md bg-cyan-100 dark:bg-cyan-950 text-cyan-800 dark:text-cyan-300 text-[11px] font-black uppercase tracking-wider mb-3">
+                        Analisis Lengkap
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">
+                        Ranking Nasional &amp; Rasionalisasi
+                    </h3>
+                    <p class="text-sm text-on-surface-variant dark:text-slate-300 leading-relaxed">
+                        Ketahui posisi peringkatmu di antara ribuan siswa se-Indonesia secara transparan, lengkap dengan rasionalisasi peluang lolos program studi dan universitas impian.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 3 KATEGORI UTAMA TRY OUT (OSN, SNBT, TKA) ===== -->
+    <section class="py-20 md:py-28 bg-surface-alt dark:bg-[#0b132b] scroll-mt-20" id="kategori-to">
+        <div class="max-w-7xl mx-auto px-4 md:px-6">
+            <div class="text-center max-w-3xl mx-auto mb-14 space-y-4">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary/10 text-secondary dark:text-orange-400 font-extrabold text-xs uppercase tracking-wider border border-secondary/20">
+                    <span class="material-symbols-outlined text-[18px]">workspace_premium</span>
+                    3 Jalur Utama Try Out Next Level
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+                    Pilih Simulasi Sesuai Target Prestasimu
+                </h2>
+                <p class="text-base text-on-surface-variant dark:text-slate-300 font-medium">
+                    Tiap program memiliki kurikulum bank soal, tingkat kesulitan, dan fitur pemeringkatan yang telah disesuaikan secara spesifik.
+                </p>
+
+                <!-- Category Switcher Tabs -->
+                <div class="inline-flex p-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm gap-2">
+                    <button @click="activeCategory = 'snbt'"
+                        class="px-6 py-2.5 rounded-xl font-bold text-sm transition-all cursor-pointer flex items-center gap-2"
+                        :class="activeCategory === 'snbt' ? 'bg-primary text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-primary'">
+                        <span class="material-symbols-outlined text-lg">school</span>
+                        <span>Try Out SNBT</span>
+                    </button>
+                    <button @click="activeCategory = 'tka'"
+                        class="px-6 py-2.5 rounded-xl font-bold text-sm transition-all cursor-pointer flex items-center gap-2"
+                        :class="activeCategory === 'tka' ? 'bg-primary text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-primary'">
+                        <span class="material-symbols-outlined text-lg">menu_book</span>
+                        <span>Try Out TKA</span>
+                    </button>
+                    <button @click="activeCategory = 'osn'"
+                        class="px-6 py-2.5 rounded-xl font-bold text-sm transition-all cursor-pointer flex items-center gap-2"
+                        :class="activeCategory === 'osn' ? 'bg-primary text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-primary'">
+                        <span class="material-symbols-outlined text-lg">emoji_events</span>
+                        <span>Try Out OSN</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab 1: Try Out SNBT (UTBK) -->
+            <div x-show="activeCategory === 'snbt'" x-transition class="space-y-8">
+                <div class="p-8 sm:p-12 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl grid lg:grid-cols-12 gap-10 items-center">
+                    <div class="lg:col-span-7 space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-xs font-black uppercase tracking-wider">
+                            🎯 Simulasi SNBT / UTBK Resmi
+                        </div>
+                        <h3 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white leading-tight">
+                            Try Out SNBT (UTBK) Terlengkap dengan Skor IRT &amp; Rasionalisasi Prodi
+                        </h3>
+                        <p class="text-sm sm:text-base text-on-surface-variant dark:text-slate-300 leading-relaxed">
+                            Mempersiapkanmu menaklukkan UTBK-SNBT dengan bank soal paling mutakhir yang menguji TPS (Penalaran Umum, Kuantitatif, Pemahaman Bacaan &amp; Menulis), Literasi Bahasa Indonesia &amp; Inggris, serta Penalaran Matematika.
+                        </p>
+
+                        <!-- Feature Highlights for SNBT -->
+                        <div class="grid sm:grid-cols-2 gap-4 pt-2">
+                            <div class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-emerald-600 text-xl shrink-0 mt-0.5">check_circle</span>
+                                <span class="text-xs sm:text-sm text-slate-700 dark:text-slate-200"><strong>Soal Asli Tahun Lalu:</strong> Rilis arsip soal riil UTBK terverifikasi.</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-emerald-600 text-xl shrink-0 mt-0.5">check_circle</span>
+                                <span class="text-xs sm:text-sm text-slate-700 dark:text-slate-200"><strong>Prediksi AI NLS:</strong> Soal digenerate via tool NLS Engine terakurat.</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-emerald-600 text-xl shrink-0 mt-0.5">check_circle</span>
+                                <span class="text-xs sm:text-sm text-slate-700 dark:text-slate-200"><strong>Soal-soal Kejutan:</strong> Format HOTS tak terduga penguji mental.</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-emerald-600 text-xl shrink-0 mt-0.5">check_circle</span>
+                                <span class="text-xs sm:text-sm text-slate-700 dark:text-slate-200"><strong>Ranking Jurusan &amp; PTN:</strong> Rasionalisasi jurusan di kampus impian.</span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-4 pt-4">
+                            <button @click="openOrder('Paket Try Out SNBT Premium')" class="px-6 py-3 rounded-xl bg-primary hover:bg-primary-hover text-white font-bold text-sm shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-2">
+                                <span class="material-symbols-outlined text-lg">login</span>
+                                <span>Ikuti Try Out SNBT Sekarang</span>
+                            </button>
+                            <a href="/snbt" class="px-5 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white font-bold text-sm hover:bg-slate-200 transition-colors">
+                                Info Program Bimbel SNBT →
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right Graphic / Stat Box -->
+                    <div class="lg:col-span-5 bg-gradient-to-br from-slate-900 to-blue-950 p-6 sm:p-8 rounded-3xl border border-slate-700 text-white space-y-6">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-sm font-bold text-sky-300 uppercase tracking-wider">Spesifikasi Try Out</h4>
+                            <span class="px-2.5 py-1 rounded-md bg-emerald-500 text-slate-950 font-black text-xs">Aktif</span>
+                        </div>
+                        <ul class="space-y-3.5 text-xs text-slate-200">
+                            <li class="flex justify-between pb-2 border-b border-slate-800">
+                                <span class="text-slate-400">Total Butir Soal</span>
+                                <span class="font-bold text-white">155 - 160 Soal HOTS</span>
+                            </li>
+                            <li class="flex justify-between pb-2 border-b border-slate-800">
+                                <span class="text-slate-400">Durasi Ujian</span>
+                                <span class="font-bold text-white">195 Menit (Sistem Subtes Terkunci)</span>
+                            </li>
+                            <li class="flex justify-between pb-2 border-b border-slate-800">
+                                <span class="text-slate-400">Model Penilaian</span>
+                                <span class="font-bold text-emerald-400">Item Response Theory (IRT)</span>
+                            </li>
+                            <li class="flex justify-between pb-2 border-b border-slate-800">
+                                <span class="text-slate-400">Fitur Analisis</span>
+                                <span class="font-bold text-white">Ranking Nasional &amp; Prodi PTN</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span class="text-slate-400">Akses Koin</span>
+                                <span class="font-bold text-amber-400">10 Koin / Batch Ujian</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Try Out TKA -->
+            <div x-show="activeCategory === 'tka'" x-transition class="space-y-8">
+                <div class="p-8 sm:p-12 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl grid lg:grid-cols-12 gap-10 items-center">
+                    <div class="lg:col-span-7 space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-xs font-black uppercase tracking-wider">
+                            📘 Tes Kemampuan Akademik (Saintek &amp; Soshum)
+                        </div>
+                        <h3 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white leading-tight">
+                            Try Out TKA dengan Soal Asli, Prediksi AI NLS &amp; Penilaian Nasional
+                        </h3>
+                        <p class="text-sm sm:text-base text-on-surface-variant dark:text-slate-300 leading-relaxed">
+                            Uji penguasaan konsep materi mata pelajaran Saintek (Matematika, Fisika, Kimia, Biologi) maupun Soshum (Sosiologi, Ekonomi, Geografi, Sejarah) sesuai standar ujian teranyar.
+                        </p>
+
+                        <!-- Feature Highlights for TKA -->
+                        <div class="grid sm:grid-cols-2 gap-4 pt-2">
+                            <div class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-blue-600 text-xl shrink-0 mt-0.5">check_circle</span>
+                                <span class="text-xs sm:text-sm text-slate-700 dark:text-slate-200"><strong>Soal Asli Tahun Lalu:</strong> Disusun dari bank arsip evaluasi akademik riil.</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-blue-600 text-xl shrink-0 mt-0.5">check_circle</span>
+                                <span class="text-xs sm:text-sm text-slate-700 dark:text-slate-200"><strong>Prediksi AI NLS:</strong> Soal dirancang via generator khusus Next Level Study.</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-blue-600 text-xl shrink-0 mt-0.5">check_circle</span>
+                                <span class="text-xs sm:text-sm text-slate-700 dark:text-slate-200"><strong>Soal Kejutan:</strong> Variasi kasus analitis &amp; komparatif mendalam.</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-blue-600 text-xl shrink-0 mt-0.5">check_circle</span>
+                                <span class="text-xs sm:text-sm text-slate-700 dark:text-slate-200"><strong>Penilaian Nasional:</strong> Evaluasi komparasi penguasaan materi se-Indonesia.</span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-4 pt-4">
+                            <button @click="openOrder('Paket Try Out TKA Premium')" class="px-6 py-3 rounded-xl bg-primary hover:bg-primary-hover text-white font-bold text-sm shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-2">
+                                <span class="material-symbols-outlined text-lg">login</span>
+                                <span>Ikuti Try Out TKA Sekarang</span>
+                            </button>
+                            <a href="/tka" class="px-5 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white font-bold text-sm hover:bg-slate-200 transition-colors">
+                                Info Program Bimbel TKA →
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right Graphic / Stat Box -->
+                    <div class="lg:col-span-5 bg-gradient-to-br from-slate-900 to-indigo-950 p-6 sm:p-8 rounded-3xl border border-slate-700 text-white space-y-6">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-sm font-bold text-blue-300 uppercase tracking-wider">Spesifikasi Try Out TKA</h4>
+                            <span class="px-2.5 py-1 rounded-md bg-blue-500 text-white font-black text-xs">Pilihan Terbuka</span>
+                        </div>
+                        <ul class="space-y-3.5 text-xs text-slate-200">
+                            <li class="flex justify-between pb-2 border-b border-slate-800">
+                                <span class="text-slate-400">Pilihan Rumpun</span>
+                                <span class="font-bold text-white">Saintek &amp; Soshum Lengkap</span>
+                            </li>
+                            <li class="flex justify-between pb-2 border-b border-slate-800">
+                                <span class="text-slate-400">Komposisi Soal</span>
+                                <span class="font-bold text-white">Soal Asli + Prediksi NLS AI</span>
+                            </li>
+                            <li class="flex justify-between pb-2 border-b border-slate-800">
+                                <span class="text-slate-400">Aturan Penilaian</span>
+                                <span class="font-bold text-sky-400">Aturan Standar Terbaru</span>
+                            </li>
+                            <li class="flex justify-between pb-2 border-b border-slate-800">
+                                <span class="text-slate-400">Fitur Skoring</span>
+                                <span class="font-bold text-white">Penilaian &amp; Peringkat Nasional</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span class="text-slate-400">Akses Koin</span>
+                                <span class="font-bold text-amber-400">8 Koin / Mata Ujian</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Try Out OSN -->
+            <div x-show="activeCategory === 'osn'" x-transition class="space-y-8">
+                <div class="p-8 sm:p-12 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl grid lg:grid-cols-12 gap-10 items-center">
+                    <div class="lg:col-span-7 space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 text-xs font-black uppercase tracking-wider">
+                            🏆 Olimpiade Sains Nasional (SD, SMP, SMA)
+                        </div>
+                        <h3 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white leading-tight">
+                            Try Out OSN dengan Prediksi Soal Tingkat Lanjut &amp; Ranking Nasional
+                        </h3>
+                        <p class="text-sm sm:text-base text-on-surface-variant dark:text-slate-300 leading-relaxed">
+                            Simulasi seleksi talenta sains 9 bidang OSN (Matematika, Fisika, Kimia, Biologi, Astronomi, Kebumian, Geografi, Informatika, Ekonomi) dengan bobot komputasi &amp; nalar tinggi.
+                        </p>
+
+                        <!-- Feature Highlights for OSN -->
+                        <div class="grid sm:grid-cols-2 gap-4 pt-2">
+                            <div class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-amber-500 text-xl shrink-0 mt-0.5">check_circle</span>
+                                <span class="text-xs sm:text-sm text-slate-700 dark:text-slate-200"><strong>Soal Prediksi Tahun Ini:</strong> Digenerate dengan alat khusus pakar olimpiade NLS.</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-amber-500 text-xl shrink-0 mt-0.5">check_circle</span>
+                                <span class="text-xs sm:text-sm text-slate-700 dark:text-slate-200"><strong>Soal Kejutan Bertaraf Tinggi:</strong> Menyerupai kompleksitas soal OSN-K, OSN-P &amp; Nasional.</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-amber-500 text-xl shrink-0 mt-0.5">check_circle</span>
+                                <span class="text-xs sm:text-sm text-slate-700 dark:text-slate-200"><strong>Aturan Resmi Puspresnas:</strong> Penilaian mengacu pada juknis olimpiade yang berlaku.</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-amber-500 text-xl shrink-0 mt-0.5">check_circle</span>
+                                <span class="text-xs sm:text-sm text-slate-700 dark:text-slate-200"><strong>Leaderboard Nasional:</strong> Tolok ukur peta persaingan medalis se-Indonesia.</span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-4 pt-4">
+                            <button @click="openOrder('Paket Try Out OSN Juara')" class="px-6 py-3 rounded-xl bg-primary hover:bg-primary-hover text-white font-bold text-sm shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-2">
+                                <span class="material-symbols-outlined text-lg">login</span>
+                                <span>Ikuti Try Out OSN Sekarang</span>
+                            </button>
+                            <a href="/osn" class="px-5 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white font-bold text-sm hover:bg-slate-200 transition-colors">
+                                Info Pelatihan &amp; Karantina OSN →
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right Graphic / Stat Box -->
+                    <div class="lg:col-span-5 bg-gradient-to-br from-slate-900 to-amber-950 p-6 sm:p-8 rounded-3xl border border-slate-700 text-white space-y-6">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-sm font-bold text-amber-300 uppercase tracking-wider">Spesifikasi Try Out OSN</h4>
+                            <span class="px-2.5 py-1 rounded-md bg-amber-500 text-slate-950 font-black text-xs">9 Bidang</span>
+                        </div>
+                        <ul class="space-y-3.5 text-xs text-slate-200">
+                            <li class="flex justify-between pb-2 border-b border-slate-800">
+                                <span class="text-slate-400">Jenjang Tersedia</span>
+                                <span class="font-bold text-white">SD, SMP, &amp; SMA Sederajat</span>
+                            </li>
+                            <li class="flex justify-between pb-2 border-b border-slate-800">
+                                <span class="text-slate-400">Tipe Soal</span>
+                                <span class="font-bold text-white">Pilihan Ganda &amp; Isian Singkat</span>
+                            </li>
+                            <li class="flex justify-between pb-2 border-b border-slate-800">
+                                <span class="text-slate-400">Aturan Penilaian</span>
+                                <span class="font-bold text-amber-400">Sesuai Regulasi Puspresnas</span>
+                            </li>
+                            <li class="flex justify-between pb-2 border-b border-slate-800">
+                                <span class="text-slate-400">Sistem Skoring</span>
+                                <span class="font-bold text-white">Ranking Nasional &amp; Passing Grade</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span class="text-slate-400">Akses Koin</span>
+                                <span class="font-bold text-amber-400">10 Koin / Bidang</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SISTEM KOIN & PAKET AKSES TRY OUT ===== -->
+    <section class="py-20 md:py-28 bg-white dark:bg-[#0f182e] border-y border-slate-100 dark:border-slate-800/80 scroll-mt-20" id="sistem-koin">
+        <div class="max-w-7xl mx-auto px-4 md:px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-300 font-extrabold text-xs uppercase tracking-wider border border-amber-500/20">
+                    <span class="material-symbols-outlined text-[18px]">monetization_on</span>
+                    Ekosistem Koin Belajar Next Level Study
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+                    Fleksibel: Gratis Koin Login atau Beli Koin Hemat
+                </h2>
+                <p class="text-base text-on-surface-variant dark:text-slate-300 font-medium leading-relaxed">
+                    Setiap siswa memiliki hak yang sama untuk menguji kemampuan. Kumpulkan koin setiap hari secara cuma-cuma atau beli paket bundling koin untuk akses tanpa batas.
+                </p>
+            </div>
+
+            <!-- 2-Column Mechanism Overview: Free vs Topup -->
+            <div class="grid lg:grid-cols-2 gap-8 mb-16">
+                <!-- Free Coin Box -->
+                <div class="p-8 rounded-3xl bg-gradient-to-br from-emerald-50/70 via-white to-emerald-50/30 dark:from-emerald-950/30 dark:via-slate-900 dark:to-slate-900 border border-emerald-200 dark:border-emerald-800/60 shadow-md space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center font-black">
+                                <span class="material-symbols-outlined text-2xl">redeem</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Cara Dapat Koin Gratis</h3>
+                                <p class="text-xs text-emerald-700 dark:text-emerald-300 font-semibold">100% Gratis Tanpa Syarat Rumit</p>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 text-xs font-black">FREE</span>
+                    </div>
+
+                    <ul class="space-y-3.5 text-sm text-slate-700 dark:text-slate-200">
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-emerald-600 text-lg shrink-0 mt-0.5">check_circle</span>
+                            <span><strong>Login Harian:</strong> Dapatkan +5 koin gratis setiap hari saat login akun NLS.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-emerald-600 text-lg shrink-0 mt-0.5">check_circle</span>
+                            <span><strong>Streak 7 Hari:</strong> Bonus +20 koin tambahan saat login 7 hari berturut-turut.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-emerald-600 text-lg shrink-0 mt-0.5">check_circle</span>
+                            <span><strong>Ajak Teman (Referral):</strong> Dapatkan +15 koin setiap teman yang mendaftar try out.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-emerald-600 text-lg shrink-0 mt-0.5">check_circle</span>
+                            <span><strong>Voucher Kemitraan Sekolah:</strong> Token koin massal bagi sekolah rekanan NLS.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Topup Coin Box -->
+                <div class="p-8 rounded-3xl bg-gradient-to-br from-amber-50/70 via-white to-amber-50/30 dark:from-amber-950/30 dark:via-slate-900 dark:to-slate-900 border border-amber-200 dark:border-amber-800/60 shadow-md space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-black">
+                                <span class="material-symbols-outlined text-2xl">shopping_cart</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Beli Paket Koin Tambahan</h3>
+                                <p class="text-xs text-amber-800 dark:text-amber-300 font-semibold">Instan, Praktis &amp; Akses Lengkap</p>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200 text-xs font-black">TOP UP</span>
+                    </div>
+
+                    <ul class="space-y-3.5 text-sm text-slate-700 dark:text-slate-200">
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-amber-500 text-lg shrink-0 mt-0.5">check_circle</span>
+                            <span><strong>Langsung Buka Semua Batch TO:</strong> Bebas pilih jadwal kapan saja tanpa menunggu koin harian.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-amber-500 text-lg shrink-0 mt-0.5">check_circle</span>
+                            <span><strong>Pembahasan Video Lengkap:</strong> Akses video pembahasan step-by-step dari mentor expert.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-amber-500 text-lg shrink-0 mt-0.5">check_circle</span>
+                            <span><strong>Sertifikat Resmi Skor IRT:</strong> Unduh e-certificate resmi untuk portofolio SNBP/prestasi.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-amber-500 text-lg shrink-0 mt-0.5">check_circle</span>
+                            <span><strong>Pembayaran Otomatis:</strong> QRIS, GoPay, OVO, ShopeePay, &amp; Transfer Bank / VA.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Pricing Tier Cards for Coin Packages -->
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Package 1: Pemula -->
+                <div class="p-8 rounded-3xl bg-surface dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between hover:shadow-xl transition-all">
+                    <div class="space-y-4">
+                        <span class="text-xs font-extrabold uppercase text-slate-500 dark:text-slate-400">Paket Pemula</span>
+                        <div class="flex items-baseline gap-1.5">
+                            <span class="text-3xl font-black text-slate-900 dark:text-white">Rp 25.000</span>
+                            <span class="text-xs text-slate-500">/ paket</span>
+                        </div>
+                        <p class="text-xs text-on-surface-variant dark:text-slate-300">Cocok untuk mencoba simulasi 1-2 sesi ujian lengkap.</p>
+                        <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 font-bold text-xs flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">monetization_on</span>
+                            <span>Dapat <strong>30 Koin NLS</strong></span>
+                        </div>
+                        <ul class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300 pt-2">
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-500 text-sm">check</span> Akses 3x Sesi Try Out Lengkap</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-500 text-sm">check</span> Skor IRT &amp; Kunci Jawaban</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-500 text-sm">check</span> Ranking Nasional Batch Berjalan</li>
+                        </ul>
+                    </div>
+                    <button @click="openOrder('Paket Koin Pemula (30 Koin - Rp 25.000)')" class="mt-6 w-full py-3 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer">
+                        Beli Paket Pemula
+                    </button>
+                </div>
+
+                <!-- Package 2: Intensif (Best Value) -->
+                <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border-2 border-primary shadow-xl flex flex-col justify-between relative hover:scale-105 transition-all">
+                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-primary to-sky-500 text-white text-[11px] font-black uppercase tracking-wider shadow-md">
+                        🔥 Paling Populer &amp; Hemat
+                    </div>
+                    <div class="space-y-4">
+                        <span class="text-xs font-extrabold uppercase text-primary dark:text-sky-400">Paket Intensif Juara</span>
+                        <div class="flex items-baseline gap-1.5">
+                            <span class="text-4xl font-black text-slate-900 dark:text-white">Rp 65.000</span>
+                            <span class="text-xs text-slate-500">/ paket</span>
+                        </div>
+                        <p class="text-xs text-on-surface-variant dark:text-slate-300">Pilihan terbaik untuk persiapan try out rutin bulanan.</p>
+                        <div class="p-3 rounded-xl bg-primary/10 text-primary dark:text-sky-300 font-bold text-xs flex items-center gap-2 border border-primary/20">
+                            <span class="material-symbols-outlined text-lg">monetization_on</span>
+                            <span>Dapat <strong>100 Koin NLS</strong> (Bonus +20 Koin)</span>
+                        </div>
+                        <ul class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300 pt-2">
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-500 text-sm">check</span> Akses 10x Sesi Try Out Bebas Pilih</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-500 text-sm">check</span> Pembahasan Detail &amp; Video Solusi</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-500 text-sm">check</span> Rasionalisasi Pilihan Prodi PTN</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-500 text-sm">check</span> E-Sertifikat Nilai Resmi NLS</li>
+                        </ul>
+                    </div>
+                    <button @click="openOrder('Paket Koin Intensif (100 Koin - Rp 65.000)')" class="mt-6 w-full py-3.5 rounded-xl bg-gradient-to-r from-primary to-sky-600 hover:from-primary-hover hover:to-sky-700 text-white font-black text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer">
+                        Beli Paket Intensif
+                    </button>
+                </div>
+
+                <!-- Package 3: Sultan Master -->
+                <div class="p-8 rounded-3xl bg-surface dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between hover:shadow-xl transition-all">
+                    <div class="space-y-4">
+                        <span class="text-xs font-extrabold uppercase text-slate-500 dark:text-slate-400">Paket Sultan Master</span>
+                        <div class="flex items-baseline gap-1.5">
+                            <span class="text-3xl font-black text-slate-900 dark:text-white">Rp 120.000</span>
+                            <span class="text-xs text-slate-500">/ paket</span>
+                        </div>
+                        <p class="text-xs text-on-surface-variant dark:text-slate-300">Akses tanpa batas untuk tim olimpiade &amp; pejuang PTN top.</p>
+                        <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 font-bold text-xs flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">monetization_on</span>
+                            <span>Dapat <strong>220 Koin NLS</strong> (Bonus +60 Koin)</span>
+                        </div>
+                        <ul class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300 pt-2">
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-500 text-sm">check</span> Akses Seluruh Batch Sepanjang Tahun</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-500 text-sm">check</span> Konsultasi 1-on-1 Rasionalisasi Prodi</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-500 text-sm">check</span> Akses Bank Soal Prediksi Khusus AI</li>
+                        </ul>
+                    </div>
+                    <button @click="openOrder('Paket Koin Sultan Master (220 Koin - Rp 120.000)')" class="mt-6 w-full py-3 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer">
+                        Beli Paket Sultan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== JADWAL TRY OUT BULANAN (TIMELINE) ===== -->
+    <section class="py-20 md:py-28 bg-surface-alt dark:bg-[#0b132b]">
+        <div class="max-w-7xl mx-auto px-4 md:px-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-14 gap-6">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary dark:text-sky-400 font-extrabold text-xs uppercase tracking-wider mb-3">
+                        📅 Kalender Try Out Bulanan
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+                        Jadwal Try Out CBT Terdekat
+                    </h2>
+                    <p class="text-sm text-on-surface-variant dark:text-slate-300 font-medium mt-1">
+                        Pilih tanggal ujian dan pasang pengingat agar tidak melewatkan ranking nasional.
+                    </p>
+                </div>
+                <a href="/kalender" class="inline-flex items-center gap-2 text-primary dark:text-sky-400 font-bold text-sm hover:underline">
+                    <span>Lihat Semua Kalender Event NLS</span>
+                    <span class="material-symbols-outlined text-base">arrow_forward</span>
+                </a>
+            </div>
+
+            <!-- Schedule List Cards -->
+            <div class="space-y-4">
+                <!-- Batch 1 -->
+                <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6 hover:border-primary transition-all">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-primary to-sky-500 text-white flex flex-col items-center justify-center font-black shrink-0">
+                            <span class="text-xs leading-none">MINGGU</span>
+                            <span class="text-lg leading-none mt-0.5">08</span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-extrabold uppercase">Pendaftaran Terbuka</span>
+                                <span class="text-xs text-slate-500 font-medium">Online CBT Platform</span>
+                            </div>
+                            <h4 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                                National Grand Try Out SNBT 2026 - Batch 1 (Full IRT Scoring)
+                            </h4>
+                            <p class="text-xs text-on-surface-variant dark:text-slate-400 mt-0.5">TPS, Literasi Bahasa, Penalaran Matematika • 10 Koin NLS</p>
+                        </div>
+                    </div>
+                    <button @click="openOrder('Pendaftaran TO SNBT Batch 1')" class="px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white font-bold text-xs uppercase tracking-wider shrink-0 shadow-xs cursor-pointer">
+                        Daftar Sesi
+                    </button>
+                </div>
+
+                <!-- Batch 2 -->
+                <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6 hover:border-primary transition-all">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex flex-col items-center justify-center font-black shrink-0">
+                            <span class="text-xs leading-none">SABTU</span>
+                            <span class="text-lg leading-none mt-0.5">14</span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px] font-extrabold uppercase">Olimpiade Sains</span>
+                                <span class="text-xs text-slate-500 font-medium">Semua Jenjang SD, SMP, SMA</span>
+                            </div>
+                            <h4 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                                Simulasi Akbar OSN-K 2026 (9 Bidang Sains &amp; Prediksi AI)
+                            </h4>
+                            <p class="text-xs text-on-surface-variant dark:text-slate-400 mt-0.5">Matematika, Fisika, Biologi, Kimia, dll • 10 Koin NLS</p>
+                        </div>
+                    </div>
+                    <button @click="openOrder('Pendaftaran TO OSN-K 2026')" class="px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white font-bold text-xs uppercase tracking-wider shrink-0 shadow-xs cursor-pointer">
+                        Daftar Sesi
+                    </button>
+                </div>
+
+                <!-- Batch 3 -->
+                <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6 hover:border-primary transition-all">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex flex-col items-center justify-center font-black shrink-0">
+                            <span class="text-xs leading-none">MINGGU</span>
+                            <span class="text-lg leading-none mt-0.5">22</span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 text-[10px] font-extrabold uppercase">Saintek &amp; Soshum</span>
+                                <span class="text-xs text-slate-500 font-medium">Evaluasi Nasional</span>
+                            </div>
+                            <h4 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                                Try Out Rutin Bulanan TKA Saintek &amp; Soshum
+                            </h4>
+                            <p class="text-xs text-on-surface-variant dark:text-slate-400 mt-0.5">Matematika, Fisika, Kimia, Biologi / Sosiologi, Ekonomi, Geografi, Sejarah • 8 Koin</p>
+                        </div>
+                    </div>
+                    <button @click="openOrder('Pendaftaran TO TKA Bulanan')" class="px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white font-bold text-xs uppercase tracking-wider shrink-0 shadow-xs cursor-pointer">
+                        Daftar Sesi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FAQ ACCORDION ===== -->
+    <section class="py-20 md:py-28 bg-white dark:bg-[#0f182e] border-t border-slate-100 dark:border-slate-800" x-data="{ activeFaq: null }">
+        <div class="max-w-4xl mx-auto px-4 md:px-6">
+            <div class="text-center mb-14 space-y-4">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary dark:text-sky-400 font-extrabold text-xs uppercase tracking-wider">
+                    ❓ Pertanyaan Umum
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+                    Frequently Asked Questions (FAQ)
+                </h2>
+                <p class="text-sm text-on-surface-variant dark:text-slate-300 font-medium">
+                    Semua yang perlu kamu ketahui tentang sistem Try Out CBT Next Level Study.
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- FAQ 1 -->
+                <div class="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden bg-surface dark:bg-slate-900 transition-colors">
+                    <button @click="activeFaq = activeFaq === 1 ? null : 1" class="w-full p-6 text-left font-bold text-slate-900 dark:text-white flex items-center justify-between gap-4 cursor-pointer">
+                        <span class="text-sm sm:text-base">Apakah Try Out CBT NLS benar-benar bisa diakses secara gratis?</span>
+                        <span class="material-symbols-outlined transition-transform duration-200" :class="activeFaq === 1 ? 'rotate-180 text-primary' : ''">expand_more</span>
+                    </button>
+                    <div x-show="activeFaq === 1" x-collapse>
+                        <div class="px-6 pb-6 text-xs sm:text-sm text-on-surface-variant dark:text-slate-300 leading-relaxed pt-2 border-t border-slate-100 dark:border-slate-800">
+                            Ya, 100% bisa. Anda dapat mengumpulkan koin secara gratis setiap hari hanya dengan login ke platform NLS. Koin yang terkumpul dapat langsung ditukarkan untuk membuka sesi Try Out SNBT, TKA, maupun OSN.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden bg-surface dark:bg-slate-900 transition-colors">
+                    <button @click="activeFaq = activeFaq === 2 ? null : 2" class="w-full p-6 text-left font-bold text-slate-900 dark:text-white flex items-center justify-between gap-4 cursor-pointer">
+                        <span class="text-sm sm:text-base">Bagaimana sistem penilaian IRT (Item Response Theory) dihitung?</span>
+                        <span class="material-symbols-outlined transition-transform duration-200" :class="activeFaq === 2 ? 'rotate-180 text-primary' : ''">expand_more</span>
+                    </button>
+                    <div x-show="activeFaq === 2" x-collapse>
+                        <div class="px-6 pb-6 text-xs sm:text-sm text-on-surface-variant dark:text-slate-300 leading-relaxed pt-2 border-t border-slate-100 dark:border-slate-800">
+                            Sistem IRT menghitung bobot nilai berdasarkan tingkat kesulitan setiap butir soal dan performa seluruh peserta ujian nasional. Soal yang dijawab benar oleh sedikit peserta akan bernilai lebih tinggi dibanding soal yang dijawab benar oleh banyak orang, persis seperti mekanisme resmi SNPMB.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden bg-surface dark:bg-slate-900 transition-colors">
+                    <button @click="activeFaq = activeFaq === 3 ? null : 3" class="w-full p-6 text-left font-bold text-slate-900 dark:text-white flex items-center justify-between gap-4 cursor-pointer">
+                        <span class="text-sm sm:text-base">Apakah perangkat HP atau tablet bisa digunakan untuk mengerjakan CBT?</span>
+                        <span class="material-symbols-outlined transition-transform duration-200" :class="activeFaq === 3 ? 'rotate-180 text-primary' : ''">expand_more</span>
+                    </button>
+                    <div x-show="activeFaq === 3" x-collapse>
+                        <div class="px-6 pb-6 text-xs sm:text-sm text-on-surface-variant dark:text-slate-300 leading-relaxed pt-2 border-t border-slate-100 dark:border-slate-800">
+                            Bisa. Platform CBT Next Level Study dirancang 100% responsif untuk semua perangkat (Laptop, PC Desktop, Tablet, dan Smartphone Android/iOS). Namun untuk simulasi ujian yang paling maksimal, kami merekomendasikan penggunaan laptop/PC.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden bg-surface dark:bg-slate-900 transition-colors">
+                    <button @click="activeFaq = activeFaq === 4 ? null : 4" class="w-full p-6 text-left font-bold text-slate-900 dark:text-white flex items-center justify-between gap-4 cursor-pointer">
+                        <span class="text-sm sm:text-base">Kapan hasil nilai dan ranking nasional diumumkan?</span>
+                        <span class="material-symbols-outlined transition-transform duration-200" :class="activeFaq === 4 ? 'rotate-180 text-primary' : ''">expand_more</span>
+                    </button>
+                    <div x-show="activeFaq === 4" x-collapse>
+                        <div class="px-6 pb-6 text-xs sm:text-sm text-on-surface-variant dark:text-slate-300 leading-relaxed pt-2 border-t border-slate-100 dark:border-slate-800">
+                            Skor mentah dapat langsung dilihat sesaat setelah ujian selesai. Sedangkan hasil pemeringkatan nasional lengkap beserta analisis rasionalisasi jurusan dirilis otomatis maksimal 1x24 jam setelah periode batch ujian ditutup.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FINAL CTA BANNER ===== -->
+    <section class="py-20 bg-gradient-to-r from-primary via-sky-800 to-deep-navy text-white text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(254,118,27,0.2),transparent_50%)] pointer-events-none"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10 space-y-6">
+            <h2 class="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+                Siap Raih Skor Tertinggi &amp; Kampus Impianmu?
+            </h2>
+            <p class="text-base sm:text-lg text-slate-200 max-w-2xl mx-auto font-medium">
+                Bergabunglah bersama ribuan siswa cerdas se-Indonesia. Mulai latihan CBT rutin hari ini dan rasakan lonjakan performa belajarmu!
+            </p>
+            <div class="pt-4 flex flex-wrap justify-center items-center gap-4">
+                <a href="https://wa.me/6285163070002?text=Halo%20Next%20Level%20Study,%20saya%20mau%20daftar%20Try%20Out%20CBT%20Online" target="_blank"
+                    class="px-8 py-4 rounded-2xl bg-secondary hover:bg-orange-600 text-white font-extrabold text-base shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-2xl">chat</span>
+                    <span>Daftar via WhatsApp Sekarang</span>
+                </a>
+                <a href="/" class="px-6 py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-base backdrop-blur-md transition-all">
+                    Kembali ke Beranda
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== MODAL PEMESANAN / REGISTRASI TRY OUT ===== -->
+    <div x-show="toOrderModal" x-cloak
+        x-effect="document.body.style.overflow = toOrderModal ? 'hidden' : ''"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div @click.away="toOrderModal = false" class="relative max-w-md w-full bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-5">
+            <button @click="toOrderModal = false" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white p-2" aria-label="Tutup">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <div class="space-y-2 text-center">
+                <div class="w-12 h-12 rounded-2xl bg-primary/10 text-primary mx-auto flex items-center justify-center">
+                    <span class="material-symbols-outlined text-2xl">verified_user</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Pendaftaran Try Out CBT NLS</h3>
+                <p class="text-xs text-on-surface-variant dark:text-slate-400" x-text="selectedPackage"></p>
+            </div>
+
+            <div class="space-y-3.5 text-xs text-slate-700 dark:text-slate-300">
+                <p>Klik tombol di bawah untuk terhubung langsung dengan Admin Resmi CBT Next Level Study via WhatsApp. Admin kami akan mengirimkan token akses ujian dan panduan login.</p>
+                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
+                    <div class="font-bold text-slate-900 dark:text-white">Official Support NLS:</div>
+                    <div class="text-primary dark:text-sky-400 font-semibold">WhatsApp: 0851-6307-0002</div>
+                </div>
+            </div>
+
+            <a :href="'https://wa.me/6285163070002?text=Halo%20Admin%20Next%20Level%20Study,%20saya%20ingin%20mengikuti%20' + encodeURIComponent(selectedPackage)"
+                target="_blank"
+                class="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-black text-sm uppercase tracking-wider text-center block shadow-lg transition-all hover:scale-105 active:scale-95">
+                Lanjut ke WhatsApp (085163070002)
+            </a>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="bg-[#0b1528] text-white pt-16 pb-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 md:px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-slate-800">
+                <!-- Brand & Address -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <img src="/nls-logo-300.png" alt="Next Level Study" class="w-10 h-10 rounded-full object-cover shadow-sm">
+                        <span class="text-xl font-extrabold text-white">Next Level Study</span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Lembaga bimbingan belajar, persiapan OSN &amp; SNBT, tryout CBT interaktif, dan les privat terbaik di Indonesia.
+                    </p>
+                    <div class="text-xs text-slate-400 space-y-1">
+                        <p class="font-semibold text-slate-200">Head Office:</p>
+                        <p>Jalan Pahlawan No. 26, Duren Jaya, Bekasi Timur, Jawa Barat 17111</p>
+                    </div>
+                </div>
+
+                <!-- Program Bimbel -->
+                <div class="space-y-3">
+                    <h5 class="text-sm font-bold text-white uppercase tracking-wider">Program Bimbingan</h5>
+                    <ul class="space-y-2 text-xs text-slate-400">
+                        <li><a href="/osn" class="hover:text-white transition-colors">Pelatihan &amp; Bimbel OSN</a></li>
+                        <li><a href="/snbt" class="hover:text-white transition-colors">Bimbel Intensif UTBK-SNBT</a></li>
+                        <li><a href="/tka" class="hover:text-white transition-colors">Tes Kemampuan Akademik (TKA)</a></li>
+                        <li><a href="/privat" class="hover:text-white transition-colors">Les Privat 1-on-1 Eksklusif</a></li>
+                        <li><a href="/nexgen" class="hover:text-white transition-colors">Nexgen Academy Offline</a></li>
+                    </ul>
+                </div>
+
+                <!-- Layanan CBT & Event -->
+                <div class="space-y-3">
+                    <h5 class="text-sm font-bold text-white uppercase tracking-wider">Layanan Try Out</h5>
+                    <ul class="space-y-2 text-xs text-slate-400">
+                        <li><a href="/cbt" class="hover:text-white font-bold text-sky-400 transition-colors">Try Out CBT Online</a></li>
+                        <li><a href="/kalender" class="hover:text-white transition-colors">Kalender Agenda Event</a></li>
+                        <li><a href="/mitra" class="hover:text-white transition-colors">Kemitraan Sekolah &amp; Dinas</a></li>
+                        <li><a href="/pengajar" class="hover:text-white transition-colors">Tim Pengajar Profesional</a></li>
+                        <li><a href="/blog" class="hover:text-white transition-colors">Blog &amp; Tips Belajar</a></li>
+                    </ul>
+                </div>
+
+                <!-- Hubungi Kami -->
+                <div class="space-y-3">
+                    <h5 class="text-sm font-bold text-white uppercase tracking-wider">Kontak Resmi</h5>
+                    <ul class="space-y-2 text-xs text-slate-400">
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm text-emerald-400">chat</span>
+                            <a href="https://wa.me/6285163070002" target="_blank" class="hover:text-white transition-colors">WhatsApp: 0851-6307-0002</a>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm text-blue-400">language</span>
+                            <a href="https://next-level-study.com" class="hover:text-white transition-colors">next-level-study.com</a>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm text-purple-400">support_agent</span>
+                            <span>Layanan Customer Care 24/7</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-4">
+                <p>&copy; 2026 Next Level Study Indonesia. All rights reserved.</p>
+                <div class="flex gap-6">
+                    <a href="/privacy" class="hover:text-slate-400 transition-colors">Privacy Policy</a>
+                    <a href="/terms" class="hover:text-slate-400 transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
