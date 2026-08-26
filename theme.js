@@ -137,7 +137,7 @@ function initAlpineStores() {
     }
 
     // 1.5. Store: paketPrivat (Adaptive Package Registration Modal)
-        if (!window.Alpine.store('paketPrivat')) {
+            if (!window.Alpine.store('paketPrivat')) {
         window.Alpine.store('paketPrivat', {
             showModal: false,
             activePackageKey: 'reguler',
@@ -145,8 +145,8 @@ function initAlpineStores() {
                 reguler: {
                     key: 'reguler',
                     title: 'Paket Reguler',
-                    tagline: 'Akademik Harian, TKA Pusmendik & Persiapan SNBT/Kedinasan',
-                    badge: 'Akademik & SNBT / Kedinasan',
+                    tagline: 'Pendampingan Kurikulum Nasional & Persiapan TKA (SD, SMP, SMA)',
+                    badge: 'Kurikulum Nasional & TKA',
                     price: 'Rp 120.000',
                     priceUnit: '/ Jam',
                     sessions: 'Ideal 8 sesi per bulan',
@@ -154,9 +154,9 @@ function initAlpineStores() {
                 },
                 intensif: {
                     key: 'intensif',
-                    title: 'Paket Intensif OSN & IB',
-                    tagline: 'OSN Kota/Kabupaten & Kurikulum IB/Cambridge (SD & SMP)',
-                    badge: 'OSN Kota & IB/Cambridge (SD & SMP)',
+                    title: 'Paket Exclusive',
+                    tagline: 'OSN Kota/Provinsi, Siswa SD/SMP Internasional & SNBT/Mandiri',
+                    badge: 'OSN Kota/Provinsi & SNBT',
                     price: 'Rp 160.000',
                     priceUnit: '/ Jam',
                     sessions: 'Ideal 10 sesi per bulan (Paling Diminati)',
@@ -164,9 +164,9 @@ function initAlpineStores() {
                 },
                 internasional: {
                     key: 'internasional',
-                    title: 'Paket Internasional & OSN+',
-                    tagline: 'OSN Provinsi/Nasional, Olimpiade Global & SMA+',
-                    badge: 'Olimpiade Dunia & Global (Tingkat SMA)',
+                    title: 'Paket Juara',
+                    tagline: 'OSN Semifinal/Final, SMA Internasional & Kompetisi Global (AMO, SEAMO)',
+                    badge: 'OSN Final & Global (AMO, SEAMO)',
                     price: 'Rp 200.000',
                     priceUnit: '/ Jam',
                     sessions: 'Bimbingan Champion Level Dunia',
@@ -186,15 +186,15 @@ function initAlpineStores() {
                 mataPelajaran: '',
                 
                 // Reguler Specifics
-                regulerFocus: ['Persiapan SNBT / Tes Mandiri PTN / Kedinasan', 'Pemantapan Konsep & Peningkatan Nilai Rapor'],
+                regulerFocus: ['Pendampingan Siswa Kurikulum Nasional', 'Persiapan TKA SD, SMP, SMA'],
                 regulerTargetKampus: '',
 
-                // Intensif Specifics
-                intensifFocus: ['Persiapan Olimpiade Sains Nasional (OSN-K / Kota / Kabupaten)', 'Kurikulum Cambridge (Primary / Lower Secondary / Checkpoint)'],
+                // Intensif (Exclusive) Specifics
+                intensifFocus: ['Persiapan OSN Tingkat Kota/Provinsi (SD, SMP, SMA)', 'Pendampingan Siswa SD/SMP Kurikulum Internasional', 'Persiapan SNBT / Mandiri'],
                 intensifExperience: 'Pemula (Mulai dari Nol / Fondasi Konsep)',
 
-                // Internasional Specifics
-                internasionalFocus: ['OSN Tingkat Provinsi & Nasional (OSN-P / OSNAS)', 'Kompetisi Matematika & Sains Global (AMO, SEAMO, TIMO, SASMO)'],
+                // Internasional (Juara) Specifics
+                internasionalFocus: ['Persiapan OSN Tingkat Semifinal/Final (SD, SMP, SMA)', 'Pendampingan Siswa SMA Kurikulum Internasional', 'Persiapan Kompetisi Internasional (AMO, SEAMO, TIMO, dll.)'],
                 internasionalTargetKampus: '',
 
                 // Scheduling
@@ -268,15 +268,15 @@ function initAlpineStores() {
                 text += 'â€¢ Mata Pelajaran: ' + this.formData.mataPelajaran + '\n';
                 
                 if (this.activePackageKey === 'reguler') {
-                    text += 'â€¢ Target Fokus: ' + (this.formData.regulerFocus.join(', ') || '-') + '\n';
+                    text += 'â€¢ Diperuntukkan Untuk: ' + (this.formData.regulerFocus.join(', ') || '-') + '\n';
                     if (this.formData.regulerTargetKampus.trim()) {
-                        text += 'â€¢ Target PTN/Kedinasan/Prodi: ' + this.formData.regulerTargetKampus + '\n';
+                        text += 'â€¢ Target Kampus/Sekolah: ' + this.formData.regulerTargetKampus + '\n';
                     }
                 } else if (this.activePackageKey === 'intensif') {
-                    text += 'â€¢ Fokus Kurikulum/Lomba: ' + (this.formData.intensifFocus.join(', ') || '-') + '\n';
+                    text += 'â€¢ Diperuntukkan Untuk: ' + (this.formData.intensifFocus.join(', ') || '-') + '\n';
                     text += 'â€¢ Pengalaman Olimpiade: ' + this.formData.intensifExperience + '\n';
                 } else if (this.activePackageKey === 'internasional') {
-                    text += 'â€¢ Target Kompetisi/Kurikulum: ' + (this.formData.internasionalFocus.join(', ') || '-') + '\n';
+                    text += 'â€¢ Diperuntukkan Untuk: ' + (this.formData.internasionalFocus.join(', ') || '-') + '\n';
                     if (this.formData.internasionalTargetKampus.trim()) {
                         text += 'â€¢ Target Kampus Dunia/PTN: ' + this.formData.internasionalTargetKampus + '\n';
                     }
