@@ -1334,386 +1334,389 @@
         </div>
     </footer>
 
-    <!-- Floating Action Button 'Daftar Program' -->
-    <div x-data class="fixed bottom-6 right-6 z-40">
-        <button type="button" @click="$store.daftarPrivat.modalOpen = true"
-            style="background: linear-gradient(135deg, #FF8A00 0%, #EA580C 100%) !important; color: #ffffff !important; box-shadow: 0 10px 25px -5px rgba(234, 88, 12, 0.5), 0 8px 10px -6px rgba(234, 88, 12, 0.5) !important;"
-            class="flex items-center gap-2.5 px-6 py-3.5 rounded-full font-black text-sm tracking-wide hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer border border-white/20">
-            <span class="icon-[mdi--school] text-xl"></span>
-            <span>Daftar Program</span>
-        </button>
-    </div>
+    <!-- Global Modals & Floating Action Button Container (Wrapped in x-data so Alpine properly compiles x-teleport) -->
+    <div x-data>
+        <!-- Floating Action Button 'Daftar Program' -->
+        <div class="fixed bottom-6 right-6 z-40">
+            <button type="button" @click="$store.daftarPrivat.showRegistrationModal = true; $store.daftarPrivat.modalOpen = true"
+                style="background: linear-gradient(135deg, #FF8A00 0%, #EA580C 100%) !important; color: #ffffff !important; box-shadow: 0 10px 25px -5px rgba(234, 88, 12, 0.5), 0 8px 10px -6px rgba(234, 88, 12, 0.5) !important;"
+                class="flex items-center gap-2.5 px-6 py-3.5 rounded-full font-black text-sm tracking-wide hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer border border-white/20">
+                <span class="icon-[mdi--school] text-xl"></span>
+                <span>Daftar Program</span>
+            </button>
+        </div>
 
-    <!-- Registration Modal with Kebutuhan options -->
-    <template x-teleport="body">
-        <div x-data x-show="$store.daftarPrivat.modalOpen" x-cloak
-            x-effect="document.body.style.overflow = $store.daftarPrivat.modalOpen ? 'hidden' : ''"
-            class="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
-            @keydown.escape.window="$store.daftarPrivat.modalOpen = false">
-            <div @click.away="$store.daftarPrivat.modalOpen = false"
-                class="relative w-full max-w-xl bg-white dark:bg-[#131D38] rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200/80 dark:border-slate-700/80 transform transition-all text-slate-900 dark:text-slate-100 max-h-[92vh] overflow-y-auto">
-                <button type="button" @click="$store.daftarPrivat.modalOpen = false"
-                    class="absolute top-5 right-5 w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center justify-center transition-colors cursor-pointer"
-                    aria-label="Tutup Modal">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
+        <!-- 1. Registration Modal with Kebutuhan options -->
+        <template x-teleport="body">
+            <div x-data x-show="$store.daftarPrivat.showRegistrationModal || $store.daftarPrivat.modalOpen" x-cloak
+                x-effect="document.body.style.overflow = ($store.daftarPrivat.showRegistrationModal || $store.daftarPrivat.modalOpen) ? 'hidden' : ''"
+                class="fixed inset-0 z-[100] overflow-y-auto bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
+                @keydown.escape.window="$store.daftarPrivat.showRegistrationModal = false; $store.daftarPrivat.modalOpen = false">
+                <div @click.away="$store.daftarPrivat.showRegistrationModal = false; $store.daftarPrivat.modalOpen = false"
+                    class="relative w-full max-w-xl bg-white dark:bg-[#131D38] rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200/80 dark:border-slate-700/80 transform transition-all text-slate-900 dark:text-slate-100 max-h-[92vh] overflow-y-auto">
+                    <button type="button" @click="$store.daftarPrivat.showRegistrationModal = false; $store.daftarPrivat.modalOpen = false"
+                        class="absolute top-5 right-5 w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center justify-center transition-colors cursor-pointer"
+                        aria-label="Tutup Modal">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
 
-                <div class="mb-6 pr-8">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 text-xs font-bold mb-2 border border-orange-200/60 dark:border-orange-800/40">
-                        <span class="icon-[mdi--sparkles]"></span>
-                        <span>Formulir Pendaftaran &amp; Konsultasi</span>
-                    </div>
-                    <h3 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Daftar Program &amp; Pengajar NLS</h3>
-                    <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Lengkapi data Anda untuk terhubung langsung dengan tim akademik via WhatsApp.</p>
-                </div>
-
-                <form @submit.prevent="$store.daftarPrivat.submit()" class="space-y-4">
-                    <!-- 1. Kebutuhan Dropdown -->
-                    <div class="space-y-1.5">
-                        <label class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                            <span class="icon-[mdi--target] text-primary text-base"></span>
-                            Kebutuhan Program <span class="text-red-500">*</span>
-                        </label>
-                        <div class="relative">
-                            <select x-model="$store.daftarPrivat.form.kebutuhan" required
-                                class="w-full appearance-none bg-slate-50 dark:bg-[#0B132B] text-slate-800 dark:text-slate-100 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none transition-all font-medium text-sm pr-10 cursor-pointer shadow-xs">
-                                <option value="Privat">Privat (1-on-1 Online / Tatap Muka)</option>
-                                <option value="Bimbel Online">Bimbel Online</option>
-                                <option value="Bimbel Offline">Bimbel Offline (Nexgen Academy)</option>
-                                <option value="Mitra Sekolah">Mitra Sekolah</option>
-                                <option value="Mitra Dinas">Mitra Dinas</option>
-                                <option value="Kerjasama Program khusus(Seperti penyediaan Try Out Sekolah)">Kerjasama Program Khusus (Penyediaan Try Out Sekolah, LDKS, dll)</option>
-                            </select>
-                            <span class="icon-[mdi--chevron-down] absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xl"></span>
+                    <div class="mb-6 pr-8">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 text-xs font-bold mb-2 border border-orange-200/60 dark:border-orange-800/40">
+                            <span class="icon-[mdi--sparkles]"></span>
+                            <span>Formulir Pendaftaran &amp; Konsultasi</span>
                         </div>
+                        <h3 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Daftar Program &amp; Pengajar NLS</h3>
+                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Lengkapi data Anda untuk terhubung langsung dengan tim akademik via WhatsApp.</p>
                     </div>
 
-                    <!-- 2. Nama Lengkap / Nama Instansi -->
-                    <div class="space-y-1.5">
-                        <label class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                            <span class="icon-[mdi--account-outline] text-primary text-base"></span>
-                            Nama Lengkap / Nama Instansi <span class="text-red-500">*</span>
-                        </label>
-                        <input x-model="$store.daftarPrivat.form.nama" required
-                            class="w-full bg-slate-50 dark:bg-[#0B132B] text-slate-800 dark:text-slate-100 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none transition-all font-medium text-sm shadow-xs"
-                            placeholder="Contoh: Budi Santoso / SMA Negeri 1 Jakarta" type="text">
-                    </div>
-
-                    <!-- 3. Jenjang Pendidikan & Subjek (2 Columns) -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <form @submit.prevent="$store.daftarPrivat.submitForm ? $store.daftarPrivat.submitForm() : $store.daftarPrivat.submit()" class="space-y-4">
+                        <!-- 1. Kebutuhan Dropdown -->
                         <div class="space-y-1.5">
                             <label class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                                <span class="icon-[mdi--school-outline] text-[#7C3AED] text-base"></span>
-                                Jenjang Pendidikan <span class="text-red-500">*</span>
+                                <span class="icon-[mdi--target] text-primary text-base"></span>
+                                Kebutuhan Program <span class="text-red-500">*</span>
                             </label>
                             <div class="relative">
-                                <select x-model="$store.daftarPrivat.form.jenjang" required
-                                    class="w-full appearance-none bg-slate-50 dark:bg-[#0B132B] text-slate-800 dark:text-slate-100 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-[#7C3AED] focus:border-transparent focus:outline-none transition-all font-medium text-sm pr-10 cursor-pointer shadow-xs">
-                                    <option value="SD / Sederajat">SD / Sederajat</option>
-                                    <option value="SMP / Sederajat">SMP / Sederajat</option>
-                                    <option value="SMA / Sederajat">SMA / Sederajat</option>
-                                    <option value="Perguruan Tinggi">Perguruan Tinggi</option>
-                                    <option value="Institusi / Sekolah / Dinas">Institusi / Sekolah / Dinas</option>
-                                    <option value="Umum">Umum</option>
+                                <select x-model="$store.daftarPrivat.form.kebutuhan" required
+                                    class="w-full appearance-none bg-slate-50 dark:bg-[#0B132B] text-slate-800 dark:text-slate-100 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none transition-all font-medium text-sm pr-10 cursor-pointer shadow-xs">
+                                    <option value="Privat">Privat (1-on-1 Online / Tatap Muka)</option>
+                                    <option value="Bimbel Online">Bimbel Online</option>
+                                    <option value="Bimbel Offline">Bimbel Offline (Nexgen Academy)</option>
+                                    <option value="Mitra Sekolah">Mitra Sekolah</option>
+                                    <option value="Mitra Dinas">Mitra Dinas</option>
+                                    <option value="Kerjasama Program khusus(Seperti penyediaan Try Out Sekolah)">Kerjasama Program Khusus (Penyediaan Try Out Sekolah, LDKS, dll)</option>
                                 </select>
                                 <span class="icon-[mdi--chevron-down] absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xl"></span>
                             </div>
                         </div>
 
+                        <!-- 2. Nama Lengkap / Nama Instansi -->
                         <div class="space-y-1.5">
                             <label class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                                <span class="icon-[mdi--book-open-variant-outline] text-[#059669] text-base"></span>
-                                Subjek yang Diminati <span class="text-red-500">*</span>
+                                <span class="icon-[mdi--account-outline] text-primary text-base"></span>
+                                Nama Lengkap / Nama Instansi <span class="text-red-500">*</span>
                             </label>
-                            <input x-model="$store.daftarPrivat.form.subjek" required
-                                class="w-full bg-slate-50 dark:bg-[#0B132B] text-slate-800 dark:text-slate-100 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-[#059669] focus:border-transparent focus:outline-none transition-all font-medium text-sm shadow-xs"
-                                placeholder="Contoh: Matematika OSN / SNBT" type="text">
+                            <input x-model="$store.daftarPrivat.form.nama" required
+                                class="w-full bg-slate-50 dark:bg-[#0B132B] text-slate-800 dark:text-slate-100 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none transition-all font-medium text-sm shadow-xs"
+                                placeholder="Contoh: Budi Santoso / SMA Negeri 1 Jakarta" type="text">
                         </div>
-                    </div>
 
-                    <!-- 4. Nomor WhatsApp -->
-                    <div class="space-y-1.5">
-                        <label class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                            <span class="icon-[mdi--whatsapp] text-[#16A34A] text-base"></span>
-                            Nomor WhatsApp <span class="text-red-500">*</span>
-                        </label>
-                        <input x-model="$store.daftarPrivat.form.wa" required
-                            class="w-full bg-slate-50 dark:bg-[#0B132B] text-slate-800 dark:text-slate-100 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-[#16A34A] focus:border-transparent focus:outline-none transition-all font-medium text-sm shadow-xs"
-                            placeholder="0812xxxxxxx" type="tel">
-                    </div>
+                        <!-- 3. Jenjang Pendidikan & Subjek (2 Columns) -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                                    <span class="icon-[mdi--school-outline] text-[#7C3AED] text-base"></span>
+                                    Jenjang Pendidikan <span class="text-red-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <select x-model="$store.daftarPrivat.form.jenjang" required
+                                        class="w-full appearance-none bg-slate-50 dark:bg-[#0B132B] text-slate-800 dark:text-slate-100 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-[#7C3AED] focus:border-transparent focus:outline-none transition-all font-medium text-sm pr-10 cursor-pointer shadow-xs">
+                                        <option value="SD / Sederajat">SD / Sederajat</option>
+                                        <option value="SMP / Sederajat">SMP / Sederajat</option>
+                                        <option value="SMA / Sederajat">SMA / Sederajat</option>
+                                        <option value="Perguruan Tinggi">Perguruan Tinggi</option>
+                                        <option value="Institusi / Sekolah / Dinas">Institusi / Sekolah / Dinas</option>
+                                        <option value="Umum">Umum</option>
+                                    </select>
+                                    <span class="icon-[mdi--chevron-down] absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xl"></span>
+                                </div>
+                            </div>
 
-                    <!-- 5. Catatan Tambahan -->
-                    <div class="space-y-1.5">
-                        <label class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                            <span class="icon-[mdi--message-text-outline] text-slate-500 text-base"></span>
-                            Catatan Tambahan <span class="text-xs text-slate-400 font-normal">(Opsional)</span>
-                        </label>
-                        <textarea x-model="$store.daftarPrivat.form.catatan"
-                            class="w-full bg-slate-50 dark:bg-[#0B132B] text-slate-800 dark:text-slate-100 px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none transition-all font-medium text-sm shadow-xs"
-                            placeholder="Ceritakan kebutuhan belajar, pilihan pengajar, atau rencana kerjasama..." rows="3"></textarea>
-                    </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                                    <span class="icon-[mdi--book-open-variant-outline] text-[#059669] text-base"></span>
+                                    Subjek yang Diminati <span class="text-red-500">*</span>
+                                </label>
+                                <input x-model="$store.daftarPrivat.form.subjek" required
+                                    class="w-full bg-slate-50 dark:bg-[#0B132B] text-slate-800 dark:text-slate-100 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-[#059669] focus:border-transparent focus:outline-none transition-all font-medium text-sm shadow-xs"
+                                    placeholder="Contoh: Matematika OSN / SNBT" type="text">
+                            </div>
+                        </div>
 
-                    <!-- Submit Button -->
-                    <div class="pt-2">
-                        <button type="submit"
-                            style="background: linear-gradient(135deg, #FF8A00 0%, #EA580C 100%) !important; color: #ffffff !important; box-shadow: 0 10px 25px rgba(234, 88, 12, 0.4) !important;"
-                            class="w-full py-3.5 px-6 rounded-2xl font-black text-base transition-all duration-200 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 cursor-pointer shadow-lg">
-                            <span class="icon-[mdi--whatsapp] text-2xl"></span>
-                            Kirim &amp; Konsultasi via WhatsApp
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </template>
+                        <!-- 4. Nomor WhatsApp -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                                <span class="icon-[mdi--whatsapp] text-[#16A34A] text-base"></span>
+                                Nomor WhatsApp <span class="text-red-500">*</span>
+                            </label>
+                            <input x-model="$store.daftarPrivat.form.wa" required
+                                class="w-full bg-slate-50 dark:bg-[#0B132B] text-slate-800 dark:text-slate-100 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-[#16A34A] focus:border-transparent focus:outline-none transition-all font-medium text-sm shadow-xs"
+                                placeholder="0812xxxxxxx" type="tel">
+                        </div>
 
-    <!-- Gabung Tim Pengajar NLS Application Modal (Detailed & Professional) -->
-    <template x-teleport="body">
-        <div x-data x-show="$store.gabungPengajar.modalOpen" x-cloak
-            x-effect="document.body.style.overflow = $store.gabungPengajar.modalOpen ? 'hidden' : ''"
-            class="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
-            @keydown.escape.window="$store.gabungPengajar.modalOpen = false">
-            <div @click.away="$store.gabungPengajar.modalOpen = false"
-                class="relative w-full max-w-2xl bg-white dark:bg-[#131D38] rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200/80 dark:border-slate-700/80 transform transition-all text-slate-900 dark:text-slate-100 max-h-[92vh] overflow-y-auto">
-                
-                <!-- Close Button -->
-                <button type="button" @click="$store.gabungPengajar.modalOpen = false"
-                    class="absolute top-5 right-5 w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center justify-center transition-colors cursor-pointer"
-                    aria-label="Tutup Modal">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
+                        <!-- 5. Catatan Tambahan -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                                <span class="icon-[mdi--message-text-outline] text-slate-500 text-base"></span>
+                                Catatan Tambahan <span class="text-xs text-slate-400 font-normal">(Opsional)</span>
+                            </label>
+                            <textarea x-model="$store.daftarPrivat.form.catatan"
+                                class="w-full bg-slate-50 dark:bg-[#0B132B] text-slate-800 dark:text-slate-100 px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none transition-all font-medium text-sm shadow-xs"
+                                placeholder="Ceritakan kebutuhan belajar, pilihan pengajar, atau rencana kerjasama..." rows="3"></textarea>
+                        </div>
 
-                <!-- Modal Header -->
-                <div class="mb-6 pr-8">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 text-xs font-bold mb-2 border border-orange-200/60 dark:border-orange-800/40">
-                        <span class="icon-[mdi--account-tie-voice]"></span>
-                        <span>Rekrutmen Guru &amp; Mentor Profesional</span>
-                    </div>
-                    <h3 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Formulir Profil Pengajar NLS</h3>
-                    <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Lengkapi data profil mengajar Anda secara detail untuk diproses oleh tim akademik Next Level Study via WhatsApp.</p>
+                        <!-- Submit Button -->
+                        <div class="pt-2">
+                            <button type="submit"
+                                style="background: linear-gradient(135deg, #FF8A00 0%, #EA580C 100%) !important; color: #ffffff !important; box-shadow: 0 10px 25px rgba(234, 88, 12, 0.4) !important;"
+                                class="w-full py-3.5 px-6 rounded-2xl font-black text-base transition-all duration-200 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 cursor-pointer shadow-lg text-white">
+                                <span class="icon-[mdi--whatsapp] text-2xl"></span>
+                                Kirim &amp; Konsultasi via WhatsApp
+                            </button>
+                        </div>
+                    </form>
                 </div>
-
-                <form @submit.prevent="$store.gabungPengajar.submit()" class="space-y-5">
-                    
-                    <!-- SECTION 1: Identitas & Kontak -->
-                    <div class="p-4 rounded-2xl bg-slate-50/70 dark:bg-[#1a2542]/60 border border-slate-200/70 dark:border-slate-700/60 space-y-3.5">
-                        <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-primary dark:text-sky-400">
-                            <span class="icon-[mdi--account-card-details-outline] text-base"></span>
-                            <span>1. Data Diri &amp; Latar Belakang Pendidikan</span>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                            <div>
-                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
-                                    Nama Lengkap &amp; Gelar <span class="text-rose-500">*</span>
-                                </label>
-                                <input x-model="$store.gabungPengajar.form.nama" required
-                                    class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs sm:text-sm font-semibold shadow-xs"
-                                    placeholder="Contoh: Citra Kirana Wardhani, M.Pd." type="text">
-                            </div>
-                            <div>
-                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
-                                    Nama Panggilan / Sapaan <span class="text-rose-500">*</span>
-                                </label>
-                                <input x-model="$store.gabungPengajar.form.panggilan" required
-                                    class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs sm:text-sm font-semibold shadow-xs"
-                                    placeholder="Contoh: Kak Citra" type="text">
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                            <div>
-                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
-                                    Nomor WhatsApp Aktif <span class="text-rose-500">*</span>
-                                </label>
-                                <input x-model="$store.gabungPengajar.form.wa" required
-                                    class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs sm:text-sm font-semibold shadow-xs"
-                                    placeholder="0812xxxxxxxx" type="tel">
-                            </div>
-                            <div>
-                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
-                                    Alamat Email Aktif <span class="text-rose-500">*</span>
-                                </label>
-                                <input x-model="$store.gabungPengajar.form.email" required
-                                    class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs sm:text-sm font-semibold shadow-xs"
-                                    placeholder="emailanda@gmail.com" type="email">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
-                                Asal Universitas, Jurusan &amp; Prestasi Akademik <span class="text-rose-500">*</span>
-                            </label>
-                            <input x-model="$store.gabungPengajar.form.pendidikan" required
-                                class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs sm:text-sm font-semibold shadow-xs"
-                                placeholder="Contoh: Pendidikan Bahasa & Sastra Univ. Indonesia (Cumlaude / Medalis)" type="text">
-                        </div>
-                    </div>
-
-                    <!-- SECTION 2: Bidang Keahlian, Program & Jenjang -->
-                    <div class="p-4 rounded-2xl bg-slate-50/70 dark:bg-[#1a2542]/60 border border-slate-200/70 dark:border-slate-700/60 space-y-3.5">
-                        <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-primary dark:text-sky-400">
-                            <span class="icon-[mdi--school] text-base"></span>
-                            <span>2. Bidang Keahlian &amp; Jenjang Sasaran</span>
-                        </div>
-
-                        <!-- Checkbox Bidang Keahlian & Program -->
-                        <div>
-                            <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1.5">
-                                Bidang Keahlian &amp; Program yang Dikuasai: <span class="text-rose-500">*</span>
-                            </label>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-primary transition-all">
-                                    <input type="checkbox" value="OSN" x-model="$store.gabungPengajar.form.categories" class="rounded text-primary focus:ring-primary">
-                                    <span class="font-bold">🏆 Spesialis OSN (Olimpiade Sains)</span>
-                                </label>
-                                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-primary transition-all">
-                                    <input type="checkbox" value="SNBT" x-model="$store.gabungPengajar.form.categories" class="rounded text-primary focus:ring-primary">
-                                    <span class="font-bold">🎯 Spesialis UTBK SNBT &amp; TPS</span>
-                                </label>
-                                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-primary transition-all">
-                                    <input type="checkbox" value="TKA" x-model="$store.gabungPengajar.form.categories" class="rounded text-primary focus:ring-primary">
-                                    <span class="font-bold">📚 Spesialis TKA &amp; Ujian Mandiri</span>
-                                </label>
-                                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-primary transition-all">
-                                    <input type="checkbox" value="Kurikulum Nasional" x-model="$store.gabungPengajar.form.categories" class="rounded text-primary focus:ring-primary">
-                                    <span class="font-bold">🇮🇩 Kurikulum Nasional (Merdeka/K13)</span>
-                                </label>
-                                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-primary transition-all sm:col-span-2">
-                                    <input type="checkbox" value="Kurikulum Internasional" x-model="$store.gabungPengajar.form.categories" class="rounded text-primary focus:ring-primary">
-                                    <span class="font-bold">🌍 Kurikulum Internasional (Cambridge / IB)</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Checkbox Sasaran Jenjang -->
-                        <div>
-                            <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1.5">
-                                Sasaran Jenjang Mengajar: <span class="text-rose-500">*</span>
-                            </label>
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                                <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-primary">
-                                    <input type="checkbox" value="SD" x-model="$store.gabungPengajar.form.jenjang" class="rounded text-primary">
-                                    <span class="font-bold">🎒 SD / MI</span>
-                                </label>
-                                <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-primary">
-                                    <input type="checkbox" value="SMP" x-model="$store.gabungPengajar.form.jenjang" class="rounded text-primary">
-                                    <span class="font-bold">📘 SMP / MTs</span>
-                                </label>
-                                <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-primary">
-                                    <input type="checkbox" value="SMA" x-model="$store.gabungPengajar.form.jenjang" class="rounded text-primary">
-                                    <span class="font-bold">🎓 SMA / SMK</span>
-                                </label>
-                                <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-primary">
-                                    <input type="checkbox" value="Guru / Instansi" x-model="$store.gabungPengajar.form.jenjang" class="rounded text-primary">
-                                    <span class="font-bold">🏛️ Guru / Instansi</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Spesialisasi Mata Pelajaran -->
-                        <div>
-                            <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
-                                Spesialisasi Mata Pelajaran Utama <span class="text-rose-500">*</span>
-                            </label>
-                            <input x-model="$store.gabungPengajar.form.subject" required
-                                class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs sm:text-sm font-semibold shadow-xs"
-                                placeholder="Contoh: Literasi Bahasa Indonesia, English for Academic & SNBT" type="text">
-                        </div>
-                    </div>
-
-                    <!-- SECTION 3: Fokus Kebutuhan Les Privat & Filosofi Mengajar -->
-                    <div class="p-4 rounded-2xl bg-slate-50/70 dark:bg-[#1a2542]/60 border border-slate-200/70 dark:border-slate-700/60 space-y-3.5">
-                        <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-primary dark:text-sky-400">
-                            <span class="icon-[mdi--target-account] text-base text-[#FF8A00]"></span>
-                            <span>3. Fokus Les Privat &amp; Filosofi Edukasi</span>
-                        </div>
-
-                        <div>
-                            <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
-                                Fokus Kebutuhan Les Privat yang Anda Berikan <span class="text-rose-500">*</span>
-                            </label>
-                            <textarea x-model="$store.gabungPengajar.form.fokusPrivat" required
-                                class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs sm:text-sm font-medium shadow-xs"
-                                placeholder="Contoh: Privat literasi teks kompleks SNBT, peningkatan nilai rapor Bahasa Kurikulum Merdeka, serta TOEFL/IELTS persiapan IUP..." rows="2"></textarea>
-                        </div>
-
-                        <div>
-                            <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
-                                Kutipan / Filosofi Mengajar Anda <span class="text-rose-500">*</span>
-                            </label>
-                            <input x-model="$store.gabungPengajar.form.filosofi" required
-                                class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs sm:text-sm font-semibold shadow-xs"
-                                placeholder="Contoh: Literasi kritis adalah pondasi integritas berpikir dan komunikasi seorang calon intelektual." type="text">
-                        </div>
-                    </div>
-
-                    <!-- SECTION 4: Rekam Jejak Prestasi & Link Portofolio -->
-                    <div class="p-4 rounded-2xl bg-slate-50/70 dark:bg-[#1a2542]/60 border border-slate-200/70 dark:border-slate-700/60 space-y-3.5">
-                        <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">
-                            <span class="icon-[mdi--trophy-award] text-base"></span>
-                            <span>4. Rekam Jejak, Prestasi &amp; Portofolio</span>
-                        </div>
-
-                        <div class="space-y-2">
-                            <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block">
-                                Tuliskan 3 Rekam Jejak / Prestasi Utama Anda: <span class="text-rose-500">*</span>
-                            </label>
-                            <div class="space-y-2">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-amber-500 font-black text-xs shrink-0">1.</span>
-                                    <input x-model="$store.gabungPengajar.form.prestasi1" required
-                                        class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium shadow-xs"
-                                        placeholder="Contoh: Penulis panduan strategi literasi membaca SNBT standar BPPP" type="text">
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-amber-500 font-black text-xs shrink-0">2.</span>
-                                    <input x-model="$store.gabungPengajar.form.prestasi2" required
-                                        class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium shadow-xs"
-                                        placeholder="Contoh: Instruktur privat bahasa Inggris akademik dan persiapan IUP PTN" type="text">
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-amber-500 font-black text-xs shrink-0">3.</span>
-                                    <input x-model="$store.gabungPengajar.form.prestasi3"
-                                        class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium shadow-xs"
-                                        placeholder="Contoh: Tingkat kepuasan bimbingan 4.98/5.0 dari ratusan siswa (Opsional)" type="text">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
-                                Link CV / Portofolio / LinkedIn <span class="text-xs text-slate-400 font-normal">(Google Drive / LinkedIn / Web)</span>
-                            </label>
-                            <input x-model="$store.gabungPengajar.form.portfolio"
-                                class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium shadow-xs"
-                                placeholder="https://drive.google.com/... atau https://linkedin.com/in/..." type="url">
-                        </div>
-                    </div>
-
-                    <!-- Pakta Integritas Pendidik -->
-                    <label class="flex items-start gap-2.5 p-3.5 rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/60 text-xs cursor-pointer text-slate-700 dark:text-slate-300">
-                        <input type="checkbox" required checked class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500">
-                        <span>Saya menyatakan bahwa seluruh informasi profil di atas adalah benar dan saya berkomitmen menjunjung tinggi kode etik kejujuran serta integritas akademik Next Level Study.</span>
-                    </label>
-
-                    <!-- Submit Action Button -->
-                    <div class="pt-2">
-                        <button type="submit"
-                            style="background: linear-gradient(135deg, #FF8A00 0%, #EA580C 100%) !important; color: #ffffff !important; box-shadow: 0 10px 25px rgba(234, 88, 12, 0.4) !important;"
-                            class="w-full py-3.5 px-6 rounded-2xl font-black text-sm sm:text-base transition-all duration-200 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 cursor-pointer shadow-lg text-white">
-                            <span class="icon-[mdi--whatsapp] text-2xl"></span>
-                            <span>Kirim Profil &amp; Ajukan ke WhatsApp Admin</span>
-                        </button>
-                    </div>
-                </form>
             </div>
-        </div>
-    </template>
+        </template>
+
+        <!-- 2. Gabung Tim Pengajar NLS Application Modal (Detailed & Professional) -->
+        <template x-teleport="body">
+            <div x-data x-show="$store.gabungPengajar.modalOpen || $store.gabungPengajar.showRegistrationModal" x-cloak
+                x-effect="document.body.style.overflow = ($store.gabungPengajar.modalOpen || $store.gabungPengajar.showRegistrationModal) ? 'hidden' : ''"
+                class="fixed inset-0 z-[100] overflow-y-auto bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
+                @keydown.escape.window="$store.gabungPengajar.modalOpen = false; $store.gabungPengajar.showRegistrationModal = false">
+                <div @click.away="$store.gabungPengajar.modalOpen = false; $store.gabungPengajar.showRegistrationModal = false"
+                    class="relative w-full max-w-2xl bg-white dark:bg-[#131D38] rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200/80 dark:border-slate-700/80 transform transition-all text-slate-900 dark:text-slate-100 max-h-[92vh] overflow-y-auto">
+                    
+                    <!-- Close Button -->
+                    <button type="button" @click="$store.gabungPengajar.modalOpen = false; $store.gabungPengajar.showRegistrationModal = false"
+                        class="absolute top-5 right-5 w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center justify-center transition-colors cursor-pointer"
+                        aria-label="Tutup Modal">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+
+                    <!-- Modal Header -->
+                    <div class="mb-6 pr-8">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 text-xs font-bold mb-2 border border-orange-200/60 dark:border-orange-800/40">
+                            <span class="icon-[mdi--account-tie-voice]"></span>
+                            <span>Rekrutmen Guru &amp; Mentor Profesional</span>
+                        </div>
+                        <h3 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Formulir Profil Pengajar NLS</h3>
+                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Lengkapi data profil mengajar Anda secara detail untuk diproses oleh tim akademik Next Level Study via WhatsApp.</p>
+                    </div>
+
+                    <form @submit.prevent="$store.gabungPengajar.submit ? $store.gabungPengajar.submit() : $store.gabungPengajar.submitForm()" class="space-y-5">
+                        
+                        <!-- SECTION 1: Identitas & Kontak -->
+                        <div class="p-4 rounded-2xl bg-slate-50/70 dark:bg-[#1a2542]/60 border border-slate-200/70 dark:border-slate-700/60 space-y-3.5">
+                            <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-primary dark:text-sky-400">
+                                <span class="icon-[mdi--account-card-details-outline] text-base"></span>
+                                <span>1. Data Diri &amp; Latar Belakang Pendidikan</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                                        Nama Lengkap &amp; Gelar <span class="text-rose-500">*</span>
+                                    </label>
+                                    <input x-model="$store.gabungPengajar.form.nama" required
+                                        class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs sm:text-sm font-semibold shadow-xs"
+                                        placeholder="Contoh: Citra Kirana Wardhani, M.Pd." type="text">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                                        Nama Panggilan / Sapaan <span class="text-rose-500">*</span>
+                                    </label>
+                                    <input x-model="$store.gabungPengajar.form.panggilan" required
+                                        class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs sm:text-sm font-semibold shadow-xs"
+                                        placeholder="Contoh: Kak Citra" type="text">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                                        Nomor WhatsApp Aktif <span class="text-rose-500">*</span>
+                                    </label>
+                                    <input x-model="$store.gabungPengajar.form.wa" required
+                                        class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs sm:text-sm font-semibold shadow-xs"
+                                        placeholder="0812xxxxxxxx" type="tel">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                                        Alamat Email Aktif <span class="text-rose-500">*</span>
+                                    </label>
+                                    <input x-model="$store.gabungPengajar.form.email" required
+                                        class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs sm:text-sm font-semibold shadow-xs"
+                                        placeholder="emailanda@gmail.com" type="email">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                                    Asal Universitas, Jurusan &amp; Prestasi Akademik <span class="text-rose-500">*</span>
+                                </label>
+                                <input x-model="$store.gabungPengajar.form.pendidikan" required
+                                    class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs sm:text-sm font-semibold shadow-xs"
+                                    placeholder="Contoh: Pendidikan Bahasa & Sastra Univ. Indonesia (Cumlaude / Medalis)" type="text">
+                            </div>
+                        </div>
+
+                        <!-- SECTION 2: Bidang Keahlian, Program & Jenjang -->
+                        <div class="p-4 rounded-2xl bg-slate-50/70 dark:bg-[#1a2542]/60 border border-slate-200/70 dark:border-slate-700/60 space-y-3.5">
+                            <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-primary dark:text-sky-400">
+                                <span class="icon-[mdi--school] text-base"></span>
+                                <span>2. Bidang Keahlian &amp; Jenjang Sasaran</span>
+                            </div>
+
+                            <!-- Checkbox Bidang Keahlian & Program -->
+                            <div>
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1.5">
+                                    Bidang Keahlian &amp; Program yang Dikuasai: <span class="text-rose-500">*</span>
+                                </label>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                                    <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-primary transition-all">
+                                        <input type="checkbox" value="OSN" x-model="$store.gabungPengajar.form.categories" class="rounded text-primary focus:ring-primary">
+                                        <span class="font-bold">🏆 Spesialis OSN (Olimpiade Sains)</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-primary transition-all">
+                                        <input type="checkbox" value="SNBT" x-model="$store.gabungPengajar.form.categories" class="rounded text-primary focus:ring-primary">
+                                        <span class="font-bold">🎯 Spesialis UTBK SNBT &amp; TPS</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-primary transition-all">
+                                        <input type="checkbox" value="TKA" x-model="$store.gabungPengajar.form.categories" class="rounded text-primary focus:ring-primary">
+                                        <span class="font-bold">📚 Spesialis TKA &amp; Ujian Mandiri</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-primary transition-all">
+                                        <input type="checkbox" value="Kurikulum Nasional" x-model="$store.gabungPengajar.form.categories" class="rounded text-primary focus:ring-primary">
+                                        <span class="font-bold">🇮🇩 Kurikulum Nasional (Merdeka/K13)</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-primary transition-all sm:col-span-2">
+                                        <input type="checkbox" value="Kurikulum Internasional" x-model="$store.gabungPengajar.form.categories" class="rounded text-primary focus:ring-primary">
+                                        <span class="font-bold">🌍 Kurikulum Internasional (Cambridge / IB)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Checkbox Sasaran Jenjang -->
+                            <div>
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1.5">
+                                    Sasaran Jenjang Mengajar: <span class="text-rose-500">*</span>
+                                </label>
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                                    <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-primary">
+                                        <input type="checkbox" value="SD" x-model="$store.gabungPengajar.form.jenjang" class="rounded text-primary">
+                                        <span class="font-bold">🎒 SD / MI</span>
+                                    </label>
+                                    <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-primary">
+                                        <input type="checkbox" value="SMP" x-model="$store.gabungPengajar.form.jenjang" class="rounded text-primary">
+                                        <span class="font-bold">📘 SMP / MTs</span>
+                                    </label>
+                                    <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-primary">
+                                        <input type="checkbox" value="SMA" x-model="$store.gabungPengajar.form.jenjang" class="rounded text-primary">
+                                        <span class="font-bold">🎓 SMA / SMK</span>
+                                    </label>
+                                    <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-primary">
+                                        <input type="checkbox" value="Guru / Instansi" x-model="$store.gabungPengajar.form.jenjang" class="rounded text-primary">
+                                        <span class="font-bold">🏛️ Guru / Instansi</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Spesialisasi Mata Pelajaran -->
+                            <div>
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                                    Spesialisasi Mata Pelajaran Utama <span class="text-rose-500">*</span>
+                                </label>
+                                <input x-model="$store.gabungPengajar.form.subject" required
+                                    class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs sm:text-sm font-semibold shadow-xs"
+                                    placeholder="Contoh: Literasi Bahasa Indonesia, English for Academic & SNBT" type="text">
+                            </div>
+                        </div>
+
+                        <!-- SECTION 3: Fokus Kebutuhan Les Privat & Filosofi Mengajar -->
+                        <div class="p-4 rounded-2xl bg-slate-50/70 dark:bg-[#1a2542]/60 border border-slate-200/70 dark:border-slate-700/60 space-y-3.5">
+                            <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-primary dark:text-sky-400">
+                                <span class="icon-[mdi--target-account] text-base text-[#FF8A00]"></span>
+                                <span>3. Fokus Les Privat &amp; Filosofi Edukasi</span>
+                            </div>
+
+                            <div>
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                                    Fokus Kebutuhan Les Privat yang Anda Berikan <span class="text-rose-500">*</span>
+                                </label>
+                                <textarea x-model="$store.gabungPengajar.form.fokusPrivat" required
+                                    class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs sm:text-sm font-medium shadow-xs"
+                                    placeholder="Contoh: Privat literasi teks kompleks SNBT, peningkatan nilai rapor Bahasa Kurikulum Merdeka, serta TOEFL/IELTS persiapan IUP..." rows="2"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                                    Kutipan / Filosofi Mengajar Anda <span class="text-rose-500">*</span>
+                                </label>
+                                <input x-model="$store.gabungPengajar.form.filosofi" required
+                                    class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs sm:text-sm font-semibold shadow-xs"
+                                    placeholder="Contoh: Literasi kritis adalah pondasi integritas berpikir dan komunikasi seorang calon intelektual." type="text">
+                            </div>
+                        </div>
+
+                        <!-- SECTION 4: Rekam Jejak Prestasi & Link Portofolio -->
+                        <div class="p-4 rounded-2xl bg-slate-50/70 dark:bg-[#1a2542]/60 border border-slate-200/70 dark:border-slate-700/60 space-y-3.5">
+                            <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                                <span class="icon-[mdi--trophy-award] text-base"></span>
+                                <span>4. Rekam Jejak, Prestasi &amp; Portofolio</span>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block">
+                                    Tuliskan 3 Rekam Jejak / Prestasi Utama Anda: <span class="text-rose-500">*</span>
+                                </label>
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-amber-500 font-black text-xs shrink-0">1.</span>
+                                        <input x-model="$store.gabungPengajar.form.prestasi1" required
+                                            class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium shadow-xs"
+                                            placeholder="Contoh: Penulis panduan strategi literasi membaca SNBT standar BPPP" type="text">
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-amber-500 font-black text-xs shrink-0">2.</span>
+                                        <input x-model="$store.gabungPengajar.form.prestasi2" required
+                                            class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium shadow-xs"
+                                            placeholder="Contoh: Instruktur privat bahasa Inggris akademik dan persiapan IUP PTN" type="text">
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-amber-500 font-black text-xs shrink-0">3.</span>
+                                        <input x-model="$store.gabungPengajar.form.prestasi3"
+                                            class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium shadow-xs"
+                                            placeholder="Contoh: Tingkat kepuasan bimbingan 4.98/5.0 dari ratusan siswa (Opsional)" type="text">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                                    Link CV / Portofolio / LinkedIn <span class="text-xs text-slate-400 font-normal">(Google Drive / LinkedIn / Web)</span>
+                                </label>
+                                <input x-model="$store.gabungPengajar.form.portfolio"
+                                    class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium shadow-xs"
+                                    placeholder="https://drive.google.com/... atau https://linkedin.com/in/..." type="url">
+                            </div>
+                        </div>
+
+                        <!-- Pakta Integritas Pendidik -->
+                        <label class="flex items-start gap-2.5 p-3.5 rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/60 text-xs cursor-pointer text-slate-700 dark:text-slate-300">
+                            <input type="checkbox" required checked class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500">
+                            <span>Saya menyatakan bahwa seluruh informasi profil di atas adalah benar dan saya berkomitmen menjunjung tinggi kode etik kejujuran serta integritas akademik Next Level Study.</span>
+                        </label>
+
+                        <!-- Submit Action Button -->
+                        <div class="pt-2">
+                            <button type="submit"
+                                style="background: linear-gradient(135deg, #FF8A00 0%, #EA580C 100%) !important; color: #ffffff !important; box-shadow: 0 10px 25px rgba(234, 88, 12, 0.4) !important;"
+                                class="w-full py-3.5 px-6 rounded-2xl font-black text-sm sm:text-base transition-all duration-200 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 cursor-pointer shadow-lg text-white">
+                                <span class="icon-[mdi--whatsapp] text-2xl"></span>
+                                <span>Kirim Profil &amp; Ajukan ke WhatsApp Admin</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </template>
+    </div>
 
     <!-- Alpine.js Application Logic -->
     <script>
@@ -2548,6 +2551,21 @@
                     }
                 }
             };
+        }
+
+        // Guaranteed Store Registration for Pengajar page
+        function ensurePengajarStores() {
+            if (typeof window !== 'undefined' && window.initAlpineStores) {
+                window.initAlpineStores();
+            }
+        }
+        if (typeof window !== 'undefined') {
+            if (window.Alpine) {
+                ensurePengajarStores();
+            } else {
+                document.addEventListener('alpine:init', ensurePengajarStores);
+                document.addEventListener('DOMContentLoaded', ensurePengajarStores);
+            }
         }
     </script>
 </body>

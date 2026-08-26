@@ -64,9 +64,12 @@ function initThemeButtons() {
     });
 }
 
-// Global Alpine Store for Program Registration & Consultation Modal
-document.addEventListener('alpine:init', function() {
-    if (window.Alpine) {
+// Global Alpine Store for Program Registration & Teacher Recruitment Modal
+function initAlpineStores() {
+    if (typeof window === 'undefined' || !window.Alpine) return;
+
+    // 1. Store: daftarPrivat
+    if (!window.Alpine.store('daftarPrivat')) {
         const defaultForm = {
             kebutuhan: 'Privat',
             nama: '',
@@ -86,6 +89,7 @@ document.addEventListener('alpine:init', function() {
 
         window.Alpine.store('daftarPrivat', {
             showRegistrationModal: false,
+            modalOpen: false,
             showToast: false,
             toastMessage: 'Formulir berhasil diproses! Mengarahkan ke WhatsApp...',
             form: savedForm,
@@ -119,17 +123,25 @@ document.addEventListener('alpine:init', function() {
                 window.open(waUrl, '_blank');
 
                 this.showRegistrationModal = false;
+                this.modalOpen = false;
                 this.showToast = true;
                 const self = this;
                 setTimeout(function() {
                     self.showToast = false;
                 }, 4000);
+            },
+            submit: function() {
+                this.submitForm();
             }
         });
+    }
 
-        // Store for Gabung Tim Pengajar NLS
+    // 2. Store: gabungPengajar
+    if (!window.Alpine.store('gabungPengajar')) {
         window.Alpine.store('gabungPengajar', {
             modalOpen: false,
+            showRegistrationModal: false,
+            showModal: false,
             form: {
                 nama: '',
                 panggilan: '',
@@ -187,7 +199,23 @@ document.addEventListener('alpine:init', function() {
                 const waUrl = 'https://wa.me/6285163070002?text=' + encodeURIComponent(lines.join('\n'));
                 window.open(waUrl, '_blank');
                 this.modalOpen = false;
+                this.showRegistrationModal = false;
+                this.showModal = false;
+            },
+            submitForm: function() {
+                this.submit();
             }
         });
     }
-});
+}
+
+if (typeof window !== 'undefined') {
+    if (window.Alpine) {
+        initAlpineStores();
+    } else {
+        document.addEventListener('alpine:init', initAlpineStores);
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.Alpine) initAlpineStores();
+        });
+    }
+}
