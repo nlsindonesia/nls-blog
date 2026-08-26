@@ -1405,7 +1405,7 @@
                 alert("Tautan berhasil disalin ke clipboard!");
     </script>
 
-    <!-- ===== POP-UP MODAL FORM KEBUTUHAN PRIVAT SESUAI PAKET ===== -->
+        <!-- ===== POP-UP MODAL FORM KEBUTUHAN PRIVAT SESUAI PAKET ===== -->
     <div x-data id="paketPrivatModalContainer">
         <div x-show="$store.paketPrivat.showModal" x-cloak
             x-effect="document.body.style.overflow = $store.paketPrivat.showModal ? 'hidden' : ''"
@@ -1433,7 +1433,7 @@
                 class="relative bg-white dark:bg-[#0f182e] border border-slate-200 dark:border-slate-800 rounded-[28px] sm:rounded-[36px] shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col z-10 overflow-hidden my-auto">
 
                 <!-- Header with Dynamic Package Banner -->
-                <div class="px-6 pt-6 pb-5 border-b border-slate-100 dark:border-slate-800/80 shrink-0"
+                <div class="px-6 pt-6 pb-5 border-b border-slate-100 dark:border-slate-800/80 shrink-0 transition-colors duration-300"
                     :class="{
                         'bg-gradient-to-r from-sky-50 via-white to-blue-50/50 dark:from-sky-950/40 dark:via-[#0f182e] dark:to-slate-900': $store.paketPrivat.activePackageKey === 'reguler',
                         'bg-gradient-to-r from-amber-50 via-white to-orange-50/50 dark:from-amber-950/40 dark:via-[#0f182e] dark:to-slate-900': $store.paketPrivat.activePackageKey === 'intensif',
@@ -1442,7 +1442,7 @@
                     
                     <!-- Top Flex Row: Badge & Close Button -->
                     <div class="flex items-center justify-between gap-3 mb-2">
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-2xs border"
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-2xs border transition-colors"
                             :class="{
                                 'bg-sky-100 text-[#0284c7] border-sky-200 dark:bg-sky-950 dark:text-sky-300 dark:border-sky-800': $store.paketPrivat.activePackageKey === 'reguler',
                                 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800': $store.paketPrivat.activePackageKey === 'intensif',
@@ -1474,22 +1474,25 @@
                         <p class="text-xs text-slate-600 dark:text-slate-300" x-text="'Penyesuaian kebutuhan belajar: ' + $store.paketPrivat.activePackage.tagline"></p>
                     </div>
 
-                    <!-- Package Switcher Tabs -->
-                    <div class="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-800">
+                    <!-- Package Switcher Tabs: Strictly in 1 Single Horizontal Row with Distinct Selected Colors -->
+                    <div class="flex flex-row items-center gap-1.5 sm:gap-2.5 mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-800 w-full">
                         <button type="button" @click="$store.paketPrivat.setPackage('reguler')"
-                            class="px-2.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-center border"
-                            :class="$store.paketPrivat.activePackageKey === 'reguler' ? '!bg-[#0284c7] !text-white !border-[#0284c7] shadow-sm font-black' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-slate-50'">
-                            Reguler (120rb)
+                            class="flex-1 min-w-0 py-2.5 px-2 sm:px-4 rounded-xl text-xs font-black transition-all cursor-pointer text-center truncate border shadow-xs"
+                            :class="$store.paketPrivat.activePackageKey === 'reguler' ? 'ring-2 ring-sky-300 dark:ring-sky-700 shadow-md font-black' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700'"
+                            :style="$store.paketPrivat.activePackageKey === 'reguler' ? 'background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important; color: #ffffff !important; border-color: #0284c7 !important;' : ''">
+                            <span>Reguler (120rb)</span>
                         </button>
                         <button type="button" @click="$store.paketPrivat.setPackage('intensif')"
-                            class="px-2.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-center border"
-                            :class="$store.paketPrivat.activePackageKey === 'intensif' ? '!bg-[#f59e0b] !text-slate-950 !border-[#f59e0b] shadow-sm font-black' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-slate-50'">
-                            Intensif OSN (160rb)
+                            class="flex-1 min-w-0 py-2.5 px-2 sm:px-4 rounded-xl text-xs font-black transition-all cursor-pointer text-center truncate border shadow-xs"
+                            :class="$store.paketPrivat.activePackageKey === 'intensif' ? 'ring-2 ring-amber-300 dark:ring-amber-700 shadow-md font-black' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700'"
+                            :style="$store.paketPrivat.activePackageKey === 'intensif' ? 'background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; color: #0f172a !important; border-color: #f59e0b !important;' : ''">
+                            <span>Intensif OSN (160rb)</span>
                         </button>
                         <button type="button" @click="$store.paketPrivat.setPackage('internasional')"
-                            class="px-2.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-center border"
-                            :class="$store.paketPrivat.activePackageKey === 'internasional' ? '!bg-[#7c3aed] !text-white !border-[#7c3aed] shadow-sm font-black' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-slate-50'">
-                            Internasional (200rb)
+                            class="flex-1 min-w-0 py-2.5 px-2 sm:px-4 rounded-xl text-xs font-black transition-all cursor-pointer text-center truncate border shadow-xs"
+                            :class="$store.paketPrivat.activePackageKey === 'internasional' ? 'ring-2 ring-purple-300 dark:ring-purple-700 shadow-md font-black' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700'"
+                            :style="$store.paketPrivat.activePackageKey === 'internasional' ? 'background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important; color: #ffffff !important; border-color: #7c3aed !important;' : ''">
+                            <span>Internasional (200rb)</span>
                         </button>
                     </div>
                 </div>
@@ -1572,8 +1575,8 @@
                                         <optgroup label="Tingkat SMA / SMK / Sederajat">
                                             <option value="SMA Kelas 10">SMA Kelas 10</option>
                                             <option value="SMA Kelas 11">SMA Kelas 11</option>
-                                            <option value="SMA Kelas 12">SMA Kelas 12 (Persiapan SNBT/Ujian)</option>
-                                            <option value="Gap Year / Alumni">Gap Year / Alumni / Pejuang PTN</option>
+                                            <option value="SMA Kelas 12">SMA Kelas 12 (Persiapan SNBT/Kedinasan/Ujian)</option>
+                                            <option value="Gap Year / Alumni">Gap Year / Alumni / Pejuang PTN & Kedinasan</option>
                                         </optgroup>
                                         <optgroup label="Lainnya">
                                             <option value="Mahasiswa / Umum">Mahasiswa / Umum</option>
@@ -1581,8 +1584,8 @@
                                     </select>
                                 </div>
 
-                                <!-- Metode Belajar (Online vs Offline) -->
-                                <div class="space-y-1.5">
+                                <!-- Metode Belajar (Online vs Offline dengan Info Transportasi 50rb) -->
+                                <div class="space-y-2">
                                     <label class="text-xs font-bold text-slate-700 dark:text-slate-200">
                                         Metode Belajar yang Diinginkan
                                     </label>
@@ -1593,28 +1596,38 @@
                                             <span class="icon-[mdi--video] text-base"></span>
                                             <span>Online 1-on-1</span>
                                         </button>
-                                        <button type="button" @click="$store.paketPrivat.formData.metodeBelajar = 'Offline / Tatap Muka (Bekasi & Sekitarnya)'"
+                                        <button type="button" @click="$store.paketPrivat.formData.metodeBelajar = 'Offline / Tatap Muka (Home Visit)'"
                                             class="p-2.5 rounded-xl border text-xs font-bold transition-all text-center flex items-center justify-center gap-2 cursor-pointer"
-                                            :class="$store.paketPrivat.formData.metodeBelajar === 'Offline / Tatap Muka (Bekasi & Sekitarnya)' ? 'bg-primary text-white border-primary shadow-xs' : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'">
+                                            :class="$store.paketPrivat.formData.metodeBelajar.includes('Offline') ? 'bg-primary text-white border-primary shadow-xs' : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'">
                                             <span class="icon-[mdi--home-account] text-base"></span>
                                             <span>Offline / Home</span>
                                         </button>
+                                    </div>
+
+                                    <!-- Alert Keterangan Biaya Transportasi Offline 50rb -->
+                                    <div x-show="$store.paketPrivat.formData.metodeBelajar.includes('Offline')" x-cloak
+                                        class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-700 text-amber-950 dark:text-amber-200 text-xs flex items-start gap-2.5 shadow-xs">
+                                        <span class="icon-[mdi--car-side] text-lg text-amber-600 dark:text-amber-400 shrink-0 mt-0.5"></span>
+                                        <div class="leading-relaxed">
+                                            <span class="font-black text-amber-950 dark:text-amber-100">Keterangan Biaya Transportasi Guru:</span>
+                                            <span> Untuk metode tatap muka / guru hadir langsung ke rumah siswa, dikenakan biaya transportasi guru sebesar <strong>Rp 50.000 / pertemuan</strong>.</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- SECTION 2: PENYESUAIAN KHUSUS SESUAI PAKET (ADAPTIVE) -->
-                        <div class="p-4 sm:p-5 rounded-2xl border space-y-4 transition-all"
+                        <!-- SECTION 2: PENYESUAIAN KHUSUS SESUAI PAKET (ADAPTIVE & HIGH CONTRAST) -->
+                        <div class="p-5 sm:p-6 rounded-2xl border space-y-5 transition-all"
                             :class="{
-                                'bg-sky-50/50 dark:bg-sky-950/20 border-sky-200 dark:border-sky-900': $store.paketPrivat.activePackageKey === 'reguler',
-                                'bg-amber-50/50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900': $store.paketPrivat.activePackageKey === 'intensif',
-                                'bg-purple-50/50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-900': $store.paketPrivat.activePackageKey === 'internasional'
+                                'bg-sky-50/60 dark:bg-sky-950/20 border-sky-200 dark:border-sky-900': $store.paketPrivat.activePackageKey === 'reguler',
+                                'bg-amber-50/60 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900': $store.paketPrivat.activePackageKey === 'intensif',
+                                'bg-purple-50/60 dark:bg-purple-950/20 border-purple-200 dark:border-purple-900': $store.paketPrivat.activePackageKey === 'internasional'
                             }">
                             
-                            <div class="flex items-center justify-between pb-2 border-b border-slate-200/70 dark:border-slate-800">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-7 h-7 rounded-lg text-white flex items-center justify-center font-black text-xs"
+                            <div class="flex items-center justify-between pb-3 border-b border-slate-200/70 dark:border-slate-800">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-7 h-7 rounded-lg text-white flex items-center justify-center font-black text-xs shrink-0"
                                         :class="{
                                             'bg-[#0284c7]': $store.paketPrivat.activePackageKey === 'reguler',
                                             'bg-[#f59e0b] text-slate-950': $store.paketPrivat.activePackageKey === 'intensif',
@@ -1622,67 +1635,70 @@
                                         }">2</div>
                                     <div>
                                         <h4 class="text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider" x-text="'Penyesuaian ' + $store.paketPrivat.activePackage.title"></h4>
-                                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Pilih target materi dan subjek spesifik yang ingin difokuskan.</p>
+                                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Isi mata pelajaran dan tentukan fokus pembelajaran yang ditargetkan.</p>
                                     </div>
                                 </div>
                             </div>
 
+                            <!-- INPUT MANUAL MATA PELAJARAN (UNTUK SEMUA PAKET) -->
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center justify-between">
+                                    <span>Mata Pelajaran yang Ingin Dipelajari <span class="text-red-500">*</span></span>
+                                    <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Bisa diisi 1 atau lebih mapel</span>
+                                </label>
+                                <div class="relative">
+                                    <input x-model="$store.paketPrivat.formData.mataPelajaran" required type="text"
+                                        placeholder="Contoh: Matematika, Fisika, Kimia, Biologi, Bahasa Inggris, atau materi tertentu..."
+                                        class="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs font-medium placeholder:text-slate-400 shadow-2xs">
+                                </div>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400">Tuliskan nama mata pelajaran atau bab khusus yang ingin diperdalam bersama mentor.</p>
+                            </div>
+
                             <!-- ADAPTIVE 1: PAKET REGULER -->
-                            <div x-show="$store.paketPrivat.activePackageKey === 'reguler'" class="space-y-4">
+                            <div x-show="$store.paketPrivat.activePackageKey === 'reguler'" class="space-y-4 pt-1">
                                 <div class="space-y-2">
-                                    <label class="text-xs font-bold text-slate-800 dark:text-slate-200">
+                                    <label class="text-xs font-bold text-slate-900 dark:text-slate-100">
                                         Fokus &amp; Target Belajar Utama:
                                     </label>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                                         <template x-for="item in [
-                                            'Persiapan Ulangan Harian & Ujian Semester (PAS/PAT)',
+                                            'Persiapan SNBT / Tes Mandiri PTN / Kedinasan',
                                             'Pemantapan Konsep & Peningkatan Nilai Rapor',
                                             'Tes Kemampuan Akademik (TKA Pusmendik - Mapel Wajib & Pilihan)',
-                                            'Intensif Persiapan UTBK-SNBT 2026'
+                                            'Persiapan Ulangan Harian & Ujian Semester (PAS/PAT)',
+                                            'Persiapan Masuk SMA Unggulan / Asrama (Taruna Nusantara, Pradita, MAN IC)'
                                         ]" :key="item">
                                             <label @click="$store.paketPrivat.toggleArrayItem($store.paketPrivat.formData.regulerFocus, item)"
                                                 class="flex items-start gap-2.5 p-2.5 rounded-xl border transition-all cursor-pointer select-none"
-                                                :class="$store.paketPrivat.formData.regulerFocus.includes(item) ? 'bg-[#0284c7] text-white border-[#0284c7] font-bold shadow-xs' : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'">
-                                                <span class="w-4 h-4 rounded border flex items-center justify-center text-[10px] shrink-0 mt-0.5"
-                                                    :class="$store.paketPrivat.formData.regulerFocus.includes(item) ? 'bg-white text-[#0284c7] border-white font-black' : 'border-slate-400'">
-                                                    <span x-show="$store.paketPrivat.formData.regulerFocus.includes(item)" class="icon-[mdi--check] text-xs"></span>
+                                                :class="$store.paketPrivat.formData.regulerFocus.includes(item) 
+                                                    ? 'bg-sky-100/90 dark:bg-sky-950/80 border-sky-500 text-slate-900 dark:text-white font-bold ring-1 ring-sky-400 shadow-2xs' 
+                                                    : 'bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-slate-300'">
+                                                <span class="w-4 h-4 rounded flex items-center justify-center shrink-0 mt-0.5"
+                                                    :class="$store.paketPrivat.formData.regulerFocus.includes(item) 
+                                                        ? 'bg-[#0284c7] text-white font-bold' 
+                                                        : 'border border-slate-400 bg-slate-50 dark:bg-slate-800 text-transparent'">
+                                                    <span class="icon-[mdi--check] text-xs"></span>
                                                 </span>
-                                                <span x-text="item"></span>
+                                                <span class="text-xs leading-relaxed" x-text="item"></span>
                                             </label>
                                         </template>
                                     </div>
                                 </div>
 
-                                <div class="space-y-2">
-                                    <label class="text-xs font-bold text-slate-800 dark:text-slate-200">
-                                        Mata Pelajaran yang Dibutuhkan (Pilih Mata Pelajaran):
-                                    </label>
-                                    <div class="flex flex-wrap gap-2 text-xs font-semibold">
-                                        <template x-for="subj in ['Matematika Wajib', 'Matematika Peminatan', 'Fisika', 'Kimia', 'Biologi', 'Bahasa Inggris', 'Bahasa Indonesia', 'Ekonomi / Akuntansi', 'Sosiologi / Geografi']" :key="subj">
-                                            <button type="button" @click="$store.paketPrivat.toggleArrayItem($store.paketPrivat.formData.regulerSubjects, subj)"
-                                                class="px-3 py-1.5 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5"
-                                                :class="$store.paketPrivat.formData.regulerSubjects.includes(subj) ? 'bg-[#0284c7] text-white border-[#0284c7] shadow-xs font-bold' : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100'">
-                                                <span x-show="$store.paketPrivat.formData.regulerSubjects.includes(subj)" class="icon-[mdi--check] text-xs"></span>
-                                                <span x-text="subj"></span>
-                                            </button>
-                                        </template>
-                                    </div>
-                                </div>
-
                                 <div class="space-y-1.5">
-                                    <label class="text-xs font-bold text-slate-800 dark:text-slate-200">
-                                        Target Jurusan &amp; Universitas Impian <span class="text-xs text-slate-400 font-normal">(Khusus pejuang SNBT/PTN)</span>:
+                                    <label class="text-xs font-bold text-slate-900 dark:text-slate-100">
+                                        Target Jurusan &amp; Universitas / Sekolah Kedinasan Impian <span class="text-xs text-slate-400 font-normal">(Opsional)</span>:
                                     </label>
                                     <input x-model="$store.paketPrivat.formData.regulerTargetKampus" type="text"
-                                        placeholder="Contoh: FK UI, STEI ITB, Kedokteran UNAIR, Manajemen UGM"
-                                        class="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-[#0284c7] text-xs font-medium">
+                                        placeholder="Contoh: FK UI, STEI ITB, Kedinasan STIS/STAN, IPDN, Manajemen UGM"
+                                        class="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-[#0284c7] text-xs font-medium placeholder:text-slate-400">
                                 </div>
                             </div>
 
                             <!-- ADAPTIVE 2: PAKET INTENSIF OSN & IB (SD & SMP) -->
-                            <div x-show="$store.paketPrivat.activePackageKey === 'intensif'" class="space-y-4">
+                            <div x-show="$store.paketPrivat.activePackageKey === 'intensif'" class="space-y-4 pt-1">
                                 <div class="space-y-2">
-                                    <label class="text-xs font-bold text-slate-800 dark:text-slate-200">
+                                    <label class="text-xs font-bold text-slate-900 dark:text-slate-100">
                                         Fokus Kurikulum &amp; Tingkat Kompetisi:
                                     </label>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
@@ -1694,47 +1710,39 @@
                                         ]" :key="item">
                                             <label @click="$store.paketPrivat.toggleArrayItem($store.paketPrivat.formData.intensifFocus, item)"
                                                 class="flex items-start gap-2.5 p-2.5 rounded-xl border transition-all cursor-pointer select-none"
-                                                :class="$store.paketPrivat.formData.intensifFocus.includes(item) ? 'bg-[#f59e0b] text-slate-950 border-[#f59e0b] font-bold shadow-xs' : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'">
-                                                <span class="w-4 h-4 rounded border flex items-center justify-center text-[10px] shrink-0 mt-0.5"
-                                                    :class="$store.paketPrivat.formData.intensifFocus.includes(item) ? 'bg-slate-950 text-amber-400 border-slate-950 font-black' : 'border-slate-400'">
-                                                    <span x-show="$store.paketPrivat.formData.intensifFocus.includes(item)" class="icon-[mdi--check] text-xs"></span>
+                                                :class="$store.paketPrivat.formData.intensifFocus.includes(item) 
+                                                    ? 'bg-amber-100/90 dark:bg-amber-950/80 border-amber-500 text-slate-900 dark:text-white font-bold ring-1 ring-amber-400 shadow-2xs' 
+                                                    : 'bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-slate-300'">
+                                                <span class="w-4 h-4 rounded flex items-center justify-center shrink-0 mt-0.5"
+                                                    :class="$store.paketPrivat.formData.intensifFocus.includes(item) 
+                                                        ? 'bg-[#f59e0b] text-slate-950 font-black' 
+                                                        : 'border border-slate-400 bg-slate-50 dark:bg-slate-800 text-transparent'">
+                                                    <span class="icon-[mdi--check] text-xs"></span>
                                                 </span>
-                                                <span x-text="item"></span>
+                                                <span class="text-xs leading-relaxed" x-text="item"></span>
                                             </label>
                                         </template>
                                     </div>
                                 </div>
 
                                 <div class="space-y-2">
-                                    <label class="text-xs font-bold text-slate-800 dark:text-slate-200">
-                                        Bidang Olimpiade / Subjek Fokus:
-                                    </label>
-                                    <div class="flex flex-wrap gap-2 text-xs font-semibold">
-                                        <template x-for="bidang in ['Matematika SD/SMP', 'IPA Fisika SD/SMP', 'IPA Biologi SD/SMP', 'Kimia Dasar', 'Informatika / Logika Koding', 'IPS / Social Studies']" :key="bidang">
-                                            <button type="button" @click="$store.paketPrivat.toggleArrayItem($store.paketPrivat.formData.intensifBidang, bidang)"
-                                                class="px-3 py-1.5 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5"
-                                                :class="$store.paketPrivat.formData.intensifBidang.includes(bidang) ? 'bg-[#f59e0b] text-slate-950 font-bold border-[#f59e0b] shadow-xs' : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100'">
-                                                <span x-show="$store.paketPrivat.formData.intensifBidang.includes(bidang)" class="icon-[mdi--check] text-xs"></span>
-                                                <span x-text="bidang"></span>
-                                            </button>
-                                        </template>
-                                    </div>
-                                </div>
-
-                                <div class="space-y-2">
-                                    <label class="text-xs font-bold text-slate-800 dark:text-slate-200">
+                                    <label class="text-xs font-bold text-slate-900 dark:text-slate-100">
                                         Pengalaman Siswa di Bidang Olimpiade / Lomba:
                                     </label>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                                         <label @click="$store.paketPrivat.formData.intensifExperience = 'Pemula (Mulai dari Nol / Fondasi Konsep)'"
                                             class="flex items-center gap-2.5 p-2.5 rounded-xl border transition-all cursor-pointer select-none"
-                                            :class="$store.paketPrivat.formData.intensifExperience === 'Pemula (Mulai dari Nol / Fondasi Konsep)' ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-200 border-amber-300 font-bold' : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'">
+                                            :class="$store.paketPrivat.formData.intensifExperience === 'Pemula (Mulai dari Nol / Fondasi Konsep)' 
+                                                ? 'bg-amber-100/90 dark:bg-amber-950/80 border-amber-500 text-slate-900 dark:text-white font-bold ring-1 ring-amber-400' 
+                                                : 'bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700'">
                                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shrink-0"></span>
                                             <span>Pemula (Mulai dari Nol)</span>
                                         </label>
                                         <label @click="$store.paketPrivat.formData.intensifExperience = 'Menengah (Pernah ikut seleksi sekolah / lomba)'"
                                             class="flex items-center gap-2.5 p-2.5 rounded-xl border transition-all cursor-pointer select-none"
-                                            :class="$store.paketPrivat.formData.intensifExperience === 'Menengah (Pernah ikut seleksi sekolah / lomba)' ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-200 border-amber-300 font-bold' : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'">
+                                            :class="$store.paketPrivat.formData.intensifExperience === 'Menengah (Pernah ikut seleksi sekolah / lomba)' 
+                                                ? 'bg-amber-100/90 dark:bg-amber-950/80 border-amber-500 text-slate-900 dark:text-white font-bold ring-1 ring-amber-400' 
+                                                : 'bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700'">
                                             <span class="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block shrink-0"></span>
                                             <span>Pernah Ikut Seleksi / Lomba</span>
                                         </label>
@@ -1743,55 +1751,43 @@
                             </div>
 
                             <!-- ADAPTIVE 3: PAKET INTERNASIONAL & OSN+ (SMA & GLOBAL) -->
-                            <div x-show="$store.paketPrivat.activePackageKey === 'internasional'" class="space-y-4">
+                            <div x-show="$store.paketPrivat.activePackageKey === 'internasional'" class="space-y-4 pt-1">
                                 <div class="space-y-2">
-                                    <label class="text-xs font-bold text-slate-800 dark:text-slate-200">
+                                    <label class="text-xs font-bold text-slate-900 dark:text-slate-100">
                                         Target Kompetisi &amp; Kurikulum Global:
                                     </label>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                                         <template x-for="item in [
                                             'OSN Tingkat Provinsi & Nasional (OSN-P / OSNAS)',
-                                            'Kompetisi Matematika Global (AMO, SEAMO, TIMO, SASMO)',
+                                            'Kompetisi Matematika & Sains Global (AMO, SEAMO, TIMO, SASMO)',
                                             'Kurikulum IB Diploma Programme (IB DP HL/SL)',
                                             'Kurikulum Cambridge International A-Level / AP',
-                                            'Portofolio Prestasi Menuju Universitas Top Dunia'
+                                            'Portofolio Prestasi Menuju Universitas Top Dunia (NUS, NTU, Ivy League)'
                                         ]" :key="item">
                                             <label @click="$store.paketPrivat.toggleArrayItem($store.paketPrivat.formData.internasionalFocus, item)"
                                                 class="flex items-start gap-2.5 p-2.5 rounded-xl border transition-all cursor-pointer select-none"
-                                                :class="$store.paketPrivat.formData.internasionalFocus.includes(item) ? 'bg-[#7c3aed] text-white border-[#7c3aed] font-bold shadow-xs' : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'">
-                                                <span class="w-4 h-4 rounded border flex items-center justify-center text-[10px] shrink-0 mt-0.5"
-                                                    :class="$store.paketPrivat.formData.internasionalFocus.includes(item) ? 'bg-white text-[#7c3aed] border-white font-black' : 'border-slate-400'">
-                                                    <span x-show="$store.paketPrivat.formData.internasionalFocus.includes(item)" class="icon-[mdi--check] text-xs"></span>
+                                                :class="$store.paketPrivat.formData.internasionalFocus.includes(item) 
+                                                    ? 'bg-purple-100/90 dark:bg-purple-950/80 border-purple-500 text-slate-900 dark:text-white font-bold ring-1 ring-purple-400 shadow-2xs' 
+                                                    : 'bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-slate-300'">
+                                                <span class="w-4 h-4 rounded flex items-center justify-center shrink-0 mt-0.5"
+                                                    :class="$store.paketPrivat.formData.internasionalFocus.includes(item) 
+                                                        ? 'bg-[#7c3aed] text-white font-bold' 
+                                                        : 'border border-slate-400 bg-slate-50 dark:bg-slate-800 text-transparent'">
+                                                    <span class="icon-[mdi--check] text-xs"></span>
                                                 </span>
-                                                <span x-text="item"></span>
+                                                <span class="text-xs leading-relaxed" x-text="item"></span>
                                             </label>
                                         </template>
                                     </div>
                                 </div>
 
-                                <div class="space-y-2">
-                                    <label class="text-xs font-bold text-slate-800 dark:text-slate-200">
-                                        Bidang Spesialisasi OSN 9 Bidang / Sains Lanjut:
-                                    </label>
-                                    <div class="flex flex-wrap gap-2 text-xs font-semibold">
-                                        <template x-for="bidang in ['Matematika SMA', 'Fisika SMA', 'Kimia SMA', 'Biologi SMA', 'Astronomi & Astrofisika', 'Kebumian & Geosains', 'Informatika / Algoritma CP', 'Geografi', 'Ekonomi']" :key="bidang">
-                                            <button type="button" @click="$store.paketPrivat.toggleArrayItem($store.paketPrivat.formData.internasionalBidang, bidang)"
-                                                class="px-3 py-1.5 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5"
-                                                :class="$store.paketPrivat.formData.internasionalBidang.includes(bidang) ? 'bg-[#7c3aed] text-white border-[#7c3aed] shadow-xs font-bold' : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100'">
-                                                <span x-show="$store.paketPrivat.formData.internasionalBidang.includes(bidang)" class="icon-[mdi--check] text-xs"></span>
-                                                <span x-text="bidang"></span>
-                                            </button>
-                                        </template>
-                                    </div>
-                                </div>
-
                                 <div class="space-y-1.5">
-                                    <label class="text-xs font-bold text-slate-800 dark:text-slate-200">
+                                    <label class="text-xs font-bold text-slate-900 dark:text-slate-100">
                                         Target Universitas Impian (Luar Negeri / Top PTN):
                                     </label>
                                     <input x-model="$store.paketPrivat.formData.internasionalTargetKampus" type="text"
                                         placeholder="Contoh: National University of Singapore (NUS), NTU, Oxford, MIT, ITB, UI"
-                                        class="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-[#7c3aed] text-xs font-medium">
+                                        class="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-[#7c3aed] text-xs font-medium placeholder:text-slate-400">
                                 </div>
                             </div>
                         </div>
@@ -1804,13 +1800,14 @@
                             </div>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <!-- Frekuensi Sesi -->
+                                <!-- Frekuensi Sesi (Termasuk 4 Sesi / Bulan) -->
                                 <div class="space-y-1.5">
                                     <label class="text-xs font-bold text-slate-700 dark:text-slate-200">
                                         Estimasi Sesi Belajar per Bulan:
                                     </label>
                                     <select x-model="$store.paketPrivat.formData.sesiPerBulan"
                                         class="w-full bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs font-medium cursor-pointer">
+                                        <option value="4 Sesi / Bulan (1x seminggu - Ringan / Pengenalan)">4 Sesi / Bulan (1x seminggu - Ringan / Pengenalan)</option>
                                         <option value="8 Sesi / Bulan (2x seminggu - Standar)">8 Sesi / Bulan (2x seminggu - Standar)</option>
                                         <option value="10 Sesi / Bulan (Ideal & Paling Diminati)">10 Sesi / Bulan (Ideal & Paling Diminati)</option>
                                         <option value="12-16 Sesi / Bulan (Intensif Harian / Menjelang Ujian)">12-16 Sesi / Bulan (Intensif Harian / Menjelang Ujian)</option>
@@ -1847,7 +1844,7 @@
                                     </button>
                                     <button type="button" @click="$store.paketPrivat.toggleArrayItem($store.paketPrivat.formData.hariPreferensi, 'Akhir Pekan (Sabtu - Minggu)')"
                                         class="px-3 py-1.5 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5"
-                                        :class="$store.paketPrivat.formData.hariPreferensi.includes('Akhir Pekan (Sabtu - Minggu)') ? 'bg-primary text-white border-primary shadow-xs font-bold' : 'bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'">
+                                        :class="$store.paketPrivat.formData.hariPreferensi.includes('Akhir Pekan (Sabtu - Minggu)') ? 'bg-primary text-white border-primary shadow-xs' : 'bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'">
                                         <span x-show="$store.paketPrivat.formData.hariPreferensi.includes('Akhir Pekan (Sabtu - Minggu)')" class="icon-[mdi--check] text-xs"></span>
                                         <span>Akhir Pekan (Sabtu - Minggu)</span>
                                     </button>

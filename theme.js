@@ -137,7 +137,7 @@ function initAlpineStores() {
     }
 
     // 1.5. Store: paketPrivat (Adaptive Package Registration Modal)
-    if (!window.Alpine.store('paketPrivat')) {
+        if (!window.Alpine.store('paketPrivat')) {
         window.Alpine.store('paketPrivat', {
             showModal: false,
             activePackageKey: 'reguler',
@@ -145,8 +145,8 @@ function initAlpineStores() {
                 reguler: {
                     key: 'reguler',
                     title: 'Paket Reguler',
-                    tagline: 'Akademik Harian, TKA Pusmendik & Persiapan SNBT',
-                    badge: 'Akademik & SNBT',
+                    tagline: 'Akademik Harian, TKA Pusmendik & Persiapan SNBT/Kedinasan',
+                    badge: 'Akademik & SNBT / Kedinasan',
                     price: 'Rp 120.000',
                     priceUnit: '/ Jam',
                     sessions: 'Ideal 8 sesi per bulan',
@@ -183,24 +183,22 @@ function initAlpineStores() {
                 asalSekolah: '',
                 tingkatKelas: 'SMA Kelas 12',
                 metodeBelajar: 'Online (Zoom 1-on-1)',
+                mataPelajaran: '',
                 
                 // Reguler Specifics
-                regulerFocus: ['Intensif Persiapan UTBK-SNBT 2026', 'Pemantapan Konsep & Peningkatan Nilai Rapor'],
-                regulerSubjects: ['Matematika Wajib', 'Fisika'],
+                regulerFocus: ['Persiapan SNBT / Tes Mandiri PTN / Kedinasan', 'Pemantapan Konsep & Peningkatan Nilai Rapor'],
                 regulerTargetKampus: '',
 
                 // Intensif Specifics
                 intensifFocus: ['Persiapan Olimpiade Sains Nasional (OSN-K / Kota / Kabupaten)', 'Kurikulum Cambridge (Primary / Lower Secondary / Checkpoint)'],
-                intensifBidang: ['Matematika SD/SMP', 'IPA Fisika SD/SMP'],
                 intensifExperience: 'Pemula (Mulai dari Nol / Fondasi Konsep)',
 
                 // Internasional Specifics
-                internasionalFocus: ['OSN Tingkat Provinsi & Nasional (OSN-P / OSNAS)', 'Kompetisi Matematika Global (AMO, SEAMO, TIMO, SASMO)'],
-                internasionalBidang: ['Matematika SMA', 'Fisika SMA'],
+                internasionalFocus: ['OSN Tingkat Provinsi & Nasional (OSN-P / OSNAS)', 'Kompetisi Matematika & Sains Global (AMO, SEAMO, TIMO, SASMO)'],
                 internasionalTargetKampus: '',
 
                 // Scheduling
-                sesiPerBulan: '10 Sesi / Bulan (Ideal & Paling Diminati)',
+                sesiPerBulan: '8 Sesi / Bulan (2x seminggu - Standar)',
                 waktuBelajar: 'Sore / Malam (18.30 - 21.00 WIB)',
                 hariPreferensi: ['Hari Kerja (Senin - Jumat)'],
                 catatanKhusus: ''
@@ -241,49 +239,56 @@ function initAlpineStores() {
                     alert('Mohon masukkan Nomor WhatsApp aktif.');
                     return;
                 }
+                if (!this.formData.mataPelajaran.trim()) {
+                    alert('Mohon tuliskan Mata Pelajaran yang ingin dipelajari.');
+                    return;
+                }
 
                 const pkg = this.activePackage;
                 let text = '*FORMULIR PENDAFTARAN LES PRIVAT NLS*\n';
                 text += '--------------------------------------------\n';
-                text += '📌 *PILIHAN PAKET:* ' + pkg.title.toUpperCase() + '\n';
-                text += '💰 *Tarif:* ' + pkg.price + ' ' + pkg.priceUnit + ' (' + pkg.tagline + ')\n\n';
+                text += 'ðŸ“Œ *PILIHAN PAKET:* ' + pkg.title.toUpperCase() + '\n';
+                text += 'ðŸ’° *Tarif:* ' + pkg.price + ' ' + pkg.priceUnit + ' (' + pkg.tagline + ')\n\n';
 
-                text += '👤 *DATA SISWA & ORANG TUA:*\n';
-                text += '• Nama Siswa: ' + this.formData.namaSiswa + '\n';
+                text += 'ðŸ‘¤ *DATA SISWA & ORANG TUA:*\n';
+                text += 'â€¢ Nama Siswa: ' + this.formData.namaSiswa + '\n';
                 if (this.formData.namaOrtu.trim()) {
-                    text += '• Nama Orang Tua/Wali: ' + this.formData.namaOrtu + '\n';
+                    text += 'â€¢ Nama Orang Tua/Wali: ' + this.formData.namaOrtu + '\n';
                 }
-                text += '• WhatsApp: ' + this.formData.noWa + '\n';
-                text += '• Asal Sekolah: ' + (this.formData.asalSekolah || '-') + '\n';
-                text += '• Tingkat/Kelas: ' + this.formData.tingkatKelas + '\n';
-                text += '• Metode Belajar: ' + this.formData.metodeBelajar + '\n\n';
+                text += 'â€¢ WhatsApp: ' + this.formData.noWa + '\n';
+                text += 'â€¢ Asal Sekolah: ' + (this.formData.asalSekolah || '-') + '\n';
+                text += 'â€¢ Tingkat/Kelas: ' + this.formData.tingkatKelas + '\n';
+                text += 'â€¢ Metode Belajar: ' + this.formData.metodeBelajar;
+                if (this.formData.metodeBelajar.includes('Offline')) {
+                    text += ' (+ Transport Guru Rp 50.000/sesi)';
+                }
+                text += '\n\n';
 
-                text += '🎯 *PENYESUAIAN KEBUTUHAN (' + pkg.title + '):*\n';
+                text += 'ðŸŽ¯ *PENYESUAIAN KEBUTUHAN (' + pkg.title + '):*\n';
+                text += 'â€¢ Mata Pelajaran: ' + this.formData.mataPelajaran + '\n';
+                
                 if (this.activePackageKey === 'reguler') {
-                    text += '• Target Belajar: ' + (this.formData.regulerFocus.join(', ') || '-') + '\n';
-                    text += '• Mata Pelajaran: ' + (this.formData.regulerSubjects.join(', ') || '-') + '\n';
+                    text += 'â€¢ Target Fokus: ' + (this.formData.regulerFocus.join(', ') || '-') + '\n';
                     if (this.formData.regulerTargetKampus.trim()) {
-                        text += '• Target PTN/Prodi: ' + this.formData.regulerTargetKampus + '\n';
+                        text += 'â€¢ Target PTN/Kedinasan/Prodi: ' + this.formData.regulerTargetKampus + '\n';
                     }
                 } else if (this.activePackageKey === 'intensif') {
-                    text += '• Fokus Program: ' + (this.formData.intensifFocus.join(', ') || '-') + '\n';
-                    text += '• Bidang Olimpiade: ' + (this.formData.intensifBidang.join(', ') || '-') + '\n';
-                    text += '• Pengalaman Lomba: ' + this.formData.intensifExperience + '\n';
+                    text += 'â€¢ Fokus Kurikulum/Lomba: ' + (this.formData.intensifFocus.join(', ') || '-') + '\n';
+                    text += 'â€¢ Pengalaman Olimpiade: ' + this.formData.intensifExperience + '\n';
                 } else if (this.activePackageKey === 'internasional') {
-                    text += '• Target Kompetisi/Kurikulum: ' + (this.formData.internasionalFocus.join(', ') || '-') + '\n';
-                    text += '• Bidang Spesialisasi: ' + (this.formData.internasionalBidang.join(', ') || '-') + '\n';
+                    text += 'â€¢ Target Kompetisi/Kurikulum: ' + (this.formData.internasionalFocus.join(', ') || '-') + '\n';
                     if (this.formData.internasionalTargetKampus.trim()) {
-                        text += '• Target Kampus Dunia/PTN: ' + this.formData.internasionalTargetKampus + '\n';
+                        text += 'â€¢ Target Kampus Dunia/PTN: ' + this.formData.internasionalTargetKampus + '\n';
                     }
                 }
 
-                text += '\n⏰ *RENCANA JADWAL & FREKUENSI:*\n';
-                text += '• Estimasi Sesi: ' + this.formData.sesiPerBulan + '\n';
-                text += '• Waktu Luang: ' + this.formData.waktuBelajar + '\n';
-                text += '• Hari Belajar: ' + (this.formData.hariPreferensi.join(', ') || '-') + '\n';
+                text += '\nâ° *RENCANA JADWAL & FREKUENSI:*\n';
+                text += 'â€¢ Estimasi Sesi: ' + this.formData.sesiPerBulan + '\n';
+                text += 'â€¢ Waktu Luang: ' + this.formData.waktuBelajar + '\n';
+                text += 'â€¢ Hari Belajar: ' + (this.formData.hariPreferensi.join(', ') || '-') + '\n';
 
                 if (this.formData.catatanKhusus.trim()) {
-                    text += '\n📝 *Catatan Khusus:*\n' + this.formData.catatanKhusus + '\n';
+                    text += '\nðŸ“ *Catatan Khusus:*\n' + this.formData.catatanKhusus + '\n';
                 }
 
                 text += '\n--------------------------------------------\n';
