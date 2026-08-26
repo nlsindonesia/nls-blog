@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    NEXT LEVEL STUDY - COMPLETE ULTRA-HIGH CONTRAST DARK THEME ENGINE
    ========================================================================== */
 
@@ -543,4 +543,47 @@ html.dark .mentor-testimonial-card {
 /* Curved borders for Pricing Cards */
 .pricing-card-curved {
     border-radius: 36px !important;
+}
+
+/* Compact Partner Logo Grid & Items */
+.partner-logo-grid {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+}
+
+.partner-logo-item {
+    width: 72px !important;
+    height: 48px !important;
+    padding: 4px 8px !important;
+    background: #ffffff !important;
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.2s ease !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+}
+
+.partner-logo-item:hover {
+    transform: translateY(-2px) scale(1.05) !important;
+    border-color: #0284c7 !important;
+    box-shadow: 0 6px 16px rgba(2, 132, 199, 0.18) !important;
+}
+
+.partner-logo-item img {
+    max-width: 56px !important;
+    max-height: 32px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+    display: block !important;
 }
