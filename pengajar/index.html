@@ -1484,25 +1484,53 @@
                             ]
                         });
                     } else if (cat === 'TKA') {
-                        groups.push({
-                            label: '📚 TKA Saintek (Ujian Mandiri & Akademik)',
-                            options: [
-                                'Matematika Saintek',
-                                'Fisika Saintek',
-                                'Kimia Saintek',
-                                'Biologi Saintek'
-                            ]
-                        });
-                        groups.push({
-                            label: '📚 TKA Soshum (Ujian Mandiri & Akademik)',
-                            options: [
-                                'Matematika Soshum',
-                                'Ekonomi Soshum',
-                                'Geografi Soshum',
-                                'Sejarah Soshum',
-                                'Sosiologi Soshum'
-                            ]
-                        });
+                        if (jnj === 'all' || jnj === 'SMA') {
+                            groups.push({
+                                label: '📚 TKA SMA - Mata Pelajaran Wajib (Pusmendik)',
+                                options: [
+                                    'Matematika (Wajib)',
+                                    'Bahasa Indonesia (Wajib)',
+                                    'Bahasa Inggris (Wajib)'
+                                ]
+                            });
+                            groups.push({
+                                label: '📚 TKA SMA - Mata Pelajaran Pilihan (Pusmendik)',
+                                options: [
+                                    'Matematika Tingkat Lanjut',
+                                    'Fisika',
+                                    'Kimia',
+                                    'Biologi',
+                                    'Ekonomi',
+                                    'Geografi',
+                                    'Sosiologi',
+                                    'Sejarah',
+                                    'Antropologi',
+                                    'Pendidikan Pancasila dan Kewarganegaraan',
+                                    'Bahasa Indonesia Tingkat Lanjut',
+                                    'Bahasa Inggris Tingkat Lanjut',
+                                    'Bahasa Asing (Jepang/Mandarin/Jerman/Prancis/Arab/Korea)',
+                                    'SMK - Projek Kreatif & Kejuruan'
+                                ]
+                            });
+                        }
+                        if (jnj === 'all' || jnj === 'SMP') {
+                            groups.push({
+                                label: '📚 TKA SMP - Mata Pelajaran Wajib (Pusmendik)',
+                                options: [
+                                    'Matematika (SMP)',
+                                    'Bahasa Indonesia (SMP)'
+                                ]
+                            });
+                        }
+                        if (jnj === 'all' || jnj === 'SD') {
+                            groups.push({
+                                label: '📚 TKA SD - Mata Pelajaran Wajib (Pusmendik)',
+                                options: [
+                                    'Matematika (SD)',
+                                    'Bahasa Indonesia (SD)'
+                                ]
+                            });
+                        }
                     } else if (cat === 'Kurikulum Nasional') {
                         if (jnj === 'all' || jnj === 'SMA') {
                             groups.push({
@@ -1597,6 +1625,24 @@
                         }
                         if (jnj === 'all' || jnj === 'SMA') {
                             groups.push({
+                                label: '📚 TKA SMA (Pusmendik Kemendikdasmen)',
+                                options: [
+                                    'Matematika (Wajib)',
+                                    'Bahasa Indonesia (Wajib)',
+                                    'Bahasa Inggris (Wajib)',
+                                    'Matematika Tingkat Lanjut',
+                                    'Fisika',
+                                    'Kimia',
+                                    'Biologi',
+                                    'Ekonomi',
+                                    'Geografi',
+                                    'Sosiologi',
+                                    'Sejarah',
+                                    'Antropologi',
+                                    'Pendidikan Pancasila dan Kewarganegaraan'
+                                ]
+                            });
+                            groups.push({
                                 label: '🎯 Subtes & Materi UTBK SNBT',
                                 options: [
                                     'TPS - Penalaran Kuantitatif & Logika Matematika',
@@ -1606,20 +1652,6 @@
                                     'Literasi dalam Bahasa Indonesia',
                                     'Literasi dalam Bahasa Inggris',
                                     'Penalaran Matematika'
-                                ]
-                            });
-                            groups.push({
-                                label: '📚 TKA Saintek & Soshum',
-                                options: [
-                                    'Matematika Saintek',
-                                    'Fisika Saintek',
-                                    'Kimia Saintek',
-                                    'Biologi Saintek',
-                                    'Matematika Soshum',
-                                    'Ekonomi Soshum',
-                                    'Geografi Soshum',
-                                    'Sejarah Soshum',
-                                    'Sosiologi Soshum'
                                 ]
                             });
                         }
@@ -1670,6 +1702,8 @@
                         subjects: [
                             'Matematika (SMA)',
                             'Matematika (SMP)',
+                            'Matematika (Wajib)',
+                            'Matematika Tingkat Lanjut',
                             'Matematika Saintek',
                             'Matematika (Wajib & Lanjut)',
                             'Matematika SMP',
@@ -1690,12 +1724,13 @@
                         shortName: 'Kak Nurul',
                         photo: '/images/pengajar/mentor-2-bio.jpg',
                         education: 'Bioteknologi UI & Univ. of Melbourne (Peraih IBO Award)',
-                        categories: ['OSN', 'SNBT', 'Kurikulum Nasional', 'Kurikulum Internasional'],
+                        categories: ['OSN', 'SNBT', 'Kurikulum Nasional', 'Kurikulum Internasional', 'TKA'],
                         jenjang: ['SMA'],
                         jenjangLabel: 'SMA Kelas 10-12 & Gap Year',
                         subject: 'Biologi Kedokteran, Sains Terapan & Literasi IPA',
                         subjects: [
                             'Biologi (SMA)',
+                            'Biologi',
                             'Biologi Saintek',
                             'Biologi SMA',
                             'Cambridge / IB Biology (IGCSE & A-Level)',
@@ -1723,6 +1758,8 @@
                         subjects: [
                             'TPS - Penalaran Kuantitatif & Logika Matematika',
                             'Penalaran Matematika',
+                            'Matematika (Wajib)',
+                            'Matematika Tingkat Lanjut',
                             'TPS - Kemampuan Penalaran Umum (KPU)',
                             'Matematika Saintek',
                             'Matematika Soshum',
@@ -1742,11 +1779,17 @@
                         shortName: 'Kak Citra',
                         photo: '/images/pengajar/mentor-4-literasi.jpg',
                         education: 'Pendidikan Bahasa & Sastra Univ. Indonesia',
-                        categories: ['SNBT', 'Kurikulum Nasional', 'Kurikulum Internasional'],
+                        categories: ['SNBT', 'Kurikulum Nasional', 'Kurikulum Internasional', 'TKA'],
                         jenjang: ['SMP', 'SMA'],
                         jenjangLabel: 'SMP, SMA & Gap Year',
                         subject: 'Literasi Bahasa Indonesia, English for Academic & SNBT',
                         subjects: [
+                            'Bahasa Indonesia (Wajib)',
+                            'Bahasa Inggris (Wajib)',
+                            'Bahasa Indonesia Tingkat Lanjut',
+                            'Bahasa Inggris Tingkat Lanjut',
+                            'Bahasa Indonesia (SMP)',
+                            'Bahasa Indonesia (SD)',
                             'Literasi dalam Bahasa Indonesia',
                             'Literasi dalam Bahasa Inggris',
                             'TPS - Pemahaman Bacaan & Menulis (PBM)',
@@ -1777,6 +1820,7 @@
                         subject: 'Fisika Saintek, OSN Fisika & Cambridge Physics',
                         subjects: [
                             'Fisika (SMA)',
+                            'Fisika',
                             'Fisika Saintek',
                             'Fisika SMA',
                             'Cambridge / IB Physics (IGCSE & A-Level)',
@@ -1804,6 +1848,9 @@
                             'Matematika (SMA)',
                             'Matematika (SMP)',
                             'Matematika (SD)',
+                            'Matematika (Wajib)',
+                            'Matematika Tingkat Lanjut',
+                            'Pendidikan Pancasila dan Kewarganegaraan',
                             'Matematika (Wajib & Lanjut)',
                             'Matematika SMP',
                             'Matematika SD',
@@ -1830,8 +1877,11 @@
                         subject: 'Chemistry & Science (IB DP HL/SL, Cambridge IGCSE / A-Level)',
                         subjects: [
                             'Kimia (SMA)',
+                            'Kimia',
                             'Kimia Saintek',
                             'Kimia SMA',
+                            'Bahasa Inggris (Wajib)',
+                            'Bahasa Inggris Tingkat Lanjut',
                             'Cambridge / IB Chemistry (IGCSE & A-Level)',
                             'Academic English / IELTS & TOEFL'
                         ],
@@ -1855,6 +1905,7 @@
                         subject: 'Ekonomi Soshum, OSN Ekonomi, Akuntansi & Cambridge',
                         subjects: [
                             'Ekonomi (SMA)',
+                            'Ekonomi',
                             'Ekonomi Soshum',
                             'Ekonomi & Akuntansi SMA',
                             'Cambridge / IB Economics & Business',
@@ -1874,15 +1925,17 @@
                         shortName: 'Kak Rocheline',
                         photo: '/images/pengajar/mentor-9-sd-sains.jpg',
                         education: 'Pendidikan Dasar & Sains Anak Berprestasi',
-                        categories: ['Kurikulum Nasional', 'OSN'],
+                        categories: ['Kurikulum Nasional', 'OSN', 'TKA'],
                         jenjang: ['SD', 'SMP'],
                         jenjangLabel: 'SD (Kelas 1-6) & SMP (Kelas 7-9)',
                         subject: 'Calistung, Matematika & IPA Eksploratif SD/SMP',
                         subjects: [
                             'Matematika (SD)',
+                            'Bahasa Indonesia (SD)',
                             'IPA (SD)',
                             'IPS (SD)',
                             'Matematika (SMP)',
+                            'Bahasa Indonesia (SMP)',
                             'IPA (SMP)',
                             'IPS (SMP)',
                             'Matematika SD',
@@ -1913,6 +1966,7 @@
                         subject: 'Informatika OSN, Coding (C++, Python), & AP Computer Science',
                         subjects: [
                             'Informatika / Komputer (SMA)',
+                            'SMK - Projek Kreatif & Kejuruan',
                             'Cambridge / AP Computer Science & Coding',
                             'TPS - Penalaran Kuantitatif & Logika Matematika'
                         ],
@@ -1937,6 +1991,7 @@
                         subjects: [
                             'Astronomi (SMA)',
                             'Fisika (SMA)',
+                            'Fisika',
                             'Fisika Saintek',
                             'Fisika SMA'
                         ],
@@ -1961,6 +2016,7 @@
                         subjects: [
                             'Kebumian (SMA)',
                             'Geografi (SMA)',
+                            'Geografi',
                             'Geografi Soshum',
                             'Geografi SMA'
                         ],
@@ -1984,13 +2040,15 @@
                         subject: 'OSN Geografi, IPS Terpadu SMP, & Geografi Soshum',
                         subjects: [
                             'Geografi (SMA)',
+                            'Geografi',
+                            'Sosiologi',
+                            'Sosiologi SMA',
+                            'Sosiologi Soshum',
                             'IPS (SMP)',
                             'IPS (SD)',
                             'Geografi Soshum',
                             'Geografi SMA',
-                            'IPS SMP',
-                            'Sosiologi SMA',
-                            'Sosiologi Soshum'
+                            'IPS SMP'
                         ],
                         kebutuhanPrivat: 'Persiapan OSN Geografi SMA, OSN IPS SMP, Ujian Sekolah Geografi, dan pendalaman materi UTBK Geografi Soshum.',
                         philosophy: 'Geografi mengajarkan cara pandang holistik, keterikatan ruang hidup, dan cinta tanah air.',
@@ -2006,7 +2064,7 @@
                         shortName: 'Kak Alief',
                         photo: '/images/pengajar/mentor-3-snbt.jpg',
                         education: 'Biologi & Ilmu Alam ITB (Pelatih Tim OSN IPA SMP)',
-                        categories: ['OSN', 'Kurikulum Nasional'],
+                        categories: ['OSN', 'Kurikulum Nasional', 'TKA'],
                         jenjang: ['SD', 'SMP'],
                         jenjangLabel: 'SD Kelas 4-6 & SMP Kelas 7-9',
                         subject: 'OSN IPA SMP, Biologi & Fisika Terpadu Eksploratif',
@@ -2015,7 +2073,8 @@
                             'IPA (SD)',
                             'IPA SMP (Fisika & Biologi)',
                             'IPA / IPAS SD',
-                            'Biologi (SMA)'
+                            'Biologi (SMA)',
+                            'Biologi'
                         ],
                         kebutuhanPrivat: 'Persiapan OSN IPA SMP (Fisika & Biologi), OSN IPA SD Cilik, serta pemantapan sains integratif untuk sekolah unggulan.',
                         philosophy: 'Membangun logika sains yang kokoh sejak bangku SMP adalah kunci keunggulan di jenjang selanjutnya.',
@@ -2039,9 +2098,13 @@
                             'IPS (SMP)',
                             'IPS (SD)',
                             'IPS SMP',
+                            'Sosiologi',
                             'Sosiologi SMA',
                             'Sosiologi Soshum',
-                            'Sejarah Soshum'
+                            'Sejarah',
+                            'Sejarah Soshum',
+                            'Antropologi',
+                            'Pendidikan Pancasila dan Kewarganegaraan'
                         ],
                         kebutuhanPrivat: 'Persiapan OSN IPS SMP, pemahaman materi Sosiologi & Sejarah untuk Ujian Mandiri PTN / UTBK Soshum.',
                         philosophy: 'Belajar ilmu sosial melatih empati sosial dan daya analisis fenomena kemanusiaan secara jujur.',
