@@ -113,31 +113,385 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="/theme.css" />
     <script src="/theme.js"></script>
+
+    <!-- CBT Engine Interactivity Logic & 20 Dynamic Questions -->
+    <script>
+        function cbtEngine() {
+            return {
+                activeCategory: 'snbt',
+                activeCbtQuestion: 1,
+                userAnswers: {
+                    2: ['A', 'B', 'C', 'E'],
+                    3: { 1: 'Benar', 3: 'Benar' }
+                },
+                raguStatus: {
+                    4: true
+                },
+                toOrderModal: false,
+                selectedPackage: 'Paket Intensif Try Out SNBT',
+                finishExamModal: false,
+                cbtQuestions: [
+                    {
+                        id: 1,
+                        type: 'pg',
+                        typeLabel: 'Pilihan Ganda Sederhana',
+                        category: 'OSN Matematika',
+                        badge: '🔥 Prediksi Team Next Level Study',
+                        text: 'Diberikan suatu fungsi f: ℝ → ℝ yang memenuhi sifat f(x + y) = f(x) · f(y) untuk setiap bilangan real x dan y. Jika diketahui f(1) = 3 dan nilai dari penjumlahan deret:\n\n∑ (k = 1 sampai n) f(k) = 3.279\n\nTentukan nilai bilangan asli n yang memenuhi persamaan deret tersebut:',
+                        options: [
+                            { key: 'A', text: 'n = 5' },
+                            { key: 'B', text: 'n = 6' },
+                            { key: 'C', text: 'n = 7' },
+                            { key: 'D', text: 'n = 8' },
+                            { key: 'E', text: 'n = 9' }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        type: 'pg_kompleks',
+                        typeLabel: 'Pilihan Ganda Kompleks (>1 Jawaban Benar)',
+                        category: 'SNBT - Penalaran Matematika',
+                        badge: '🎯 Standar UTBK-SNBT 2026',
+                        text: 'Sebuah tangki penampungan air berbentuk silinder tegak memiliki diameter alas 14 meter dan tinggi 10 meter. Tangki tersebut diisi air dari kondisi kosong menggunakan pompa berdebit konstan 15,4 m³/menit (gunakan π = 22/7).\n\nPilihlah SEMUA pernyataan yang bernilai BENAR berikut ini:',
+                        options: [
+                            { key: 'A', text: 'Volume total kapasitas tampung tangki air adalah 1.540 m³.' },
+                            { key: 'B', text: 'Waktu yang dibutuhkan untuk mengisi tangki hingga tepat penuh adalah 100 menit.' },
+                            { key: 'C', text: 'Laju kenaikan tinggi permukaan air dalam tangki adalah konstan sebesar 0,1 meter per menit.' },
+                            { key: 'D', text: 'Setelah pengisian berjalan 40 menit, volume air di dalam tangki adalah 650 m³.' },
+                            { key: 'E', text: 'Jika pompa kedua dengan debit yang sama dinyalakan bersamaan, waktu pengisian menjadi 50 menit.' }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        type: 'majemuk',
+                        typeLabel: 'Pilihan Ganda Majemuk (Pernyataan Benar/Salah)',
+                        category: 'OSN Biologi',
+                        badge: '🧬 Olimpiade Sains Nasional',
+                        text: 'Analisis mekanisme replikasi DNA eukariotik dan pemeliharaan integritas genom. Tentukan kebenaran dari masing-masing pernyataan berikut (Pilih Benar atau Salah):',
+                        statements: [
+                            { id: 1, text: 'Enzim DNA Helikase memutus ikatan hidrogen antar pasangan basa nitrogen untuk membuka heliks ganda DNA.' },
+                            { id: 2, text: 'Sintesis untai lambat (lagging strand) disintesis secara kontinu searah dengan pergerakan garpu replikasi.' },
+                            { id: 3, text: 'Fragmen Okazaki pada lagging strand disambungkan menjadi untai utuh oleh aktivitas enzim DNA Ligase.' }
+                        ]
+                    },
+                    {
+                        id: 4,
+                        type: 'menjodohkan',
+                        typeLabel: 'Soal Menjodohkan (Matching Pairs)',
+                        category: 'TKA Saintek - Fisika',
+                        badge: '⚡ Tes Kemampuan Akademik',
+                        text: 'Jodohkanlah spektrum gelombang elektromagnetik di kolom sebelah kiri dengan pemanfaatan teknologi / sifat utamanya yang sesuai pada kolom kanan:',
+                        pairs: [
+                            { id: 1, left: 'Gelombang Mikro (Microwaves)', options: ['Transmisi Radar & Pemanasan Dielektrik', 'Sterilisasi Medis & Pemicu Vitamin D', 'Radiografi Diagnostik Struktur Tulang', 'Pemandu Laser Serat Optik'] },
+                            { id: 2, left: 'Sinar Ultraviolet (UV)', options: ['Transmisi Radar & Pemanasan Dielektrik', 'Sterilisasi Medis & Pemicu Vitamin D', 'Radiografi Diagnostik Struktur Tulang', 'Pemandu Laser Serat Optik'] },
+                            { id: 3, left: 'Sinar-X (Röntgen)', options: ['Transmisi Radar & Pemanasan Dielektrik', 'Sterilisasi Medis & Pemicu Vitamin D', 'Radiografi Diagnostik Struktur Tulang', 'Pemandu Laser Serat Optik'] }
+                        ]
+                    },
+                    {
+                        id: 5,
+                        type: 'pg',
+                        typeLabel: 'Pilihan Ganda Sederhana',
+                        category: 'SNBT - Penalaran Umum',
+                        badge: '🧠 Logika & Silogisme HOTS',
+                        text: 'Premis 1: Semua siswa yang lolos seleksi perguruan tinggi negeri unggulan memiliki kedisiplinan belajar tinggi atau rutin mengikuti try out bulanan.\nPremis 2: Dania tidak memiliki kedisiplinan belajar tinggi.\nPremis 3: Dania dinyatakan lolos seleksi perguruan tinggi negeri unggulan.\n\nKesimpulan yang paling tepat dan logis adalah...',
+                        options: [
+                            { key: 'A', text: 'Dania tidak pernah mengikuti bimbingan belajar intensif.' },
+                            { key: 'B', text: 'Dania rutin mengikuti try out bulanan.' },
+                            { key: 'C', text: 'Dania memiliki nilai rata-rata rapor yang sangat tinggi.' },
+                            { key: 'D', text: 'Sebagian siswa yang rajin try out belum tentu lolos seleksi.' },
+                            { key: 'E', text: 'Dania lolos seleksi karena faktor keberuntungan semata.' }
+                        ]
+                    },
+                    {
+                        id: 6,
+                        type: 'pg_kompleks',
+                        typeLabel: 'Pilihan Ganda Kompleks (>1 Jawaban Benar)',
+                        category: 'OSN Kimia',
+                        badge: '🧪 Olimpiade Sains Nasional',
+                        text: 'Reaksi sintesis gas amonia berlangsung menurut persamaan kesetimbangan eksotermik:\n\nN₂(g) + 3H₂(g) ⇌ 2NH₃(g)   ΔH = -92,4 kJ\n\nManakah tindakan berikut yang akan MENGGESER kesetimbangan ke arah PRODUK (kanan)? (Pilih lebih dari satu jawaban benar):',
+                        options: [
+                            { key: 'A', text: 'Menurunkan suhu sistem reaksi pada volume tetap.' },
+                            { key: 'B', text: 'Menaikkan tekanan total dengan memperkecil volume reaktor.' },
+                            { key: 'C', text: 'Menambahkan gas inert Helium pada volume wadah konstan.' },
+                            { key: 'D', text: 'Menambahkan konsentrasi pereaksi gas N₂ atau H₂ ke dalam sistem.' },
+                            { key: 'E', text: 'Menambahkan katalis serbuk besi (Fe) pada suhu tinggi.' }
+                        ]
+                    },
+                    {
+                        id: 7,
+                        type: 'majemuk',
+                        typeLabel: 'Pilihan Ganda Majemuk (Setuju / Tidak Setuju)',
+                        category: 'TKA Soshum - Ekonomi',
+                        badge: '📊 Kebijakan Moneter & Fiskal',
+                        text: 'Ketika perekonomian nasional mengalami tekanan laju inflasi yang melebihi target batas atas (overheating), Bank Sentral menerapkan kebijakan moneter kontraktif (Tight Money Policy). Evaluasi keabsahan langkah-langkah berikut:',
+                        statementLabels: ['Setuju', 'Tidak Setuju'],
+                        statements: [
+                            { id: 1, text: 'Bank Sentral menjual Surat Berharga Negara (SBN) ke pasar uang untuk menyerap kelebihan likuiditas.' },
+                            { id: 2, text: 'Bank Sentral menurunkan rasio Giro Wajib Minimum (GWM) perbankan komersial.' },
+                            { id: 3, text: 'Bank Sentral menaikkan suku bunga acuan (BI-Rate) untuk meredam ekspansi kredit konsumtif.' }
+                        ]
+                    },
+                    {
+                        id: 8,
+                        type: 'menjodohkan',
+                        typeLabel: 'Soal Menjodohkan (Matching Pairs)',
+                        category: 'OSN Astronomi',
+                        badge: '🔭 Astrofisika & Spektroskopi',
+                        text: 'Jodohkanlah kelas spektrum bintang menurut Klasifikasi Harvard (Kolom Kiri) dengan rentang temperatur fotosfer dan warna karakteristiknya (Kolom Kanan):',
+                        pairs: [
+                            { id: 1, left: 'Bintang Kelas O (contoh: Alnitak)', options: ['Suhu > 30.000 K, Warna Biru Intens', 'Suhu ~5.800 K, Warna Kuning (seperti Matahari)', 'Suhu < 3.500 K, Warna Merah Dingin', 'Suhu ~10.000 K, Warna Putih Bersih'] },
+                            { id: 2, left: 'Bintang Kelas G (contoh: Matahari kita)', options: ['Suhu > 30.000 K, Warna Biru Intens', 'Suhu ~5.800 K, Warna Kuning (seperti Matahari)', 'Suhu < 3.500 K, Warna Merah Dingin', 'Suhu ~10.000 K, Warna Putih Bersih'] },
+                            { id: 3, left: 'Bintang Kelas M (contoh: Betelgeuse)', options: ['Suhu > 30.000 K, Warna Biru Intens', 'Suhu ~5.800 K, Warna Kuning (seperti Matahari)', 'Suhu < 3.500 K, Warna Merah Dingin', 'Suhu ~10.000 K, Warna Putih Bersih'] }
+                        ]
+                    },
+                    {
+                        id: 9,
+                        type: 'pg',
+                        typeLabel: 'Pilihan Ganda Sederhana',
+                        category: 'SNBT - Literasi Bahasa Indonesia',
+                        badge: '📚 Pemahaman Bacaan & Makna Kritis',
+                        text: 'Dalam diskursus transisi energi berkeadilan, dekarbonisasi industri kerap dihadapkan pada dilema antara target reduksi emisi karbon jangka pendek dan mitigasi dampak sosial-ekonomi terhadap pekerja sektor fosil. Ketidakseimbangan intervensi fiskal berisiko memperlebar kesenjangan struktural di wilayah penghasil tambang.\n\nMakna implisit yang paling esensial dari kutipan paragraf tersebut adalah...',
+                        options: [
+                            { key: 'A', text: 'Target reduksi emisi karbon sebaiknya ditunda hingga seluruh industri siap secara modal.' },
+                            { key: 'B', text: 'Transisi energi yang adil membutuhkan strategi kompensasi dan pengalihan keahlian bagi tenaga kerja terdampak.' },
+                            { key: 'C', text: 'Sektor tambang fosil tidak memberikan kontribusi ekonomi yang signifikan bagi daerah.' },
+                            { key: 'D', text: 'Intervensi fiskal pemerintah terbukti gagal menurunkan tingkat pencemaran lingkungan.' },
+                            { key: 'E', text: 'Dilema dekarbonisasi hanya terjadi di negara berkembang dengan ketergantungan energi tinggi.' }
+                        ]
+                    },
+                    {
+                        id: 10,
+                        type: 'pg_kompleks',
+                        typeLabel: 'Pilihan Ganda Kompleks (>1 Jawaban Benar)',
+                        category: 'OSN Informatika / Komputer',
+                        badge: '💻 Algoritma & Struktur Data',
+                        text: 'Ditinjau dari efisiensi kompleksitas waktu (Time Complexity) dan karakteristik struktur data fundamental, manakah pernyataan berikut yang BENAR? (Pilih lebih dari satu jawaban benar):',
+                        options: [
+                            { key: 'A', text: 'Pencarian elemen pada Balanced Binary Search Tree (AVL Tree) memiliki kompleksitas worst-case O(log N).' },
+                            { key: 'B', text: 'Algoritma QuickSort memiliki kompleksitas waktu worst-case O(N²) ketika pemilihan pivot selalu merupakan elemen ekstrem.' },
+                            { key: 'C', text: 'Algoritma Dijkstra dengan min-heap dapat menyelesaikan Single Source Shortest Path pada graf berbobot negatif tanpa siklus.' },
+                            { key: 'D', text: 'Operasi push dan pop pada struktur data Stack berbasis array dinamis memiliki amortized time complexity O(1).' },
+                            { key: 'E', text: 'Operasi pencarian (lookup) pada Hash Table berukuran tak terhingga selalu dijamin O(N) linear time.' }
+                        ]
+                    },
+                    {
+                        id: 11,
+                        type: 'majemuk',
+                        typeLabel: 'Pilihan Ganda Majemuk (Pernyataan Benar/Salah)',
+                        category: 'TKA Soshum - Sosiologi',
+                        badge: '👥 Struktur & Mobilitas Sosial',
+                        text: 'Mengenai diferensiasi sosial, stratifikasi tertutup, dan saluran mobilitas sosial vertikal dalam masyarakat modern, tentukan status kebenaran pernyataan berikut:',
+                        statements: [
+                            { id: 1, text: 'Sistem kasta tradisional merupakan perwujudan stratifikasi sosial tertutup (closed social stratification).' },
+                            { id: 2, text: 'Lembaga pendidikan formal (sekolah/universitas) berfungsi sebagai social elevator bagi mobilitas sosial vertikal naik (social climbing).' },
+                            { id: 3, text: 'Diferensiasi sosial horizontal selalu didasarkan pada hierarki penguasaan hak istimewa dan kekayaan material.' }
+                        ]
+                    },
+                    {
+                        id: 12,
+                        type: 'menjodohkan',
+                        typeLabel: 'Soal Menjodohkan (Matching Pairs)',
+                        category: 'OSN Kebumian',
+                        badge: '🌍 Petrologi & Geodinamika',
+                        text: 'Jodohkan jenis batuan di kolom kiri dengan genesa pembentukan dan lingkungan pengendapannya di kolom kanan:',
+                        pairs: [
+                            { id: 1, left: 'Batuan Andesit (Batuan Beku Luar)', options: ['Pembekuan magma intermediet di permukaan bumi (ekstrusif)', 'Pengendapan fragmen klastika runcing akibat sedimentasi gravitasi', 'Rekristalisasi batu gamping akibat suhu & tekanan tinggi (metamorfosis)', 'Pengendapan kimiawi evaporit di danau asin'] },
+                            { id: 2, left: 'Batuan Breksi (Batuan Sedimen Klastik)', options: ['Pembekuan magma intermediet di permukaan bumi (ekstrusif)', 'Pengendapan fragmen klastika runcing akibat sedimentasi gravitasi', 'Rekristalisasi batu gamping akibat suhu & tekanan tinggi (metamorfosis)', 'Pengendapan kimiawi evaporit di danau asin'] },
+                            { id: 3, left: 'Batuan Marmer (Batuan Metamorf Kontak/Regional)', options: ['Pembekuan magma intermediet di permukaan bumi (ekstrusif)', 'Pengendapan fragmen klastika runcing akibat sedimentasi gravitasi', 'Rekristalisasi batu gamping akibat suhu & tekanan tinggi (metamorfosis)', 'Pengendapan kimiawi evaporit di danau asin'] }
+                        ]
+                    },
+                    {
+                        id: 13,
+                        type: 'pg',
+                        typeLabel: 'Pilihan Ganda Sederhana',
+                        category: 'SNBT - English Literacy',
+                        badge: '📖 Critical Reading & Inference',
+                        text: 'Passage excerpt:\n"Quantum computing harnesses the strange phenomena of superposition and entanglement, enabling qubits to process multifaceted probabilistic states simultaneously. While cryptographic vulnerabilities loom as a critical bottleneck, the computational supremacy offered in molecular simulation heralds a paradigm shift for drug discovery."\n\nAccording to the passage, what is the primary prospective advantage of quantum computing in the pharmaceutical sector?',
+                        options: [
+                            { key: 'A', text: 'It completely eliminates all cryptographic vulnerabilities in hospital systems.' },
+                            { key: 'B', text: 'It replaces conventional experimental clinical trials with synthetic algorithms.' },
+                            { key: 'C', text: 'It provides unprecedented computational prowess for simulating complex molecular structures.' },
+                            { key: 'D', text: 'It reduces the financial manufacturing costs of mass-produced generic medications.' },
+                            { key: 'E', text: 'It prevents qubits from undergoing decoherence during bio-chemical calculations.' }
+                        ]
+                    },
+                    {
+                        id: 14,
+                        type: 'pg_kompleks',
+                        typeLabel: 'Pilihan Ganda Kompleks (>1 Jawaban Benar)',
+                        category: 'OSN Geografi',
+                        badge: '🌏 Oseanografi & Klimatologi',
+                        text: 'Saat fase fenomena iklim El Niño Southern Oscillation (ENSO) aktif dengan intensitas kuat di Samudra Pasifik Ekuatorial, fenomena oseano-atmosfer manakah yang BENAR terjadi? (Pilih lebih dari satu jawaban benar):',
+                        options: [
+                            { key: 'A', text: 'Suhu Permukaan Laut (Sea Surface Temperature) di kawasan Pasifik timur dan tengah mengalami anomali positif (menghangat).' },
+                            { key: 'B', text: 'Intensitas sirkulasi Walker melemah atau berbalik arah dari kondisi normal.' },
+                            { key: 'C', text: 'Wilayah kepulauan Indonesia cenderung mengalami curah hujan ekstrem dan frekuensi banjir bandang tinggi.' },
+                            { key: 'D', text: 'Fenomena Upwelling di sepanjang pesisir barat Peru dan Ekuador mengalami pelemahan signifikan.' },
+                            { key: 'E', text: 'Tekanan udara permukaan di wilayah Darwin (Australia) menjadi jauh lebih rendah dibanding Tahiti.' }
+                        ]
+                    },
+                    {
+                        id: 15,
+                        type: 'majemuk',
+                        typeLabel: 'Pilihan Ganda Majemuk (Pernyataan Benar/Salah)',
+                        category: 'TKA Saintek - Biologi',
+                        badge: '🌱 Fisiologi Tumbuhan & Biokimia',
+                        text: 'Mengenai reaksi fotosintesis pada tumbuhan tingkat tinggi (reaksi terang tilakoid dan siklus Calvin di stroma kloroplas), tentukan nilai kebenaran pernyataan berikut:',
+                        statements: [
+                            { id: 1, text: 'Fotolisis air terjadi pada Fotosistem II (P680) yang menghasilkan molekul O₂, proton H⁺, dan elektron pengisi rute transport.' },
+                            { id: 2, text: 'Fiksasi molekul CO₂ pada stroma dikatalisis oleh enzim Ribulosa Bifosfat Karboksilase/Oksigenase (Rubisco).' },
+                            { id: 3, text: 'Reaksi gelap (Siklus Calvin) sama sekali tidak membutuhkan produk ATP dan NADPH yang dihasilkan dari reaksi terang.' }
+                        ]
+                    },
+                    {
+                        id: 16,
+                        type: 'menjodohkan',
+                        typeLabel: 'Soal Menjodohkan (Matching Pairs)',
+                        category: 'OSN Fisika',
+                        badge: '⚛️ Termodinamika Fundamental',
+                        text: 'Jodohkan prinsip Hukum Termodinamika di kolom kiri dengan konsekuensi fisis esensialnya di kolom kanan:',
+                        pairs: [
+                            { id: 1, left: 'Hukum Termodinamika ke-0 (Zeroth Law)', options: ['Mendefinisikan konsep Kesetimbangan Termal & Skala Temperatur', 'Prinsip Kekekalan Energi: Kalor netto = Perubahan Energi Dalam + Kerja', 'Entropi total dari sistem terisolasi selalu meningkat pada proses spontan', 'Efisiensi mesin kalor Carnot bernilai 100% pada suhu kamar'] },
+                            { id: 2, left: 'Hukum Termodinamika ke-1 (First Law)', options: ['Mendefinisikan konsep Kesetimbangan Termal & Skala Temperatur', 'Prinsip Kekekalan Energi: Kalor netto = Perubahan Energi Dalam + Kerja', 'Entropi total dari sistem terisolasi selalu meningkat pada proses spontan', 'Efisiensi mesin kalor Carnot bernilai 100% pada suhu kamar'] },
+                            { id: 3, left: 'Hukum Termodinamika ke-2 (Second Law)', options: ['Mendefinisikan konsep Kesetimbangan Termal & Skala Temperatur', 'Prinsip Kekekalan Energi: Kalor netto = Perubahan Energi Dalam + Kerja', 'Entropi total dari sistem terisolasi selalu meningkat pada proses spontan', 'Efisiensi mesin kalor Carnot bernilai 100% pada suhu kamar'] }
+                        ]
+                    },
+                    {
+                        id: 17,
+                        type: 'pg',
+                        typeLabel: 'Pilihan Ganda Sederhana',
+                        category: 'SNBT - Pengetahuan Kuantitatif',
+                        badge: '📐 Aljabar & Matriks Determinan',
+                        text: 'Diketahui matriks A = [[2, 3], [1, 4]] dan matriks B = [[1, -1], [2, 0]]. Jika matriks C didefinisikan sebagai C = 2A - B², maka nilai dari determinan matriks C (|C|) adalah...',
+                        options: [
+                            { key: 'A', text: '16' },
+                            { key: 'B', text: '22' },
+                            { key: 'C', text: '31' },
+                            { key: 'D', text: '43' },
+                            { key: 'E', text: '54' }
+                        ]
+                    },
+                    {
+                        id: 18,
+                        type: 'pg_kompleks',
+                        typeLabel: 'Pilihan Ganda Kompleks (>1 Jawaban Benar)',
+                        category: 'TKA Saintek - Kimia',
+                        badge: '⚗️ Kimia Larutan & Penyangga',
+                        text: 'Sistem larutan penyangga (buffer) memiliki peran krusial dalam mempertahankan pH darah manusia pada rentang sempit 7,35 - 7,45. Manakah pasangan zat atau pernyataan yang BENAR terkait sistem penyangga asam/basa? (Pilih lebih dari satu jawaban benar):',
+                        options: [
+                            { key: 'A', text: 'Campuran 100 mL CH₃COOH 0,1 M dengan 50 mL NaOH 0,1 M akan membentuk larutan penyangga asam.' },
+                            { key: 'B', text: 'Sistem penyangga utama dalam cairan ekstraseluler darah manusia adalah pasangan H₂CO₃ dan ion bikarbonat HCO₃⁻.' },
+                            { key: 'C', text: 'Penambahan sedikit asam kuat (HCl) ke dalam buffer asetat akan mengubah ion asetat (CH₃COO⁻) menjadi asam asetat (CH₃COOH).' },
+                            { key: 'D', text: 'Kapasitas penyangga paling optimal tercapai ketika perbandingan konsentrasi asam lemah dan basa konjugatnya bernilai 1 : 1 (pH = pKa).' },
+                            { key: 'E', text: 'Campuran 100 mL HCl 0,1 M dengan 100 mL NH₄OH 0,1 M membentuk larutan penyangga basa dengan pH > 7.' }
+                        ]
+                    },
+                    {
+                        id: 19,
+                        type: 'majemuk',
+                        typeLabel: 'Pilihan Ganda Majemuk (Setuju / Tidak Setuju)',
+                        category: 'OSN Ekonomi',
+                        badge: '📈 Mikroekonomi & Efisiensi Pasar',
+                        text: 'Analisis surplus ekonomi dan deadweight loss akibat pengenaan pajak spesifik (tax incidence) pada pasar bersaing sempurna. Tentukan persetujuan Anda terhadap pernyataan berikut:',
+                        statementLabels: ['Setuju', 'Tidak Setuju'],
+                        statements: [
+                            { id: 1, text: 'Jika elastisitas permintaan lebih inelastis dibanding penawaran, beban pajak terbesar akan ditanggung oleh pihak konsumen.' },
+                            { id: 2, text: 'Pengenaan pajak per unit output selalu menimbulkan kehilangan efisiensi ekonomi bersih (Deadweight Loss) di pasar.' },
+                            { id: 3, text: 'Pada kurva permintaan inelastis sempurna (Ed = 0), deadweight loss yang tercipta adalah bernilai maksimum tak hingga.' }
+                        ]
+                    },
+                    {
+                        id: 20,
+                        type: 'menjodohkan',
+                        typeLabel: 'Soal Menjodohkan (Matching Pairs)',
+                        category: 'TKA Soshum - Geografi & SIG',
+                        badge: '🛰️ Sistem Informasi Geografis & Remote Sensing',
+                        text: 'Jodohkan istilah komponen Sistem Informasi Geografis (SIG) dan Penginderaan Jauh pada kolom kiri dengan fungsi analisanya di kolom kanan:',
+                        pairs: [
+                            { id: 1, left: 'Analisis Buffer (Buffering)', options: ['Membuat zona jangkauan radius tertentu di sekitar fitur spasial', 'Menggabungkan beberapa layer tematik untuk kesesuaian lahan', 'Data spasial berbasis piksel grid sel dengan nilai numerik (citra satelit)', 'Transformasi koordinat proyeksi peta permukaan bumi'] },
+                            { id: 2, left: 'Analisis Overlay (Tumpang Susun)', options: ['Membuat zona jangkauan radius tertentu di sekitar fitur spasial', 'Menggabungkan beberapa layer tematik untuk kesesuaian lahan', 'Data spasial berbasis piksel grid sel dengan nilai numerik (citra satelit)', 'Transformasi koordinat proyeksi peta permukaan bumi'] },
+                            { id: 3, left: 'Format Data Raster', options: ['Membuat zona jangkauan radius tertentu di sekitar fitur spasial', 'Menggabungkan beberapa layer tematik untuk kesesuaian lahan', 'Data spasial berbasis piksel grid sel dengan nilai numerik (citra satelit)', 'Transformasi koordinat proyeksi peta permukaan bumi'] }
+                        ]
+                    }
+                ],
+                get currentQ() {
+                    return this.cbtQuestions.find(q => q.id === this.activeCbtQuestion) || this.cbtQuestions[0];
+                },
+                isRagu(id) {
+                    return !!this.raguStatus[id];
+                },
+                toggleRagu(id) {
+                    this.raguStatus[id] = !this.raguStatus[id];
+                },
+                isAnswered(id) {
+                    const q = this.cbtQuestions.find(item => item.id === id);
+                    if (!q || !this.userAnswers[id]) return false;
+                    if (q.type === 'pg') return !!this.userAnswers[id];
+                    if (q.type === 'pg_kompleks') return Array.isArray(this.userAnswers[id]) && this.userAnswers[id].length > 0;
+                    if (q.type === 'majemuk') return typeof this.userAnswers[id] === 'object' && Object.keys(this.userAnswers[id]).length > 0;
+                    if (q.type === 'menjodohkan') return typeof this.userAnswers[id] === 'object' && Object.keys(this.userAnswers[id]).length > 0;
+                    return false;
+                },
+                selectPgAnswer(id, key) {
+                    this.userAnswers[id] = key;
+                },
+                toggleComplexAnswer(id, key) {
+                    if (!Array.isArray(this.userAnswers[id])) {
+                        this.userAnswers[id] = [];
+                    }
+                    const idx = this.userAnswers[id].indexOf(key);
+                    if (idx > -1) {
+                        this.userAnswers[id].splice(idx, 1);
+                    } else {
+                        this.userAnswers[id].push(key);
+                    }
+                },
+                isComplexSelected(id, key) {
+                    return Array.isArray(this.userAnswers[id]) && this.userAnswers[id].includes(key);
+                },
+                setMajemukAnswer(id, stmtId, val) {
+                    if (!this.userAnswers[id] || typeof this.userAnswers[id] !== 'object' || Array.isArray(this.userAnswers[id])) {
+                        this.userAnswers[id] = {};
+                    }
+                    this.userAnswers[id][stmtId] = val;
+                },
+                getMajemukVal(id, stmtId) {
+                    return this.userAnswers[id] ? this.userAnswers[id][stmtId] : null;
+                },
+                setMatchAnswer(id, pairId, val) {
+                    if (!this.userAnswers[id] || typeof this.userAnswers[id] !== 'object' || Array.isArray(this.userAnswers[id])) {
+                        this.userAnswers[id] = {};
+                    }
+                    this.userAnswers[id][pairId] = val;
+                },
+                getMatchVal(id, pairId) {
+                    return this.userAnswers[id] ? this.userAnswers[id][pairId] : null;
+                },
+                getAnsweredCount() {
+                    let count = 0;
+                    for (let i = 1; i <= 20; i++) {
+                        if (this.isAnswered(i)) count++;
+                    }
+                    return count;
+                },
+                getRaguCount() {
+                    let count = 0;
+                    for (let i = 1; i <= 20; i++) {
+                        if (this.isRagu(i)) count++;
+                    }
+                    return count;
+                },
+                openOrder(pkgName) {
+                    this.selectedPackage = pkgName;
+                    this.toOrderModal = true;
+                }
+            };
+        }
+    </script>
 </head>
 
 <body class="min-h-screen bg-surface font-sans text-on-surface flex flex-col selection:bg-primary selection:text-white"
-    x-data="{
-        activeCategory: 'snbt',
-        activeCbtQuestion: 1,
-        selectedAnswer: null,
-        isAnswerRagu: false,
-        coinClaimed: false,
-        coinBalance: 25,
-        streakDays: 4,
-        toOrderModal: false,
-        selectedPackage: 'Paket Intensif Try Out SNBT',
-        claimDailyCoin() {
-            if (!this.coinClaimed) {
-                this.coinBalance += 5;
-                this.streakDays += 1;
-                this.coinClaimed = true;
-            }
-        },
-        openOrder(pkgName) {
-            this.selectedPackage = pkgName;
-            this.toOrderModal = true;
-        }
-    }">
+    x-data="cbtEngine()">
 
     <!-- ===== NAVBAR ===== -->
     <nav x-data="{ isMobileMenuOpen: false, activeDesktopMenu: null }" @click.outside="activeDesktopMenu = null"
@@ -293,7 +647,7 @@
         </div>
     </nav>
 
-    <!-- ===== HERO SECTION WITH LIVE CBT SIMULATION PREVIEW ===== -->
+    <!-- ===== HERO SECTION WITH DYNAMIC INTERACTIVE CBT SIMULATION PREVIEW ===== -->
     <header class="relative pt-12 pb-24 overflow-hidden hero-glow bg-gradient-to-b from-blue-50/60 via-white to-surface dark:from-slate-950 dark:via-[#0b132b] dark:to-slate-900">
         <!-- Ambient decorative blobs -->
         <div class="absolute top-10 left-1/2 -translate-x-1/2 w-[650px] h-[350px] bg-primary/10 dark:bg-sky-500/10 blur-[100px] rounded-full pointer-events-none -z-10"></div>
@@ -320,7 +674,7 @@
                 </h1>
 
                 <p class="text-base sm:text-lg text-on-surface-variant dark:text-slate-300 leading-relaxed max-w-2xl mx-auto font-medium">
-                    Ukur kesiapanmu menghadapi seleksi sesungguhnya. Nikmati ribuan bank soal asli tahun lalu, soal prediksi alat khusus NLS, soal kejutan HOTS, sistem ranking nasional, serta sistem koin login gratis.
+                    Ukur kesiapanmu menghadapi seleksi sesungguhnya. Nikmati ribuan bank soal asli tahun lalu, soal prediksi team Next Level Study, soal kejutan HOTS, sistem ranking nasional, serta sistem koin login gratis.
                 </p>
 
                 <!-- CTA Action Bar -->
@@ -367,13 +721,14 @@
                         <!-- Left: Question Panel (8 Cols) -->
                         <div class="lg:col-span-8 space-y-6">
                             <!-- Question Header & Badges -->
-                            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
-                                <div class="flex items-center gap-2">
-                                    <span class="px-3 py-1 rounded-lg bg-primary text-white font-black text-sm">
-                                        Soal No. <span x-text="activeCbtQuestion">1</span>
+                            <div class="flex flex-wrap items-center justify-between pb-4 border-b border-slate-800 gap-2">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="px-3 py-1 rounded-lg bg-primary text-white font-black text-sm shadow-xs">
+                                        Soal No. <span x-text="activeCbtQuestion"></span>
                                     </span>
-                                    <span class="px-2.5 py-1 rounded-lg bg-purple-950 text-purple-300 border border-purple-800 text-xs font-bold">
-                                        🔥 Tipe HOTS Prediksi Team Next Level Study
+                                    <span class="px-2.5 py-1 rounded-lg bg-purple-950 text-purple-300 border border-purple-800 text-xs font-bold" x-text="currentQ.badge + ' • ' + currentQ.category">
+                                    </span>
+                                    <span class="px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 text-[11px] font-semibold border border-slate-700" x-text="currentQ.typeLabel">
                                     </span>
                                 </div>
                                 <div class="text-xs text-slate-400 flex items-center gap-1">
@@ -382,57 +737,134 @@
                                 </div>
                             </div>
 
-                            <!-- Question Content -->
-                            <div class="space-y-4">
-                                <p class="text-sm sm:text-base text-slate-200 leading-relaxed font-medium">
-                                    Sebuah sistem pemeringkatan mengalokasikan bobot penalti dan tingkat kesulitan dinamis berbasis <em>Item Response Theory (IRT)</em>. Jika sebuah soal kategori kejutan memiliki tingkat diskriminasi tinggi (&alpha; = 1.85) dan tingkat kesukaran (&beta; = 1.20), strategi pemilihan soal manakah yang memberikan probabilitas peningkatan skor rasionalisasi PTN paling optimal?
-                                </p>
+                            <!-- Question Content Area -->
+                            <div class="space-y-4 min-h-[220px]">
+                                <p class="text-sm sm:text-base text-slate-200 leading-relaxed font-medium whitespace-pre-line" x-text="currentQ.text"></p>
 
-                                <!-- Multiple Choice Radio Options -->
-                                <div class="space-y-2.5 pt-2">
-                                    <label @click="selectedAnswer = 'A'"
-                                        class="flex items-start gap-3.5 p-3.5 rounded-xl border transition-all cursor-pointer"
-                                        :class="selectedAnswer === 'A' ? 'bg-primary/20 border-primary text-white shadow-sm ring-1 ring-primary' : 'bg-slate-800/70 border-slate-700/80 hover:bg-slate-800 text-slate-300'">
-                                        <span class="w-6 h-6 rounded-full border flex items-center justify-center text-xs font-bold shrink-0 mt-0.5"
-                                            :class="selectedAnswer === 'A' ? 'bg-primary border-primary text-white' : 'border-slate-500 text-slate-400'">A</span>
-                                        <span class="text-xs sm:text-sm">Menuntaskan soal berbobot diskriminasi tinggi secara akurat dengan manajemen waktu terukur di 30 detik pertama.</span>
-                                    </label>
+                                <!-- Type 1: Pilihan Ganda Sederhana (5 Opsi) -->
+                                <template x-if="currentQ.type === 'pg'">
+                                    <div class="space-y-2.5 pt-2">
+                                        <template x-for="opt in currentQ.options" :key="opt.key">
+                                            <label @click="selectPgAnswer(activeCbtQuestion, opt.key)"
+                                                class="flex items-start gap-3.5 p-3.5 rounded-xl border transition-all cursor-pointer"
+                                                :class="userAnswers[activeCbtQuestion] === opt.key ? 'bg-primary/20 border-primary text-white shadow-sm ring-1 ring-primary' : 'bg-slate-800/70 border-slate-700/80 hover:bg-slate-800 text-slate-300'">
+                                                <span class="w-6 h-6 rounded-full border flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 transition-colors"
+                                                    :class="userAnswers[activeCbtQuestion] === opt.key ? 'bg-primary border-primary text-white' : 'border-slate-500 text-slate-400'"
+                                                    x-text="opt.key"></span>
+                                                <span class="text-xs sm:text-sm font-medium leading-relaxed" x-text="opt.text"></span>
+                                            </label>
+                                        </template>
+                                    </div>
+                                </template>
 
-                                    <label @click="selectedAnswer = 'B'"
-                                        class="flex items-start gap-3.5 p-3.5 rounded-xl border transition-all cursor-pointer"
-                                        :class="selectedAnswer === 'B' ? 'bg-primary/20 border-primary text-white shadow-sm ring-1 ring-primary' : 'bg-slate-800/70 border-slate-700/80 hover:bg-slate-800 text-slate-300'">
-                                        <span class="w-6 h-6 rounded-full border flex items-center justify-center text-xs font-bold shrink-0 mt-0.5"
-                                            :class="selectedAnswer === 'B' ? 'bg-primary border-primary text-white' : 'border-slate-500 text-slate-400'">B</span>
-                                        <span class="text-xs sm:text-sm">Melewati seluruh soal kejutan dan hanya berfokus pada soal dasar tanpa bobot IRT.</span>
-                                    </label>
+                                <!-- Type 2: Pilihan Ganda Kompleks (>1 Jawaban Benar) -->
+                                <template x-if="currentQ.type === 'pg_kompleks'">
+                                    <div class="space-y-2.5 pt-2">
+                                        <div class="text-xs text-sky-300 font-semibold flex items-center gap-1.5 pb-1">
+                                            <span class="material-symbols-outlined text-[16px]">check_box</span>
+                                            <span>Petunjuk: Berikan centang [✓] pada semua opsi yang benar.</span>
+                                        </div>
+                                        <template x-for="opt in currentQ.options" :key="opt.key">
+                                            <label @click="toggleComplexAnswer(activeCbtQuestion, opt.key)"
+                                                class="flex items-start gap-3.5 p-3.5 rounded-xl border transition-all cursor-pointer"
+                                                :class="isComplexSelected(activeCbtQuestion, opt.key) ? 'bg-primary/20 border-primary text-white shadow-sm ring-1 ring-primary' : 'bg-slate-800/70 border-slate-700/80 hover:bg-slate-800 text-slate-300'">
+                                                <span class="w-6 h-6 rounded-md border flex items-center justify-center text-xs font-black shrink-0 mt-0.5 transition-colors"
+                                                    :class="isComplexSelected(activeCbtQuestion, opt.key) ? 'bg-primary border-primary text-white' : 'border-slate-500 text-slate-400'">
+                                                    <span x-show="isComplexSelected(activeCbtQuestion, opt.key)">✓</span>
+                                                    <span x-show="!isComplexSelected(activeCbtQuestion, opt.key)" x-text="opt.key"></span>
+                                                </span>
+                                                <span class="text-xs sm:text-sm font-medium leading-relaxed" x-text="opt.text"></span>
+                                            </label>
+                                        </template>
+                                    </div>
+                                </template>
 
-                                    <label @click="selectedAnswer = 'C'"
-                                        class="flex items-start gap-3.5 p-3.5 rounded-xl border transition-all cursor-pointer"
-                                        :class="selectedAnswer === 'C' ? 'bg-primary/20 border-primary text-white shadow-sm ring-1 ring-primary' : 'bg-slate-800/70 border-slate-700/80 hover:bg-slate-800 text-slate-300'">
-                                        <span class="w-6 h-6 rounded-full border flex items-center justify-center text-xs font-bold shrink-0 mt-0.5"
-                                            :class="selectedAnswer === 'C' ? 'bg-primary border-primary text-white' : 'border-slate-500 text-slate-400'">C</span>
-                                        <span class="text-xs sm:text-sm">Menjawab secara acak tanpa memperhatikan analisis distribusi peserta nasional.</span>
-                                    </label>
-                                </div>
+                                <!-- Type 3: PG Majemuk (Tabel Pernyataan Benar/Salah atau Setuju/Tidak Setuju) -->
+                                <template x-if="currentQ.type === 'majemuk'">
+                                    <div class="pt-2 space-y-3">
+                                        <div class="text-xs text-purple-300 font-semibold flex items-center gap-1.5 pb-1">
+                                            <span class="material-symbols-outlined text-[16px]">ballot</span>
+                                            <span>Petunjuk: Tentukan status untuk setiap pernyataan di bawah ini.</span>
+                                        </div>
+                                        <div class="border border-slate-700 rounded-2xl overflow-hidden bg-slate-950/60 divide-y divide-slate-800">
+                                            <template x-for="(stmt, sIdx) in currentQ.statements" :key="stmt.id">
+                                                <div class="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-900/50 transition-colors">
+                                                    <div class="text-xs sm:text-sm text-slate-200 font-medium leading-snug pr-2">
+                                                        <span class="font-bold text-sky-400" x-text="'[' + (sIdx + 1) + '] '"></span>
+                                                        <span x-text="stmt.text"></span>
+                                                    </div>
+                                                    <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                                                        <button type="button" @click="setMajemukAnswer(activeCbtQuestion, stmt.id, currentQ.statementLabels ? currentQ.statementLabels[0] : 'Benar')"
+                                                            class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border"
+                                                            :class="getMajemukVal(activeCbtQuestion, stmt.id) === (currentQ.statementLabels ? currentQ.statementLabels[0] : 'Benar') ? 'bg-emerald-600 border-emerald-500 text-white shadow-sm ring-1 ring-emerald-400' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'"
+                                                            x-text="currentQ.statementLabels ? currentQ.statementLabels[0] : 'Benar'">
+                                                        </button>
+                                                        <button type="button" @click="setMajemukAnswer(activeCbtQuestion, stmt.id, currentQ.statementLabels ? currentQ.statementLabels[1] : 'Salah')"
+                                                            class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border"
+                                                            :class="getMajemukVal(activeCbtQuestion, stmt.id) === (currentQ.statementLabels ? currentQ.statementLabels[1] : 'Salah') ? 'bg-rose-600 border-rose-500 text-white shadow-sm ring-1 ring-rose-400' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'"
+                                                            x-text="currentQ.statementLabels ? currentQ.statementLabels[1] : 'Salah'">
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <!-- Type 4: Soal Menjodohkan -->
+                                <template x-if="currentQ.type === 'menjodohkan'">
+                                    <div class="pt-2 space-y-3">
+                                        <div class="text-xs text-amber-300 font-semibold flex items-center gap-1.5 pb-1">
+                                            <span class="material-symbols-outlined text-[16px]">sync_alt</span>
+                                            <span>Petunjuk: Pasangkan konsep di kolom kiri dengan pilihan yang tepat di kolom kanan.</span>
+                                        </div>
+                                        <div class="space-y-3">
+                                            <template x-for="(pair, pIdx) in currentQ.pairs" :key="pair.id">
+                                                <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2">
+                                                    <div class="text-xs sm:text-sm font-bold text-sky-300 flex items-center gap-2">
+                                                        <span class="w-5 h-5 rounded-full bg-primary/30 text-sky-300 flex items-center justify-center text-[11px] font-black" x-text="pIdx + 1"></span>
+                                                        <span x-text="pair.left"></span>
+                                                    </div>
+                                                    <div class="pt-1">
+                                                        <select @change="setMatchAnswer(activeCbtQuestion, pair.id, $event.target.value)"
+                                                            class="w-full text-xs sm:text-sm rounded-xl bg-slate-900 border border-slate-700 text-slate-200 py-2 px-3 focus:ring-1 focus:ring-primary focus:border-primary">
+                                                            <option value="" :selected="!getMatchVal(activeCbtQuestion, pair.id)">-- Pilih Pasangan Jawaban yang Sesuai --</option>
+                                                            <template x-for="opt in pair.options" :key="opt">
+                                                                <option :value="opt" :selected="getMatchVal(activeCbtQuestion, pair.id) === opt" x-text="opt"></option>
+                                                            </template>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
                             </div>
 
                             <!-- Bottom Action Navigation Controls -->
                             <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-800">
-                                <button @click="activeCbtQuestion = Math.max(1, activeCbtQuestion - 1)" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 flex items-center gap-1 cursor-pointer">
+                                <button @click="activeCbtQuestion = Math.max(1, activeCbtQuestion - 1)" 
+                                    :disabled="activeCbtQuestion === 1"
+                                    class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 flex items-center gap-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-all">
                                     <span class="material-symbols-outlined text-sm">arrow_back</span>
                                     Sebelumnya
                                 </button>
 
-                                <button @click="isAnswerRagu = !isAnswerRagu"
-                                    class="px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
-                                    :class="isAnswerRagu ? 'bg-amber-500 text-slate-950 font-black' : 'bg-amber-950/60 border border-amber-700 text-amber-300 hover:bg-amber-900/60'">
+                                <button @click="toggleRagu(activeCbtQuestion)"
+                                    class="px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
+                                    :class="isRagu(activeCbtQuestion) ? 'bg-[#FF8A00] text-slate-950 font-black ring-2 ring-amber-300' : 'bg-amber-950/60 border border-amber-700 text-amber-300 hover:bg-amber-900/60'">
                                     <span class="material-symbols-outlined text-sm">help_outline</span>
-                                    <span x-text="isAnswerRagu ? 'Ragu-ragu (Ditandai)' : 'Tandai Ragu-ragu'"></span>
+                                    <span x-text="isRagu(activeCbtQuestion) ? 'Ragu-ragu (Ditandai)' : 'Tandai Ragu-ragu'"></span>
                                 </button>
 
-                                <button @click="activeCbtQuestion = Math.min(20, activeCbtQuestion + 1)" class="px-5 py-2 rounded-xl bg-primary hover:bg-primary-hover text-xs font-bold text-white flex items-center gap-1 shadow-md cursor-pointer">
+                                <button x-show="activeCbtQuestion < 20" @click="activeCbtQuestion = activeCbtQuestion + 1" class="px-5 py-2 rounded-xl bg-primary hover:bg-primary-hover text-xs font-bold text-white flex items-center gap-1 shadow-md cursor-pointer transition-all">
                                     Selanjutnya
                                     <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                                </button>
+
+                                <button x-show="activeCbtQuestion === 20" @click="finishExamModal = true" class="px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-xs font-black text-white flex items-center gap-1.5 shadow-lg cursor-pointer transition-all animate-pulse">
+                                    <span>Selesaikan Ujian</span>
+                                    <span class="material-symbols-outlined text-sm">check_circle</span>
                                 </button>
                             </div>
                         </div>
@@ -445,16 +877,18 @@
                                     <span class="text-[11px] text-emerald-400 font-semibold">20 Butir Soal</span>
                                 </div>
 
-                                <!-- Number Badges Grid (1-20) -->
+                                <!-- Dynamic Number Badges Grid (1-20) -->
                                 <div class="grid grid-cols-5 gap-2 text-xs font-bold">
                                     <template x-for="i in 20" :key="i">
                                         <button @click="activeCbtQuestion = i"
                                             class="h-9 rounded-lg flex items-center justify-center transition-all cursor-pointer"
                                             :class="{
-                                                'bg-primary text-white ring-2 ring-sky-400 font-black scale-105': activeCbtQuestion === i,
-                                                'bg-emerald-600 text-white': activeCbtQuestion !== i && i <= 3,
-                                                'bg-amber-500 text-slate-950 font-black': activeCbtQuestion !== i && i === 4 && isAnswerRagu,
-                                                'bg-slate-800 text-slate-400 hover:bg-slate-700': activeCbtQuestion !== i && i > 3
+                                                'bg-[#FF8A00] text-slate-950 font-black shadow-md': isRagu(i) && activeCbtQuestion !== i,
+                                                'bg-[#FF8A00] text-slate-950 font-black ring-2 ring-white scale-105 shadow-md': isRagu(i) && activeCbtQuestion === i,
+                                                'bg-emerald-600 text-white font-bold': isAnswered(i) && !isRagu(i) && activeCbtQuestion !== i,
+                                                'bg-emerald-600 text-white font-black ring-2 ring-white scale-105 shadow-md': isAnswered(i) && !isRagu(i) && activeCbtQuestion === i,
+                                                'bg-primary text-white font-black ring-2 ring-sky-400 scale-105 shadow-md': !isAnswered(i) && !isRagu(i) && activeCbtQuestion === i,
+                                                'bg-slate-800 text-slate-400 hover:bg-slate-700': !isAnswered(i) && !isRagu(i) && activeCbtQuestion !== i
                                             }"
                                             x-text="i">
                                         </button>
@@ -464,19 +898,24 @@
                                 <!-- Legend -->
                                 <div class="grid grid-cols-3 gap-1.5 pt-2 text-[10px] text-slate-400">
                                     <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-emerald-600"></span> Terjawab</span>
-                                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-amber-500"></span> Ragu-ragu</span>
+                                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-[#FF8A00]"></span> Ragu-ragu</span>
                                     <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-slate-800"></span> Belum</span>
                                 </div>
                             </div>
 
                             <!-- Live Assessment Feature Highlight Box -->
                             <div class="p-3.5 rounded-xl bg-gradient-to-br from-primary/20 to-sky-900/30 border border-primary/40 space-y-2">
-                                <div class="flex items-center gap-1.5 text-xs font-extrabold text-sky-300">
-                                    <span class="material-symbols-outlined text-[16px]">leaderboard</span>
-                                    Live IRT &amp; Ranking Nasional
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-1.5 text-xs font-extrabold text-sky-300">
+                                        <span class="material-symbols-outlined text-[16px]">leaderboard</span>
+                                        Live IRT &amp; Ranking
+                                    </div>
+                                    <button @click="finishExamModal = true" class="text-[10px] font-bold text-amber-300 hover:underline cursor-pointer">
+                                        Lihat Rekap →
+                                    </button>
                                 </div>
                                 <p class="text-[11px] text-slate-300 leading-snug">
-                                    Hasil ujian langsung diproses dengan algoritma IRT resmi &amp; rasionalisasi pilihan prodi PTN impian.
+                                    Hasil simulasi diproses dengan algoritma IRT resmi &amp; rasionalisasi pilihan prodi PTN impian.
                                 </p>
                             </div>
                         </div>
@@ -1269,6 +1708,69 @@
                 class="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-black text-sm uppercase tracking-wider text-center block shadow-lg transition-all hover:scale-105 active:scale-95">
                 Lanjut ke WhatsApp (085163070002)
             </a>
+        </div>
+    </div>
+
+    <!-- ===== MODAL REKAP HASIL UJIAN SIMULASI CBT ===== -->
+    <div x-show="finishExamModal" x-cloak
+        x-effect="document.body.style.overflow = finishExamModal ? 'hidden' : ''"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div @click.away="finishExamModal = false" class="relative max-w-lg w-full bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-6">
+            <button @click="finishExamModal = false" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white p-2" aria-label="Tutup">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <div class="space-y-2 text-center">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-600 mx-auto flex items-center justify-center">
+                    <span class="material-symbols-outlined text-3xl">fact_check</span>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900 dark:text-white">Rekapitulasi Lembar Jawaban</h3>
+                <p class="text-xs text-on-surface-variant dark:text-slate-400">Simulasi Try Out CBT Online • 20 Soal Campuran OSN, TKA &amp; SNBT</p>
+            </div>
+
+            <!-- Stats Ringkasan 3 Kolom -->
+            <div class="grid grid-cols-3 gap-3 text-center">
+                <div class="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
+                    <div class="text-2xl font-black text-emerald-600 dark:text-emerald-400" x-text="getAnsweredCount()"></div>
+                    <div class="text-[11px] font-bold text-slate-600 dark:text-slate-300">Terjawab</div>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800">
+                    <div class="text-2xl font-black text-amber-600 dark:text-amber-400" x-text="getRaguCount()"></div>
+                    <div class="text-[11px] font-bold text-slate-600 dark:text-slate-300">Ragu-ragu</div>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                    <div class="text-2xl font-black text-slate-700 dark:text-slate-300" x-text="20 - getAnsweredCount()"></div>
+                    <div class="text-[11px] font-bold text-slate-600 dark:text-slate-300">Belum Diisi</div>
+                </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-gradient-to-br from-primary/10 to-sky-500/10 border border-primary/20 space-y-2">
+                <div class="flex items-center gap-2 text-xs font-bold text-primary dark:text-sky-300">
+                    <span class="material-symbols-outlined text-[18px]">verified</span>
+                    <span>Status Simulasi CBT Berhasil Dijalankan!</span>
+                </div>
+                <p class="text-xs text-on-surface-variant dark:text-slate-300 leading-relaxed">
+                    Ingin mengikuti Try Out CBT lengkap berskala nasional dengan ribuan peserta, analisis skor IRT resmi, video pembahasan mentor, serta rasionalisasi jurusan PTN impian?
+                </p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 pt-1">
+                <button @click="finishExamModal = false" class="w-full py-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer text-center">
+                    Kembali Periksa Soal
+                </button>
+                <a href="https://wa.me/6285163070002?text=Halo%20Next%20Level%20Study,%20saya%20sudah%20mencoba%20simulasi%20CBT%20dan%20ingin%20daftar%20Try%20Out%20Resmi"
+                    target="_blank"
+                    class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-black text-xs uppercase tracking-wider text-center shadow-md transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-1.5">
+                    <span>Daftar Try Out Resmi</span>
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                </a>
+            </div>
         </div>
     </div>
 
