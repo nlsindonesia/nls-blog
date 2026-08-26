@@ -1,6 +1,10 @@
-// Immediate theme initialization to prevent flash
+// Immediate theme initialization to prevent flash & mobile viewport lock
 (function() {
     try {
+        if (typeof document !== 'undefined' && document.documentElement) {
+            document.documentElement.style.overflowX = 'hidden';
+            document.documentElement.style.maxWidth = '100%';
+        }
         const savedTheme = localStorage.getItem('nls_theme');
         const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
