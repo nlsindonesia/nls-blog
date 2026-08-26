@@ -1,4 +1,4 @@
-// Immediate theme initialization to prevent flash & mobile viewport lock
+﻿// Immediate theme initialization to prevent flash & mobile viewport lock
 (function() {
     try {
         if (typeof document !== 'undefined' && document.documentElement) {
@@ -145,7 +145,7 @@ function initAlpineStores() {
                 reguler: {
                     key: 'reguler',
                     title: 'Paket Reguler',
-                    tagline: 'Akademik Harian, TKA & Persiapan SNBT',
+                    tagline: 'Akademik Harian, TKA Pusmendik & Persiapan SNBT',
                     badge: 'Akademik & SNBT',
                     price: 'Rp 120.000',
                     priceUnit: '/ Jam',

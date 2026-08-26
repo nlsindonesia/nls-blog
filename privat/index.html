@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -152,7 +152,7 @@
                             <a href="/tka" class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
                                 @click="activeDesktopMenu = null">
                                 <p class="font-bold text-on-background">Bimbel TKA</p>
-                                <p class="text-xs text-on-surface-variant">Bimbingan Tes Kemampuan Akademik.</p>
+                                <p class="text-xs text-on-surface-variant">Bimbingan Tes Kemampuan Akademik (Pusmendik).</p>
                             </a>
                             <a href="/snbt" class="block rounded-xl p-3 transition-colors hover:bg-primary/5"
                                 @click="activeDesktopMenu = null">
@@ -1637,7 +1637,7 @@
                                         <template x-for="item in [
                                             'Persiapan Ulangan Harian & Ujian Semester (PAS/PAT)',
                                             'Pemantapan Konsep & Peningkatan Nilai Rapor',
-                                            'Tes Kemampuan Akademik (TKA Saintek/Soshum)',
+                                            'Tes Kemampuan Akademik (TKA Pusmendik - Mapel Wajib & Pilihan)',
                                             'Intensif Persiapan UTBK-SNBT 2026'
                                         ]" :key="item">
                                             <label @click="$store.paketPrivat.toggleArrayItem($store.paketPrivat.formData.regulerFocus, item)"
