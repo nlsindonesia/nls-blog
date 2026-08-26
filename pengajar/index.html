@@ -115,18 +115,25 @@
             box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
         }
 
-        /* Category Filter Navigation Bar */
+        /* Category Filter Navigation Bar (Strictly Single Line) */
         .category-filter-nav {
             display: inline-flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.375rem;
+            justify-content: flex-start;
+            gap: 0.35rem;
+            padding: 0.35rem 0.5rem;
             background: #ffffff;
             border: 1.5px solid #e2e8f0;
             border-radius: 9999px;
             box-shadow: 0 4px 20px -4px rgba(0, 46, 71, 0.08);
+            max-width: 100%;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .category-filter-nav::-webkit-scrollbar {
+            display: none;
         }
         html.dark .category-filter-nav {
             background: #131d38;
@@ -137,11 +144,11 @@
         .cat-tab-btn {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            height: 44px;
-            padding: 0 1.15rem;
+            gap: 0.45rem;
+            height: 40px;
+            padding: 0 0.95rem;
             border-radius: 9999px;
-            font-size: 0.875rem;
+            font-size: 0.8125rem;
             font-weight: 800;
             color: #475569;
             background: transparent;
@@ -150,6 +157,7 @@
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             user-select: none;
             white-space: nowrap;
+            flex-shrink: 0;
         }
         html.dark .cat-tab-btn {
             color: #cbd5e1;
@@ -168,9 +176,9 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 24px;
-            height: 22px;
-            padding: 0 0.45rem;
+            min-width: 22px;
+            height: 20px;
+            padding: 0 0.4rem;
             border-radius: 9999px;
             font-size: 0.6875rem;
             font-weight: 800;
@@ -209,11 +217,11 @@
             background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
             box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35);
         }
-        .cat-tab-btn.tab-mitra.active {
+        .cat-tab-btn.tab-nasional.active {
             background: linear-gradient(135deg, #7c3aed 0%, #6b21a8 100%);
             box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
         }
-        .cat-tab-btn.tab-dinas.active {
+        .cat-tab-btn.tab-ib.active {
             background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
             box-shadow: 0 4px 14px rgba(225, 29, 72, 0.35);
         }
@@ -595,8 +603,8 @@
                             </div>
                         </div>
 
-                        <!-- Category Filter Pill Bar -->
-                        <div class="flex justify-center">
+                        <!-- Category Filter Pill Bar (Single Horizontal Line) -->
+                        <div class="flex justify-center w-full overflow-x-auto no-scrollbar py-1">
                             <div class="category-filter-nav">
                                 <button type="button" @click="setCategory('all')"
                                     class="cat-tab-btn tab-all"
@@ -630,20 +638,20 @@
                                     <span class="cat-count-badge" x-text="countByCategory('TKA')"></span>
                                 </button>
 
-                                <button type="button" @click="setCategory('Mitra Sekolah')"
-                                    class="cat-tab-btn tab-mitra"
-                                    :class="selectedCategory === 'Mitra Sekolah' ? 'active' : ''">
-                                    <span class="text-base">🏫</span>
-                                    <span>Mitra Sekolah</span>
-                                    <span class="cat-count-badge" x-text="countByCategory('Mitra Sekolah')"></span>
+                                <button type="button" @click="setCategory('Kurikulum Nasional')"
+                                    class="cat-tab-btn tab-nasional"
+                                    :class="selectedCategory === 'Kurikulum Nasional' ? 'active' : ''">
+                                    <span class="text-base">🇮🇩</span>
+                                    <span>Kurikulum Nasional</span>
+                                    <span class="cat-count-badge" x-text="countByCategory('Kurikulum Nasional')"></span>
                                 </button>
 
-                                <button type="button" @click="setCategory('Event Dinas')"
-                                    class="cat-tab-btn tab-dinas"
-                                    :class="selectedCategory === 'Event Dinas' ? 'active' : ''">
-                                    <span class="text-base">🏛️</span>
-                                    <span>Event Dinas</span>
-                                    <span class="cat-count-badge" x-text="countByCategory('Event Dinas')"></span>
+                                <button type="button" @click="setCategory('Kurikulum IB')"
+                                    class="cat-tab-btn tab-ib"
+                                    :class="selectedCategory === 'Kurikulum IB' ? 'active' : ''">
+                                    <span class="text-base">🌍</span>
+                                    <span>Kurikulum IB</span>
+                                    <span class="cat-count-badge" x-text="countByCategory('Kurikulum IB')"></span>
                                 </button>
                             </div>
                         </div>
@@ -665,12 +673,12 @@
                                     Filter 1: Bidang Keahlian &amp; Program
                                 </label>
                                 <select x-model="selectedCategory" class="filter-select-input">
-                                    <option value="all">🌟 Semua Bidang Pengajaran (OSN, SNBT, TKA, Mitra, Dinas)</option>
+                                    <option value="all">🌟 Semua Bidang Pengajaran (OSN, SNBT, TKA, Kurikulum Nasional, Kurikulum IB)</option>
                                     <option value="OSN">🏆 Spesialis Olimpiade Sains Nasional (OSN)</option>
                                     <option value="SNBT">🎯 Spesialis Penalaran &amp; Literasi SNBT PTN</option>
                                     <option value="TKA">📚 Spesialis Tes Kemampuan Akademik &amp; Mandiri</option>
-                                    <option value="Mitra Sekolah">🏫 Instruktur Pembinaan Siswa &amp; Mitra Sekolah</option>
-                                    <option value="Event Dinas">🏛️ Narasumber &amp; Pelatih Guru Dinas Pendidikan</option>
+                                    <option value="Kurikulum Nasional">🇮🇩 Kurikulum Nasional (Kurikulum Merdeka / K13)</option>
+                                    <option value="Kurikulum IB">🌍 Kurikulum IB &amp; Cambridge Internasional</option>
                                 </select>
                             </div>
 
@@ -1295,16 +1303,16 @@
                         name: 'Drs. Hendra Gunawan, M.Si.',
                         shortName: 'Pak Hendra',
                         photo: '/images/privat/mentor.jpg',
-                        education: 'Magister Evaluasi Pendidikan UNJ (Praktisi Kurikulum)',
-                        category: 'Event Dinas',
+                        education: 'Magister Kurikulum & Evaluasi Pendidikan UNJ',
+                        category: 'Kurikulum Nasional',
                         jenjang: 'Guru / Instansi',
-                        jenjangLabel: 'Guru & Tenaga Pendidik',
-                        subject: 'Pelatihan Guru & Asesmen Kompetensi Sekolah',
+                        jenjangLabel: 'Guru & Jenjang SMA/SMP',
+                        subject: 'Kurikulum Nasional, Merdeka Belajar & HOTS',
                         philosophy: 'Keberkahan seorang guru hadir ketika ilmu yang diajarkan bermanfaat abadi bagi kehidupan muridnya.',
                         highlights: [
-                            'Narasumber utama Dinas Pendidikan Provinsi DKI & Jawa Barat',
-                            'Pelatih lebih dari 500 dewan guru sekolah negeri & swasta',
-                            'Pengembang instrumen soal HOTS dan modul Kurikulum Merdeka'
+                            'Pakar pengembangan Kurikulum Nasional & Kurikulum Merdeka',
+                            'Pelatih lebih dari 500 dewan guru sekolah se-Indonesia',
+                            'Pengembang instrumen asesmen dan modul pembelajaran mendalam'
                         ]
                     },
                     {
@@ -1377,19 +1385,19 @@
                     },
                     {
                         id: 't-11',
-                        name: 'Axel Ferdinand, S.T.',
+                        name: 'Axel Ferdinand, S.T., M.Sc.',
                         shortName: 'Kak Axel',
                         photo: '/images/home/alumni-axel.jpg',
-                        education: 'Teknik Geodesi & Kebumian ITB',
-                        category: 'Mitra Sekolah',
+                        education: 'Teknik ITB & Certified IB DP Educator',
+                        category: 'Kurikulum IB',
                         jenjang: 'SMA',
-                        jenjangLabel: 'Siswa SMA & Organisasi OSIS',
-                        subject: 'LDKS, Leadership & Program Kemitraan Sekolah',
-                        philosophy: 'Pemimpin hebat lahir dari keteladanan integritas dan dedikasi melayani sesama.',
+                        jenjangLabel: 'SMA / IB DP / Cambridge A-Level',
+                        subject: 'Kurikulum IB DP Physics & Mathematics HL/SL',
+                        philosophy: 'Pendekatan inkuiri internasional melatih pemikiran mandiri dan integritas riset global.',
                         highlights: [
-                            'Trainer bersertifikasi Character Building & Public Speaking',
-                            'Fasilitator LDKS puluhan SMA unggulan se-Jabodetabek',
-                            'Penyusun modul kepemimpinan adaptif era digital'
+                            'Certified IB Diploma Programme Physics & Math Specialist',
+                            'Pembimbing IA (Internal Assessment) dan Extended Essay',
+                            'Berpengalaman mengajar siswa sekolah SPK & Internasional terkemuka'
                         ]
                     },
                     {
@@ -1397,16 +1405,33 @@
                         name: 'Dra. Hj. Sri Wahyuni, M.Pd.',
                         shortName: 'Ibu Sri',
                         photo: '/images/home/alumni-al-azhar.jpg',
-                        education: 'Konsultan Pendidikan Senior & Pengawas Sekolah',
-                        category: 'Mitra Sekolah',
+                        education: 'Konsultan Senior Kurikulum Nasional & Pengawas',
+                        category: 'Kurikulum Nasional',
                         jenjang: 'Guru / Instansi',
                         jenjangLabel: 'Sekolah & Pendidik',
-                        subject: 'Supervisi Akademik & Manajemen Mutu Sekolah',
+                        subject: 'Kurikulum Nasional & Pendampingan Mutu Sekolah',
                         philosophy: 'Mendidik adalah ibadah termulia yang buah keberkahannya akan terus mengalir tanpa henti.',
                         highlights: [
-                            'Konsultan kemitraan mutu akademik sekolah mitra NLS',
+                            'Konsultan implementasi Kurikulum Nasional pada sekolah mitra NLS',
                             'Pengarah strategi kurikulum persiapan SNBP & SNBT sekolah',
                             'Berpengalaman lebih dari 25 tahun di dunia pendidikan nasional'
+                        ]
+                    },
+                    {
+                        id: 't-13',
+                        name: 'Stephanie Lauren, B.Sc., M.Ed.',
+                        shortName: 'Ms. Stephanie',
+                        photo: '/images/home/about-2.jpg',
+                        education: 'Univ. of Melbourne & Cambridge International Certified',
+                        category: 'Kurikulum IB',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'SMA & SMP International / SPK',
+                        subject: 'Kurikulum IB Chemistry & Cambridge IGCSE Science',
+                        philosophy: 'Global mindset and scientific integrity are the true foundations of excellence.',
+                        highlights: [
+                            'Spesialis kurikulum IB DP Chemistry HL & Cambridge A-Level',
+                            'Membimbing siswa diterima di NUS, NTU, Oxford, & Ivy League',
+                            'Pengantar pembelajaran bilingual (Full English / Bahasa Indonesia)'
                         ]
                     }
                 ],
@@ -1417,8 +1442,8 @@
                     if (this.selectedCategory === 'OSN') return 'Spesialis OSN';
                     if (this.selectedCategory === 'SNBT') return 'Spesialis SNBT';
                     if (this.selectedCategory === 'TKA') return 'Spesialis TKA';
-                    if (this.selectedCategory === 'Mitra Sekolah') return 'Mitra Sekolah';
-                    if (this.selectedCategory === 'Event Dinas') return 'Event Dinas';
+                    if (this.selectedCategory === 'Kurikulum Nasional') return 'Kurikulum Nasional';
+                    if (this.selectedCategory === 'Kurikulum IB') return 'Kurikulum IB';
                     return this.selectedCategory;
                 },
 
@@ -1468,16 +1493,16 @@
                         case 'OSN': return 'bg-[#0284c7]';
                         case 'SNBT': return 'bg-[#ea580c]';
                         case 'TKA': return 'bg-[#0d9488]';
-                        case 'Mitra Sekolah': return 'bg-[#7c3aed]';
-                        case 'Event Dinas': return 'bg-[#e11d48]';
+                        case 'Kurikulum Nasional': return 'bg-[#7c3aed]';
+                        case 'Kurikulum IB': return 'bg-[#e11d48]';
                         default: return 'bg-primary';
                     }
                 },
 
                 getKebutuhanForCategory(cat) {
                     if (cat === 'OSN' || cat === 'SNBT' || cat === 'TKA') return 'Privat';
-                    if (cat === 'Mitra Sekolah') return 'Mitra Sekolah';
-                    if (cat === 'Event Dinas') return 'Mitra Dinas';
+                    if (cat === 'Kurikulum Nasional') return 'Privat';
+                    if (cat === 'Kurikulum IB') return 'Privat';
                     return 'Privat';
                 }
             };
