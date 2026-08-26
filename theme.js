@@ -136,6 +136,166 @@ function initAlpineStores() {
         });
     }
 
+    // 1.5. Store: paketPrivat (Adaptive Package Registration Modal)
+    if (!window.Alpine.store('paketPrivat')) {
+        window.Alpine.store('paketPrivat', {
+            showModal: false,
+            activePackageKey: 'reguler',
+            packageDetails: {
+                reguler: {
+                    key: 'reguler',
+                    title: 'Paket Reguler',
+                    tagline: 'Akademik Harian, TKA & Persiapan SNBT',
+                    badge: 'Akademik & SNBT',
+                    price: 'Rp 120.000',
+                    priceUnit: '/ Jam',
+                    sessions: 'Ideal 8 sesi per bulan',
+                    themeColor: '#0284c7'
+                },
+                intensif: {
+                    key: 'intensif',
+                    title: 'Paket Intensif OSN & IB',
+                    tagline: 'OSN Kota/Kabupaten & Kurikulum IB/Cambridge (SD & SMP)',
+                    badge: 'OSN Kota & IB/Cambridge (SD & SMP)',
+                    price: 'Rp 160.000',
+                    priceUnit: '/ Jam',
+                    sessions: 'Ideal 10 sesi per bulan (Paling Diminati)',
+                    themeColor: '#f59e0b'
+                },
+                internasional: {
+                    key: 'internasional',
+                    title: 'Paket Internasional & OSN+',
+                    tagline: 'OSN Provinsi/Nasional, Olimpiade Global & SMA+',
+                    badge: 'Olimpiade Dunia & Global (Tingkat SMA)',
+                    price: 'Rp 200.000',
+                    priceUnit: '/ Jam',
+                    sessions: 'Bimbingan Champion Level Dunia',
+                    themeColor: '#7c3aed'
+                }
+            },
+            get activePackage() {
+                return this.packageDetails[this.activePackageKey] || this.packageDetails.reguler;
+            },
+            formData: {
+                namaSiswa: '',
+                namaOrtu: '',
+                noWa: '',
+                asalSekolah: '',
+                tingkatKelas: 'SMA Kelas 12',
+                metodeBelajar: 'Online (Zoom 1-on-1)',
+                
+                // Reguler Specifics
+                regulerFocus: ['Intensif Persiapan UTBK-SNBT 2026', 'Pemantapan Konsep & Peningkatan Nilai Rapor'],
+                regulerSubjects: ['Matematika Wajib', 'Fisika'],
+                regulerTargetKampus: '',
+
+                // Intensif Specifics
+                intensifFocus: ['Persiapan Olimpiade Sains Nasional (OSN-K / Kota / Kabupaten)', 'Kurikulum Cambridge (Primary / Lower Secondary / Checkpoint)'],
+                intensifBidang: ['Matematika SD/SMP', 'IPA Fisika SD/SMP'],
+                intensifExperience: 'Pemula (Mulai dari Nol / Fondasi Konsep)',
+
+                // Internasional Specifics
+                internasionalFocus: ['OSN Tingkat Provinsi & Nasional (OSN-P / OSNAS)', 'Kompetisi Matematika Global (AMO, SEAMO, TIMO, SASMO)'],
+                internasionalBidang: ['Matematika SMA', 'Fisika SMA'],
+                internasionalTargetKampus: '',
+
+                // Scheduling
+                sesiPerBulan: '10 Sesi / Bulan (Ideal & Paling Diminati)',
+                waktuBelajar: 'Sore / Malam (18.30 - 21.00 WIB)',
+                hariPreferensi: ['Hari Kerja (Senin - Jumat)'],
+                catatanKhusus: ''
+            },
+            open: function(pkgKey) {
+                this.activePackageKey = pkgKey || 'reguler';
+                if (pkgKey === 'reguler') {
+                    this.formData.tingkatKelas = 'SMA Kelas 12';
+                } else if (pkgKey === 'intensif') {
+                    this.formData.tingkatKelas = 'SMP Kelas 8';
+                } else if (pkgKey === 'internasional') {
+                    this.formData.tingkatKelas = 'SMA Kelas 11';
+                }
+                this.showModal = true;
+            },
+            setPackage: function(pkgKey) {
+                this.activePackageKey = pkgKey;
+            },
+            close: function() {
+                this.showModal = false;
+            },
+            toggleArrayItem: function(arr, item) {
+                const idx = arr.indexOf(item);
+                if (idx > -1) {
+                    arr.splice(idx, 1);
+                } else {
+                    arr.push(item);
+                }
+            },
+            submitForm: function() {
+                if (!this.formData.namaSiswa.trim()) {
+                    alert('Mohon masukkan Nama Lengkap Siswa.');
+                    return;
+                }
+                if (!this.formData.noWa.trim()) {
+                    alert('Mohon masukkan Nomor WhatsApp aktif.');
+                    return;
+                }
+
+                const pkg = this.activePackage;
+                let text = '*FORMULIR PENDAFTARAN LES PRIVAT NLS*\n';
+                text += '--------------------------------------------\n';
+                text += '📌 *PILIHAN PAKET:* ' + pkg.title.toUpperCase() + '\n';
+                text += '💰 *Tarif:* ' + pkg.price + ' ' + pkg.priceUnit + ' (' + pkg.tagline + ')\n\n';
+
+                text += '👤 *DATA SISWA & ORANG TUA:*\n';
+                text += '• Nama Siswa: ' + this.formData.namaSiswa + '\n';
+                if (this.formData.namaOrtu.trim()) {
+                    text += '• Nama Orang Tua/Wali: ' + this.formData.namaOrtu + '\n';
+                }
+                text += '• WhatsApp: ' + this.formData.noWa + '\n';
+                text += '• Asal Sekolah: ' + (this.formData.asalSekolah || '-') + '\n';
+                text += '• Tingkat/Kelas: ' + this.formData.tingkatKelas + '\n';
+                text += '• Metode Belajar: ' + this.formData.metodeBelajar + '\n\n';
+
+                text += '🎯 *PENYESUAIAN KEBUTUHAN (' + pkg.title + '):*\n';
+                if (this.activePackageKey === 'reguler') {
+                    text += '• Target Belajar: ' + (this.formData.regulerFocus.join(', ') || '-') + '\n';
+                    text += '• Mata Pelajaran: ' + (this.formData.regulerSubjects.join(', ') || '-') + '\n';
+                    if (this.formData.regulerTargetKampus.trim()) {
+                        text += '• Target PTN/Prodi: ' + this.formData.regulerTargetKampus + '\n';
+                    }
+                } else if (this.activePackageKey === 'intensif') {
+                    text += '• Fokus Program: ' + (this.formData.intensifFocus.join(', ') || '-') + '\n';
+                    text += '• Bidang Olimpiade: ' + (this.formData.intensifBidang.join(', ') || '-') + '\n';
+                    text += '• Pengalaman Lomba: ' + this.formData.intensifExperience + '\n';
+                } else if (this.activePackageKey === 'internasional') {
+                    text += '• Target Kompetisi/Kurikulum: ' + (this.formData.internasionalFocus.join(', ') || '-') + '\n';
+                    text += '• Bidang Spesialisasi: ' + (this.formData.internasionalBidang.join(', ') || '-') + '\n';
+                    if (this.formData.internasionalTargetKampus.trim()) {
+                        text += '• Target Kampus Dunia/PTN: ' + this.formData.internasionalTargetKampus + '\n';
+                    }
+                }
+
+                text += '\n⏰ *RENCANA JADWAL & FREKUENSI:*\n';
+                text += '• Estimasi Sesi: ' + this.formData.sesiPerBulan + '\n';
+                text += '• Waktu Luang: ' + this.formData.waktuBelajar + '\n';
+                text += '• Hari Belajar: ' + (this.formData.hariPreferensi.join(', ') || '-') + '\n';
+
+                if (this.formData.catatanKhusus.trim()) {
+                    text += '\n📝 *Catatan Khusus:*\n' + this.formData.catatanKhusus + '\n';
+                }
+
+                text += '\n--------------------------------------------\n';
+                text += 'Halo Admin Next Level Study, mohon info ketersediaan mentor dan jadwalnya. Terima kasih!';
+
+                const adminWa = '6285163070002';
+                const waUrl = 'https://wa.me/' + adminWa + '?text=' + encodeURIComponent(text);
+                window.open(waUrl, '_blank');
+
+                this.showModal = false;
+            }
+        });
+    }
+
     // 2. Store: gabungPengajar
     if (!window.Alpine.store('gabungPengajar')) {
         window.Alpine.store('gabungPengajar', {
