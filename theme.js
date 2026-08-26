@@ -186,15 +186,15 @@ function initAlpineStores() {
                 mataPelajaran: '',
                 
                 // Reguler Specifics
-                regulerFocus: ['Pendampingan Siswa Kurikulum Nasional', 'Persiapan TKA SD, SMP, SMA'],
+                regulerFocus: [],
                 regulerTargetKampus: '',
 
                 // Intensif (Exclusive) Specifics
-                intensifFocus: ['Persiapan OSN Tingkat Kota/Provinsi (SD, SMP, SMA)', 'Pendampingan Siswa SD/SMP Kurikulum Internasional', 'Persiapan SNBT / Mandiri'],
-                intensifExperience: 'Pemula (Mulai dari Nol / Fondasi Konsep)',
+                intensifFocus: [],
+                intensifExperience: '',
 
                 // Internasional (Juara) Specifics
-                internasionalFocus: ['Persiapan OSN Tingkat Semifinal/Final (SD, SMP, SMA)', 'Pendampingan Siswa SMA Kurikulum Internasional', 'Persiapan Kompetisi Internasional (AMO, SEAMO, TIMO, dll.)'],
+                internasionalFocus: [],
                 internasionalTargetKampus: '',
 
                 // Scheduling
