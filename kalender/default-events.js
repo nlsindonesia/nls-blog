@@ -1,0 +1,594 @@
+window.NLS_DEFAULT_EVENTS = [
+                    // --- JANUARI 2026 ---
+                    {
+                        id: 'evt-jan-1',
+                        date: '2026-01-11',
+                        title: 'Kick-Off & Diagnostic Test OSN 9 Bidang Sains',
+                        category: 'OSN',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'SMA / MA / Sederajat',
+                        time: '08:30 - 11:30 WIB',
+                        mode: 'Online (CBT & Zoom)',
+                        location: 'Platform CBT LMS Next Level Study',
+                        badgeText: 'Pendaftaran Dibuka',
+                        description: 'Tes diagnostik awal pemetaan kompetensi calon peserta OSN 9 bidang sains untuk menentukan strategi bimbingan tingkat kota/kabupaten.',
+                        highlights: [
+                            'Pemetaan 9 bidang OSN (Matematika, Fisika, Kimia, Biologi, Informatika, Astronomi, Kebumian, Ekonomi, Geografi)',
+                            'Laporan analisis kekuatan & kelemahan materi siswa',
+                            'Rekomendasi modul belajar bertahap dari mentor medalis'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya ingin mendaftar Kick-Off & Diagnostic Test OSN (11 Januari 2026).'
+                    },
+                    {
+                        id: 'evt-jan-2',
+                        date: '2026-01-18',
+                        title: 'Webinar Strategi & Roadmap Lolos SNBT PTN Top 2026',
+                        category: 'SNBT',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'SMA / MA / SMK & Gap Year',
+                        time: '19:00 - 21:00 WIB',
+                        mode: 'Online (Live Zoom Interactive)',
+                        location: 'Live Zoom Room NLS Indonesia',
+                        badgeText: 'Terbuka Umum',
+                        description: 'Kupas tuntas strategi pemilihan program studi, analisis rasionalisasi nilai rapor vs skor UTBK, dan jadwal tahapan resmi SNPMB.',
+                        highlights: [
+                            'Strategi memilih jurusan & universitas target',
+                            'Analisis passing grade riil & bobot subtes SNBT',
+                            'Sesi tanya jawab langsung bersama konsultan pendidikan NLS'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya ingin info Webinar Strategi SNBT 2026 (18 Januari 2026).'
+                    },
+                    {
+                        id: 'evt-jan-3',
+                        date: '2026-01-25',
+                        title: 'In-House Training (IHT) Modul Ajar Guru Mitra',
+                        category: 'Mitra Sekolah',
+                        jenjang: 'Guru / Instansi',
+                        jenjangLabel: 'Guru & Tenaga Pendidik',
+                        time: '08:00 - 15:30 WIB',
+                        mode: 'Tatap Muka (Onsite)',
+                        location: 'Aula SMAN 14 Jakarta & Sekolah Mitra',
+                        badgeText: 'Kemitraan Eksklusif',
+                        description: 'Pelatihan pembuatan perangkat ajar interaktif, asesmen diagnostik, dan integrasi soal HOTS bagi dewan guru sekolah mitra NLS.',
+                        highlights: [
+                            'Penyusunan modul ajar berstandar Kurikulum Merdeka',
+                            'Bank soal HOTS & rubrik penilaian berbasis kompetensi',
+                            'Sertifikat pelatihan 32 JP dari NLS & Dinas terkait'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, kami tertarik dengan program In-House Training (IHT) Guru Mitra Sekolah.'
+                    },
+
+                    // --- FEBRUARI 2026 ---
+                    {
+                        id: 'evt-feb-1',
+                        date: '2026-02-08',
+                        title: 'Try Out Akbar Nasional SNBT 2026 Batch 1 (Sistem IRT)',
+                        category: 'SNBT',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'SMA / MA / SMK & Gap Year',
+                        time: '08:00 - 12:30 WIB',
+                        mode: 'Online (Platform CBT NLS)',
+                        location: 'LMS CBT Next Level Study',
+                        badgeText: 'Pendaftaran Dibuka',
+                        description: 'Simulasi ujian UTBK SNBT gelombang 1 dengan algoritma penilaian IRT persis standar BPPP Kemendikbudristek.',
+                        highlights: [
+                            'Simulasi 7 subtes SNBT lengkap dengan timer per sesi',
+                            'Skor IRT instan keluar disertai analisis peluang prodi',
+                            'Akses video pembahasan dan modul kunci jawaban'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya ingin mendaftar Try Out SNBT Batch 1 (8 Februari 2026).'
+                    },
+                    {
+                        id: 'evt-feb-2',
+                        date: '2026-02-15',
+                        title: 'Simulasi Akbar OSN-K 2026 (9 Bidang Sains SMA)',
+                        category: 'OSN',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'SMA / MA / Sederajat',
+                        time: '09:00 - 12:00 WIB',
+                        mode: 'Online (CBT Berstandar Puspresnas)',
+                        location: 'Platform CBT LMS Next Level Study',
+                        badgeText: 'Simulasi Resmi',
+                        description: 'Simulasi persiapan OSN Tingkat Kabupaten/Kota (OSN-K) dengan format dan tingkat kesulitan soal yang telah disesuaikan silabus BPTI.',
+                        highlights: [
+                            'Mencakup 9 bidang lomba sains SMA',
+                            'Perangkingan peserta tingkat nasional & per provinsi',
+                            'Review pembahasan soal menantang bersama pembina medalis'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya ingin mendaftar Simulasi OSN-K SMA (15 Februari 2026).'
+                    },
+                    {
+                        id: 'evt-feb-3',
+                        date: '2026-02-22',
+                        title: 'Workshop Pembinaan Guru Pembimbing OSN Mitra Dinas',
+                        category: 'Event Dinas',
+                        jenjang: 'Guru / Instansi',
+                        jenjangLabel: 'Guru Sains SMP & SMA',
+                        time: '08:30 - 16:00 WIB',
+                        mode: 'Hybrid (Tatap Muka & Zoom)',
+                        location: 'Auditorium Dinas Pendidikan / Gedung Guru',
+                        badgeText: 'Program Diknas',
+                        description: 'Peningkatan kapasitas guru pembina olimpiade sains sekolah untuk mengidentifikasi bakat siswa dan membedah teknik penyelesaian soal lanjut.',
+                        highlights: [
+                            'Bedah kurikulum olimpiade sains nasional & internasional',
+                            'Teknik mentoring siswa berpotensi medali',
+                            'Bahan ajar eksklusif & bank soal kompetisi NLS'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, kami ingin info Workshop Guru Pembina OSN Dinas Pendidikan.'
+                    },
+
+                    // --- MARET 2026 ---
+                    {
+                        id: 'evt-mar-1',
+                        date: '2026-03-07',
+                        title: 'Simulasi OSN-K Jenjang SMP (IPA, IPS & Matematika)',
+                        category: 'OSN',
+                        jenjang: 'SMP',
+                        jenjangLabel: 'SMP / MTs / Sederajat',
+                        time: '09:00 - 11:30 WIB',
+                        mode: 'Online (Platform CBT NLS)',
+                        location: 'LMS CBT Next Level Study',
+                        badgeText: 'Pendaftaran Dibuka',
+                        description: 'Simulasi khusus pejuang medali SMP pada bidang IPA Terpadu, IPS Terpadu, dan Matematika menjelang seleksi kabupaten resmi.',
+                        highlights: [
+                            'Sistem CBT anti-kecurangan dengan integrasi timer',
+                            'Analisis skor & ranking komprehensif se-Indonesia',
+                            'Sesi live review tips lolos ke tingkat provinsi'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya ingin mendaftar Simulasi OSN-K SMP (7 Maret 2026).'
+                    },
+                    {
+                        id: 'evt-mar-2',
+                        date: '2026-03-15',
+                        title: 'Try Out Akbar Nasional SNBT 2026 Batch 2 (Sistem IRT)',
+                        category: 'SNBT',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'SMA / MA / SMK & Gap Year',
+                        time: '08:00 - 12:30 WIB',
+                        mode: 'Online (LMS CBT NLS)',
+                        location: 'Platform CBT LMS Next Level Study',
+                        badgeText: 'Pendaftaran Dibuka',
+                        description: 'Try Out SNBT putaran kedua dengan update tipe soal penalaran matematika dan literasi terbaru 2026.',
+                        highlights: [
+                            'Perangkingan nasional dengan puluhan ribu peserta',
+                            'Analisis akurat daya saing masuk prodi impian di PTN',
+                            'E-Certificate skor SNBT & pembahasan video lengkap'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya ingin mendaftar Try Out SNBT Batch 2 (15 Maret 2026).'
+                    },
+                    {
+                        id: 'evt-mar-3',
+                        date: '2026-03-21',
+                        title: 'Masterclass TKA & Diagnostic Penalaran Akademik 2026',
+                        category: 'TKA',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'SMA / MA / Sederajat',
+                        time: '13:00 - 16:00 WIB',
+                        mode: 'Online (Interactive Zoom)',
+                        location: 'Live Zoom Webinar NLS',
+                        badgeText: 'Terbuka Umum',
+                        description: 'Penguasaan materi Tes Kemampuan Akademik (TKA) untuk persiapan seleksi mandiri PTN (SIMAK UI, UTUL UGM, dll) dan kedinasan.',
+                        highlights: [
+                            'Pendalaman soal-soal penalaran analitik & numerik tinggi',
+                            'Trik cepat eliminasi opsi jawaban pengecoh',
+                            'Modul rangkuman rumus ringkas & konsep fundamental'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya ingin mendaftar Masterclass TKA 2026 (21 Maret 2026).'
+                    },
+                    {
+                        id: 'evt-mar-4',
+                        date: '2026-03-28',
+                        title: 'LDKS & Character Building Pengurus OSIS Mitra Sekolah',
+                        category: 'Mitra Sekolah',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'Pengurus OSIS & MPK SMA',
+                        time: '07:30 - 17:00 WIB',
+                        mode: 'Tatap Muka (Onsite)',
+                        location: 'Auditorium SMAN 19 Jakarta & Kawasan Outbound',
+                        badgeText: 'Mitra Khusus',
+                        description: 'Pelatihan kepemimpinan, public speaking, manajemen organisasi, dan problem solving bagi pengurus OSIS/MPK sekolah mitra.',
+                        highlights: [
+                            'Simulasi manajemen konflik & kepemimpinan adaptif',
+                            'Outbound team building & leadership challenges',
+                            'Mentoring personal bersama trainer bersertifikasi'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, kami ingin konsultasi pelaksanaan program LDKS sekolah kami.'
+                    },
+
+                    // --- APRIL 2026 ---
+                    {
+                        id: 'evt-apr-1',
+                        date: '2026-04-05',
+                        title: 'Grand Simulasi UTBK-SNBT Final Sprint 2026',
+                        category: 'SNBT',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'SMA / MA / SMK & Gap Year',
+                        time: '08:00 - 12:30 WIB',
+                        mode: 'Online (Platform CBT NLS)',
+                        location: 'Platform CBT LMS Next Level Study',
+                        badgeText: 'Final Sprint',
+                        description: 'Simulasi pemantapan akhir sebelum hari H UTBK SNBT dengan tingkat akurasi prediksi soal mencapai 95%.',
+                        highlights: [
+                            'Simulasi 100% menyerupai kondisi hari H UTBK',
+                            'Rekomendasi strategi pengerjaan manajemen waktu',
+                            'Live konsultasi akhir kesiapan psikologis & mental'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya ingin mendaftar Final Sprint SNBT 2026 (5 April 2026).'
+                    },
+                    {
+                        id: 'evt-apr-2',
+                        date: '2026-04-12',
+                        title: 'Olimpiade Sains & Matematika SD Se-Jabodetabek (NLS Junior Cup)',
+                        category: 'OSN',
+                        jenjang: 'SD',
+                        jenjangLabel: 'SD / MI (Kelas 4-6)',
+                        time: '08:30 - 12:00 WIB',
+                        mode: 'Hybrid (Online CBT & Final Onsite)',
+                        location: 'Kantor NLS Bekasi Timur & Online',
+                        badgeText: 'Kompetisi Terbuka',
+                        description: 'Ajang kompetisi sains dan matematika usia dini untuk memupuk bibit juara olimpiade sains nasional sejak sekolah dasar.',
+                        highlights: [
+                            'Kategori Matematika & IPA SD',
+                            'Piala bergilir, medali emas-perak-perunggu & piagam',
+                            'Beasiswa bimbingan belajar NLS bagi para juara'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya ingin mendaftarkan siswa untuk NLS Junior Cup SD.'
+                    },
+                    {
+                        id: 'evt-apr-3',
+                        date: '2026-04-19',
+                        title: 'Bimbingan Intensif Persiapan OSN Tingkat Provinsi (OSN-P)',
+                        category: 'OSN',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'Lolos OSN-K 2026',
+                        time: '13:00 - 16:30 WIB',
+                        mode: 'Online (Live Mentoring Camp)',
+                        location: 'Zoom Premium Classroom NLS',
+                        badgeText: 'Intensif Medalis',
+                        description: 'Program akselerasi materi tingkat lanjut bagi peserta yang telah lolos seleksi kabupaten menuju seleksi provinsi.',
+                        highlights: [
+                            'Bedah tuntas soal-soal isian singkat & uraian kompleks',
+                            'Mentoring intensif 1-on-1 bersama alumni medalis IEO/IBO/IMO',
+                            'Simulasi mingguan dengan feedback detail per nomor soal'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya ingin info Bimbingan Intensif OSN-P (19 April 2026).'
+                    },
+
+                    // --- MEI 2026 ---
+                    {
+                        id: 'evt-mei-1',
+                        date: '2026-05-10',
+                        title: 'Try Out Seleksi Mandiri PTN & Ujian Kedinasan (TKA + SKD)',
+                        category: 'TKA',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'SMA / MA / SMK & Gap Year',
+                        time: '08:30 - 12:30 WIB',
+                        mode: 'Online (Platform CBT NLS)',
+                        location: 'LMS CBT Next Level Study',
+                        badgeText: 'Pendaftaran Dibuka',
+                        description: 'Simulasi komprehensif untuk jalur mandiri (SIMAK UI, UM UGM, SM ITB) dan Seleksi Kompetensi Dasar (SKD) Sekolah Kedinasan.',
+                        highlights: [
+                            'Simulasi subtes TKA Saintek / Soshum & SKD Kedinasan',
+                            'Pembahasan strategi lolos nilai ambang batas (Passing Grade)',
+                            'Bank latihan soal eksklusif 1.000+ nomor'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya ingin daftar Try Out Mandiri PTN & Kedinasan (10 Mei 2026).'
+                    },
+                    {
+                        id: 'evt-mei-2',
+                        date: '2026-05-24',
+                        title: 'Seminar Transformasi Digital Asesmen Sekolah Bersama Disdik',
+                        category: 'Event Dinas',
+                        jenjang: 'Guru / Instansi',
+                        jenjangLabel: 'Kepala Sekolah & Operator Kurikulum',
+                        time: '08:30 - 15:00 WIB',
+                        mode: 'Tatap Muka & Live Streaming',
+                        location: 'Hotel Santika / Grand Ballroom Bekasi',
+                        badgeText: 'Disdik Official',
+                        description: 'Kerjasama NLS dan Dinas Pendidikan membahas integrasi Computer Based Testing (CBT) mandiri dan analisis data akademik siswa.',
+                        highlights: [
+                            'Implementasi platform ujian digital aman anti-curang',
+                            'Pengolahan analitik nilai rapor untuk pemetaan mutu sekolah',
+                            'MOU kemitraan penyediaan Try Out berkala bagi sekolah negeri/swasta'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, kami ingin hadir di Seminar Transformasi Digital Asesmen Dinas.'
+                    },
+
+                    // --- JUNI 2026 ---
+                    {
+                        id: 'evt-jun-1',
+                        date: '2026-06-14',
+                        title: 'Summer Bootcamp OSN Nasional 2026 (Pelatda Medalis)',
+                        category: 'OSN',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'Peserta OSN Nasional',
+                        time: '08:00 - 17:00 WIB',
+                        mode: 'Hybrid (Camp Tatap Muka & Online)',
+                        location: 'Pusat Pembinaan NLS & Zoom Classroom',
+                        badgeText: 'National Camp',
+                        description: 'Karantina bimbingan intensif persiapan Olimpiade Sains Nasional tingkat puncak bersama para peraih medali internasional.',
+                        highlights: [
+                            'Pembahasan silabus olimpiade internasional (IBO, IPhO, IChO, IMO, IOI, IEO)',
+                            'Eksperimen laboratorium virtual & praktikum analitis',
+                            'Simulasi ujian 4 jam beruntun standar Puspresnas'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya ingin mendaftar Summer Bootcamp OSN Nasional 2026.'
+                    },
+                    {
+                        id: 'evt-jun-2',
+                        date: '2026-06-21',
+                        title: 'Workshop Pembekalan Kurikulum Internasional (Cambridge & IB)',
+                        category: 'TKA',
+                        jenjang: 'SMP',
+                        jenjangLabel: 'SMP & SMA Sekolah Internasional',
+                        time: '10:00 - 13:00 WIB',
+                        mode: 'Online (Interactive Zoom)',
+                        location: 'Live Zoom Classroom NLS',
+                        badgeText: 'Terbuka Umum',
+                        description: 'Persiapan materi kurikulum Cambridge (IGCSE, AS & A-Level) dan International Baccalaureate (IB DP) untuk tahun ajaran baru.',
+                        highlights: [
+                            'Pemahaman syllabus breakdown IGCSE & A-Level',
+                            'Strategi penulisan essay & past paper problem solving',
+                            'Mentoring oleh lulusan universitas top luar negeri'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya tertarik dengan program Kurikulum Cambridge & IB.'
+                    },
+
+                    // --- JULI 2026 ---
+                    {
+                        id: 'evt-jul-1',
+                        date: '2026-07-19',
+                        title: 'Orientation & Academic Diagnostic Test Tahun Ajaran Baru',
+                        category: 'TKA',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'Siswa Baru Kelas 10, 11, 12 SMA',
+                        time: '08:30 - 11:30 WIB',
+                        mode: 'Online (CBT NLS)',
+                        location: 'Platform CBT LMS Next Level Study',
+                        badgeText: 'Pendaftaran Dibuka',
+                        description: 'Pemetaan potensi akademik awal tahun ajaran baru untuk menentukan kelas bimbingan minat bakat OSN, SNBT, atau Kurikulum Mandiri.',
+                        highlights: [
+                            'Tes pemetaan gaya belajar & penguasaan sains/soshum dasar',
+                            'Rekomendasi kelas bimbingan reguler vs intensif privat',
+                            'Konsultasi gratis hasil rapor dan rencana studi lanjut'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya ingin ikut Diagnostic Test Tahun Ajaran Baru (19 Juli 2026).'
+                    },
+                    {
+                        id: 'evt-jul-2',
+                        date: '2026-07-26',
+                        title: 'Sesi Motivasi & Strategi Belajar Siswa Baru (MPLS Mitra Sekolah)',
+                        category: 'Mitra Sekolah',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'Siswa Baru SMA Mitra',
+                        time: '09:00 - 12:00 WIB',
+                        mode: 'Tatap Muka (Onsite)',
+                        location: 'Auditorium SMAN 2 Jakarta & Sekolah Rekanan',
+                        badgeText: 'Mitra Sekolah',
+                        description: 'Sesi motivasi belajar, tips lolos PTN sejak kelas 10, dan pengenalan kompetisi sains pada rangkaian MPLS sekolah mitra.',
+                        highlights: [
+                            'Sharing session bersama medalis olimpiade & mahasiswa berprestasi',
+                            'Penyusunan target portofolio prestasi sekolah',
+                            'Free access akun latihan CBT NLS untuk seluruh siswa baru'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, kami ingin mengundang NLS mengisi sesi akademik MPLS sekolah kami.'
+                    },
+
+                    // --- AGUSTUS 2026 ---
+                    {
+                        id: 'evt-agu-1',
+                        date: '2026-08-16',
+                        title: 'Try Out Nasional Kemerdekaan SNBT 2027 (Batch Early)',
+                        category: 'SNBT',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'SMA Kelas 12 & Alumni',
+                        time: '08:00 - 12:00 WIB',
+                        mode: 'Online (Platform CBT NLS)',
+                        location: 'LMS CBT Next Level Study',
+                        badgeText: 'Spesial Kemerdekaan',
+                        description: 'Simulasi perdana untuk angkatan pejuang PTN 2027 dengan edisi spesial Kemerdekaan Indonesia, berhadiah beasiswa belajar.',
+                        highlights: [
+                            'Simulasi UTBK sistem IRT skala nasional',
+                            'Beasiswa bimbingan belajar penuh untuk ranking 1-10',
+                            'Webinar live pembahasan bedah soal esensial'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya ingin mendaftar Try Out Kemerdekaan SNBT (16 Agustus 2026).'
+                    },
+                    {
+                        id: 'evt-agu-2',
+                        date: '2026-08-23',
+                        title: 'Grand Pelatihan Guru Sains & Matematika SD-SMP Mitra Dinas',
+                        category: 'Event Dinas',
+                        jenjang: 'Guru / Instansi',
+                        jenjangLabel: 'Guru Sains & Matematika SD-SMP',
+                        time: '08:00 - 16:00 WIB',
+                        mode: 'Tatap Muka (Onsite)',
+                        location: 'Pusat Pelatihan Pendidik & Tenaga Kependidikan',
+                        badgeText: 'Program Diknas',
+                        description: 'Workshop pemodelan sains terapan dan metode pembelajaran interaktif untuk meningkatkan nilai Asesmen Nasional sekolah.',
+                        highlights: [
+                            'Praktik pembuatan alat peraga sains sederhana',
+                            'Teknik pengajaran logika matematika tanpa hafalan rumus',
+                            'Penyusunan instrumen evaluasi berstandar nasional'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, kami ingin mendaftar Pelatihan Guru Sains Dinas Pendidikan.'
+                    },
+                    {
+                        id: 'evt-agu-3',
+                        date: '2026-08-27',
+                        title: 'Workshop Penguatan Literasi & Numerasi Berbasis CBT Sekolah',
+                        category: 'Mitra Sekolah',
+                        jenjang: 'SMP',
+                        jenjangLabel: 'Siswa SMP / MTs Mitra',
+                        time: '13:00 - 15:30 WIB',
+                        mode: 'Online (LMS CBT NLS)',
+                        location: 'Platform Digital NLS',
+                        badgeText: 'Mitra Sekolah',
+                        description: 'Penguatan penalaran dasar matematika dan literasi baca-tulis dalam format ujian berbasis komputer modern.',
+                        highlights: [
+                            'Latihan 50 soal literasi kontekstual',
+                            'Evaluasi realtime kecepatan pengerjaan per butir soal',
+                            'Sertifikat digital untuk seluruh peserta mitra'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, kami ingin mendaftar Workshop Literasi & Numerasi 27 Agustus 2026.'
+                    },
+
+                    // --- SEPTEMBER 2026 ---
+                    {
+                        id: 'evt-sep-1',
+                        date: '2026-09-13',
+                        title: 'Simulasi Try Out OSN Jenjang SMA Tahap Seleksi Lanjutan',
+                        category: 'OSN',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'SMA / MA / Sederajat',
+                        time: '09:00 - 12:00 WIB',
+                        mode: 'Online (LMS CBT NLS)',
+                        location: 'Platform CBT LMS Next Level Study',
+                        badgeText: 'Pendaftaran Dibuka',
+                        description: 'Uji kemampuan komprehensif untuk 9 bidang sains SMA dengan tingkat kompleksitas setara kompetisi sains internasional.',
+                        highlights: [
+                            'Soal tipe studi kasus analitis & problem solving',
+                            'Feedback penilaian terperinci dari juri olimpiade',
+                            'Peringkat nasional untuk benchmarking kemampuan'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya ingin daftar Simulasi OSN SMA Tahap Lanjutan (13 September 2026).'
+                    },
+                    {
+                        id: 'evt-sep-2',
+                        date: '2026-09-27',
+                        title: 'Grand Pemetaan Akademik & Try Out Terpadu Mitra Sekolah Se-Jabar',
+                        category: 'Mitra Sekolah',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'Siswa Kelas 10, 11, 12 Mitra',
+                        time: '08:00 - 15:00 WIB',
+                        mode: 'Hybrid (CBT Sekolah & Online)',
+                        location: 'Sekolah-Sekolah Mitra NLS Jawa Barat',
+                        badgeText: 'Kemitraan Akbar',
+                        description: 'Penyelenggaraan pemetaan kemampuan akademik serentak untuk puluhan sekolah mitra dengan platform CBT mandiri NLS.',
+                        highlights: [
+                            'Dashboard analitik performa per kelas dan per sekolah',
+                            'Rekomendasi materi yang perlu penguatan guru',
+                            'Apresiasi piala sekolah berprestasi akademik terbaik'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, kami ingin mendaftarkan sekolah kami pada Grand Pemetaan Akademik.'
+                    },
+
+                    // --- OKTOBER 2026 ---
+                    {
+                        id: 'evt-okt-1',
+                        date: '2026-10-11',
+                        title: 'Try Out Nasional SNBT 2027 Gelombang Pemantapan',
+                        category: 'SNBT',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'SMA / MA / SMK & Gap Year',
+                        time: '08:00 - 12:30 WIB',
+                        mode: 'Online (Platform CBT NLS)',
+                        location: 'Platform CBT LMS Next Level Study',
+                        badgeText: 'Pendaftaran Dibuka',
+                        description: 'Simulasi berkala SNBT untuk mengukur progress kenaikan skor IRT siswa setelah mengikuti bimbingan semester ganjil.',
+                        highlights: [
+                            'Grafik perkembangan skor per subtes secara visual',
+                            'Prediksi peluang masuk klaster PTN Top 10 Indonesia',
+                            'Bank pembahasan soal yang dapat diakses selamanya'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya ingin mendaftar Try Out SNBT Gelombang Pemantapan (11 Oktober 2026).'
+                    },
+                    {
+                        id: 'evt-okt-2',
+                        date: '2026-10-25',
+                        title: 'Workshop Bedah Soal & Trik TKA Penalaran Kognitif',
+                        category: 'TKA',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'SMA / MA / Sederajat',
+                        time: '13:00 - 15:30 WIB',
+                        mode: 'Online (Live Zoom Interactive)',
+                        location: 'Zoom Room NLS Indonesia',
+                        badgeText: 'Terbuka Umum',
+                        description: 'Mengupas tuntas pola soal penalaran induktif, deduktif, serta penalaran spasial yang sering menjadi kendala siswa.',
+                        highlights: [
+                            'Teknik pemecahan teka-teki logika dan silogisme',
+                            'Latihan berbatas waktu dengan feedback real-time',
+                            'E-Booklet 500 latihan soal kognitif mandiri'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya ingin daftar Workshop Bedah Soal TKA Kognitif (25 Oktober 2026).'
+                    },
+
+                    // --- NOVEMBER 2026 ---
+                    {
+                        id: 'evt-nov-1',
+                        date: '2026-11-08',
+                        title: 'Simulasi Akbar Olimpiade Puspresnas (LDI, FLS2N, OPSI & FIKSI)',
+                        category: 'OSN',
+                        jenjang: 'SMP',
+                        jenjangLabel: 'SMP & SMA Seluruh Indonesia',
+                        time: '09:00 - 14:00 WIB',
+                        mode: 'Online (Platform Digital NLS)',
+                        location: 'Platform CBT LMS Next Level Study',
+                        badgeText: 'Ajang Puspresnas',
+                        description: 'Pembekalan dan simulasi kompetisi talenta nasional mencakup Lomba Debat Indonesia, Festival Seni, serta Riset Penelitian Siswa.',
+                        highlights: [
+                            'Simulasi mosi debat, metodologi penelitian OPSI, dan karya FIKSI',
+                            'Mentoring oleh dewan juri & peraih penghargaan nasional',
+                            'Sertifikat keikutsertaan kompetisi terstandar'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya ingin info Simulasi Olimpiade Puspresnas (8 November 2026).'
+                    },
+                    {
+                        id: 'evt-nov-2',
+                        date: '2026-11-22',
+                        title: 'Workshop Strategi Manajemen Belajar Menghadapi Ujian Akhir Semester (PAS)',
+                        category: 'Mitra Sekolah',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'SMA / MA Kelas 10, 11, 12',
+                        time: '10:00 - 12:30 WIB',
+                        mode: 'Hybrid (Tatap Muka & Zoom)',
+                        location: 'Sekolah Mitra & Online LMS',
+                        badgeText: 'Mitra Sekolah',
+                        description: 'Tips menguasai materi ujian sekolah, teknik active recall & spaced repetition untuk meraih nilai rapor maksimal.',
+                        highlights: [
+                            'Rangkuman materi esensial PAS semester 1',
+                            'Simulasi latihan ujian sekolah berbasis CBT',
+                            'Konsultasi target rapor untuk syarat SNBP'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, kami ingin mengundang program workshop PAS di sekolah kami.'
+                    },
+
+                    // --- DESEMBER 2026 ---
+                    {
+                        id: 'evt-des-1',
+                        date: '2026-12-13',
+                        title: 'National Grand Try Out SNBT & Year-End Academic Evaluation 2026',
+                        category: 'SNBT',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'SMA / MA / SMK & Gap Year',
+                        time: '08:00 - 12:30 WIB',
+                        mode: 'Online (Platform CBT NLS)',
+                        location: 'Platform CBT LMS Next Level Study',
+                        badgeText: 'Grand Year-End',
+                        description: 'Try Out penutup tahun 2026 dengan skala peserta terbesar se-Indonesia untuk mengukur kesiapan final menghadapi SNBT tahun berikutnya.',
+                        highlights: [
+                            'Perangkingan nasional dengan puluhan ribu peserta se-Indonesia',
+                            'Analisis komprehensif capaian target belajar tahun 2026',
+                            'Doorprize gadget belajar, beasiswa NLS, dan e-certificate resmi'
+                        ],
+                        whatsappMessage: 'Halo Tim NLS, saya ingin mendaftar National Grand Try Out Year-End 2026.'
+                    },
+                    {
+                        id: 'evt-des-2',
+                        date: '2026-12-20',
+                        title: 'NLS Annual Awarding Night & Apresiasi Medalis Indonesia 2026',
+                        category: 'Event Dinas',
+                        jenjang: 'Guru / Instansi',
+                        jenjangLabel: 'Siswa, Guru, Mitra Sekolah & Dinas',
+                        time: '18:30 - 21:30 WIB',
+                        mode: 'Hybrid (Grand Ballroom & Live Stream)',
+                        location: 'Grand Ballroom Jakarta & YouTube Live NLS',
+                        badgeText: 'Grand Ceremony',
+                        description: 'Malam penghargaan dan penganugerahan bagi para siswa peraih medali olimpiade, siswa lolos PTN impian, serta sekolah mitra berprestasi.',
+                        highlights: [
+                            'Pemberian beasiswa apresiasi ratusan juta rupiah',
+                            'Penghargaan sekolah mitra teraktif & berprestasi',
+                            'Inspirational talkshow bersama tokoh pendidikan nasional'
+                        ],
+                    }
+];
