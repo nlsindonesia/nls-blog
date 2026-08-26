@@ -881,88 +881,114 @@
 
             </section>
 
-            <!-- Program Fokus Akademik Title -->
-            <section class="pt-20 bg-white">
-                <div class="px-4 md:px-8 container-max text-center">
-                    <h2 class="text-3xl md:text-4xl font-bold text-primary mb-4">Program Pengembangan Akademik Terpadu
-                    </h2>
-                    <p class="text-on-surface-variant max-w-2xl mx-auto text-lg">Program pendampingan komprehensif yang
-                        dirancang secara strategis untuk mengoptimalkan potensi intelektual dan mencapai standar
-                        keunggulan akademik tertinggi.</p>
-                </div>
-            </section>
+            <!-- Program Pengembangan Akademik Terpadu (SIMPLE, CLEAN & COMPACT 4-PILLAR) -->
+            <section class="py-16 md:py-20 bg-white dark:bg-[#0b132b]">
+                <div class="px-4 md:px-8 container-max">
+                    <!-- Header -->
+                    <div class="text-center mb-10 md:mb-12 max-w-3xl mx-auto">
+                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 dark:bg-primary/20 border border-primary/20 text-primary dark:text-sky-400 font-extrabold text-xs tracking-wider uppercase mb-3 shadow-2xs">
+                            <span class="icon-[mdi--target-account] text-sm"></span>
+                            <span>4 Pilar Fokus Bimbingan</span>
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-3">
+                            Program Pengembangan Akademik Terpadu
+                        </h2>
+                        <p class="text-slate-600 dark:text-slate-300 text-sm sm:text-base font-medium leading-relaxed">
+                            Pendampingan 1-on-1 strategis untuk mengoptimalkan potensi dan kesuksesan akademik siswa di setiap jenjang.
+                        </p>
+                    </div>
 
-            <!-- Section 1 (OSN) -->
-            <section class="py-20 bg-white">
-                <div class="px-4 md:px-8 container-max grid md:grid-cols-2 gap-12 items-center">
-                    <div class="rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] border border-surface-container">
-                        <img alt="Les Privat OSN & Olimpiade Internasional"
-                            class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                            src="/images/privat/fokus-osn.jpg">
-                    </div>
-                    <div class="space-y-6">
-                        <h3 class="text-3xl font-bold text-primary">Les Privat OSN & Olimpiade Internasional: Keunggulan
-                            Kompetitif Nasional</h3>
-                        <p class="text-lg text-on-surface-variant leading-relaxed">Program pembinaan intensif untuk
-                            menaklukkan ajang OSN dan kompetisi internasional seperti AMO, SIMOC, hingga SEAMO.
-                            Dibimbing langsung oleh praktisi ahli dan peraih medali berpengalaman untuk menguasai
-                            strategi analitis demi mengukir prestasi di panggung dunia.</p>
-                    </div>
-                </div>
-            </section>
+                    <!-- 4 Clean Compact Cards Grid -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%;">
+                        
+                        <!-- 1. OSN & Olimpiade -->
+                        <div style="flex: 1 1 240px; max-width: 290px; border-radius: 24px !important; border: 1.5px solid #e2e8f0;"
+                            class="bg-slate-50/70 dark:bg-[#131D38] dark:border-slate-800 p-6 flex flex-col justify-between hover:border-amber-400 transition-all duration-200 hover:-translate-y-1 shadow-xs hover:shadow-md">
+                            <div>
+                                <div style="width: 48px; height: 48px; border-radius: 16px; background: linear-gradient(135deg, #f59e0b, #d97706); color: #ffffff;"
+                                    class="flex items-center justify-center text-2xl shadow-sm mb-4">
+                                    <span class="icon-[mdi--trophy]"></span>
+                                </div>
+                                <h3 class="text-lg font-black text-slate-900 dark:text-white mb-2 leading-tight">
+                                    OSN &amp; Olimpiade Global
+                                </h3>
+                                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium mb-4">
+                                    Bimbingan intensif persiapan OSN tingkat Kota s.d. Nasional serta kompetisi internasional (AMO, SEAMO, SIMOC).
+                                </p>
+                            </div>
+                            <button type="button" @click="$store.paketPrivat.open('intensif')" onclick="openPrivatPackage('intensif')"
+                                class="text-xs font-extrabold text-amber-600 dark:text-amber-400 flex items-center gap-1.5 hover:underline self-start cursor-pointer">
+                                <span>Pilih Paket Exclusive</span>
+                                <span class="icon-[mdi--arrow-right]"></span>
+                            </button>
+                        </div>
 
-            <!-- Section 2 (SNBT) -->
-            <section class="py-20 bg-surface-alt">
-                <div class="px-4 md:px-8 container-max grid md:grid-cols-2 gap-12 items-center">
-                    <div class="space-y-6">
-                        <h3 class="text-3xl font-bold text-primary">Les Privat SNBT & Mandiri: Jalur Akselerasi Lulus
-                            PTN</h3>
-                        <p class="text-lg text-on-surface-variant leading-relaxed">Program ini berfokus pada penguasaan
-                            materi fundamental dan strategi taktis untuk memaksimalkan peluang kelulusan di Perguruan
-                            Tinggi Negeri (PTN) unggulan. Melalui simulasi berkala dan evaluasi komprehensif, kami
-                            membimbing siswa untuk mengasah ketajaman berpikir kritis serta manajemen waktu yang
-                            efisien.</p>
-                    </div>
-                    <div class="rounded-3xl overflow-hidden shadow-2xl aspect-[4/3]">
-                        <img alt="Fokus SNBT" class="w-full h-full object-cover" src="/images/privat/fokus-snbt.jpg">
-                    </div>
-                </div>
-            </section>
+                        <!-- 2. SNBT & Mandiri -->
+                        <div style="flex: 1 1 240px; max-width: 290px; border-radius: 24px !important; border: 1.5px solid #e2e8f0;"
+                            class="bg-slate-50/70 dark:bg-[#131D38] dark:border-slate-800 p-6 flex flex-col justify-between hover:border-sky-400 transition-all duration-200 hover:-translate-y-1 shadow-xs hover:shadow-md">
+                            <div>
+                                <div style="width: 48px; height: 48px; border-radius: 16px; background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff;"
+                                    class="flex items-center justify-center text-2xl shadow-sm mb-4">
+                                    <span class="icon-[mdi--school]"></span>
+                                </div>
+                                <h3 class="text-lg font-black text-slate-900 dark:text-white mb-2 leading-tight">
+                                    UTBK-SNBT &amp; Ujian Mandiri
+                                </h3>
+                                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium mb-4">
+                                    Penguasaan materi fundamental, latihan soal prediktif TPS &amp; Literasi, serta trik manajemen waktu masuk PTN.
+                                </p>
+                            </div>
+                            <button type="button" @click="$store.paketPrivat.open('intensif')" onclick="openPrivatPackage('intensif')"
+                                class="text-xs font-extrabold text-sky-600 dark:text-sky-400 flex items-center gap-1.5 hover:underline self-start cursor-pointer">
+                                <span>Pilih Persiapan PTN</span>
+                                <span class="icon-[mdi--arrow-right]"></span>
+                            </button>
+                        </div>
 
-            <!-- Section 3 (TKA) -->
-            <section class="py-20 bg-white">
-                <div class="px-4 md:px-8 container-max grid md:grid-cols-2 gap-12 items-center">
-                    <div
-                        class="glass-card p-8 rounded-3xl flex flex-col h-full bg-primary/5 border-t-4 border-primary shadow-sm">
-                        <img alt="Fokus TKA" class="w-full h-full object-cover" src="/images/privat/fokus-tka.jpg">
-                    </div>
-                    <div class="space-y-6">
-                        <h3 class="text-3xl font-bold text-primary">Les Privat TKA: Fokus TKA</h3>
-                        <p class="text-lg text-on-surface-variant leading-relaxed">Program pendampingan komprehensif
-                            yang dirancang untuk memastikan penguasaan kurikulum sekolah nasional maupun internasional
-                            secara mendalam. Kami membantu siswa mencapai prestasi akademik terbaik dengan metode
-                            pembelajaran yang terstruktur dan adaptif terhadap kebutuhan kurikulum global.</p>
-                    </div>
-                </div>
-            </section>
+                        <!-- 3. TKA & Kurikulum Nasional -->
+                        <div style="flex: 1 1 240px; max-width: 290px; border-radius: 24px !important; border: 1.5px solid #e2e8f0;"
+                            class="bg-slate-50/70 dark:bg-[#131D38] dark:border-slate-800 p-6 flex flex-col justify-between hover:border-emerald-400 transition-all duration-200 hover:-translate-y-1 shadow-xs hover:shadow-md">
+                            <div>
+                                <div style="width: 48px; height: 48px; border-radius: 16px; background: linear-gradient(135deg, #059669, #047857); color: #ffffff;"
+                                    class="flex items-center justify-center text-2xl shadow-sm mb-4">
+                                    <span class="icon-[mdi--book-check]"></span>
+                                </div>
+                                <h3 class="text-lg font-black text-slate-900 dark:text-white mb-2 leading-tight">
+                                    TKA SD, SMP &amp; SMA
+                                </h3>
+                                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium mb-4">
+                                    Pendampingan penguasaan Tes Kemampuan Akademik (TKA) Pusmendik RI &amp; penguatan nilai rapor harian sekolah.
+                                </p>
+                            </div>
+                            <button type="button" @click="$store.paketPrivat.open('reguler')" onclick="openPrivatPackage('reguler')"
+                                class="text-xs font-extrabold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 hover:underline self-start cursor-pointer">
+                                <span>Pilih Paket Reguler</span>
+                                <span class="icon-[mdi--arrow-right]"></span>
+                            </button>
+                        </div>
 
-            <!-- Section 4 (Internasional) -->
-            <section class="py-20 bg-surface-alt">
-                <div class="px-4 md:px-8 container-max grid md:grid-cols-2 gap-12 items-center">
-                    <div class="space-y-6">
-                        <h3 class="text-3xl font-bold text-primary">Les Privat Persiapan Pelajaran Sekolah: Standar
-                            Akademik Global</h3>
-                        <p class="text-lg text-on-surface-variant leading-relaxed">Menghadapi tuntutan akademik sekolah
-                            Nasional dan Internasional sering kali membutuhkan strategi belajar yang lebih spesifik.
-                            Program privat kami menghadirkan mentor profesional yang siap memberikan pendampingan
-                            intensif secara personal, disesuaikan dengan ritme belajar unik setiap anak. Dengan
-                            penyederhanaan konsep materi yang kompleks, kami mentransformasi proses belajar menjadi
-                            lebih efisien dan mudah dipahami, sekaligus memastikan siswa siap menghadapi ujian nasional
-                            maupun asesmen global dengan percaya diri.</p>
-                    </div>
-                    <div class="rounded-3xl overflow-hidden shadow-2xl aspect-[4/3]">
-                        <img alt="Fokus Internasional" class="w-full h-full object-cover"
-                            src="/images/privat/fokus-internasional.jpg">
+                        <!-- 4. Kurikulum Internasional -->
+                        <div style="flex: 1 1 240px; max-width: 290px; border-radius: 24px !important; border: 1.5px solid #e2e8f0;"
+                            class="bg-slate-50/70 dark:bg-[#131D38] dark:border-slate-800 p-6 flex flex-col justify-between hover:border-purple-400 transition-all duration-200 hover:-translate-y-1 shadow-xs hover:shadow-md">
+                            <div>
+                                <div style="width: 48px; height: 48px; border-radius: 16px; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: #ffffff;"
+                                    class="flex items-center justify-center text-2xl shadow-sm mb-4">
+                                    <span class="icon-[mdi--earth]"></span>
+                                </div>
+                                <h3 class="text-lg font-black text-slate-900 dark:text-white mb-2 leading-tight">
+                                    Kurikulum Internasional
+                                </h3>
+                                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium mb-4">
+                                    Bimbingan bilingual untuk kurikulum Cambridge (IGCSE/A-Level), IB Diploma, serta kurikulum global lainnya.
+                                </p>
+                            </div>
+                            <button type="button" @click="$store.paketPrivat.open('internasional')" onclick="openPrivatPackage('internasional')"
+                                class="text-xs font-extrabold text-purple-600 dark:text-purple-400 flex items-center gap-1.5 hover:underline self-start cursor-pointer">
+                                <span>Pilih Paket Juara</span>
+                                <span class="icon-[mdi--arrow-right]"></span>
+                            </button>
+                        </div>
+
                     </div>
                 </div>
             </section>
