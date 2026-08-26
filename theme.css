@@ -50,7 +50,27 @@ section {
 /* Media responsiveness: ensure images and embeds never push screen width */
 img, video, canvas, svg, iframe, embed, object {
     max-width: 100% !important;
+}
+
+img:not([class*="h-"]):not([class*="aspect-"]):not([style*="height"]):not([height]),
+video:not([class*="h-"]):not([class*="aspect-"]):not([style*="height"]):not([height]) {
     height: auto;
+}
+
+img.object-cover, video.object-cover, [class*="object-cover"] {
+    object-fit: cover !important;
+}
+
+img.object-contain, video.object-contain, [class*="object-contain"] {
+    object-fit: contain !important;
+}
+
+img.h-full, video.h-full, [class*="h-full"] {
+    height: 100% !important;
+}
+
+img.h-auto, video.h-auto, [class*="h-auto"] {
+    height: auto !important;
 }
 
 /* Tables and preformatted text containment */
