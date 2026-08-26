@@ -58,21 +58,24 @@
         }
 
         /* Filter Controls Styling */
-        .filter-controls-row {
-            display: flex;
-            flex-direction: column;
+        .filter-controls-grid {
+            display: grid;
+            grid-template-columns: 1fr;
             gap: 1.25rem;
             width: 100%;
         }
-        @media (min-width: 768px) {
-            .filter-controls-row {
-                flex-direction: row;
-                align-items: stretch;
+        @media (min-width: 640px) {
+            .filter-controls-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 1024px) {
+            .filter-controls-grid {
+                grid-template-columns: repeat(4, 1fr);
             }
         }
 
         .filter-field {
-            flex: 1;
             min-width: 0;
             display: flex;
             flex-direction: column;
@@ -82,19 +85,19 @@
         .filter-select-input {
             width: 100%;
             height: 52px;
-            padding: 0 2.75rem 0 1.25rem;
+            padding: 0 2.5rem 0 1.15rem;
             border-radius: 1rem;
             border: 1.5px solid #cbd5e1;
             background-color: #f8fafc;
             color: #0f172a;
-            font-size: 0.9375rem;
+            font-size: 0.875rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23006493' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 1.25rem center;
+            background-position: right 1.15rem center;
             background-size: 1.15rem;
         }
         html.dark .filter-select-input {
@@ -113,6 +116,24 @@
             background-color: #15203b;
             border-color: #38bdf8;
             box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+        }
+        .filter-select-input optgroup {
+            font-weight: 800;
+            color: #006493;
+            background-color: #f1f5f9;
+        }
+        html.dark .filter-select-input optgroup {
+            color: #38bdf8;
+            background-color: #0f172a;
+        }
+        .filter-select-input option {
+            font-weight: 600;
+            color: #0f172a;
+            background-color: #ffffff;
+        }
+        html.dark .filter-select-input option {
+            color: #f1f5f9;
+            background-color: #1a2542;
         }
 
         /* Category Filter Navigation Bar (Strictly Single Line) */
@@ -816,37 +837,55 @@
             <section class="py-10 md:py-16 bg-surface">
                 <div class="cal-container px-4 sm:px-6">
 
-                    <!-- Dual Filter & Search Hub -->
+                    <!-- 3-Filter & Search Hub -->
                     <div class="bg-white dark:bg-[#131d38] p-6 sm:p-7 rounded-3xl border border-slate-200 dark:border-slate-700/80 shadow-md mb-10">
-                        <div class="filter-controls-row">
-                            <!-- Filter 1: Jenis Kegiatan / Bidang Keahlian -->
-                            <div class="filter-field">
-                                <label class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
-                                    Filter 1: Bidang Keahlian &amp; Program
-                                </label>
-                                <select x-model="selectedCategory" class="filter-select-input">
-                                    <option value="all">🌟 Semua Bidang Pengajaran (OSN, SNBT, TKA, Kurikulum Nasional, Kurikulum Internasional)</option>
-                                    <option value="OSN">🏆 Spesialis Olimpiade Sains Nasional (OSN SD/SMP/SMA)</option>
-                                    <option value="SNBT">🎯 Spesialis UTBK SNBT &amp; Penalaran Masuk PTN</option>
-                                    <option value="TKA">📚 Spesialis Tes Kemampuan Akademik &amp; Ujian Mandiri PTN</option>
-                                    <option value="Kurikulum Nasional">🇮🇩 Kurikulum Nasional (Kurikulum Merdeka / K13 &amp; Asesmen Sekolah)</option>
-                                    <option value="Kurikulum Internasional">🌍 Kurikulum Internasional (Cambridge IGCSE/A-Level &amp; IB DP/MYP)</option>
-                                </select>
-                            </div>
-
-                            <!-- Filter 2: Jenjang Pendidikan -->
+                        <div class="filter-controls-grid">
+                            <!-- Filter 1: Jenjang Pendidikan Sasaran -->
                             <div class="filter-field">
                                 <label class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
                                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                                    Filter 2: Jenjang Pendidikan Sasaran
+                                    Filter 1 : Jenjang
                                 </label>
-                                <select x-model="selectedJenjang" class="filter-select-input">
-                                    <option value="all">🎓 Semua Jenjang Pendidikan (SD, SMP, SMA, Guru/Umum)</option>
+                                <select x-model="selectedJenjang" @change="onJenjangChange()" class="filter-select-input">
+                                    <option value="all">🎓 Semua Jenjang Pendidikan (SD, SMP, SMA, Guru)</option>
                                     <option value="SD">🎒 SD / MI / Sederajat</option>
                                     <option value="SMP">📘 SMP / MTs / Sederajat</option>
                                     <option value="SMA">🎓 SMA / MA / SMK / Gap Year</option>
                                     <option value="Guru / Instansi">🏛️ Guru / Sekolah / Instansi</option>
+                                </select>
+                            </div>
+
+                            <!-- Filter 2: Bidang Keahlian & Program -->
+                            <div class="filter-field">
+                                <label class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+                                    Filter 2 : Bidang Keahlian &amp; Program
+                                </label>
+                                <select x-model="selectedCategory" @change="onCategoryChange()" class="filter-select-input">
+                                    <option value="all">🌟 Semua Bidang Pengajaran (OSN, SNBT, TKA, KurNas, Intl)</option>
+                                    <option value="OSN">🏆 Spesialis Olimpiade Sains Nasional (OSN)</option>
+                                    <option value="SNBT">🎯 Spesialis UTBK SNBT &amp; Penalaran</option>
+                                    <option value="TKA">📚 Spesialis Tes Kemampuan Akademik &amp; Mandiri PTN</option>
+                                    <option value="Kurikulum Nasional">🇮🇩 Kurikulum Nasional (Kurikulum Merdeka / K13)</option>
+                                    <option value="Kurikulum Internasional">🌍 Kurikulum Internasional (Cambridge &amp; IB)</option>
+                                </select>
+                            </div>
+
+                            <!-- Filter 3: Mata Pelajaran (Dinamis Berdasarkan Filter 2) -->
+                            <div class="filter-field">
+                                <label class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-purple-600"></span>
+                                    Filter 3 : Pelajaran
+                                </label>
+                                <select x-model="selectedSubject" class="filter-select-input">
+                                    <option value="all">📖 Semua Mata Pelajaran</option>
+                                    <template x-for="group in getAvailableSubjectGroups()" :key="group.label">
+                                        <optgroup :label="group.label">
+                                            <template x-for="subj in group.options" :key="subj">
+                                                <option :value="subj" x-text="subj"></option>
+                                            </template>
+                                        </optgroup>
+                                    </template>
                                 </select>
                             </div>
 
@@ -859,7 +898,7 @@
                                 <div class="relative">
                                     <input x-model="searchQuery"
                                         class="w-full h-[52px] bg-slate-50 dark:bg-[#1a2542] text-slate-800 dark:text-slate-100 pl-11 pr-4 rounded-2xl border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-primary focus:border-transparent font-bold text-sm"
-                                        placeholder="Ketik nama, universitas, atau mata pelajaran..." type="text">
+                                        placeholder="Ketik nama, topik, subjek..." type="text">
                                     <svg class="w-5 h-5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                                 </div>
                             </div>
@@ -869,16 +908,22 @@
                         <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-700/60 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm">
                             <div class="flex items-center gap-2 text-slate-600 dark:text-slate-300 flex-wrap">
                                 <span class="font-medium">Menampilkan:</span>
-                                <span class="font-black text-primary" x-text="categoryLabel()"></span>
-                                <span>•</span>
                                 <span class="font-black text-emerald-600 dark:text-emerald-400" x-text="jenjangLabel()"></span>
+                                <span>•</span>
+                                <span class="font-black text-primary dark:text-sky-400" x-text="categoryLabel()"></span>
+                                <template x-if="selectedSubject !== 'all'">
+                                    <div class="inline-flex items-center gap-1.5">
+                                        <span>•</span>
+                                        <span class="font-black text-purple-600 dark:text-purple-400" x-text="selectedSubject"></span>
+                                    </div>
+                                </template>
                                 <span class="px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 font-extrabold text-blue-700 dark:text-blue-300 text-xs border border-blue-200/60 dark:border-blue-800/50">
                                     <span x-text="filteredTeachers().length"></span> pengajar ditemukan
                                 </span>
                             </div>
 
                             <button @click="resetFilters()"
-                                x-show="selectedCategory !== 'all' || selectedJenjang !== 'all' || searchQuery !== ''"
+                                x-show="selectedCategory !== 'all' || selectedJenjang !== 'all' || selectedSubject !== 'all' || searchQuery !== ''"
                                 class="inline-flex items-center gap-1.5 text-xs font-bold text-rose-600 dark:text-rose-400 hover:underline cursor-pointer">
                                 <span class="icon-[mdi--refresh] text-base"></span>
                                 Reset Filter &amp; Pencarian
@@ -1377,11 +1422,240 @@
     <script>
         function pengajarApp() {
             return {
-                selectedCategory: 'all', // 'all', 'OSN', 'SNBT', 'TKA', 'Kurikulum Nasional', 'Kurikulum Internasional'
-                selectedJenjang: 'all',  // 'all', 'SD', 'SMP', 'SMA', 'Guru / Instansi'
+                selectedJenjang: 'all',  // Filter 1: 'all', 'SD', 'SMP', 'SMA', 'Guru / Instansi'
+                selectedCategory: 'all', // Filter 2: 'all', 'OSN', 'SNBT', 'TKA', 'Kurikulum Nasional', 'Kurikulum Internasional'
+                selectedSubject: 'all',  // Filter 3: 'all' or specific subject
                 searchQuery: '',
 
-                // Comprehensive Professional Teachers Dataset (100% Authentic AI Portraits & Multi-Aspect Coverage)
+                // Dynamic Subject Groups based on Filter 2 (and Filter 1)
+                getAvailableSubjectGroups() {
+                    const groups = [];
+                    const cat = this.selectedCategory;
+                    const jnj = this.selectedJenjang;
+
+                    if (cat === 'OSN') {
+                        if (jnj === 'all' || jnj === 'SMA') {
+                            groups.push({
+                                label: '🏆 OSN SMA (9 Mata Pelajaran)',
+                                options: [
+                                    'Matematika (SMA)',
+                                    'Fisika (SMA)',
+                                    'Kimia (SMA)',
+                                    'Biologi (SMA)',
+                                    'Informatika / Komputer (SMA)',
+                                    'Astronomi (SMA)',
+                                    'Ekonomi (SMA)',
+                                    'Kebumian (SMA)',
+                                    'Geografi (SMA)'
+                                ]
+                            });
+                        }
+                        if (jnj === 'all' || jnj === 'SMP') {
+                            groups.push({
+                                label: '🏆 OSN SMP (3 Mata Pelajaran)',
+                                options: [
+                                    'Matematika (SMP)',
+                                    'IPA (SMP)',
+                                    'IPS (SMP)'
+                                ]
+                            });
+                        }
+                        if (jnj === 'all' || jnj === 'SD') {
+                            groups.push({
+                                label: '🏆 OSN SD (3 Mata Pelajaran)',
+                                options: [
+                                    'Matematika (SD)',
+                                    'IPA (SD)',
+                                    'IPS (SD)'
+                                ]
+                            });
+                        }
+                    } else if (cat === 'SNBT') {
+                        groups.push({
+                            label: '🎯 Subtes & Materi UTBK SNBT',
+                            options: [
+                                'TPS - Penalaran Kuantitatif & Logika Matematika',
+                                'TPS - Kemampuan Penalaran Umum (KPU)',
+                                'TPS - Pemahaman Bacaan & Menulis (PBM)',
+                                'TPS - Pengetahuan & Pemahaman Umum (PPU)',
+                                'Literasi dalam Bahasa Indonesia',
+                                'Literasi dalam Bahasa Inggris',
+                                'Penalaran Matematika'
+                            ]
+                        });
+                    } else if (cat === 'TKA') {
+                        groups.push({
+                            label: '📚 TKA Saintek (Ujian Mandiri & Akademik)',
+                            options: [
+                                'Matematika Saintek',
+                                'Fisika Saintek',
+                                'Kimia Saintek',
+                                'Biologi Saintek'
+                            ]
+                        });
+                        groups.push({
+                            label: '📚 TKA Soshum (Ujian Mandiri & Akademik)',
+                            options: [
+                                'Matematika Soshum',
+                                'Ekonomi Soshum',
+                                'Geografi Soshum',
+                                'Sejarah Soshum',
+                                'Sosiologi Soshum'
+                            ]
+                        });
+                    } else if (cat === 'Kurikulum Nasional') {
+                        if (jnj === 'all' || jnj === 'SMA') {
+                            groups.push({
+                                label: '🇮🇩 Kurikulum Nasional - SMA',
+                                options: [
+                                    'Matematika (Wajib & Lanjut)',
+                                    'Fisika SMA',
+                                    'Kimia SMA',
+                                    'Biologi SMA',
+                                    'Ekonomi & Akuntansi SMA',
+                                    'Sosiologi SMA',
+                                    'Geografi SMA',
+                                    'Bahasa Indonesia SMA',
+                                    'Bahasa Inggris SMA'
+                                ]
+                            });
+                        }
+                        if (jnj === 'all' || jnj === 'SMP') {
+                            groups.push({
+                                label: '🇮🇩 Kurikulum Nasional - SMP',
+                                options: [
+                                    'Matematika SMP',
+                                    'IPA SMP (Fisika & Biologi)',
+                                    'IPS SMP',
+                                    'Bahasa Indonesia SMP',
+                                    'Bahasa Inggris SMP'
+                                ]
+                            });
+                        }
+                        if (jnj === 'all' || jnj === 'SD') {
+                            groups.push({
+                                label: '🇮🇩 Kurikulum Nasional - SD',
+                                options: [
+                                    'Matematika SD',
+                                    'IPA / IPAS SD',
+                                    'Bahasa Indonesia SD',
+                                    'Bahasa Inggris SD',
+                                    'Calistung & Tematik SD'
+                                ]
+                            });
+                        }
+                    } else if (cat === 'Kurikulum Internasional') {
+                        groups.push({
+                            label: '🌍 Cambridge & IB (International Baccalaureate)',
+                            options: [
+                                'Cambridge / IB Mathematics (HL/SL)',
+                                'Cambridge / IB Physics (IGCSE & A-Level)',
+                                'Cambridge / IB Chemistry (IGCSE & A-Level)',
+                                'Cambridge / IB Biology (IGCSE & A-Level)',
+                                'Cambridge / IB Economics & Business',
+                                'Cambridge / AP Computer Science & Coding',
+                                'Academic English / IELTS & TOEFL'
+                            ]
+                        });
+                    } else {
+                        // cat === 'all' (Semua Program)
+                        if (jnj === 'all' || jnj === 'SMA') {
+                            groups.push({
+                                label: '🏆 OSN SMA (9 Mata Pelajaran)',
+                                options: [
+                                    'Matematika (SMA)',
+                                    'Fisika (SMA)',
+                                    'Kimia (SMA)',
+                                    'Biologi (SMA)',
+                                    'Informatika / Komputer (SMA)',
+                                    'Astronomi (SMA)',
+                                    'Ekonomi (SMA)',
+                                    'Kebumian (SMA)',
+                                    'Geografi (SMA)'
+                                ]
+                            });
+                        }
+                        if (jnj === 'all' || jnj === 'SMP') {
+                            groups.push({
+                                label: '🏆 OSN SMP (3 Mata Pelajaran)',
+                                options: [
+                                    'Matematika (SMP)',
+                                    'IPA (SMP)',
+                                    'IPS (SMP)'
+                                ]
+                            });
+                        }
+                        if (jnj === 'all' || jnj === 'SD') {
+                            groups.push({
+                                label: '🏆 OSN SD (3 Mata Pelajaran)',
+                                options: [
+                                    'Matematika (SD)',
+                                    'IPA (SD)',
+                                    'IPS (SD)'
+                                ]
+                            });
+                        }
+                        if (jnj === 'all' || jnj === 'SMA') {
+                            groups.push({
+                                label: '🎯 Subtes & Materi UTBK SNBT',
+                                options: [
+                                    'TPS - Penalaran Kuantitatif & Logika Matematika',
+                                    'TPS - Kemampuan Penalaran Umum (KPU)',
+                                    'TPS - Pemahaman Bacaan & Menulis (PBM)',
+                                    'TPS - Pengetahuan & Pemahaman Umum (PPU)',
+                                    'Literasi dalam Bahasa Indonesia',
+                                    'Literasi dalam Bahasa Inggris',
+                                    'Penalaran Matematika'
+                                ]
+                            });
+                            groups.push({
+                                label: '📚 TKA Saintek & Soshum',
+                                options: [
+                                    'Matematika Saintek',
+                                    'Fisika Saintek',
+                                    'Kimia Saintek',
+                                    'Biologi Saintek',
+                                    'Matematika Soshum',
+                                    'Ekonomi Soshum',
+                                    'Geografi Soshum',
+                                    'Sejarah Soshum',
+                                    'Sosiologi Soshum'
+                                ]
+                            });
+                        }
+                        groups.push({
+                            label: '🇮🇩 Kurikulum Nasional & Umum',
+                            options: [
+                                'Matematika (Wajib & Lanjut)',
+                                'Fisika SMA',
+                                'Kimia SMA',
+                                'Biologi SMA',
+                                'Ekonomi & Akuntansi SMA',
+                                'Matematika SMP',
+                                'IPA SMP (Fisika & Biologi)',
+                                'IPS SMP',
+                                'Matematika SD',
+                                'IPA / IPAS SD',
+                                'Calistung & Tematik SD'
+                            ]
+                        });
+                        groups.push({
+                            label: '🌍 Cambridge & IB (International)',
+                            options: [
+                                'Cambridge / IB Mathematics (HL/SL)',
+                                'Cambridge / IB Physics (IGCSE & A-Level)',
+                                'Cambridge / IB Chemistry (IGCSE & A-Level)',
+                                'Cambridge / IB Biology (IGCSE & A-Level)',
+                                'Cambridge / IB Economics & Business',
+                                'Cambridge / AP Computer Science & Coding',
+                                'Academic English / IELTS & TOEFL'
+                            ]
+                        });
+                    }
+                    return groups;
+                },
+
+                // Comprehensive Professional Teachers Dataset (100% Multi-Aspect Coverage)
                 teachers: [
                     {
                         id: 't-1',
@@ -1393,6 +1667,15 @@
                         jenjang: ['SMP', 'SMA'],
                         jenjangLabel: 'SMP, SMA & SPK School',
                         subject: 'Matematika Lanjut (OSN, TKA, & IB / Cambridge)',
+                        subjects: [
+                            'Matematika (SMA)',
+                            'Matematika (SMP)',
+                            'Matematika Saintek',
+                            'Matematika (Wajib & Lanjut)',
+                            'Matematika SMP',
+                            'Cambridge / IB Mathematics (HL/SL)',
+                            'Penalaran Matematika'
+                        ],
                         kebutuhanPrivat: 'Bimbingan intensif persiapan OSN Matematika, Ujian Mandiri PTN (SIMAK UI & UTUL UGM), serta persiapan ujian Cambridge AS/A-Level & IB Math HL.',
                         philosophy: 'Matematika bukan tentang menghafal rumus, melainkan melatih kejujuran logika dan daya nalar terstruktur.',
                         highlights: [
@@ -1411,6 +1694,14 @@
                         jenjang: ['SMA'],
                         jenjangLabel: 'SMA Kelas 10-12 & Gap Year',
                         subject: 'Biologi Kedokteran, Sains Terapan & Literasi IPA',
+                        subjects: [
+                            'Biologi (SMA)',
+                            'Biologi Saintek',
+                            'Biologi SMA',
+                            'Cambridge / IB Biology (IGCSE & A-Level)',
+                            'TPS - Kemampuan Penalaran Umum (KPU)',
+                            'TPS - Pengetahuan & Pemahaman Umum (PPU)'
+                        ],
                         kebutuhanPrivat: 'Les privat masuk Fakultas Kedokteran (IUP & Reguler UI/UGM), OSN Biologi, dan IB DP Biology HL.',
                         philosophy: 'Mengajar dengan hati nurani dan kejujuran ilmiah melahirkan calon dokter dan saintis yang berintegritas.',
                         highlights: [
@@ -1429,6 +1720,14 @@
                         jenjang: ['SMA'],
                         jenjangLabel: 'SMA Kelas 11-12 & Alumni',
                         subject: 'SNBT TPS Penalaran Kuantitatif & Logika Matematika',
+                        subjects: [
+                            'TPS - Penalaran Kuantitatif & Logika Matematika',
+                            'Penalaran Matematika',
+                            'TPS - Kemampuan Penalaran Umum (KPU)',
+                            'Matematika Saintek',
+                            'Matematika Soshum',
+                            'Matematika (Wajib & Lanjut)'
+                        ],
                         kebutuhanPrivat: 'Privat intensif tembus PTN klaster 1, penguasaan pola soal penalaran analitis, dan sistem pembobotan IRT SNBT.',
                         philosophy: 'Kelolosan PTN impian adalah buah kedisiplinan, strategi penalaran terarah, dan latihan yang jujur.',
                         highlights: [
@@ -1447,6 +1746,17 @@
                         jenjang: ['SMP', 'SMA'],
                         jenjangLabel: 'SMP, SMA & Gap Year',
                         subject: 'Literasi Bahasa Indonesia, English for Academic & SNBT',
+                        subjects: [
+                            'Literasi dalam Bahasa Indonesia',
+                            'Literasi dalam Bahasa Inggris',
+                            'TPS - Pemahaman Bacaan & Menulis (PBM)',
+                            'TPS - Pengetahuan & Pemahaman Umum (PPU)',
+                            'Bahasa Indonesia SMA',
+                            'Bahasa Inggris SMA',
+                            'Bahasa Indonesia SMP',
+                            'Bahasa Inggris SMP',
+                            'Academic English / IELTS & TOEFL'
+                        ],
                         kebutuhanPrivat: 'Privat literasi teks kompleks SNBT, peningkatan nilai rapor Bahasa Kurikulum Merdeka, serta TOEFL/IELTS persiapan IUP.',
                         philosophy: 'Literasi kritis adalah pondasi integritas berpikir dan komunikasi seorang calon intelektual.',
                         highlights: [
@@ -1465,6 +1775,13 @@
                         jenjang: ['SMA'],
                         jenjangLabel: 'SMA & Alumni',
                         subject: 'Fisika Saintek, OSN Fisika & Cambridge Physics',
+                        subjects: [
+                            'Fisika (SMA)',
+                            'Fisika Saintek',
+                            'Fisika SMA',
+                            'Cambridge / IB Physics (IGCSE & A-Level)',
+                            'TPS - Penalaran Kuantitatif & Logika Matematika'
+                        ],
                         kebutuhanPrivat: 'Privat pemahaman konsep dasar fisika sekolah, persiapan OSN Fisika, SIMAK UI Saintek, dan Cambridge IGCSE/A-Level.',
                         philosophy: 'Memahami fenomena fisika secara runtut dan jujur membuat soal tersulit pun menjadi sangat logis.',
                         highlights: [
@@ -1480,9 +1797,19 @@
                         photo: '/images/pengajar/mentor-6-senior-math.jpg',
                         education: 'Magister Pendidikan UNJ (Guru Teladan & Praktisi Kurikulum)',
                         categories: ['Kurikulum Nasional', 'TKA', 'OSN'],
-                        jenjang: ['SMP', 'SMA', 'Guru / Instansi'],
+                        jenjang: ['SD', 'SMP', 'SMA', 'Guru / Instansi'],
                         jenjangLabel: 'SD, SMP, SMA & Pelatihan Guru',
                         subject: 'Matematika Kurikulum Merdeka, Ujian Sekolah & Asesmen',
+                        subjects: [
+                            'Matematika (SMA)',
+                            'Matematika (SMP)',
+                            'Matematika (SD)',
+                            'Matematika (Wajib & Lanjut)',
+                            'Matematika SMP',
+                            'Matematika SD',
+                            'Matematika Saintek',
+                            'Matematika Soshum'
+                        ],
                         kebutuhanPrivat: 'Pendampingan privat siswa dari tingkat dasar hingga mahir, peningkatan nilai rapor untuk jalur SNBP, dan persiapan ASAJ.',
                         philosophy: 'Setiap anak berhak memahami matematika dengan sabar dan menyenangkan tanpa rasa takut.',
                         highlights: [
@@ -1501,6 +1828,13 @@
                         jenjang: ['SMP', 'SMA'],
                         jenjangLabel: 'SMP & SMA Sekolah Internasional / SPK',
                         subject: 'Chemistry & Science (IB DP HL/SL, Cambridge IGCSE / A-Level)',
+                        subjects: [
+                            'Kimia (SMA)',
+                            'Kimia Saintek',
+                            'Kimia SMA',
+                            'Cambridge / IB Chemistry (IGCSE & A-Level)',
+                            'Academic English / IELTS & TOEFL'
+                        ],
                         kebutuhanPrivat: 'Privat bilingual siswa SPK / Internasional school (Jakarta Intercultural School, British School, ACS, SIS, Bina Bangsa, dll).',
                         philosophy: 'Global competence with deep scientific integrity empowers students to lead the world.',
                         highlights: [
@@ -1515,10 +1849,17 @@
                         shortName: 'Kak Rara',
                         photo: '/images/pengajar/mentor-8-econ.jpg',
                         education: 'Ilmu Ekonomi FEB UI (Lulusan Tercepat & Cumlaude)',
-                        categories: ['TKA', 'SNBT', 'Kurikulum Nasional', 'Kurikulum Internasional'],
+                        categories: ['TKA', 'SNBT', 'Kurikulum Nasional', 'Kurikulum Internasional', 'OSN'],
                         jenjang: ['SMA'],
                         jenjangLabel: 'SMA Kelas 10-12 & Gap Year',
-                        subject: 'Ekonomi Soshum, Akuntansi, & Cambridge Economics',
+                        subject: 'Ekonomi Soshum, OSN Ekonomi, Akuntansi & Cambridge',
+                        subjects: [
+                            'Ekonomi (SMA)',
+                            'Ekonomi Soshum',
+                            'Ekonomi & Akuntansi SMA',
+                            'Cambridge / IB Economics & Business',
+                            'TPS - Penalaran Kuantitatif & Logika Matematika'
+                        ],
                         kebutuhanPrivat: 'Privat persiapan masuk FEB UI, UGM, Unair, dan bimbingan Cambridge AS/A-Level Economics & Business Studies.',
                         philosophy: 'Ekonomi mengajarkan kejujuran dalam mengelola amanah, efisiensi, dan keadilan sosial.',
                         highlights: [
@@ -1537,6 +1878,21 @@
                         jenjang: ['SD', 'SMP'],
                         jenjangLabel: 'SD (Kelas 1-6) & SMP (Kelas 7-9)',
                         subject: 'Calistung, Matematika & IPA Eksploratif SD/SMP',
+                        subjects: [
+                            'Matematika (SD)',
+                            'IPA (SD)',
+                            'IPS (SD)',
+                            'Matematika (SMP)',
+                            'IPA (SMP)',
+                            'IPS (SMP)',
+                            'Matematika SD',
+                            'IPA / IPAS SD',
+                            'Bahasa Indonesia SD',
+                            'Bahasa Inggris SD',
+                            'Calistung & Tematik SD',
+                            'Matematika SMP',
+                            'IPA SMP (Fisika & Biologi)'
+                        ],
                         kebutuhanPrivat: 'Les privat intensif anak SD/SMP untuk persiapan OSN Cilik, Ujian Sekolah, pembentukan karakter belajar mandiri, dan juara kelas.',
                         philosophy: 'Menumbuhkan rasa ingin tahu dan kejujuran belajar sejak dini adalah investasi terbaik masa depan anak.',
                         highlights: [
@@ -1555,12 +1911,144 @@
                         jenjang: ['SMP', 'SMA'],
                         jenjangLabel: 'SMP, SMA & Mahasiswa',
                         subject: 'Informatika OSN, Coding (C++, Python), & AP Computer Science',
+                        subjects: [
+                            'Informatika / Komputer (SMA)',
+                            'Cambridge / AP Computer Science & Coding',
+                            'TPS - Penalaran Kuantitatif & Logika Matematika'
+                        ],
                         kebutuhanPrivat: 'Privat olimpiade komputer (OSN Informatika), persiapan AP Computer Science SPK school, dan portofolio Beasiswa BIM / IISMA.',
                         philosophy: 'Coding dan algoritma melatih daya pemecahan masalah yang sistematis, presisi, dan jujur.',
                         highlights: [
                             'Coach tim olimpiade sains informatika tingkat nasional dan internasional',
                             'Master algoritma Dynamic Programming, Graph, dan Data Structures',
                             'Membimbing siswa masuk Fasilkom UI, STEI ITB, & Computer Science NUS'
+                        ]
+                    },
+                    {
+                        id: 't-11',
+                        name: 'Dimas Arya Pradipta, S.Si.',
+                        shortName: 'Kak Dimas',
+                        photo: '/images/pengajar/mentor-5-physics.jpg',
+                        education: 'Astronomi ITB (Medalis Olimpiade Astronomi Internasional IOAA)',
+                        categories: ['OSN', 'TKA', 'Kurikulum Nasional'],
+                        jenjang: ['SMA'],
+                        jenjangLabel: 'SMA & Alumni',
+                        subject: 'OSN Astronomi, Astrofisika & Fisika Lanjut SMA',
+                        subjects: [
+                            'Astronomi (SMA)',
+                            'Fisika (SMA)',
+                            'Fisika Saintek',
+                            'Fisika SMA'
+                        ],
+                        kebutuhanPrivat: 'Persiapan intensif OSN Astronomi dari tingkat Kabupaten hingga Nasional & Pelatnas IOAA, serta konsep mekanika benda langit.',
+                        philosophy: 'Memahami alam semesta dimulai dari kerendahan hati dan ketelitian sains yang jujur.',
+                        highlights: [
+                            'Medalis Olimpiade Astronomi & Astrofisika Internasional (IOAA)',
+                            'Membimbing puluhan finalis dan peraih medali OSN Astronomi',
+                            'Instruktur pengamatan teleskop dan pengolahan data astronomi digital'
+                        ]
+                    },
+                    {
+                        id: 't-12',
+                        name: 'Farhan Fauzi, S.T.',
+                        shortName: 'Kak Farhan',
+                        photo: '/images/pengajar/mentor-1-math.jpg',
+                        education: 'Teknik Geologi UGM (Peraih Medalis Emas IESO)',
+                        categories: ['OSN', 'TKA', 'Kurikulum Nasional'],
+                        jenjang: ['SMA'],
+                        jenjangLabel: 'SMA & Gap Year',
+                        subject: 'OSN Kebumian, Geologi, Meteorologi & Oseanografi',
+                        subjects: [
+                            'Kebumian (SMA)',
+                            'Geografi (SMA)',
+                            'Geografi Soshum',
+                            'Geografi SMA'
+                        ],
+                        kebutuhanPrivat: 'Pendampingan privat OSN Kebumian, geologi dinamis, meteorologi, hidrologi, dan astronomi dasar untuk seleksi Puspresnas.',
+                        philosophy: 'Ilmu kebumian membina kepekaan terhadap kelestarian bumi dan integritas seorang saintis.',
+                        highlights: [
+                            'Medalis Emas International Earth Science Olympiad (IESO)',
+                            'Coach olimpiade kebumian di berbagai SMA unggulan nasional',
+                            'Spesialis kristalografi, mineralogi, dan interpretasi peta geologi'
+                        ]
+                    },
+                    {
+                        id: 't-13',
+                        name: 'Nadia Safitri, S.Pd., M.Sc.',
+                        shortName: 'Kak Nadia',
+                        photo: '/images/pengajar/mentor-4-literasi.jpg',
+                        education: 'Pendidikan Geografi UI & Univ. Gadjah Mada',
+                        categories: ['OSN', 'TKA', 'Kurikulum Nasional'],
+                        jenjang: ['SMP', 'SMA'],
+                        jenjangLabel: 'SMP, SMA & Gap Year',
+                        subject: 'OSN Geografi, IPS Terpadu SMP, & Geografi Soshum',
+                        subjects: [
+                            'Geografi (SMA)',
+                            'IPS (SMP)',
+                            'IPS (SD)',
+                            'Geografi Soshum',
+                            'Geografi SMA',
+                            'IPS SMP',
+                            'Sosiologi SMA',
+                            'Sosiologi Soshum'
+                        ],
+                        kebutuhanPrivat: 'Persiapan OSN Geografi SMA, OSN IPS SMP, Ujian Sekolah Geografi, dan pendalaman materi UTBK Geografi Soshum.',
+                        philosophy: 'Geografi mengajarkan cara pandang holistik, keterikatan ruang hidup, dan cinta tanah air.',
+                        highlights: [
+                            'Pembina tim olimpiade sains geografi dan IPS tingkat nasional',
+                            'Penulis modul pendalaman spasial SIG dan demografi kependudukan',
+                            'Tingkat kelulusan siswa bimbingan ke PTN favorit mencapai 94%'
+                        ]
+                    },
+                    {
+                        id: 't-14',
+                        name: 'Alief Kurnia, S.Si.',
+                        shortName: 'Kak Alief',
+                        photo: '/images/pengajar/mentor-3-snbt.jpg',
+                        education: 'Biologi & Ilmu Alam ITB (Pelatih Tim OSN IPA SMP)',
+                        categories: ['OSN', 'Kurikulum Nasional'],
+                        jenjang: ['SD', 'SMP'],
+                        jenjangLabel: 'SD Kelas 4-6 & SMP Kelas 7-9',
+                        subject: 'OSN IPA SMP, Biologi & Fisika Terpadu Eksploratif',
+                        subjects: [
+                            'IPA (SMP)',
+                            'IPA (SD)',
+                            'IPA SMP (Fisika & Biologi)',
+                            'IPA / IPAS SD',
+                            'Biologi (SMA)'
+                        ],
+                        kebutuhanPrivat: 'Persiapan OSN IPA SMP (Fisika & Biologi), OSN IPA SD Cilik, serta pemantapan sains integratif untuk sekolah unggulan.',
+                        philosophy: 'Membangun logika sains yang kokoh sejak bangku SMP adalah kunci keunggulan di jenjang selanjutnya.',
+                        highlights: [
+                            'Coach tim OSN IPA SMP peraih medali emas & perak nasional',
+                            'Penyusun praktikum sains virtual dan pembahasan soal problem solving',
+                            'Pendekatan pembelajaran yang komunikatif, runut, dan menyenangkan'
+                        ]
+                    },
+                    {
+                        id: 't-15',
+                        name: 'Gabriella Maya, S.Sos.',
+                        shortName: 'Kak Maya',
+                        photo: '/images/pengajar/mentor-8-econ.jpg',
+                        education: 'Sosiologi & Ilmu Sosial Universitas Indonesia',
+                        categories: ['OSN', 'TKA', 'Kurikulum Nasional'],
+                        jenjang: ['SMP', 'SMA'],
+                        jenjangLabel: 'SMP & SMA',
+                        subject: 'OSN IPS SMP, Sosiologi Soshum & Sejarah Indonesia',
+                        subjects: [
+                            'IPS (SMP)',
+                            'IPS (SD)',
+                            'IPS SMP',
+                            'Sosiologi SMA',
+                            'Sosiologi Soshum',
+                            'Sejarah Soshum'
+                        ],
+                        kebutuhanPrivat: 'Persiapan OSN IPS SMP, pemahaman materi Sosiologi & Sejarah untuk Ujian Mandiri PTN / UTBK Soshum.',
+                        philosophy: 'Belajar ilmu sosial melatih empati sosial dan daya analisis fenomena kemanusiaan secara jujur.',
+                        highlights: [
+                            'Medalis olimpiade sains bidang ilmu sosial tingkat nasional',
+                            'Telah mendampingi ratusan siswa SMP & SMA tembus sekolah dan PTN impian',
+                            'Metode mind mapping analitis yang mudah diingat tanpa hafalan buta'
                         ]
                     }
                 ],
@@ -1589,13 +2077,27 @@
                     return this.teachers.filter(t => t.categories.includes(cat)).length;
                 },
 
+                onCategoryChange() {
+                    this.selectedSubject = 'all';
+                },
+
+                onJenjangChange() {
+                    const availableGroups = this.getAvailableSubjectGroups();
+                    const allOptions = availableGroups.flatMap(g => g.options);
+                    if (this.selectedSubject !== 'all' && !allOptions.includes(this.selectedSubject)) {
+                        this.selectedSubject = 'all';
+                    }
+                },
+
                 setCategory(cat) {
                     this.selectedCategory = cat;
+                    this.selectedSubject = 'all';
                 },
 
                 resetFilters() {
-                    this.selectedCategory = 'all';
                     this.selectedJenjang = 'all';
+                    this.selectedCategory = 'all';
+                    this.selectedSubject = 'all';
                     this.searchQuery = '';
                 },
 
@@ -1604,6 +2106,14 @@
                         const matchCat = this.selectedCategory === 'all' || t.categories.includes(this.selectedCategory);
                         const matchJenjang = this.selectedJenjang === 'all' || t.jenjang.includes(this.selectedJenjang);
                         
+                        let matchSubject = true;
+                        if (this.selectedSubject !== 'all') {
+                            const s = this.selectedSubject.toLowerCase();
+                            matchSubject = (t.subjects && t.subjects.includes(this.selectedSubject)) ||
+                                          t.subject.toLowerCase().includes(s) ||
+                                          (t.subjects && t.subjects.some(sub => sub.toLowerCase().includes(s) || s.includes(sub.toLowerCase())));
+                        }
+
                         let matchSearch = true;
                         if (this.searchQuery.trim() !== '') {
                             const q = this.searchQuery.toLowerCase();
@@ -1611,10 +2121,11 @@
                                           t.subject.toLowerCase().includes(q) ||
                                           t.education.toLowerCase().includes(q) ||
                                           t.kebutuhanPrivat.toLowerCase().includes(q) ||
-                                          t.categories.some(c => c.toLowerCase().includes(q));
+                                          t.categories.some(c => c.toLowerCase().includes(q)) ||
+                                          (t.subjects && t.subjects.some(sub => sub.toLowerCase().includes(q)));
                         }
 
-                        return matchCat && matchJenjang && matchSearch;
+                        return matchCat && matchJenjang && matchSubject && matchSearch;
                     });
                 },
 
