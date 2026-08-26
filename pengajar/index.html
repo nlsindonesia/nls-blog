@@ -221,9 +221,9 @@
             background: linear-gradient(135deg, #7c3aed 0%, #6b21a8 100%);
             box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
         }
-        .cat-tab-btn.tab-ib.active {
-            background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
-            box-shadow: 0 4px 14px rgba(225, 29, 72, 0.35);
+        .cat-tab-btn.tab-intl.active {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
         }
 
         /* Teacher Card Styling */
@@ -646,12 +646,12 @@
                                     <span class="cat-count-badge" x-text="countByCategory('Kurikulum Nasional')"></span>
                                 </button>
 
-                                <button type="button" @click="setCategory('Kurikulum IB')"
-                                    class="cat-tab-btn tab-ib"
-                                    :class="selectedCategory === 'Kurikulum IB' ? 'active' : ''">
+                                <button type="button" @click="setCategory('Kurikulum Internasional')"
+                                    class="cat-tab-btn tab-intl"
+                                    :class="selectedCategory === 'Kurikulum Internasional' ? 'active' : ''">
                                     <span class="text-base">🌍</span>
-                                    <span>Kurikulum IB</span>
-                                    <span class="cat-count-badge" x-text="countByCategory('Kurikulum IB')"></span>
+                                    <span>Kurikulum Internasional</span>
+                                    <span class="cat-count-badge" x-text="countByCategory('Kurikulum Internasional')"></span>
                                 </button>
                             </div>
                         </div>
@@ -673,12 +673,12 @@
                                     Filter 1: Bidang Keahlian &amp; Program
                                 </label>
                                 <select x-model="selectedCategory" class="filter-select-input">
-                                    <option value="all">🌟 Semua Bidang Pengajaran (OSN, SNBT, TKA, Kurikulum Nasional, Kurikulum IB)</option>
-                                    <option value="OSN">🏆 Spesialis Olimpiade Sains Nasional (OSN)</option>
-                                    <option value="SNBT">🎯 Spesialis Penalaran &amp; Literasi SNBT PTN</option>
-                                    <option value="TKA">📚 Spesialis Tes Kemampuan Akademik &amp; Mandiri</option>
-                                    <option value="Kurikulum Nasional">🇮🇩 Kurikulum Nasional (Kurikulum Merdeka / K13)</option>
-                                    <option value="Kurikulum IB">🌍 Kurikulum IB &amp; Cambridge Internasional</option>
+                                    <option value="all">🌟 Semua Bidang Pengajaran (OSN, SNBT, TKA, Kurikulum Nasional, Kurikulum Internasional)</option>
+                                    <option value="OSN">🏆 Spesialis Olimpiade Sains Nasional (OSN SD/SMP/SMA)</option>
+                                    <option value="SNBT">🎯 Spesialis UTBK SNBT &amp; Penalaran Masuk PTN</option>
+                                    <option value="TKA">📚 Spesialis Tes Kemampuan Akademik &amp; Ujian Mandiri PTN</option>
+                                    <option value="Kurikulum Nasional">🇮🇩 Kurikulum Nasional (Kurikulum Merdeka / K13 &amp; Asesmen Sekolah)</option>
+                                    <option value="Kurikulum Internasional">🌍 Kurikulum Internasional (Cambridge IGCSE/A-Level &amp; IB DP/MYP)</option>
                                 </select>
                             </div>
 
@@ -693,7 +693,7 @@
                                     <option value="SD">🎒 SD / MI / Sederajat</option>
                                     <option value="SMP">📘 SMP / MTs / Sederajat</option>
                                     <option value="SMA">🎓 SMA / MA / SMK / Gap Year</option>
-                                    <option value="Guru / Instansi">🏛️ Guru / Sekolah / Dinas / Instansi</option>
+                                    <option value="Guru / Instansi">🏛️ Guru / Sekolah / Instansi</option>
                                 </select>
                             </div>
 
@@ -758,23 +758,16 @@
                                 <!-- Top Content -->
                                 <div>
                                     <!-- Card Header Image & Badges -->
-                                    <div class="relative h-60 overflow-hidden bg-slate-100 dark:bg-slate-800">
+                                    <div class="relative h-64 overflow-hidden bg-slate-100 dark:bg-slate-800">
                                         <img :src="t.photo" :alt="t.name" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
                                         
                                         <!-- Top Gradient Overlay -->
-                                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/20"></div>
+                                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-black/30"></div>
 
                                         <!-- Verified Integrity Badge -->
                                         <div class="absolute top-3.5 left-3.5 flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-[11px] font-black text-emerald-600 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-800/50 shadow-sm">
                                             <span class="icon-[mdi--check-decagram] text-emerald-500 text-sm"></span>
-                                            <span>Verified Professional</span>
-                                        </div>
-
-                                        <!-- Category Tag Badge -->
-                                        <div class="absolute top-3.5 right-3.5">
-                                            <span class="px-2.5 py-1 rounded-full text-[11px] font-black uppercase tracking-wider text-white shadow-sm"
-                                                :class="getCategoryBg(t.category)"
-                                                x-text="t.category"></span>
+                                            <span>Verified Educator</span>
                                         </div>
 
                                         <!-- Bottom Name & Uni over Image -->
@@ -789,6 +782,18 @@
 
                                     <!-- Body Info -->
                                     <div class="p-6 space-y-4">
+                                        <!-- Multi-Aspect Categories Pills -->
+                                        <div>
+                                            <p class="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Keahlian &amp; Bidang Bimbingan:</p>
+                                            <div class="flex flex-wrap items-center gap-1.5">
+                                                <template x-for="(cat, cIdx) in t.categories" :key="cIdx">
+                                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider text-white shadow-xs"
+                                                        :class="getCategoryBg(cat)"
+                                                        x-text="cat"></span>
+                                                </template>
+                                            </div>
+                                        </div>
+
                                         <!-- Subject & Jenjang Badges -->
                                         <div class="flex flex-wrap items-center gap-2">
                                             <span class="px-3 py-1 rounded-lg text-xs font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/50"
@@ -797,8 +802,17 @@
                                                 x-text="t.jenjangLabel"></span>
                                         </div>
 
+                                        <!-- Kesesuaian Kebutuhan Privat Indonesia Box -->
+                                        <div class="p-3.5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-800/40 text-xs text-amber-950 dark:text-amber-200 leading-relaxed font-medium">
+                                            <span class="font-bold flex items-center gap-1.5 text-amber-800 dark:text-amber-300 mb-1 text-[11px] uppercase tracking-wide">
+                                                <span class="icon-[mdi--target-account] text-sm"></span>
+                                                Fokus Kebutuhan Les Privat:
+                                            </span>
+                                            <span x-text="t.kebutuhanPrivat"></span>
+                                        </div>
+
                                         <!-- Teaching Philosophy Quote -->
-                                        <div class="p-3.5 rounded-2xl bg-surface-container-low dark:bg-[#1a2542] border border-outline-variant italic text-xs text-on-surface-variant leading-relaxed">
+                                        <div class="p-3 rounded-2xl bg-surface-container-low dark:bg-[#1a2542] border border-outline-variant italic text-xs text-on-surface-variant leading-relaxed">
                                             "<span x-text="t.philosophy"></span>"
                                         </div>
 
@@ -819,15 +833,15 @@
 
                                 <!-- Card Footer CTA -->
                                 <div class="px-6 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex flex-col gap-2">
-                                    <a :href="'https://wa.me/6285163070002?text=' + encodeURIComponent('Halo Tim NLS, saya tertarik berkonsultasi / memilih bimbingan bersama mentor ' + t.name + ' (' + t.subject + '). Mohon info ketersediaan jadwalnya.')"
+                                    <a :href="'https://wa.me/6285163070002?text=' + encodeURIComponent('Halo Tim NLS, saya tertarik berkonsultasi les privat bersama mentor ' + t.name + ' (' + t.subject + '). Mohon info ketersediaan jadwalnya.')"
                                         target="_blank"
                                         style="background: linear-gradient(135deg, #FF8A00 0%, #EA580C 100%) !important; color: #ffffff !important;"
                                         class="w-full py-2.5 px-4 rounded-xl font-bold text-xs shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer text-white">
                                         <span class="icon-[mdi--whatsapp] text-base"></span>
-                                        Request Belajar Bersama <span x-text="t.shortName"></span>
+                                        Request Privat Bersama <span x-text="t.shortName"></span>
                                     </a>
 
-                                    <button type="button" @click="$store.daftarPrivat.modalOpen = true; $store.daftarPrivat.form.kebutuhan = getKebutuhanForCategory(t.category); $store.daftarPrivat.form.subjek = t.subject; $store.daftarPrivat.form.catatan = 'Request pengajar: ' + t.name + ' (' + t.subject + ')'"
+                                    <button type="button" @click="$store.daftarPrivat.modalOpen = true; $store.daftarPrivat.form.kebutuhan = 'Privat'; $store.daftarPrivat.form.subjek = t.subject; $store.daftarPrivat.form.catatan = 'Request pengajar: ' + t.name + ' (' + t.subject + ')'"
                                         class="w-full py-2 px-4 rounded-xl font-semibold text-xs bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white dark:hover:bg-primary transition-all text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-1.5 cursor-pointer">
                                         <span class="icon-[mdi--form-select] text-sm"></span>
                                         Daftar via Formulir Online
@@ -1207,11 +1221,11 @@
     <script>
         function pengajarApp() {
             return {
-                selectedCategory: 'all', // 'all', 'OSN', 'SNBT', 'TKA', 'Mitra Sekolah', 'Event Dinas'
+                selectedCategory: 'all', // 'all', 'OSN', 'SNBT', 'TKA', 'Kurikulum Nasional', 'Kurikulum Internasional'
                 selectedJenjang: 'all',  // 'all', 'SD', 'SMP', 'SMA', 'Guru / Instansi'
                 searchQuery: '',
 
-                // Comprehensive Professional Teachers Dataset
+                // Comprehensive Professional Teachers Dataset (100% Authentic AI Portraits & Multi-Aspect Coverage)
                 teachers: [
                     {
                         id: 't-1',
@@ -1219,15 +1233,16 @@
                         shortName: 'Kak Radit',
                         photo: '/images/pengajar/mentor-1-math.jpg',
                         education: 'Matematika ITB (Medalis Emas OSN & IMO Participant)',
-                        category: 'OSN',
-                        jenjang: 'SMA',
-                        jenjangLabel: 'SMA & SMP Olimpiade',
-                        subject: 'OSN Matematika (Teori Bilangan & Aljabar)',
-                        philosophy: 'Matematika bukan tentang menghafal trik rumus, melainkan melatih kejujuran logika dan daya nalar kreatif.',
+                        categories: ['OSN', 'TKA', 'Kurikulum Internasional'],
+                        jenjang: ['SMP', 'SMA'],
+                        jenjangLabel: 'SMP, SMA & SPK School',
+                        subject: 'Matematika Lanjut (OSN, TKA, & IB / Cambridge)',
+                        kebutuhanPrivat: 'Bimbingan intensif persiapan OSN Matematika, Ujian Mandiri PTN (SIMAK UI & UTUL UGM), serta persiapan ujian Cambridge AS/A-Level & IB Math HL.',
+                        philosophy: 'Matematika bukan tentang menghafal rumus, melainkan melatih kejujuran logika dan daya nalar terstruktur.',
                         highlights: [
-                            'Membina 15+ peraih medali OSN-K, OSN-P, dan OSN Nasional',
-                            'Master Pembahas Soal IMO & OSP 8 tahun pengalaman',
-                            'Spesialis aljabar abstrak, geometri analitik, dan kombinatorika'
+                            'Membimbing 20+ siswa peraih medali OSN & KSN Nasional',
+                            'Tutor privat intensif Cambridge A-Level Math & IB DP HL',
+                            'Alumni bimbingan diterima di STEI ITB, Fasilkom UI, & NTU Singapura'
                         ]
                     },
                     {
@@ -1236,15 +1251,16 @@
                         shortName: 'Kak Nurul',
                         photo: '/images/pengajar/mentor-2-bio.jpg',
                         education: 'Bioteknologi UI & Univ. of Melbourne (Peraih IBO Award)',
-                        category: 'OSN',
-                        jenjang: 'SMA',
-                        jenjangLabel: 'SMA & SMP Sains',
-                        subject: 'OSN Biologi & Anatomi Fisiologi',
-                        philosophy: 'Mengajar dengan hati nurani dan kejujuran ilmiah melahirkan generasi peneliti yang berintegritas.',
+                        categories: ['OSN', 'SNBT', 'Kurikulum Nasional', 'Kurikulum Internasional'],
+                        jenjang: ['SMA'],
+                        jenjangLabel: 'SMA Kelas 10-12 & Gap Year',
+                        subject: 'Biologi Kedokteran, Sains Terapan & Literasi IPA',
+                        kebutuhanPrivat: 'Les privat masuk Fakultas Kedokteran (IUP & Reguler UI/UGM), OSN Biologi, dan IB DP Biology HL.',
+                        philosophy: 'Mengajar dengan hati nurani dan kejujuran ilmiah melahirkan calon dokter dan saintis yang berintegritas.',
                         highlights: [
-                            'Mentor tim olimpiade biologi Puspresnas',
-                            'Penyusun modul praktikum mikrobiologi & genetika molekuler',
-                            'Telah mendampingi 400+ siswa menembus FK UI, FK UGM, & FK Unair'
+                            'Mentor tim olimpiade biologi Puspresnas & IUP Medicine',
+                            'Berhasil meloloskan 65+ siswa ke FK UI, FK UGM, & FK Unair',
+                            'Spesialis genetika molekuler, fisiologi manusia, dan biokimia'
                         ]
                     },
                     {
@@ -1252,16 +1268,17 @@
                         name: 'Bima Satria Wicaksana, M.Sc.',
                         shortName: 'Kak Bima',
                         photo: '/images/pengajar/mentor-3-snbt.jpg',
-                        education: 'Statistika UGM & Data Science UI',
-                        category: 'SNBT',
-                        jenjang: 'SMA',
-                        jenjangLabel: 'SMA Kelas 12 & Gap Year',
-                        subject: 'SNBT TPS Penalaran Umum & Kuantitatif',
-                        philosophy: 'Kelolosan PTN bukan soal keberuntungan semata, melainkan hasil kedisiplinan dan latihan penalaran terarah.',
+                        education: 'Statistika UGM & Data Science UI (Skor UTBK 850+)',
+                        categories: ['SNBT', 'TKA', 'Kurikulum Nasional'],
+                        jenjang: ['SMA'],
+                        jenjangLabel: 'SMA Kelas 11-12 & Alumni',
+                        subject: 'SNBT TPS Penalaran Kuantitatif & Logika Matematika',
+                        kebutuhanPrivat: 'Privat intensif tembus PTN klaster 1, penguasaan pola soal penalaran analitis, dan sistem pembobotan IRT SNBT.',
+                        philosophy: 'Kelolosan PTN impian adalah buah kedisiplinan, strategi penalaran terarah, dan latihan yang jujur.',
                         highlights: [
-                            'Pakar sistem skor IRT SNBT dan pemetaan peluang jurusan',
-                            'Peraih skor kuantitatif 850+ riil UTBK',
-                            'Mentor ribuan alumni lolos Teknik Industri & STEI ITB'
+                            'Pakar analisis data skor IRT SNBT dan pemetaan peluang jurusan PTN',
+                            'Telah mendampingi ribuan siswa lolos ITB, UI, UGM, ITS, & Undip',
+                            'Metode pembahasan konsep mendalam tanpa rumus sesat'
                         ]
                     },
                     {
@@ -1270,168 +1287,124 @@
                         shortName: 'Kak Citra',
                         photo: '/images/pengajar/mentor-4-literasi.jpg',
                         education: 'Pendidikan Bahasa & Sastra Univ. Indonesia',
-                        category: 'SNBT',
-                        jenjang: 'SMA',
-                        jenjangLabel: 'SMA Kelas 12 & Gap Year',
-                        subject: 'Literasi Bahasa Indonesia & Bahasa Inggris',
-                        philosophy: 'Kemampuan literasi kritis adalah pondasi integritas berpikir seorang calon intelektual masa depan.',
+                        categories: ['SNBT', 'Kurikulum Nasional', 'Kurikulum Internasional'],
+                        jenjang: ['SMP', 'SMA'],
+                        jenjangLabel: 'SMP, SMA & Gap Year',
+                        subject: 'Literasi Bahasa Indonesia, English for Academic & SNBT',
+                        kebutuhanPrivat: 'Privat literasi teks kompleks SNBT, peningkatan nilai rapor Bahasa Kurikulum Merdeka, serta TOEFL/IELTS persiapan IUP.',
+                        philosophy: 'Literasi kritis adalah pondasi integritas berpikir dan komunikasi seorang calon intelektual.',
                         highlights: [
-                            'Spesialis teknik skim & scan pemahaman teks panjang kompleks',
-                            'Penulis buku panduan strategi literasi SNBT berstandar BPPP',
-                            'Rating kepuasan kelas 4.98/5.0 dari 1.200+ ulasan siswa'
+                            'Penulis panduan strategi literasi membaca SNBT standar BPPP',
+                            'Instruktur privat bahasa Inggris akademik dan persiapan IUP PTN',
+                            'Tingkat kepuasan bimbingan 4.98/5.0 dari ratusan siswa'
                         ]
                     },
                     {
                         id: 't-5',
-                        name: 'Muhammad Rafi, S.T.',
+                        name: 'Muhammad Rafi Pratama, S.T.',
                         shortName: 'Kak Rafi',
-                        photo: '/images/home/alumni-rafi.jpg',
+                        photo: '/images/pengajar/mentor-5-physics.jpg',
                         education: 'Teknik Elektro ITB (Medalis Fisika Nasional)',
-                        category: 'TKA',
-                        jenjang: 'SMA',
-                        jenjangLabel: 'SMA / MA & Alumni',
-                        subject: 'TKA Fisika Saintek & Mekanika Lanjut',
-                        philosophy: 'Memahami hukum alam dengan jujur dan runtut membuat fisika menjadi sangat indah dan membumi.',
+                        categories: ['OSN', 'TKA', 'SNBT', 'Kurikulum Internasional'],
+                        jenjang: ['SMA'],
+                        jenjangLabel: 'SMA & Alumni',
+                        subject: 'Fisika Saintek, OSN Fisika & Cambridge Physics',
+                        kebutuhanPrivat: 'Privat pemahaman konsep dasar fisika sekolah, persiapan OSN Fisika, SIMAK UI Saintek, dan Cambridge IGCSE/A-Level.',
+                        philosophy: 'Memahami fenomena fisika secara runtut dan jujur membuat soal tersulit pun menjadi sangat logis.',
                         highlights: [
-                            'Instruktur utama kelas intensif SIMAK UI & UTUL UGM',
-                            'Spesialis kalkulus fisika, elektrodinamika, dan termodinamika',
-                            'Berhasil membimbing siswa juara kompetisi fisika universitas'
+                            'Instruktur privat SIMAK UI, UTUL UGM, dan seleksi beasiswa luar negeri',
+                            'Spesialis mekanika kuantum dasar, elektrodinamika, dan termodinamika',
+                            'Membina siswa medalis OSN-P dan OSN Nasional 2024-2025'
                         ]
                     },
                     {
                         id: 't-6',
                         name: 'Drs. Hendra Gunawan, M.Si.',
                         shortName: 'Pak Hendra',
-                        photo: '/images/privat/mentor.jpg',
-                        education: 'Magister Kurikulum & Evaluasi Pendidikan UNJ',
-                        category: 'Kurikulum Nasional',
-                        jenjang: 'Guru / Instansi',
-                        jenjangLabel: 'Guru & Jenjang SMA/SMP',
-                        subject: 'Kurikulum Nasional, Merdeka Belajar & HOTS',
-                        philosophy: 'Keberkahan seorang guru hadir ketika ilmu yang diajarkan bermanfaat abadi bagi kehidupan muridnya.',
+                        photo: '/images/pengajar/mentor-6-senior-math.jpg',
+                        education: 'Magister Pendidikan UNJ (Guru Teladan & Praktisi Kurikulum)',
+                        categories: ['Kurikulum Nasional', 'TKA', 'OSN'],
+                        jenjang: ['SMP', 'SMA', 'Guru / Instansi'],
+                        jenjangLabel: 'SD, SMP, SMA & Pelatihan Guru',
+                        subject: 'Matematika Kurikulum Merdeka, Ujian Sekolah & Asesmen',
+                        kebutuhanPrivat: 'Pendampingan privat siswa dari tingkat dasar hingga mahir, peningkatan nilai rapor untuk jalur SNBP, dan persiapan ASAJ.',
+                        philosophy: 'Setiap anak berhak memahami matematika dengan sabar dan menyenangkan tanpa rasa takut.',
                         highlights: [
-                            'Pakar pengembangan Kurikulum Nasional & Kurikulum Merdeka',
-                            'Pelatih lebih dari 500 dewan guru sekolah se-Indonesia',
-                            'Pengembang instrumen asesmen dan modul pembelajaran mendalam'
+                            'Pengalaman lebih dari 20 tahun membimbing siswa sukses tembus sekolah & PTN unggulan',
+                            'Penyusun kurikulum pembelajaran adaptif berstandar Kurikulum Nasional',
+                            'Instruktur pelatihan guru dan narasumber edukasi'
                         ]
                     },
                     {
                         id: 't-7',
-                        name: 'Timothy Sebastian, S.Si.',
-                        shortName: 'Kak Timothy',
-                        photo: '/images/home/alumni-timothy.jpg',
-                        education: 'Kimia Murni ITB (Medalis Emas Olimpiade Sains)',
-                        category: 'OSN',
-                        jenjang: 'SMA',
-                        jenjangLabel: 'SMA & SMP Sederajat',
-                        subject: 'OSN Kimia Organik & Kimia Fisika',
-                        philosophy: 'Integritas eksperimen dan penalaran analitis adalah jati diri sejati seorang kimiawan.',
+                        name: 'Stephanie Lauren, B.Sc., M.Ed.',
+                        shortName: 'Ms. Stephanie',
+                        photo: '/images/pengajar/mentor-7-chem-intl.jpg',
+                        education: 'Univ. of Melbourne & Cambridge Certified Teacher',
+                        categories: ['Kurikulum Internasional', 'OSN', 'TKA'],
+                        jenjang: ['SMP', 'SMA'],
+                        jenjangLabel: 'SMP & SMA Sekolah Internasional / SPK',
+                        subject: 'Chemistry & Science (IB DP HL/SL, Cambridge IGCSE / A-Level)',
+                        kebutuhanPrivat: 'Privat bilingual siswa SPK / Internasional school (Jakarta Intercultural School, British School, ACS, SIS, Bina Bangsa, dll).',
+                        philosophy: 'Global competence with deep scientific integrity empowers students to lead the world.',
                         highlights: [
-                            'Pembina intensif peraih medali OSN Kimia 2023 - 2025',
-                            'Spesialis reaksi organik, stereokimia, dan kinetika kimia',
-                            'Bimbingan 1-on-1 privat online dan offline'
+                            'Tutor spesialis IB Internal Assessment (IA) & Extended Essay Chemistry',
+                            'Alumni bimbingan diterima di NUS, Melbourne Univ, NTU, Oxford, & UI IUP',
+                            'Pengantar bilingual 100% fluent English atau campuran bahasa Indonesia'
                         ]
                     },
                     {
                         id: 't-8',
-                        name: 'Rocheline Angela, S.Pd.',
-                        shortName: 'Kak Rocheline',
-                        photo: '/images/home/alumni-rocheline.jpg',
-                        education: 'Pendidikan IPA & Sains Anak Usia Dini',
-                        category: 'OSN',
-                        jenjang: 'SD',
-                        jenjangLabel: 'SD / MI (Kelas 3 - 6)',
-                        subject: 'OSN IPA & Matematika SD Berbasis Eksplorasi',
-                        philosophy: 'Menumbuhkan kecintaan belajar sejak dini dengan metode interaktif, jujur, dan menyenangkan.',
+                        name: 'Rara Anindya, S.E., M.M.',
+                        shortName: 'Kak Rara',
+                        photo: '/images/pengajar/mentor-8-econ.jpg',
+                        education: 'Ilmu Ekonomi FEB UI (Lulusan Tercepat & Cumlaude)',
+                        categories: ['TKA', 'SNBT', 'Kurikulum Nasional', 'Kurikulum Internasional'],
+                        jenjang: ['SMA'],
+                        jenjangLabel: 'SMA Kelas 10-12 & Gap Year',
+                        subject: 'Ekonomi Soshum, Akuntansi, & Cambridge Economics',
+                        kebutuhanPrivat: 'Privat persiapan masuk FEB UI, UGM, Unair, dan bimbingan Cambridge AS/A-Level Economics & Business Studies.',
+                        philosophy: 'Ekonomi mengajarkan kejujuran dalam mengelola amanah, efisiensi, dan keadilan sosial.',
                         highlights: [
-                            'Spesialis olimpiade sains cilik (OSN SD & OSN SMP)',
-                            'Metode belajar visual gamification anti-bosan',
-                            'Membawa siswa SD menembus medali tingkat nasional'
+                            'Mentor privat intensif UTBK Soshum & SIMAK UI KKI (Kelas Khusus Internasional)',
+                            'Spesialis analisis mikro-makro ekonomi dan akuntansi keuangan',
+                            'Membimbing ratusan siswa sukses masuk FEB PTN favorit'
                         ]
                     },
                     {
                         id: 't-9',
-                        name: 'Oslando Wibowo, S.Kom., M.T.',
-                        shortName: 'Kak Oslando',
-                        photo: '/images/home/alumni-oslando.jpg',
-                        education: 'Ilmu Komputer UI (Finalis ACM-ICPC & IOI Coach)',
-                        category: 'OSN',
-                        jenjang: 'SMA',
-                        jenjangLabel: 'SMA & SMP Sederajat',
-                        subject: 'OSN Informatika / Komputer & Algoritma C++',
-                        philosophy: 'Algoritma mengajarkan bahwa setiap masalah memiliki solusi yang elegan jika dipikirkan dengan jujur dan sistematis.',
+                        name: 'Rocheline Angela, S.Pd.',
+                        shortName: 'Kak Rocheline',
+                        photo: '/images/pengajar/mentor-9-sd-sains.jpg',
+                        education: 'Pendidikan Dasar & Sains Anak Berprestasi',
+                        categories: ['Kurikulum Nasional', 'OSN'],
+                        jenjang: ['SD', 'SMP'],
+                        jenjangLabel: 'SD (Kelas 1-6) & SMP (Kelas 7-9)',
+                        subject: 'Calistung, Matematika & IPA Eksploratif SD/SMP',
+                        kebutuhanPrivat: 'Les privat intensif anak SD/SMP untuk persiapan OSN Cilik, Ujian Sekolah, pembentukan karakter belajar mandiri, dan juara kelas.',
+                        philosophy: 'Menumbuhkan rasa ingin tahu dan kejujuran belajar sejak dini adalah investasi terbaik masa depan anak.',
                         highlights: [
-                            'Coach olimpiade komputer tingkat nasional & provinsi',
-                            'Master pemrograman Dynamic Programming & Graph Theory',
-                            'Mentor persiapan Beasiswa Indonesia Maju (BIM)'
+                            'Spesialis metode visual gamification & concrete-pictorial-abstract',
+                            'Membimbing puluhan siswa SD/SMP meraih ranking 1 dan medali OSN',
+                            'Sabar, interaktif, dan sangat disukai anak-anak'
                         ]
                     },
                     {
                         id: 't-10',
-                        name: 'Rara Anindya, S.E., M.M.',
-                        shortName: 'Kak Rara',
-                        photo: '/images/home/alumni-rara.jpg',
-                        education: 'Ilmu Ekonomi FEB UI (Lulusan Terbaik)',
-                        category: 'TKA',
-                        jenjang: 'SMA',
-                        jenjangLabel: 'SMA / MA & Alumni',
-                        subject: 'TKA Ekonomi Soshum & Akuntansi Keuangan',
-                        philosophy: 'Ekonomi adalah seni mengelola amanah dengan kejujuran, efisiensi, dan keadilan sosial.',
+                        name: 'Oslando Wibowo, S.Kom., M.T.',
+                        shortName: 'Kak Oslando',
+                        photo: '/images/pengajar/mentor-10-cs.jpg',
+                        education: 'Ilmu Komputer UI (Coach Tim Olimpiade & Software Architect)',
+                        categories: ['OSN', 'Kurikulum Internasional', 'TKA'],
+                        jenjang: ['SMP', 'SMA'],
+                        jenjangLabel: 'SMP, SMA & Mahasiswa',
+                        subject: 'Informatika OSN, Coding (C++, Python), & AP Computer Science',
+                        kebutuhanPrivat: 'Privat olimpiade komputer (OSN Informatika), persiapan AP Computer Science SPK school, dan portofolio Beasiswa BIM / IISMA.',
+                        philosophy: 'Coding dan algoritma melatih daya pemecahan masalah yang sistematis, presisi, dan jujur.',
                         highlights: [
-                            'Mentor intensif UTBK Soshum FEB UI, UGM, & Unair',
-                            'Penguasaan materi makro-mikro ekonomi berstandar universitas',
-                            'Pendekatan studi kasus riil perekonomian global'
-                        ]
-                    },
-                    {
-                        id: 't-11',
-                        name: 'Axel Ferdinand, S.T., M.Sc.',
-                        shortName: 'Kak Axel',
-                        photo: '/images/home/alumni-axel.jpg',
-                        education: 'Teknik ITB & Certified IB DP Educator',
-                        category: 'Kurikulum IB',
-                        jenjang: 'SMA',
-                        jenjangLabel: 'SMA / IB DP / Cambridge A-Level',
-                        subject: 'Kurikulum IB DP Physics & Mathematics HL/SL',
-                        philosophy: 'Pendekatan inkuiri internasional melatih pemikiran mandiri dan integritas riset global.',
-                        highlights: [
-                            'Certified IB Diploma Programme Physics & Math Specialist',
-                            'Pembimbing IA (Internal Assessment) dan Extended Essay',
-                            'Berpengalaman mengajar siswa sekolah SPK & Internasional terkemuka'
-                        ]
-                    },
-                    {
-                        id: 't-12',
-                        name: 'Dra. Hj. Sri Wahyuni, M.Pd.',
-                        shortName: 'Ibu Sri',
-                        photo: '/images/home/alumni-al-azhar.jpg',
-                        education: 'Konsultan Senior Kurikulum Nasional & Pengawas',
-                        category: 'Kurikulum Nasional',
-                        jenjang: 'Guru / Instansi',
-                        jenjangLabel: 'Sekolah & Pendidik',
-                        subject: 'Kurikulum Nasional & Pendampingan Mutu Sekolah',
-                        philosophy: 'Mendidik adalah ibadah termulia yang buah keberkahannya akan terus mengalir tanpa henti.',
-                        highlights: [
-                            'Konsultan implementasi Kurikulum Nasional pada sekolah mitra NLS',
-                            'Pengarah strategi kurikulum persiapan SNBP & SNBT sekolah',
-                            'Berpengalaman lebih dari 25 tahun di dunia pendidikan nasional'
-                        ]
-                    },
-                    {
-                        id: 't-13',
-                        name: 'Stephanie Lauren, B.Sc., M.Ed.',
-                        shortName: 'Ms. Stephanie',
-                        photo: '/images/home/about-2.jpg',
-                        education: 'Univ. of Melbourne & Cambridge International Certified',
-                        category: 'Kurikulum IB',
-                        jenjang: 'SMA',
-                        jenjangLabel: 'SMA & SMP International / SPK',
-                        subject: 'Kurikulum IB Chemistry & Cambridge IGCSE Science',
-                        philosophy: 'Global mindset and scientific integrity are the true foundations of excellence.',
-                        highlights: [
-                            'Spesialis kurikulum IB DP Chemistry HL & Cambridge A-Level',
-                            'Membimbing siswa diterima di NUS, NTU, Oxford, & Ivy League',
-                            'Pengantar pembelajaran bilingual (Full English / Bahasa Indonesia)'
+                            'Coach tim olimpiade sains informatika tingkat nasional dan internasional',
+                            'Master algoritma Dynamic Programming, Graph, dan Data Structures',
+                            'Membimbing siswa masuk Fasilkom UI, STEI ITB, & Computer Science NUS'
                         ]
                     }
                 ],
@@ -1443,7 +1416,7 @@
                     if (this.selectedCategory === 'SNBT') return 'Spesialis SNBT';
                     if (this.selectedCategory === 'TKA') return 'Spesialis TKA';
                     if (this.selectedCategory === 'Kurikulum Nasional') return 'Kurikulum Nasional';
-                    if (this.selectedCategory === 'Kurikulum IB') return 'Kurikulum IB';
+                    if (this.selectedCategory === 'Kurikulum Internasional') return 'Kurikulum Internasional';
                     return this.selectedCategory;
                 },
 
@@ -1457,7 +1430,7 @@
                 },
 
                 countByCategory(cat) {
-                    return this.teachers.filter(t => t.category === cat).length;
+                    return this.teachers.filter(t => t.categories.includes(cat)).length;
                 },
 
                 setCategory(cat) {
@@ -1472,8 +1445,8 @@
 
                 filteredTeachers() {
                     return this.teachers.filter(t => {
-                        const matchCat = this.selectedCategory === 'all' || t.category === this.selectedCategory;
-                        const matchJenjang = this.selectedJenjang === 'all' || t.jenjang === this.selectedJenjang;
+                        const matchCat = this.selectedCategory === 'all' || t.categories.includes(this.selectedCategory);
+                        const matchJenjang = this.selectedJenjang === 'all' || t.jenjang.includes(this.selectedJenjang);
                         
                         let matchSearch = true;
                         if (this.searchQuery.trim() !== '') {
@@ -1481,7 +1454,8 @@
                             matchSearch = t.name.toLowerCase().includes(q) ||
                                           t.subject.toLowerCase().includes(q) ||
                                           t.education.toLowerCase().includes(q) ||
-                                          t.category.toLowerCase().includes(q);
+                                          t.kebutuhanPrivat.toLowerCase().includes(q) ||
+                                          t.categories.some(c => c.toLowerCase().includes(q));
                         }
 
                         return matchCat && matchJenjang && matchSearch;
@@ -1494,16 +1468,9 @@
                         case 'SNBT': return 'bg-[#ea580c]';
                         case 'TKA': return 'bg-[#0d9488]';
                         case 'Kurikulum Nasional': return 'bg-[#7c3aed]';
-                        case 'Kurikulum IB': return 'bg-[#e11d48]';
+                        case 'Kurikulum Internasional': return 'bg-[#0284c7]';
                         default: return 'bg-primary';
                     }
-                },
-
-                getKebutuhanForCategory(cat) {
-                    if (cat === 'OSN' || cat === 'SNBT' || cat === 'TKA') return 'Privat';
-                    if (cat === 'Kurikulum Nasional') return 'Privat';
-                    if (cat === 'Kurikulum IB') return 'Privat';
-                    return 'Privat';
                 }
             };
         }
