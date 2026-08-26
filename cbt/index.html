@@ -493,17 +493,16 @@
 <body class="min-h-screen bg-surface font-sans text-on-surface flex flex-col selection:bg-primary selection:text-white"
     x-data="cbtEngine()">
 
-    <!-- ===== NAVBAR ===== -->
-    <nav x-data="{ isMobileMenuOpen: false, activeDesktopMenu: null }" @click.outside="activeDesktopMenu = null"
-        class="sticky top-0 z-50 bg-white/95 dark:bg-[#0b132b]/95 backdrop-blur-md border-b border-gray-100 dark:border-slate-800 shadow-xs transition-colors">
+    <!-- ===== NAVBAR (Identik dengan Halaman Utama) ===== -->
+    <nav x-data="{ isMobileMenuOpen: false, activeDesktopMenu: null }"
+        @click.outside="activeDesktopMenu = null"
+        class="sticky top-0 z-50 bg-white/95 dark:bg-[#0b132b]/95 backdrop-blur-md border-b border-gray-100 dark:border-slate-800 shadow-sm transition-colors">
         <div class="max-w-7xl mx-auto flex justify-between items-center h-20 px-4 md:px-6">
-            <!-- Brand Logo -->
             <a href="/" class="flex items-center gap-3 text-2xl font-extrabold text-primary tracking-tight hover:opacity-90 transition-opacity">
-                <img src="/nls-logo-300.png" alt="Next Level Study Logo" class="h-9 w-9 rounded-full object-cover shadow-xs">
+                <img src="/nls-logo-300.png" alt="Next Level Study Logo" class="h-9 w-9 rounded-full object-cover shadow-sm">
                 <span class="dark:text-white">Next Level Study</span>
             </a>
 
-            <!-- Desktop Menu -->
             <div class="hidden lg:flex items-center gap-x-6 text-sm font-semibold text-on-surface-variant dark:text-slate-200">
                 <!-- Dropdown Bimbel -->
                 <div class="relative">
@@ -515,7 +514,8 @@
                         <svg class="w-4 h-4 transition-transform duration-200" :class="activeDesktopMenu === 'bimbel' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
 
-                    <div x-show="activeDesktopMenu === 'bimbel'" x-cloak
+                    <div x-show="activeDesktopMenu === 'bimbel'"
+                        x-cloak
                         x-transition:enter="transition ease-out duration-150"
                         x-transition:enter-start="opacity-0 translate-y-1"
                         x-transition:enter-end="opacity-100 translate-y-0"
@@ -524,15 +524,21 @@
                         x-transition:leave-end="opacity-0 translate-y-1"
                         class="absolute left-0 top-full mt-2 w-64 rounded-2xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 shadow-xl z-50">
                         <div class="flex flex-col gap-1">
-                            <a href="/osn" class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800" @click="activeDesktopMenu = null">
+                            <a href="/osn"
+                               class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800"
+                               @click="activeDesktopMenu = null">
                                 <p class="font-bold text-on-background dark:text-white">Bimbel OSN</p>
                                 <p class="text-xs text-on-surface-variant dark:text-slate-400">Bimbingan Olimpiade Sains Nasional.</p>
                             </a>
-                            <a href="/tka" class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800" @click="activeDesktopMenu = null">
+                            <a href="/tka"
+                               class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800"
+                               @click="activeDesktopMenu = null">
                                 <p class="font-bold text-on-background dark:text-white">Bimbel TKA</p>
                                 <p class="text-xs text-on-surface-variant dark:text-slate-400">Bimbingan Tes Kemampuan Akademik.</p>
                             </a>
-                            <a href="/snbt" class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800" @click="activeDesktopMenu = null">
+                            <a href="/snbt"
+                               class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800"
+                               @click="activeDesktopMenu = null">
                                 <p class="font-bold text-on-background dark:text-white">Bimbel SNBT</p>
                                 <p class="text-xs text-on-surface-variant dark:text-slate-400">Bimbingan Seleksi Nasional Berbasis Tes.</p>
                             </a>
@@ -544,24 +550,81 @@
                     </div>
                 </div>
 
-                <!-- Active Try Out CBT Menu Button -->
+                <!-- Dropdown Try Out (with Submenu) -->
                 <div class="relative">
-                    <a href="/cbt"
-                        class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-100/90 dark:bg-sky-950/80 text-primary dark:text-sky-300 border border-primary/40 font-bold shadow-xs transition-all ring-2 ring-primary/20">
+                    <button type="button"
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50/90 hover:bg-blue-100/90 dark:bg-sky-950/80 text-[#004B70] dark:text-sky-300 border border-blue-200 dark:border-sky-800 transition-all shadow-xs cursor-pointer group"
+                        :class="activeDesktopMenu === 'tryout' ? 'ring-2 ring-primary/20 bg-blue-100 font-bold border-primary text-primary' : 'font-semibold'"
+                        @click.stop="activeDesktopMenu = activeDesktopMenu === 'tryout' ? null : 'tryout'">
                         <span class="flex h-2 w-2 relative">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF8A00] opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-[#FF8A00]"></span>
                         </span>
-                        <span class="text-sm">Try Out CBT</span>
-                        <span class="px-1.5 py-0.5 rounded-md bg-gradient-to-r from-secondary to-orange-600 text-white text-[10px] font-extrabold uppercase shadow-xs">PRO</span>
-                    </a>
+                        <span class="text-sm font-bold text-slate-800 dark:text-white group-hover:text-primary">Try Out</span>
+                        <span class="px-1.5 py-0.5 rounded-md bg-gradient-to-r from-[#FF8A00] to-[#FF6B00] text-white text-[10px] font-extrabold tracking-wide uppercase shadow-xs">CBT</span>
+                        <svg class="w-3.5 h-3.5 text-slate-500 transition-transform duration-200 group-hover:text-primary" :class="activeDesktopMenu === 'tryout' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+
+                    <div x-show="activeDesktopMenu === 'tryout'"
+                        x-cloak
+                        x-transition:enter="transition ease-out duration-150"
+                        x-transition:enter-start="opacity-0 translate-y-1"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-100"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 translate-y-1"
+                        class="absolute left-0 top-full mt-2 w-72 rounded-2xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 shadow-2xl z-50">
+                        <div class="flex flex-col gap-1">
+                            <a href="/osn"
+                               class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800"
+                               @click="activeDesktopMenu = null">
+                                <p class="font-bold text-on-background dark:text-white flex items-center justify-between">
+                                    <span>Try Out OSN</span>
+                                    <span class="text-[10px] font-semibold bg-amber-50 text-amber-700 dark:text-amber-300 dark:bg-amber-950/80 px-2 py-0.5 rounded-full border border-amber-200 dark:border-amber-800">Olimpiade</span>
+                                </p>
+                                <p class="text-xs text-on-surface-variant dark:text-slate-400">Simulasi &amp; latihan Olimpiade Sains Nasional.</p>
+                            </a>
+                            <a href="/tka"
+                               class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800"
+                               @click="activeDesktopMenu = null">
+                                <p class="font-bold text-on-background dark:text-white flex items-center justify-between">
+                                    <span>Try Out TKA</span>
+                                    <span class="text-[10px] font-semibold bg-blue-50 text-blue-700 dark:text-sky-300 dark:bg-sky-950/80 px-2 py-0.5 rounded-full border border-blue-200 dark:border-sky-800">Akademik</span>
+                                </p>
+                                <p class="text-xs text-on-surface-variant dark:text-slate-400">Simulasi Tes Kemampuan Akademik &amp; SNBP.</p>
+                            </a>
+                            <a href="/snbt"
+                               class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800"
+                               @click="activeDesktopMenu = null">
+                                <p class="font-bold text-on-background dark:text-white flex items-center justify-between">
+                                    <span>Try Out SNBT</span>
+                                    <span class="text-[10px] font-semibold bg-green-50 text-green-700 dark:text-emerald-300 dark:bg-emerald-950/80 px-2 py-0.5 rounded-full border border-green-200 dark:border-emerald-800">Sistem IRT</span>
+                                </p>
+                                <p class="text-xs text-on-surface-variant dark:text-slate-400">Simulasi UTBK &amp; Seleksi Nasional PTN.</p>
+                            </a>
+                            <a href="/cbt"
+                               class="block rounded-xl p-3 bg-gradient-to-br from-primary/5 to-[#FF8A00]/5 dark:from-primary/20 dark:to-orange-950/20 border border-primary/20 dark:border-primary/40 hover:border-primary transition-all mt-1"
+                               @click="activeDesktopMenu = null">
+                                <p class="font-bold text-primary dark:text-sky-300 flex items-center justify-between">
+                                    <span class="flex items-center gap-1.5">
+                                        <span class="w-2 h-2 rounded-full bg-[#FF8A00] animate-pulse"></span>
+                                        <span>Platform CBT Online</span>
+                                    </span>
+                                    <svg class="w-4 h-4 text-primary dark:text-sky-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                </p>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">Akses ujian &amp; tryout interaktif di LMS NLS.</p>
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
-                <a href="/privat" class="border-b-2 border-transparent pb-1 transition-colors hover:text-primary">
+                <a href="/privat"
+                    class="border-b-2 border-transparent pb-1 transition-colors hover:text-primary">
                     Privat
                 </a>
 
-                <a href="/tentang" class="border-b-2 border-transparent pb-1 transition-colors hover:text-primary">
+                <a href="/tentang"
+                    class="border-b-2 border-transparent pb-1 transition-colors hover:text-primary">
                     Tentang Kami
                 </a>
 
@@ -575,7 +638,8 @@
                         <svg class="w-4 h-4 transition-transform duration-200" :class="activeDesktopMenu === 'lainnya' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
 
-                    <div x-show="activeDesktopMenu === 'lainnya'" x-cloak
+                    <div x-show="activeDesktopMenu === 'lainnya'"
+                        x-cloak
                         x-transition:enter="transition ease-out duration-150"
                         x-transition:enter-start="opacity-0 translate-y-1"
                         x-transition:enter-end="opacity-100 translate-y-0"
@@ -584,19 +648,27 @@
                         x-transition:leave-end="opacity-0 translate-y-1"
                         class="absolute left-0 top-full mt-2 w-64 rounded-2xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 shadow-xl z-50">
                         <div class="flex flex-col gap-1">
-                            <a href="/pengajar" class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800" @click="activeDesktopMenu = null">
+                            <a href="/pengajar"
+                               class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800"
+                               @click="activeDesktopMenu = null">
                                 <p class="font-bold text-on-background dark:text-white">Profesional Teacher</p>
                                 <p class="text-xs text-on-surface-variant dark:text-slate-400">Tim guru &amp; mentor ahli berintegritas tinggi.</p>
                             </a>
-                            <a href="/kalender" class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800" @click="activeDesktopMenu = null">
+                            <a href="/kalender"
+                               class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800"
+                               @click="activeDesktopMenu = null">
                                 <p class="font-bold text-on-background dark:text-white">Kalender Event</p>
                                 <p class="text-xs text-on-surface-variant dark:text-slate-400">Jadwal &amp; agenda kegiatan resmi Next Level Study Indonesia.</p>
                             </a>
-                            <a href="/mitra" class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800" @click="activeDesktopMenu = null">
+                            <a href="/mitra"
+                               class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800"
+                               @click="activeDesktopMenu = null">
                                 <p class="font-bold text-on-background dark:text-white">Mitra</p>
                                 <p class="text-xs text-on-surface-variant dark:text-slate-400">Kemitraan sekolah, dinas, &amp; institusi.</p>
                             </a>
-                            <a href="/blog" class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800" @click="activeDesktopMenu = null">
+                            <a href="/blog"
+                               class="block rounded-xl p-3 transition-colors hover:bg-primary/5 dark:hover:bg-slate-800"
+                               @click="activeDesktopMenu = null">
                                 <p class="font-bold text-on-background dark:text-white">Blog</p>
                                 <p class="text-xs text-on-surface-variant dark:text-slate-400">Artikel edukasi, tips, &amp; info kompetisi.</p>
                             </a>
@@ -605,44 +677,126 @@
                 </div>
             </div>
 
-            <!-- Header Action Controls -->
+            <!-- Header CTA Controls -->
             <div class="hidden lg:flex items-center gap-3">
-                <button type="button" class="theme-toggle-btn w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800" aria-label="Ubah Tema" title="Ubah Tema Gelap/Terang">
+                <button type="button" class="theme-toggle-btn w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800" aria-label="Ubah Tema Gelap/Terang" title="Ubah Tema Gelap/Terang">
                     <svg class="theme-toggle-dark-icon w-5 h-5 text-slate-700 dark:text-slate-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                     <svg class="theme-toggle-light-icon w-5 h-5 hidden text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                 </button>
-                <a href="https://wa.me/6285163070002?text=Halo%20Next%20Level%20Study,%20saya%20tertarik%20mengikuti%20Try%20Out%20CBT%20Online" target="_blank" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary to-sky-600 hover:from-primary-hover hover:to-sky-700 text-white font-bold text-sm shadow-md transition-all hover:scale-105 active:scale-95 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[18px]">play_circle</span>
-                    <span>Mulai CBT</span>
+                <a href="/admin/login" class="text-primary dark:text-sky-400 text-sm font-bold px-4 py-2 rounded-lg hover:bg-primary/5 dark:hover:bg-slate-800 transition-all">
+                    Masuk
+                </a>
+                <a href="https://wa.me/6285163070002" target="_blank" class="bg-[#FF8A00] hover:bg-[#e07700] text-white px-6 py-3 rounded-full text-sm font-bold shadow-md hover:shadow-lg hover:scale-105 transition-all inline-block">
+                    Yuk Belajar
                 </a>
             </div>
 
-            <!-- Mobile Menu Hamburger Button -->
+            <!-- Mobile Hamburger Button -->
             <div class="flex items-center gap-2 lg:hidden">
-                <button type="button" class="theme-toggle-btn w-9 h-9 rounded-full flex items-center justify-center border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800" aria-label="Ubah Tema">
+                <button type="button" class="theme-toggle-btn w-9 h-9 rounded-full flex items-center justify-center border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800" aria-label="Ubah Tema Gelap/Terang" title="Ubah Tema Gelap/Terang">
                     <svg class="theme-toggle-dark-icon w-4 h-4 text-slate-700 dark:text-slate-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                     <svg class="theme-toggle-light-icon w-4 h-4 hidden text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                 </button>
-                <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="p-2 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-800" aria-label="Buka Menu">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="p-2 text-on-surface-variant dark:text-slate-200 hover:text-primary focus:outline-none cursor-pointer" aria-label="Toggle menu">
+                    <svg x-show="!isMobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    <svg x-show="isMobileMenuOpen" x-cloak class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
         </div>
 
         <!-- Mobile Drawer -->
-        <div x-show="isMobileMenuOpen" x-cloak class="lg:hidden bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-4 py-4 space-y-3">
-            <a href="/cbt" class="block font-bold text-primary dark:text-sky-400 py-2 border-b border-gray-100 dark:border-slate-800">⚡ Try Out CBT Online (Aktif)</a>
-            <a href="/osn" class="block text-sm font-semibold py-1.5 text-slate-700 dark:text-slate-200">Bimbel OSN</a>
-            <a href="/tka" class="block text-sm font-semibold py-1.5 text-slate-700 dark:text-slate-200">Bimbel TKA</a>
-            <a href="/snbt" class="block text-sm font-semibold py-1.5 text-slate-700 dark:text-slate-200">Bimbel SNBT</a>
-            <a href="/privat" class="block text-sm font-semibold py-1.5 text-slate-700 dark:text-slate-200">Privat 1-on-1</a>
-            <a href="/kalender" class="block text-sm font-semibold py-1.5 text-slate-700 dark:text-slate-200">Kalender Event</a>
-            <a href="/pengajar" class="block text-sm font-semibold py-1.5 text-slate-700 dark:text-slate-200">Profil Mentor</a>
-            <a href="/tentang" class="block text-sm font-semibold py-1.5 text-slate-700 dark:text-slate-200">Tentang NLS</a>
-            <div class="pt-2">
-                <a href="https://wa.me/6285163070002?text=Halo%20Next%20Level%20Study,%20saya%20ingin%20daftar%20Try%20Out%20CBT" target="_blank" class="w-full py-2.5 bg-primary text-white font-bold rounded-xl text-center block text-sm shadow-md">
-                    Daftar Try Out via WhatsApp
-                </a>
+        <div x-show="isMobileMenuOpen"
+            x-cloak
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 -translate-y-2"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 -translate-y-2"
+            class="lg:hidden bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 shadow-lg px-6 py-6 flex flex-col gap-4">
+
+            <div class="flex flex-col gap-2 border-b border-gray-100 dark:border-slate-800 pb-4">
+                <div x-data="{ bimbelOpen: false }">
+                    <button @click="bimbelOpen = !bimbelOpen"
+                        class="w-full flex justify-between items-center py-1 text-sm font-medium text-on-surface-variant dark:text-slate-200 cursor-pointer">
+                        <span>Bimbel</span>
+                        <svg class="w-4 h-4 transition-transform duration-200" :class="bimbelOpen ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div x-show="bimbelOpen" x-collapse class="pl-4 flex flex-col gap-1 mt-1">
+                        <a href="/osn" @click="isMobileMenuOpen = false"
+                           class="text-on-surface-variant dark:text-slate-300 font-medium py-1 text-sm">Bimbel OSN</a>
+                        <a href="/tka" @click="isMobileMenuOpen = false"
+                           class="text-on-surface-variant dark:text-slate-300 font-medium py-1 text-sm">Bimbel TKA</a>
+                        <a href="/snbt" @click="isMobileMenuOpen = false"
+                           class="text-on-surface-variant dark:text-slate-300 font-medium py-1 text-sm">Bimbel SNBT</a>
+                        <a href="/nexgen" @click="isMobileMenuOpen = false" class="text-on-surface-variant dark:text-slate-300 font-medium py-1 text-sm">Nexgen Academy (Bimbel Offline)</a>
+                    </div>
+                </div>
+                <div x-data="{ tryoutOpen: false }" class="rounded-xl border border-blue-200/70 dark:border-sky-800/60 bg-blue-50/50 dark:bg-sky-950/40 p-2 my-1">
+                    <button @click="tryoutOpen = !tryoutOpen"
+                        class="w-full flex justify-between items-center py-1 px-2 text-sm font-bold text-slate-800 dark:text-white cursor-pointer">
+                        <div class="flex items-center gap-2">
+                            <span class="flex h-2 w-2 relative">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF8A00] opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-[#FF8A00]"></span>
+                            </span>
+                            <span>Try Out</span>
+                            <span class="px-1.5 py-0.5 rounded-md bg-[#FF8A00] text-white text-[10px] font-extrabold uppercase">CBT Online</span>
+                        </div>
+                        <svg class="w-4 h-4 transition-transform duration-200 text-primary dark:text-sky-400" :class="tryoutOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div x-show="tryoutOpen" x-collapse class="pl-3 pr-1 flex flex-col gap-1.5 mt-2 pt-2 border-t border-blue-100 dark:border-sky-900/60">
+                        <a href="/osn" @click="isMobileMenuOpen = false"
+                           class="text-on-surface-variant dark:text-slate-300 font-medium py-1 text-sm flex justify-between items-center">
+                           <span>Try Out OSN</span>
+                           <span class="text-[10px] text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/80 px-1.5 py-0.5 rounded">Olimpiade</span>
+                        </a>
+                        <a href="/tka" @click="isMobileMenuOpen = false"
+                           class="text-on-surface-variant dark:text-slate-300 font-medium py-1 text-sm flex justify-between items-center">
+                           <span>Try Out TKA</span>
+                           <span class="text-[10px] text-blue-700 dark:text-sky-300 bg-blue-50 dark:bg-sky-950/80 px-1.5 py-0.5 rounded">Akademik</span>
+                        </a>
+                        <a href="/snbt" @click="isMobileMenuOpen = false"
+                           class="text-on-surface-variant dark:text-slate-300 font-medium py-1 text-sm flex justify-between items-center">
+                           <span>Try Out SNBT</span>
+                           <span class="text-[10px] text-green-700 dark:text-emerald-300 bg-green-50 dark:bg-emerald-950/80 px-1.5 py-0.5 rounded">Sistem IRT</span>
+                        </a>
+                        <a href="/cbt" @click="isMobileMenuOpen = false"
+                           class="text-primary dark:text-sky-300 font-bold py-1.5 px-2.5 rounded-lg bg-white dark:bg-slate-800 border border-primary/20 text-sm flex items-center justify-between mt-1">
+                            <span class="flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-[#FF8A00]"></span>
+                                <span>Platform CBT Online</span>
+                            </span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        </a>
+                    </div>
+                </div>
+                <a href="/privat" @click="isMobileMenuOpen = false"
+                    class="py-1 text-sm font-medium border-b-2 border-transparent text-on-surface-variant dark:text-slate-200">Privat</a>
+                <a href="/tentang" @click="isMobileMenuOpen = false"
+                    class="py-1 text-sm font-medium border-b-2 border-transparent text-on-surface-variant dark:text-slate-200">Tentang Kami</a>
+                
+                <!-- Lainnya Accordion Mobile -->
+                <div x-data="{ lainnyaOpen: false }">
+                    <button @click="lainnyaOpen = !lainnyaOpen"
+                        class="w-full flex justify-between items-center py-1 text-sm font-medium text-on-surface-variant dark:text-slate-200 cursor-pointer">
+                        <span>Lainnya</span>
+                        <svg class="w-4 h-4 transition-transform duration-200" :class="lainnyaOpen ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div x-show="lainnyaOpen" x-collapse class="pl-4 flex flex-col gap-1 mt-1">
+                        <a href="/pengajar" @click="isMobileMenuOpen = false" class="text-on-surface-variant dark:text-slate-300 font-medium py-1 text-sm">Profesional Teacher</a>
+                        <a href="/kalender" @click="isMobileMenuOpen = false" class="text-on-surface-variant dark:text-slate-300 font-medium py-1 text-sm">Kalender Event</a>
+                        <a href="/mitra" @click="isMobileMenuOpen = false"
+                           class="text-on-surface-variant dark:text-slate-300 font-medium py-1 text-sm">Mitra</a>
+                        <a href="/blog" @click="isMobileMenuOpen = false"
+                           class="text-on-surface-variant dark:text-slate-300 font-medium py-1 text-sm">Blog</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-3 pt-2">
+                <a href="/admin/login" @click="isMobileMenuOpen = false" class="text-center text-primary dark:text-sky-400 font-bold py-2.5 rounded-lg border border-primary/30 dark:border-sky-800 hover:bg-primary/5 dark:hover:bg-slate-800">Masuk</a>
+                <a href="https://wa.me/6285163070002" target="_blank" @click="isMobileMenuOpen = false" class="text-center bg-[#FF8A00] text-white font-bold py-3 rounded-full shadow-md hover:shadow-lg transition-all">Yuk Belajar</a>
             </div>
         </div>
     </nav>
@@ -1774,78 +1928,129 @@
         </div>
     </div>
 
-    <!-- ===== FOOTER ===== -->
-    <footer class="bg-[#0b1528] text-white pt-16 pb-12 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 md:px-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-slate-800">
-                <!-- Brand & Address -->
-                <div class="space-y-4">
-                    <div class="flex items-center gap-3">
-                        <img src="/nls-logo-300.png" alt="Next Level Study" class="w-10 h-10 rounded-full object-cover shadow-sm">
-                        <span class="text-xl font-extrabold text-white">Next Level Study</span>
-                    </div>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Lembaga bimbingan belajar, persiapan OSN &amp; SNBT, tryout CBT interaktif, dan les privat terbaik di Indonesia.
+    <!-- ===== FOOTER (Identik dengan Halaman Utama) ===== -->
+    <footer id="kontak" class="bg-[#D8E6FF] dark:bg-[#070e1e] text-slate-800 dark:text-slate-200 scroll-mt-20 w-full border-t border-blue-100 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto w-full px-4 md:px-6 py-12 md:py-16">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
+                <div class="md:col-span-5 lg:col-span-5">
+                    <h2 class="text-2xl md:text-[26px] font-extrabold text-[#0B5A8A] dark:text-sky-400 mb-4 tracking-tight">
+                        Next Level Study
+                    </h2>
+                    <p class="text-sm md:text-[15px] text-slate-700 dark:text-slate-300 leading-relaxed mb-6 max-w-md">
+                        Platform belajar persiapan kompetisi sains dan ujian masuk perguruan tinggi terbaik di Indonesia. Memberdayakan masa depan cerah anak bangsa.
                     </p>
-                    <div class="text-xs text-slate-400 space-y-1">
-                        <p class="font-semibold text-slate-200">Head Office:</p>
-                        <p>Jalan Pahlawan No. 26, Duren Jaya, Bekasi Timur, Jawa Barat 17111</p>
+                    <div class="flex items-center gap-3">
+                        <button type="button" onclick="nlsSharePage()"
+                            class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm cursor-pointer"
+                            title="Bagikan">
+                            <span class="material-symbols-outlined text-[20px]">share</span>
+                        </button>
+                        <a href="mailto:nextlevelstudyindonesia@gmail.com"
+                            class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm"
+                            title="Kirim Email">
+                            <span class="material-symbols-outlined text-[20px]">mail</span>
+                        </a>
+                        <a href="https://next-level-study.com" target="_blank" rel="noopener noreferrer"
+                            class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm"
+                            title="Website">
+                            <span class="material-symbols-outlined text-[20px]">language</span>
+                        </a>
+                        <a href="/achievements"
+                            class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm"
+                            title="Pengumuman & Event">
+                            <span class="material-symbols-outlined text-[20px]">campaign</span>
+                        </a>
+                        <a href="https://wa.me/6285163070002" target="_blank" rel="noopener noreferrer"
+                            class="w-10 h-10 rounded-full bg-[#0B5A8A] hover:bg-[#08476e] text-white flex items-center justify-center transition-transform hover:scale-105 shadow-sm"
+                            title="Tanya CS">
+                            <span class="material-symbols-outlined text-[20px]">chat</span>
+                        </a>
                     </div>
                 </div>
 
-                <!-- Program Bimbel -->
-                <div class="space-y-3">
-                    <h5 class="text-sm font-bold text-white uppercase tracking-wider">Program Bimbingan</h5>
-                    <ul class="space-y-2 text-xs text-slate-400">
-                        <li><a href="/osn" class="hover:text-white transition-colors">Pelatihan &amp; Bimbel OSN</a></li>
-                        <li><a href="/snbt" class="hover:text-white transition-colors">Bimbel Intensif UTBK-SNBT</a></li>
-                        <li><a href="/tka" class="hover:text-white transition-colors">Tes Kemampuan Akademik (TKA)</a></li>
-                        <li><a href="/privat" class="hover:text-white transition-colors">Les Privat 1-on-1 Eksklusif</a></li>
-                        <li><a href="/nexgen" class="hover:text-white transition-colors">Nexgen Academy Offline</a></li>
+                <div class="md:col-span-3 lg:col-span-3">
+                    <h3 class="text-base md:text-lg font-bold text-[#0B5A8A] dark:text-sky-400 mb-4">
+                        Program Kami
+                    </h3>
+                    <ul class="space-y-3 text-sm font-medium text-slate-700 dark:text-slate-300">
+                        <li>
+                            <a href="/programs" class="hover:text-[#0B5A8A] dark:hover:text-sky-400 transition-colors">Mitra sekolah</a>
+                        </li>
+                        <li>
+                            <a href="/programs" class="hover:text-[#0B5A8A] dark:hover:text-sky-400 transition-colors">Mitra Dinas</a>
+                        </li>
+                        <li>
+                            <a href="/#bimbel" class="hover:text-[#0B5A8A] dark:hover:text-sky-400 transition-colors">Bimbel Online/Offline</a>
+                        </li>
+                        <li>
+                            <a href="/privat" class="hover:text-[#0B5A8A] dark:hover:text-sky-400 transition-colors">Privat Online/Offline</a>
+                        </li>
                     </ul>
                 </div>
 
-                <!-- Layanan CBT & Event -->
-                <div class="space-y-3">
-                    <h5 class="text-sm font-bold text-white uppercase tracking-wider">Layanan Try Out</h5>
-                    <ul class="space-y-2 text-xs text-slate-400">
-                        <li><a href="/cbt" class="hover:text-white font-bold text-sky-400 transition-colors">Try Out CBT Online</a></li>
-                        <li><a href="/kalender" class="hover:text-white transition-colors">Kalender Agenda Event</a></li>
-                        <li><a href="/mitra" class="hover:text-white transition-colors">Kemitraan Sekolah &amp; Dinas</a></li>
-                        <li><a href="/pengajar" class="hover:text-white transition-colors">Tim Pengajar Profesional</a></li>
-                        <li><a href="/blog" class="hover:text-white transition-colors">Blog &amp; Tips Belajar</a></li>
-                    </ul>
-                </div>
+                <div class="md:col-span-4 lg:col-span-4">
+                    <h3 class="text-base md:text-lg font-bold text-[#0B5A8A] dark:text-sky-400 mb-4">
+                        Hubungi Kami
+                    </h3>
+                    <div class="space-y-3.5 text-sm text-slate-700 dark:text-slate-300">
+                        <div class="flex items-start gap-2.5">
+                            <span class="material-symbols-outlined text-[#0B5A8A] dark:text-sky-400 text-[20px] mt-0.5 shrink-0">location_on</span>
+                            <span>Jl. Pahlawan nomor 26, Bekasi Timur</span>
+                        </div>
 
-                <!-- Hubungi Kami -->
-                <div class="space-y-3">
-                    <h5 class="text-sm font-bold text-white uppercase tracking-wider">Kontak Resmi</h5>
-                    <ul class="space-y-2 text-xs text-slate-400">
-                        <li class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm text-emerald-400">chat</span>
-                            <a href="https://wa.me/6285163070002" target="_blank" class="hover:text-white transition-colors">WhatsApp: 0851-6307-0002</a>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm text-blue-400">language</span>
-                            <a href="https://next-level-study.com" class="hover:text-white transition-colors">next-level-study.com</a>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm text-purple-400">support_agent</span>
-                            <span>Layanan Customer Care 24/7</span>
-                        </li>
-                    </ul>
+                        <div class="flex items-start gap-2.5">
+                            <span class="material-symbols-outlined text-[#0B5A8A] dark:text-sky-400 text-[20px] mt-0.5 shrink-0">call</span>
+                            <div class="space-y-1">
+                                <div>Pusat: <a href="https://wa.me/6285163070002" target="_blank" class="hover:underline font-medium">085163070002 (ADMIN)</a></div>
+                                <div>Privat: <a href="https://wa.me/628170100788" target="_blank" class="hover:underline font-medium">08170100788 (Seno)</a></div>
+                                <div>Bimbel Online: <a href="https://wa.me/6285810464960" target="_blank" class="hover:underline font-medium">085810464960 (Fasya)</a></div>
+                                <div>Bimbel Offline: <a href="https://wa.me/6281286096600" target="_blank" class="hover:underline font-medium">081286096600 (Olla)</a></div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2.5">
+                            <span class="material-symbols-outlined text-[#0B5A8A] dark:text-sky-400 text-[20px] shrink-0">mail</span>
+                            <a href="mailto:nextlevelstudyindonesia@gmail.com" class="hover:underline">
+                                nextlevelstudyindonesia@gmail.com
+                            </a>
+                        </div>
+
+                        <div class="flex items-center gap-2.5">
+                            <span class="material-symbols-outlined text-[#0B5A8A] dark:text-sky-400 text-[20px] shrink-0">photo_camera</span>
+                            <a href="https://instagram.com/nextlevelstudyindonesia" target="_blank" rel="noopener noreferrer" class="hover:underline font-medium">
+                                @nextlevelstudyindonesia
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-4">
-                <p>&copy; 2026 Next Level Study Indonesia. All rights reserved.</p>
-                <div class="flex gap-6">
-                    <a href="/privacy" class="hover:text-slate-400 transition-colors">Privacy Policy</a>
-                    <a href="/terms" class="hover:text-slate-400 transition-colors">Terms of Service</a>
+            <div class="border-t border-[#B9D5FA] dark:border-slate-800 my-8"></div>
+
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs md:text-sm text-slate-600 dark:text-slate-400 font-medium">
+                <p>&copy; 2026 Next Level Study : Era Baru Pendidikan</p>
+                <div class="flex items-center gap-6">
+                    <a href="/privacy" class="hover:text-[#0B5A8A] dark:hover:text-sky-400 transition-colors">Kebijakan Privasi</a>
+                    <a href="/terms" class="hover:text-[#0B5A8A] dark:hover:text-sky-400 transition-colors">Syarat &amp; Ketentuan</a>
                 </div>
             </div>
         </div>
     </footer>
+
+    <!-- Script Share Halaman -->
+    <script>
+        function nlsSharePage() {
+            if (navigator.share) {
+                navigator.share({
+                    title: "Next Level Study - Era Baru Pendidikan",
+                    url: window.location.href
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert("Tautan berhasil disalin ke clipboard!");
+            }
+        }
+    </script>
 
 </body>
 
