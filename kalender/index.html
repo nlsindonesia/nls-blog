@@ -165,13 +165,27 @@
             background: #1e293b;
             color: #94a3b8;
         }
-        .cal-day-header.weekend {
-            color: #ea580c;
-            background: #fff7ed;
+                .cal-day-header.saturday {
+            color: #d97706;
+            background: #fef3c7;
+            border: 1px solid #fde68a;
         }
-        html.dark .cal-day-header.weekend {
-            color: #fb923c;
-            background: #2d1810;
+        html.dark .cal-day-header.saturday {
+            color: #fbbf24;
+            background: #2e1e0f;
+            border-color: #5c3b16;
+        }
+
+        .cal-day-header.sunday {
+            color: #e11d48 !important;
+            background: #ffe4e6 !important;
+            border: 1px solid #fecdd3 !important;
+            font-weight: 900 !important;
+        }
+        html.dark .cal-day-header.sunday {
+            color: #fb7185 !important;
+            background: #38101a !important;
+            border-color: #5c1d2e !important;
         }
 
         .cal-cell {
@@ -215,30 +229,54 @@
             box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.6);
         }
 
-        .cal-cell.weekend {
-            background: #fafbfc;
+        /* Saturday Cell */
+        .cal-cell.saturday {
+            background: #fffdfa;
+            border-color: #fde68a;
         }
-        html.dark .cal-cell.weekend {
-            background: #111a30;
+        html.dark .cal-cell.saturday {
+            background: #17151f;
+            border-color: #3b281c;
         }
 
+        /* Sunday Cell (Distinctive Soft Rose Tint & Red Border) */
+        .cal-cell.sunday {
+            background: #fff5f5 !important;
+            border-color: #fecdd3 !important;
+        }
+        html.dark .cal-cell.sunday {
+            background: #1e1117 !important;
+            border-color: #4a1523 !important;
+        }
+        .cal-cell.sunday:hover:not(.empty) {
+            border-color: #e11d48 !important;
+            box-shadow: 0 12px 25px -5px rgba(225, 29, 72, 0.22) !important;
+        }
+
+        /* Today Cell (Prominent Vibrant Glow, Gradient & Standout Border) */
         .cal-cell.today {
-            border-color: #006493 !important;
-            background: #f0f7ff !important;
+            background: linear-gradient(145deg, #e0f2fe 0%, #dbeafe 100%) !important;
+            border: 2.5px solid #0284c7 !important;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.28), 0 10px 25px -5px rgba(2, 132, 199, 0.25) !important;
+            transform: scale(1.015);
+            z-index: 15;
         }
         html.dark .cal-cell.today {
-            background: #102347 !important;
-            border-color: #38bdf8 !important;
+            background: linear-gradient(145deg, #0b2545 0%, #11335e 100%) !important;
+            border: 2.5px solid #38bdf8 !important;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.35), 0 10px 25px -5px rgba(0, 0, 0, 0.7) !important;
+        }
+        .cal-cell.today:hover:not(.empty) {
+            transform: scale(1.025) translateY(-2px);
+            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.35), 0 15px 30px -5px rgba(2, 132, 199, 0.3) !important;
         }
 
         .cal-cell.has-events {
             border-color: #93c5fd;
-            background: #ffffff;
             box-shadow: 0 2px 8px rgba(0, 100, 147, 0.06);
         }
         html.dark .cal-cell.has-events {
             border-color: #1d4ed8;
-            background: #172445;
         }
 
         .cal-cell.selected {
@@ -247,6 +285,11 @@
             box-shadow: 0 0 0 3px rgba(0, 100, 147, 0.3) !important;
             transform: scale(1.02);
             z-index: 20;
+        }
+        html.dark .cal-cell.selected {
+            background: #172d57 !important;
+            border-color: #38bdf8 !important;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.35) !important;
         }
         html.dark .cal-cell.selected {
             background: #172d57 !important;
@@ -923,8 +966,8 @@
                                 <div class="cal-day-header">Rabu</div>
                                 <div class="cal-day-header">Kamis</div>
                                 <div class="cal-day-header">Jumat</div>
-                                <div class="cal-day-header weekend">Sabtu</div>
-                                <div class="cal-day-header weekend">Minggu</div>
+                                <div class="cal-day-header saturday">Sabtu</div>
+                                <div class="cal-day-header sunday">Minggu</div>
                             </div>
 
                             <!-- Day Cells Grid -->
@@ -942,7 +985,7 @@
 
                                             <!-- Today Dot -->
                                             <template x-if="cell.isToday">
-                                                <span class="px-1.5 py-0.5 rounded-md bg-primary text-white text-[9px] font-black uppercase tracking-wider">Hari Ini</span>
+                                                <span style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important; color: #ffffff !important;" class="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider shadow-xs">Hari Ini</span>
                                             </template>
 
                                             <!-- Event Count Indicator -->
@@ -1614,7 +1657,9 @@
                         const isToday = (dateStr === realTodayStr);
 
                         const dayOfWeek = (startDay + d - 1) % 7;
-                        const isWeekend = (dayOfWeek === 5 || dayOfWeek === 6); // Sabtu & Minggu
+                                                const isSaturday = (dayOfWeek === 5);
+                        const isSunday = (dayOfWeek === 6);
+                        const isWeekend = (isSaturday || isSunday);
 
                         cells.push({
                             isEmpty: false,
@@ -1623,6 +1668,8 @@
                             key: dateStr,
                             isToday: isToday,
                             isWeekend: isWeekend,
+                            isSaturday: isSaturday,
+                            isSunday: isSunday,
                             events: dayEvents,
                             hasEvents: dayEvents.length > 0
                         });
@@ -1653,7 +1700,10 @@
                         return 'empty opacity-0 pointer-events-none border-transparent bg-transparent';
                     }
                     let res = '';
-                    if (cell.isWeekend) res += ' weekend';
+                    if (cell.isSunday) res += ' sunday';
+                    else if (cell.isSaturday) res += ' saturday weekend';
+                    else if (cell.isWeekend) res += ' weekend';
+
                     if (cell.isToday) res += ' today';
                     if (cell.hasEvents) res += ' has-events';
                     if (this.selectedDate === cell.dateStr) res += ' selected';
@@ -1664,6 +1714,20 @@
                     if (this.selectedDate === cell.dateStr) {
                         return 'text-primary dark:text-sky-400 font-black scale-110';
                     }
+                    if (cell.isToday) {
+                        return 'text-[#0284c7] dark:text-sky-300 font-black text-sm scale-105';
+                    }
+                    if (cell.isSunday) {
+                        return 'text-rose-600 dark:text-rose-400 font-black';
+                    }
+                    if (cell.isSaturday) {
+                        return 'text-amber-600/90 dark:text-amber-400/90 font-bold';
+                    }
+                    if (cell.hasEvents) {
+                        return 'text-slate-900 dark:text-white font-black';
+                    }
+                    return 'text-slate-600 dark:text-slate-400 font-semibold';
+                }
                     if (cell.hasEvents) {
                         return 'text-slate-900 dark:text-white font-black';
                     }
