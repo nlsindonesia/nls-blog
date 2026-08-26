@@ -812,10 +812,8 @@
                         </div>
                     </div>
                 </div>
-            </section>
-
             <!-- Main Teachers Directory Section -->
-            <section class="py-10 md:py-16 bg-surface">
+            <section id="teachers-directory-section" class="py-10 md:py-16 bg-surface">
                 <div class="cal-container px-4 sm:px-6">
 
                     <!-- 3-Filter & Search Hub -->
@@ -878,7 +876,7 @@
                                     <span class="w-2 h-2 rounded-full bg-purple-600 shrink-0"></span>
                                     <span>Filter 3 : Pelajaran</span>
                                 </label>
-                                <select x-model="selectedSubject" class="filter-select-input">
+                                <select x-model="selectedSubject" @change="currentPage = 1" class="filter-select-input">
                                     <option value="all">📖 Semua Mata Pelajaran</option>
                                     <template x-for="group in getAvailableSubjectGroups()" :key="group.label">
                                         <optgroup :label="group.label">
@@ -897,10 +895,10 @@
                                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none flex items-center">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                                 </span>
-                                <input x-model="searchQuery"
+                                <input x-model="searchQuery" @input="currentPage = 1"
                                     class="w-full h-12 bg-slate-50 dark:bg-[#1a2542] text-slate-800 dark:text-slate-100 pl-12 pr-10 rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary focus:border-transparent font-semibold text-xs sm:text-sm placeholder:text-slate-400 transition-all"
                                     placeholder="Cari nama mentor, kampus (ITB/UI/UGM), keahlian, atau materi spesifik..." type="text">
-                                <button x-show="searchQuery !== ''" @click="searchQuery = ''"
+                                <button x-show="searchQuery !== ''" @click="searchQuery = ''; currentPage = 1"
                                     class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-full hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors"
                                     title="Hapus pencarian">
                                     <span class="icon-[mdi--close-circle] text-lg"></span>
@@ -943,7 +941,7 @@
                         </div>
                     </div>
 
-                    <!-- Teacher Directory Cards Grid (3 Columns) -->
+                    <!-- Teacher Directory Cards Grid (3 Columns, 6 Teachers Per Slide/Page) -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                         <!-- Empty State -->
                         <template x-if="filteredTeachers().length === 0">
@@ -962,8 +960,8 @@
                             </div>
                         </template>
 
-                        <!-- Teacher Card Loop -->
-                        <template x-for="t in filteredTeachers()" :key="t.id">
+                        <!-- Teacher Card Loop (Paginated 6 items) -->
+                        <template x-for="t in paginatedTeachers()" :key="t.id">
                             <div class="teacher-card group flex flex-col justify-between">
                                 <!-- Top Content -->
                                 <div>
@@ -1031,7 +1029,7 @@
                                             <p class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1">
                                                 <span class="icon-[mdi--trophy-award] text-amber-500"></span>
                                                 <span>Rekam Jejak &amp; Prestasi:</span>
-                                            </p>
+                                            </div>
                                             <div class="space-y-1.5">
                                                 <template x-for="(hl, hIdx) in t.highlights" :key="hIdx">
                                                     <div class="track-item">
@@ -1062,6 +1060,47 @@
                                 </div>
                             </div>
                         </template>
+                    </div>
+
+                    <!-- Pagination Navigation Bar (Slide / Pages 6 Guru) -->
+                    <div x-show="totalPages() > 1" class="mt-12 bg-white dark:bg-[#131d38] p-4 sm:p-6 rounded-3xl border border-slate-200/90 dark:border-slate-700/80 shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <!-- Left Info -->
+                        <div class="flex items-center gap-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium">
+                            <span class="w-2 h-2 rounded-full bg-primary animate-ping inline-block"></span>
+                            <span>
+                                Menampilkan <strong class="text-slate-900 dark:text-white font-black" x-text="((currentPage - 1) * perPage) + 1"></strong> - <strong class="text-slate-900 dark:text-white font-black" x-text="Math.min(currentPage * perPage, filteredTeachers().length)"></strong> dari <strong class="text-primary dark:text-sky-400 font-black" x-text="filteredTeachers().length"></strong> pengajar (Halaman <span x-text="currentPage"></span> dari <span x-text="totalPages()"></span>)
+                            </span>
+                        </div>
+
+                        <!-- Numbered Navigation Buttons -->
+                        <div class="flex items-center gap-2 flex-wrap justify-center">
+                            <!-- Prev Button -->
+                            <button @click="goToPage(currentPage - 1)"
+                                :disabled="currentPage === 1"
+                                :class="currentPage === 1 ? 'opacity-40 cursor-not-allowed text-slate-400 dark:text-slate-600 border-slate-200 dark:border-slate-800' : 'text-slate-700 dark:text-slate-200 hover:bg-primary/10 hover:border-primary/40 active:scale-95 cursor-pointer border-slate-200 dark:border-slate-700'"
+                                class="px-3.5 py-2.5 rounded-xl border bg-slate-50 dark:bg-[#1a2542] font-bold text-xs flex items-center gap-1.5 transition-all">
+                                <span class="icon-[mdi--chevron-left] text-lg"></span>
+                                <span>Sebelumnya</span>
+                            </button>
+
+                            <!-- Number Buttons -->
+                            <template x-for="p in totalPages()" :key="p">
+                                <button @click="goToPage(p)"
+                                    :class="currentPage === p ? 'bg-primary text-white shadow-md border-primary scale-105 ring-2 ring-primary/30' : 'bg-slate-50 dark:bg-[#1a2542] text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-primary/40 hover:bg-slate-100 dark:hover:bg-slate-800'"
+                                    class="w-10 h-10 rounded-xl border font-black text-xs sm:text-sm flex items-center justify-center transition-all cursor-pointer">
+                                    <span x-text="p"></span>
+                                </button>
+                            </template>
+
+                            <!-- Next Button -->
+                            <button @click="goToPage(currentPage + 1)"
+                                :disabled="currentPage === totalPages()"
+                                :class="currentPage === totalPages() ? 'opacity-40 cursor-not-allowed text-slate-400 dark:text-slate-600 border-slate-200 dark:border-slate-800' : 'text-slate-700 dark:text-slate-200 hover:bg-primary/10 hover:border-primary/40 active:scale-95 cursor-pointer border-slate-200 dark:border-slate-700'"
+                                class="px-3.5 py-2.5 rounded-xl border bg-slate-50 dark:bg-[#1a2542] font-bold text-xs flex items-center gap-1.5 transition-all">
+                                <span>Selanjutnya</span>
+                                <span class="icon-[mdi--chevron-right] text-lg"></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1438,6 +1477,8 @@
                 selectedCategory: 'all', // Filter 2: 'all', 'OSN', 'SNBT', 'TKA', 'Kurikulum Nasional', 'Kurikulum Internasional'
                 selectedSubject: 'all',  // Filter 3: 'all' or specific subject
                 searchQuery: '',
+                currentPage: 1,
+                perPage: 6,
 
                 // Dynamic Subject Groups based on Filter 2 (and Filter 1)
                 getAvailableSubjectGroups() {
@@ -2152,8 +2193,29 @@
                     return this.teachers.filter(t => t.categories.includes(cat)).length;
                 },
 
+                totalPages() {
+                    return Math.ceil(this.filteredTeachers().length / this.perPage) || 1;
+                },
+
+                paginatedTeachers() {
+                    const list = this.filteredTeachers();
+                    const start = (this.currentPage - 1) * this.perPage;
+                    return list.slice(start, start + this.perPage);
+                },
+
+                goToPage(page) {
+                    if (page >= 1 && page <= this.totalPages()) {
+                        this.currentPage = page;
+                        const el = document.getElementById('teachers-directory-section');
+                        if (el) {
+                            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }
+                },
+
                 onCategoryChange() {
                     this.selectedSubject = 'all';
+                    this.currentPage = 1;
                 },
 
                 onJenjangChange() {
@@ -2162,11 +2224,13 @@
                     if (this.selectedSubject !== 'all' && !allOptions.includes(this.selectedSubject)) {
                         this.selectedSubject = 'all';
                     }
+                    this.currentPage = 1;
                 },
 
                 setCategory(cat) {
                     this.selectedCategory = cat;
                     this.selectedSubject = 'all';
+                    this.currentPage = 1;
                 },
 
                 resetFilters() {
@@ -2174,6 +2238,7 @@
                     this.selectedCategory = 'all';
                     this.selectedSubject = 'all';
                     this.searchQuery = '';
+                    this.currentPage = 1;
                 },
 
                 filteredTeachers() {
