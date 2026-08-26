@@ -126,5 +126,68 @@ document.addEventListener('alpine:init', function() {
                 }, 4000);
             }
         });
+
+        // Store for Gabung Tim Pengajar NLS
+        window.Alpine.store('gabungPengajar', {
+            modalOpen: false,
+            form: {
+                nama: '',
+                panggilan: '',
+                wa: '',
+                email: '',
+                pendidikan: '',
+                categories: [],
+                jenjang: [],
+                subject: '',
+                fokusPrivat: '',
+                filosofi: '',
+                prestasi1: '',
+                prestasi2: '',
+                prestasi3: '',
+                portfolio: ''
+            },
+            submit: function() {
+                const catStr = this.form.categories && this.form.categories.length > 0 ? this.form.categories.join(', ') : '-';
+                const jnjStr = this.form.jenjang && this.form.jenjang.length > 0 ? this.form.jenjang.join(', ') : '-';
+                
+                const lines = [
+                    '🌟 *PENDAFTARAN PENGAJAR & MENTOR - NEXT LEVEL STUDY* 🌟',
+                    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+                    '',
+                    '👤 *1. DATA PRIBADI & PENDIDIKAN*',
+                    `• *Nama Lengkap & Gelar:* ${this.form.nama || '-'}`,
+                    `• *Nama Panggilan / Sapaan:* ${this.form.panggilan || '-'}`,
+                    `• *Nomor WhatsApp:* ${this.form.wa || '-'}`,
+                    `• *Alamat Email:* ${this.form.email || '-'}`,
+                    `• *Latar Belakang Pendidikan / Kampus:* ${this.form.pendidikan || '-'}`,
+                    '',
+                    '📚 *2. BIDANG KEAHLIAN & SASARAN PROGRAM*',
+                    `• *Bidang Keahlian:* ${catStr}`,
+                    `• *Sasaran Jenjang:* ${jnjStr}`,
+                    `• *Spesialisasi Mata Pelajaran:* ${this.form.subject || '-'}`,
+                    '',
+                    '🎯 *3. FOKUS KEBUTUHAN LES PRIVAT*',
+                    `${this.form.fokusPrivat || '-'}`,
+                    '',
+                    '💬 *4. FILOSOFI / QUOTE MENGAJAR*',
+                    `"${this.form.filosofi || '-'}"`,
+                    '',
+                    '🏆 *5. REKAM JEJAK & PRESTASI*',
+                    `1. ${this.form.prestasi1 || '-'}`,
+                    `2. ${this.form.prestasi2 || '-'}`,
+                    `3. ${this.form.prestasi3 || '-'}`,
+                    '',
+                    '🔗 *6. LINK CV / PORTOFOLIO*',
+                    `${this.form.portfolio || '-'}`,
+                    '',
+                    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+                    '✅ *Komitmen:* Saya siap mengikuti rangkaian seleksi dan menjunjung tinggi kode etik & integritas pendidik Next Level Study.'
+                ];
+
+                const waUrl = 'https://wa.me/6285163070002?text=' + encodeURIComponent(lines.join('\n'));
+                window.open(waUrl, '_blank');
+                this.modalOpen = false;
+            }
+        });
     }
 });
