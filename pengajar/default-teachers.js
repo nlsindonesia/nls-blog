@@ -1,0 +1,431 @@
+/**
+ * Master Dataset Pengajar & Tutor Profesional Next Level Study (NLS)
+ * Digunakan sebagai baseline data dan sinkronisasi antara /nlsadmin dan /pengajar.
+ */
+window.NLS_DEFAULT_TEACHERS = [
+    {
+        id: 't-1',
+        name: 'Raditya Pratama, S.Si.',
+        shortName: 'Kak Radit',
+        photo: '/images/pengajar/mentor-1-math.jpg',
+        education: 'Matematika ITB (Medalis Emas OSN & IMO Participant)',
+        categories: ['OSN', 'TKA', 'Kurikulum Internasional'],
+        jenjang: ['SMP', 'SMA'],
+        jenjangLabel: 'SMP, SMA & SPK School',
+        subject: 'Matematika Lanjut (OSN, TKA, & IB / Cambridge)',
+        subjects: [
+            'Matematika (SMA)',
+            'Matematika (SMP)',
+            'Matematika (Wajib)',
+            'Matematika Tingkat Lanjut',
+            'Matematika Saintek',
+            'Matematika (Wajib & Lanjut)',
+            'Matematika SMP',
+            'Cambridge / IB Mathematics (HL/SL)',
+            'Penalaran Matematika'
+        ],
+        kebutuhanPrivat: 'Bimbingan intensif persiapan OSN Matematika, Ujian Mandiri PTN (SIMAK UI & UTUL UGM), serta persiapan ujian Cambridge AS/A-Level & IB Math HL.',
+        philosophy: 'Matematika bukan tentang menghafal rumus, melainkan melatih kejujuran logika dan daya nalar terstruktur.',
+        highlights: [
+            'Membimbing 20+ siswa peraih medali OSN & KSN Nasional',
+            'Tutor privat intensif Cambridge A-Level Math & IB DP HL',
+            'Alumni bimbingan diterima di STEI ITB, Fasilkom UI, & NTU Singapura'
+        ]
+    },
+    {
+        id: 't-2',
+        name: 'Dr. Nurul Azizah, M.Biotech.',
+        shortName: 'Kak Nurul',
+        photo: '/images/pengajar/mentor-2-bio.jpg',
+        education: 'Bioteknologi UI & Univ. of Melbourne (Peraih IBO Award)',
+        categories: ['OSN', 'SNBT', 'Kurikulum Nasional', 'Kurikulum Internasional', 'TKA'],
+        jenjang: ['SMA'],
+        jenjangLabel: 'SMA Kelas 10-12 & Gap Year',
+        subject: 'Biologi Kedokteran, Sains Terapan & Literasi IPA',
+        subjects: [
+            'Biologi (SMA)',
+            'Biologi',
+            'Biologi Saintek',
+            'Biologi SMA',
+            'Cambridge / IB Biology (IGCSE & A-Level)',
+            'TPS - Kemampuan Penalaran Umum (KPU)',
+            'TPS - Pengetahuan & Pemahaman Umum (PPU)'
+        ],
+        kebutuhanPrivat: 'Les privat masuk Fakultas Kedokteran (IUP & Reguler UI/UGM), OSN Biologi, dan IB DP Biology HL.',
+        philosophy: 'Mengajar dengan hati nurani dan kejujuran ilmiah melahirkan calon dokter dan saintis yang berintegritas.',
+        highlights: [
+            'Mentor tim olimpiade biologi Puspresnas & IUP Medicine',
+            'Berhasil meloloskan 65+ siswa ke FK UI, FK UGM, & FK Unair',
+            'Spesialis genetika molekuler, fisiologi manusia, dan biokimia'
+        ]
+    },
+    {
+        id: 't-3',
+        name: 'Bima Satria Wicaksana, M.Sc.',
+        shortName: 'Kak Bima',
+        photo: '/images/pengajar/mentor-3-snbt.jpg',
+        education: 'Statistika UGM & Data Science UI (Skor UTBK 850+)',
+        categories: ['SNBT', 'TKA', 'Kurikulum Nasional'],
+        jenjang: ['SMA'],
+        jenjangLabel: 'SMA Kelas 11-12 & Alumni',
+        subject: 'SNBT TPS Penalaran Kuantitatif & Logika Matematika',
+        subjects: [
+            'TPS - Penalaran Kuantitatif & Logika Matematika',
+            'Penalaran Matematika',
+            'Matematika (Wajib)',
+            'Matematika Tingkat Lanjut',
+            'TPS - Kemampuan Penalaran Umum (KPU)',
+            'Matematika Saintek',
+            'Matematika Soshum',
+            'Matematika (Wajib & Lanjut)'
+        ],
+        kebutuhanPrivat: 'Privat intensif tembus PTN klaster 1, penguasaan pola soal penalaran analitis, dan sistem pembobotan IRT SNBT.',
+        philosophy: 'Kelolosan PTN impian adalah buah kedisiplinan, strategi penalaran terarah, dan latihan yang jujur.',
+        highlights: [
+            'Pakar analisis data skor IRT SNBT dan pemetaan peluang jurusan PTN',
+            'Telah mendampingi ribuan siswa lolos ITB, UI, UGM, ITS, & Undip',
+            'Metode pembahasan konsep mendalam tanpa rumus sesat'
+        ]
+    },
+    {
+        id: 't-4',
+        name: 'Citra Kirana Wardhani, M.Pd.',
+        shortName: 'Kak Citra',
+        photo: '/images/pengajar/mentor-4-literasi.jpg',
+        education: 'Pendidikan Bahasa & Sastra Univ. Indonesia',
+        categories: ['SNBT', 'Kurikulum Nasional', 'Kurikulum Internasional', 'TKA'],
+        jenjang: ['SMP', 'SMA'],
+        jenjangLabel: 'SMP, SMA & Gap Year',
+        subject: 'Literasi Bahasa Indonesia, English for Academic & SNBT',
+        subjects: [
+            'Bahasa Indonesia (Wajib)',
+            'Bahasa Inggris (Wajib)',
+            'Bahasa Indonesia Tingkat Lanjut',
+            'Bahasa Inggris Tingkat Lanjut',
+            'Bahasa Indonesia (SMP)',
+            'Bahasa Indonesia (SD)',
+            'Literasi dalam Bahasa Indonesia',
+            'Literasi dalam Bahasa Inggris',
+            'TPS - Pemahaman Bacaan & Menulis (PBM)',
+            'TPS - Pengetahuan & Pemahaman Umum (PPU)',
+            'Bahasa Indonesia SMA',
+            'Bahasa Inggris SMA',
+            'Bahasa Indonesia SMP',
+            'Bahasa Inggris SMP',
+            'Academic English / IELTS & TOEFL'
+        ],
+        kebutuhanPrivat: 'Privat literasi teks kompleks SNBT, peningkatan nilai rapor Bahasa Kurikulum Merdeka, serta TOEFL/IELTS persiapan IUP.',
+        philosophy: 'Literasi kritis adalah pondasi integritas berpikir dan komunikasi seorang calon intelektual.',
+        highlights: [
+            'Penulis panduan strategi literasi membaca SNBT standar BPPP',
+            'Instruktur privat bahasa Inggris akademik dan persiapan IUP PTN',
+            'Tingkat kepuasan bimbingan 4.98/5.0 dari ratusan siswa'
+        ]
+    },
+    {
+        id: 't-5',
+        name: 'Muhammad Rafi Pratama, S.T.',
+        shortName: 'Kak Rafi',
+        photo: '/images/pengajar/mentor-5-physics.jpg',
+        education: 'Teknik Elektro ITB (Medalis Fisika Nasional)',
+        categories: ['OSN', 'TKA', 'SNBT', 'Kurikulum Internasional'],
+        jenjang: ['SMA'],
+        jenjangLabel: 'SMA & Alumni',
+        subject: 'Fisika Saintek, OSN Fisika & Cambridge Physics',
+        subjects: [
+            'Fisika (SMA)',
+            'Fisika',
+            'Fisika Saintek',
+            'Fisika SMA',
+            'Cambridge / IB Physics (IGCSE & A-Level)',
+            'TPS - Penalaran Kuantitatif & Logika Matematika'
+        ],
+        kebutuhanPrivat: 'Privat pemahaman konsep dasar fisika sekolah, persiapan OSN Fisika, SIMAK UI Saintek, dan Cambridge IGCSE/A-Level.',
+        philosophy: 'Memahami fenomena fisika secara runtut dan jujur membuat soal tersulit pun menjadi sangat logis.',
+        highlights: [
+            'Instruktur privat SIMAK UI, UTUL UGM, dan seleksi beasiswa luar negeri',
+            'Spesialis mekanika kuantum dasar, elektrodinamika, dan termodinamika',
+            'Membina siswa medalis OSN-P dan OSN Nasional 2024-2025'
+        ]
+    },
+    {
+        id: 't-6',
+        name: 'Drs. Hendra Gunawan, M.Si.',
+        shortName: 'Pak Hendra',
+        photo: '/images/pengajar/mentor-6-senior-math.jpg',
+        education: 'Magister Pendidikan UNJ (Guru Teladan & Praktisi Kurikulum)',
+        categories: ['Kurikulum Nasional', 'TKA', 'OSN'],
+        jenjang: ['SD', 'SMP', 'SMA', 'Guru / Instansi'],
+        jenjangLabel: 'SD, SMP, SMA & Pelatihan Guru',
+        subject: 'Matematika Kurikulum Merdeka, Ujian Sekolah & Asesmen',
+        subjects: [
+            'Matematika (SMA)',
+            'Matematika (SMP)',
+            'Matematika (SD)',
+            'Matematika (Wajib)',
+            'Matematika Tingkat Lanjut',
+            'Pendidikan Pancasila dan Kewarganegaraan',
+            'Matematika (Wajib & Lanjut)',
+            'Matematika SMP',
+            'Matematika SD',
+            'Matematika Saintek',
+            'Matematika Soshum'
+        ],
+        kebutuhanPrivat: 'Pendampingan privat siswa dari tingkat dasar hingga mahir, peningkatan nilai rapor untuk jalur SNBP, dan persiapan ASAJ.',
+        philosophy: 'Setiap anak berhak memahami matematika dengan sabar dan menyenangkan tanpa rasa takut.',
+        highlights: [
+            'Pengalaman lebih dari 20 tahun membimbing siswa sukses tembus sekolah & PTN unggulan',
+            'Penyusun kurikulum pembelajaran adaptif berstandar Kurikulum Nasional',
+            'Instruktur pelatihan guru dan narasumber edukasi'
+        ]
+    },
+    {
+        id: 't-7',
+        name: 'Stephanie Lauren, B.Sc., M.Ed.',
+        shortName: 'Ms. Stephanie',
+        photo: '/images/pengajar/mentor-7-chem-intl.jpg',
+        education: 'Univ. of Melbourne & Cambridge Certified Teacher',
+        categories: ['Kurikulum Internasional', 'OSN', 'TKA'],
+        jenjang: ['SMP', 'SMA'],
+        jenjangLabel: 'SMP & SMA Sekolah Internasional / SPK',
+        subject: 'Chemistry & Science (IB DP HL/SL, Cambridge IGCSE / A-Level)',
+        subjects: [
+            'Kimia (SMA)',
+            'Kimia',
+            'Kimia Saintek',
+            'Kimia SMA',
+            'Bahasa Inggris (Wajib)',
+            'Bahasa Inggris Tingkat Lanjut',
+            'Cambridge / IB Chemistry (IGCSE & A-Level)',
+            'Academic English / IELTS & TOEFL'
+        ],
+        kebutuhanPrivat: 'Privat bilingual siswa SPK / Internasional school (Jakarta Intercultural School, British School, ACS, SIS, Bina Bangsa, dll).',
+        philosophy: 'Global competence with deep scientific integrity empowers students to lead the world.',
+        highlights: [
+            'Tutor spesialis IB Internal Assessment (IA) & Extended Essay Chemistry',
+            'Alumni bimbingan diterima di NUS, Melbourne Univ, NTU, Oxford, & UI IUP',
+            'Pengantar bilingual 100% fluent English atau campuran bahasa Indonesia'
+        ]
+    },
+    {
+        id: 't-8',
+        name: 'Rara Anindya, S.E., M.M.',
+        shortName: 'Kak Rara',
+        photo: '/images/pengajar/mentor-8-econ.jpg',
+        education: 'Ilmu Ekonomi FEB UI (Lulusan Tercepat & Cumlaude)',
+        categories: ['TKA', 'SNBT', 'Kurikulum Nasional', 'Kurikulum Internasional', 'OSN'],
+        jenjang: ['SMA'],
+        jenjangLabel: 'SMA Kelas 10-12 & Gap Year',
+        subject: 'Ekonomi Soshum, OSN Ekonomi, Akuntansi & Cambridge',
+        subjects: [
+            'Ekonomi (SMA)',
+            'Ekonomi',
+            'Ekonomi Soshum',
+            'Ekonomi & Akuntansi SMA',
+            'Cambridge / IB Economics & Business',
+            'TPS - Penalaran Kuantitatif & Logika Matematika'
+        ],
+        kebutuhanPrivat: 'Privat persiapan masuk FEB UI, UGM, Unair, dan bimbingan Cambridge AS/A-Level Economics & Business Studies.',
+        philosophy: 'Ekonomi mengajarkan kejujuran dalam mengelola amanah, efisiensi, dan keadilan sosial.',
+        highlights: [
+            'Mentor privat intensif UTBK Soshum & SIMAK UI KKI (Kelas Khusus Internasional)',
+            'Spesialis analisis mikro-makro ekonomi dan akuntansi keuangan',
+            'Membimbing ratusan siswa sukses masuk FEB PTN favorit'
+        ]
+    },
+    {
+        id: 't-9',
+        name: 'Rocheline Angela, S.Pd.',
+        shortName: 'Kak Rocheline',
+        photo: '/images/pengajar/mentor-9-sd-sains.jpg',
+        education: 'Pendidikan Dasar & Sains Anak Berprestasi',
+        categories: ['Kurikulum Nasional', 'OSN', 'TKA'],
+        jenjang: ['SD', 'SMP'],
+        jenjangLabel: 'SD (Kelas 1-6) & SMP (Kelas 7-9)',
+        subject: 'Calistung, Matematika & IPA Eksploratif SD/SMP',
+        subjects: [
+            'Matematika (SD)',
+            'Bahasa Indonesia (SD)',
+            'IPA (SD)',
+            'IPS (SD)',
+            'Matematika (SMP)',
+            'Bahasa Indonesia (SMP)',
+            'IPA (SMP)',
+            'IPS (SMP)',
+            'Matematika SD',
+            'IPA / IPAS SD',
+            'Bahasa Indonesia SD',
+            'Bahasa Inggris SD',
+            'Calistung & Tematik SD',
+            'Matematika SMP',
+            'IPA SMP (Fisika & Biologi)'
+        ],
+        kebutuhanPrivat: 'Les privat intensif anak SD/SMP untuk persiapan OSN Cilik, Ujian Sekolah, pembentukan karakter belajar mandiri, dan juara kelas.',
+        philosophy: 'Menumbuhkan rasa ingin tahu dan kejujuran belajar sejak dini adalah investasi terbaik masa depan anak.',
+        highlights: [
+            'Spesialis metode visual gamification & concrete-pictorial-abstract',
+            'Membimbing puluhan siswa SD/SMP meraih ranking 1 dan medali OSN',
+            'Sabar, interaktif, dan sangat disukai anak-anak'
+        ]
+    },
+    {
+        id: 't-10',
+        name: 'Oslando Wibowo, S.Kom., M.T.',
+        shortName: 'Kak Oslando',
+        photo: '/images/pengajar/mentor-10-cs.jpg',
+        education: 'Ilmu Komputer UI (Coach Tim Olimpiade & Software Architect)',
+        categories: ['OSN', 'Kurikulum Internasional', 'TKA'],
+        jenjang: ['SMP', 'SMA'],
+        jenjangLabel: 'SMP, SMA & Mahasiswa',
+        subject: 'Informatika OSN, Coding (C++, Python), & AP Computer Science',
+        subjects: [
+            'Informatika / Komputer (SMA)',
+            'SMK - Projek Kreatif & Kejuruan',
+            'Cambridge / AP Computer Science & Coding',
+            'TPS - Penalaran Kuantitatif & Logika Matematika'
+        ],
+        kebutuhanPrivat: 'Privat olimpiade komputer (OSN Informatika), persiapan AP Computer Science SPK school, dan portofolio Beasiswa BIM / IISMA.',
+        philosophy: 'Coding dan algoritma melatih daya pemecahan masalah yang sistematis, presisi, dan jujur.',
+        highlights: [
+            'Coach tim olimpiade sains informatika tingkat nasional dan internasional',
+            'Master algoritma Dynamic Programming, Graph, dan Data Structures',
+            'Membimbing siswa masuk Fasilkom UI, STEI ITB, & Computer Science NUS'
+        ]
+    },
+    {
+        id: 't-11',
+        name: 'Dimas Arya Pradipta, S.Si.',
+        shortName: 'Kak Dimas',
+        photo: '/images/pengajar/mentor-5-physics.jpg',
+        education: 'Astronomi ITB (Medalis Olimpiade Astronomi Internasional IOAA)',
+        categories: ['OSN', 'TKA', 'Kurikulum Nasional'],
+        jenjang: ['SMA'],
+        jenjangLabel: 'SMA & Alumni',
+        subject: 'OSN Astronomi, Astrofisika & Fisika Lanjut SMA',
+        subjects: [
+            'Astronomi (SMA)',
+            'Fisika (SMA)',
+            'Fisika',
+            'Fisika Saintek',
+            'Fisika SMA'
+        ],
+        kebutuhanPrivat: 'Persiapan intensif OSN Astronomi dari tingkat Kabupaten hingga Nasional & Pelatnas IOAA, serta konsep mekanika benda langit.',
+        philosophy: 'Memahami alam semesta dimulai dari kerendahan hati dan ketelitian sains yang jujur.',
+        highlights: [
+            'Medalis Olimpiade Astronomi & Astrofisika Internasional (IOAA)',
+            'Membimbing puluhan finalis dan peraih medali OSN Astronomi',
+            'Instruktur pengamatan teleskop dan pengolahan data astronomi digital'
+        ]
+    },
+    {
+        id: 't-12',
+        name: 'Farhan Fauzi, S.T.',
+        shortName: 'Kak Farhan',
+        photo: '/images/pengajar/mentor-1-math.jpg',
+        education: 'Teknik Geologi UGM (Peraih Medalis Emas IESO)',
+        categories: ['OSN', 'TKA', 'Kurikulum Nasional'],
+        jenjang: ['SMA'],
+        jenjangLabel: 'SMA & Gap Year',
+        subject: 'OSN Kebumian, Geologi, Meteorologi & Oseanografi',
+        subjects: [
+            'Kebumian (SMA)',
+            'Geografi (SMA)',
+            'Geografi',
+            'Geografi Soshum',
+            'Geografi SMA'
+        ],
+        kebutuhanPrivat: 'Pendampingan privat OSN Kebumian, geologi dinamis, meteorologi, hidrologi, dan astronomi dasar untuk seleksi Puspresnas.',
+        philosophy: 'Ilmu kebumian membina kepekaan terhadap kelestarian bumi dan integritas seorang saintis.',
+        highlights: [
+            'Medalis Emas International Earth Science Olympiad (IESO)',
+            'Coach olimpiade kebumian di berbagai SMA unggulan nasional',
+            'Spesialis kristalografi, mineralogi, dan interpretasi peta geologi'
+        ]
+    },
+    {
+        id: 't-13',
+        name: 'Nadia Safitri, S.Pd., M.Sc.',
+        shortName: 'Kak Nadia',
+        photo: '/images/pengajar/mentor-4-literasi.jpg',
+        education: 'Pendidikan Geografi UI & Univ. Gadjah Mada',
+        categories: ['OSN', 'TKA', 'Kurikulum Nasional'],
+        jenjang: ['SMP', 'SMA'],
+        jenjangLabel: 'SMP, SMA & Gap Year',
+        subject: 'OSN Geografi, IPS Terpadu SMP, & Geografi Soshum',
+        subjects: [
+            'Geografi (SMA)',
+            'Geografi',
+            'Sosiologi',
+            'Sosiologi SMA',
+            'Sosiologi Soshum',
+            'IPS (SMP)',
+            'IPS (SD)',
+            'Geografi Soshum',
+            'Geografi SMA',
+            'IPS SMP'
+        ],
+        kebutuhanPrivat: 'Persiapan OSN Geografi SMA, OSN IPS SMP, Ujian Sekolah Geografi, dan pendalaman materi UTBK Geografi Soshum.',
+        philosophy: 'Geografi mengajarkan cara pandang holistik, keterikatan ruang hidup, dan cinta tanah air.',
+        highlights: [
+            'Pembina tim olimpiade sains geografi dan IPS tingkat nasional',
+            'Penulis modul pendalaman spasial SIG dan demografi kependudukan',
+            'Tingkat kelulusan siswa bimbingan ke PTN favorit mencapai 94%'
+        ]
+    },
+    {
+        id: 't-14',
+        name: 'Alief Kurnia, S.Si.',
+        shortName: 'Kak Alief',
+        photo: '/images/pengajar/mentor-3-snbt.jpg',
+        education: 'Biologi & Ilmu Alam ITB (Pelatih Tim OSN IPA SMP)',
+        categories: ['OSN', 'Kurikulum Nasional', 'TKA'],
+        jenjang: ['SD', 'SMP'],
+        jenjangLabel: 'SD Kelas 4-6 & SMP Kelas 7-9',
+        subject: 'OSN IPA SMP, Biologi & Fisika Terpadu Eksploratif',
+        subjects: [
+            'IPA (SMP)',
+            'IPA (SD)',
+            'IPA SMP (Fisika & Biologi)',
+            'IPA / IPAS SD',
+            'Biologi (SMA)',
+            'Biologi'
+        ],
+        kebutuhanPrivat: 'Persiapan OSN IPA SMP (Fisika & Biologi), OSN IPA SD Cilik, serta pemantapan sains integratif untuk sekolah unggulan.',
+        philosophy: 'Membangun logika sains yang kokoh sejak bangku SMP adalah kunci keunggulan di jenjang selanjutnya.',
+        highlights: [
+            'Coach tim OSN IPA SMP peraih medali emas & perak nasional',
+            'Penyusun praktikum sains virtual dan pembahasan soal problem solving',
+            'Pendekatan pembelajaran yang komunikatif, runut, dan menyenangkan'
+        ]
+    },
+    {
+        id: 't-15',
+        name: 'Gabriella Maya, S.Sos.',
+        shortName: 'Kak Maya',
+        photo: '/images/pengajar/mentor-8-econ.jpg',
+        education: 'Sosiologi & Ilmu Sosial Universitas Indonesia',
+        categories: ['OSN', 'TKA', 'Kurikulum Nasional'],
+        jenjang: ['SMP', 'SMA'],
+        jenjangLabel: 'SMP & SMA',
+        subject: 'OSN IPS SMP, Sosiologi Soshum & Sejarah Indonesia',
+        subjects: [
+            'IPS (SMP)',
+            'IPS (SD)',
+            'IPS SMP',
+            'Sosiologi',
+            'Sosiologi SMA',
+            'Sosiologi Soshum',
+            'Sejarah',
+            'Sejarah Soshum',
+            'Antropologi',
+            'Pendidikan Pancasila dan Kewarganegaraan'
+        ],
+        kebutuhanPrivat: 'Persiapan OSN IPS SMP, pemahaman materi Sosiologi & Sejarah untuk Ujian Mandiri PTN / UTBK Soshum.',
+        philosophy: 'Belajar ilmu sosial melatih empati sosial dan daya analisis fenomena kemanusiaan secara jujur.',
+        highlights: [
+            'Medalis olimpiade sains bidang ilmu sosial tingkat nasional',
+            'Telah mendampingi ratusan siswa SMP & SMA tembus sekolah dan PTN impian',
+            'Metode mind mapping analitis yang mudah diingat tanpa hafalan buta'
+        ]
+    }
+];
