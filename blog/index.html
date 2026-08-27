@@ -1380,31 +1380,41 @@
                 ],
 
                 articles: (function() {
-                    const defaultCovers = {
-                        'art-1': '/images/blog/cover-snbt-2027.jpg',
-                        'art-2': '/images/blog/cover-osn-silabus.jpg',
-                        'art-3': '/images/blog/cover-jurusan-kuliah.jpg'
-                    };
                     try {
                         const stored = localStorage.getItem("nls_berita_articles_v1");
+                        let list = [];
                         if (stored) {
                             const parsed = JSON.parse(stored);
                             if (Array.isArray(parsed) && parsed.length > 0) {
-                                let updated = false;
-                                parsed.forEach(a => {
-                                    if (defaultCovers[a.id] && (!a.coverImage || a.coverImage.includes('nls-logo-300.png') || a.coverImage.includes('article-placeholder'))) {
-                                        a.coverImage = defaultCovers[a.id];
-                                        updated = true;
-                                    }
-                                });
-                                if (updated) {
-                                    localStorage.setItem("nls_berita_articles_v1", JSON.stringify(parsed));
-                                }
-                                return parsed;
+                                list = parsed;
                             }
                         }
-                    } catch (e) {}
-                    return (typeof window.NLS_DEFAULT_ARTICLES !== "undefined") ? window.NLS_DEFAULT_ARTICLES : [];
+                        if (typeof window.NLS_DEFAULT_ARTICLES !== "undefined" && Array.isArray(window.NLS_DEFAULT_ARTICLES)) {
+                            if (list.length === 0) {
+                                list = JSON.parse(JSON.stringify(window.NLS_DEFAULT_ARTICLES));
+                            } else {
+                                let changed = false;
+                                window.NLS_DEFAULT_ARTICLES.forEach(defArt => {
+                                    const idx = list.findIndex(a => a.id === defArt.id);
+                                    if (idx === -1) {
+                                        list.push(JSON.parse(JSON.stringify(defArt)));
+                                        changed = true;
+                                    } else {
+                                        if (defArt.coverImage && (!list[idx].coverImage || list[idx].coverImage.includes('nls-logo-300.png') || list[idx].coverImage.includes('article-placeholder'))) {
+                                            list[idx].coverImage = defArt.coverImage;
+                                            changed = true;
+                                        }
+                                    }
+                                });
+                                if (changed) {
+                                    localStorage.setItem("nls_berita_articles_v1", JSON.stringify(list));
+                                }
+                            }
+                        }
+                        return list;
+                    } catch (e) {
+                        return (typeof window.NLS_DEFAULT_ARTICLES !== "undefined") ? window.NLS_DEFAULT_ARTICLES : [];
+                    }
                 })(),
 
                 init() {
