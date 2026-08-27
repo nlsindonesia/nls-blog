@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
     <!-- Google tag (gtag.js) -->
@@ -742,10 +742,13 @@
                                 onerror="this.onerror=null;this.src='/nls-logo-300.png';"
                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             
-                            <!-- Category Badge -->
-                            <div class="absolute top-3 left-3 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm border"
-                                :class="getCategoryBadgeClass(art.category)"
-                                x-text="art.category">
+                            <!-- Multi-Category Badges -->
+                            <div class="absolute top-3 left-3 flex flex-wrap gap-1 max-w-[88%]">
+                                <template x-for="(cat, cIdx) in (art.categories || [art.category || 'Informasi NLS'])" :key="cIdx">
+                                    <span class="backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm border"
+                                        :class="getCategoryBadgeClass(cat)"
+                                        x-text="cat"></span>
+                                </template>
                             </div>
                         </div>
 
@@ -1420,12 +1423,13 @@
                     return this.articles.filter(art => {
                         if (art.status && art.status !== 'published') return false;
                         
-                        const matchCat = this.selectedCategory === 'all' || art.category === this.selectedCategory;
+                        const matchCat = this.selectedCategory === 'all' || 
+                            (art.categories && Array.isArray(art.categories) ? art.categories.includes(this.selectedCategory) : art.category === this.selectedCategory);
                         const q = this.searchQuery.toLowerCase().trim();
                         const matchSearch = !q ||
                             (art.title && art.title.toLowerCase().includes(q)) ||
                             (art.metaDescription && art.metaDescription.toLowerCase().includes(q)) ||
-                            (art.category && art.category.toLowerCase().includes(q)) ||
+                            (art.categories ? art.categories.join(' ').toLowerCase().includes(q) : (art.category && art.category.toLowerCase().includes(q))) ||
                             (art.author && art.author.toLowerCase().includes(q));
 
                         return matchCat && matchSearch;
