@@ -20,7 +20,14 @@
     
     <style>
         [x-cloak] { display: none !important; }
-        body { font-family: 'Inter', sans-serif; }
+        html, body {
+            height: 100%;
+            height: 100dvh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
 
         /* Custom Scrollbars */
         .admin-scrollbar::-webkit-scrollbar {
@@ -459,12 +466,10 @@
         }
         @media (min-width: 1024px) {
             .sidebar-desktop-sticky {
-                position: sticky !important;
-                top: 0 !important;
-                left: 0 !important;
-                bottom: 0 !important;
-                height: 100vh !important;
-                max-height: 100vh !important;
+                position: relative !important;
+                height: 100% !important;
+                height: 100dvh !important;
+                max-height: 100dvh !important;
             }
         }
             /* Emerald Submenu for Berita */
@@ -656,7 +661,7 @@
     <!-- ==========================================
          2. MAIN SUPER ADMIN DASHBOARD
          ========================================== -->
-    <div x-show="isAuthenticated" x-cloak class="w-full min-h-screen h-screen flex bg-slate-100/70 dark:bg-[#070D1E] antialiased overflow-hidden">
+    <div x-show="isAuthenticated" x-cloak class="w-full h-full h-screen h-[100dvh] flex bg-slate-100/70 dark:bg-[#070D1E] antialiased overflow-hidden">
         
         <!-- ==========================================
              FULL-HEIGHT LEFT SIDEBAR (COLLAPSIBLE / HIDEABLE)
@@ -946,7 +951,7 @@
         <!-- ==========================================
              RIGHT MAIN CONTENT AREA
              ========================================== -->
-        <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        <div class="flex-1 flex flex-col min-w-0 h-full h-screen h-[100dvh] overflow-hidden">
             
             <!-- Top App Bar for Right Area -->
             <header class="sticky top-0 z-20 bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 py-2.5 flex items-center justify-between shadow-xs shrink-0">
