@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
     <!-- Google tag (gtag.js) -->
@@ -797,7 +797,7 @@
                 <!-- Left Info: Article Counters -->
                 <div class="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 text-center sm:text-left">
                     Halaman <span class="text-sky-600 dark:text-sky-400 font-black text-sm sm:text-base" x-text="currentPage"></span> dari <span class="text-slate-800 dark:text-slate-200 font-black text-sm sm:text-base" x-text="totalPages()"></span>
-                    <span class="mx-2 text-slate-300 dark:text-slate-700">•</span>
+                    <span class="mx-2 text-slate-300 dark:text-slate-700">&bull;</span>
                     Menampilkan <span class="text-slate-800 dark:text-slate-200 font-black" x-text="paginatedArticles().length"></span> dari <span class="text-slate-800 dark:text-slate-200 font-black" x-text="filteredArticles().length"></span> Artikel
                 </div>
 
@@ -879,9 +879,9 @@
                             <div class="space-y-3">
                                 <div class="flex items-center gap-3 text-xs font-bold text-slate-500 dark:text-slate-400 flex-wrap">
                                     <span class="text-sky-600 dark:text-sky-400" x-text="activeArticle.category"></span>
-                                    <span>â€¢</span>
+                                    <span>&bull;</span>
                                     <span x-text="formatDisplayDate(activeArticle.date)"></span>
-                                    <span>â€¢</span>
+                                    <span>&bull;</span>
                                     <span class="text-slate-700 dark:text-slate-300 font-bold" x-text="'Penulis: ' + (activeArticle.author || 'Tim Akademik NLS')"></span>
                                 </div>
 

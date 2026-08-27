@@ -1,4 +1,4 @@
-const fs = require('fs');
+﻿const fs = require('fs');
 const path = require('path');
 
 const filePath = path.join(__dirname, '..', 'privat', 'index.html');
@@ -438,7 +438,7 @@ const newModal = `    <!-- ===== POP-UP MODAL FORM KEBUTUHAN PRIVAT SESUAI PAKET
                                     </label>
                                     <select x-model="$store.paketPrivat.formData.waktuBelajar"
                                         class="w-full bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs font-medium cursor-pointer">
-                                        <option value="Sore / Malam (18.30 - 21.00 WIB)">Sore / Malam (18.30 - 21.00 WIB) • Paling Populer</option>
+                                        <option value="Sore / Malam (18.30 - 21.00 WIB)">Sore / Malam (18.30 - 21.00 WIB) &bull; Paling Populer</option>
                                         <option value="Siang (13.00 - 17.00 WIB)">Siang (13.00 - 17.00 WIB)</option>
                                         <option value="Pagi (08.00 - 12.00 WIB)">Pagi (08.00 - 12.00 WIB)</option>
                                         <option value="Fleksibel / Sesuai Kesepakatan Mentor">Fleksibel / Sesuai Kesepakatan Mentor</option>

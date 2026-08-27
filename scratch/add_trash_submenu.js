@@ -1,4 +1,4 @@
-const fs = require('fs');
+﻿const fs = require('fs');
 const path = 'c:/Users/vc/Documents/nls-blog-hame/nls-blog-hame/nlsadmin/index.html';
 
 let content = fs.readFileSync(path, 'utf8');
@@ -384,7 +384,7 @@ const beritaTrashView = `
                                                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300"
                                                     x-text="art.category"></span>
                                                 <span class="text-xs text-slate-500 font-medium" x-text="art.date"></span>
-                                                <span class="text-xs text-slate-400">•</span>
+                                                <span class="text-xs text-slate-400">&bull;</span>
                                                 <span class="text-xs font-bold text-slate-600 dark:text-slate-300" x-text="art.author"></span>
                                             </div>
                                             <h4 class="text-sm sm:text-base font-black text-slate-900 dark:text-white truncate line-through opacity-80" x-text="art.title"></h4>
