@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -1048,6 +1048,14 @@
 
                 <!-- Right Controls: Public View Link & User Profile with Logout -->
                 <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                    <!-- Backup SQLite / SQL Dump Button -->
+                    <button type="button" @click="exportDatabaseSQL()"
+                        class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 border border-indigo-200 dark:border-indigo-800 transition-all shadow-2xs cursor-pointer"
+                        title="Unduh Backup Database SQLite / SQL">
+                        <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        <span class="hidden sm:inline">Backup SQLite</span>
+                    </button>
+
                     <!-- Lihat Web Button -->
                     <a href="/" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sky-50 hover:text-sky-600 dark:hover:bg-sky-950/60 dark:hover:text-sky-300 border border-slate-200 dark:border-slate-700 transition-all shadow-2xs">
                         <svg class="w-4 h-4 text-sky-600 dark:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
@@ -4464,6 +4472,107 @@
                     a.setAttribute('href', dataStr);
                     a.setAttribute('download', `nls-pengajar-teachers-${Date.now()}.json`);
                     a.click();
+                },
+
+                exportDatabaseSQL() {
+                    let sql = '-- ========================================================\n';
+                    sql += '-- NEXT LEVEL STUDY (NLS) - SQLITE MASTER BACKUP DUMP\n';
+                    sql += '-- Generated at: ' + new Date().toISOString() + '\n';
+                    sql += '-- ========================================================\n\n';
+                    sql += 'BEGIN TRANSACTION;\n\n';
+
+                    // Articles
+                    this.articles.forEach(a => {
+                        const catJson = JSON.stringify(a.categories || (a.category ? [a.category] : ['SNBT & UTBK']));
+                        const id = (a.id || '').replace(/'/g, "''");
+                        const title = (a.title || '').replace(/'/g, "''");
+                        const slug = (a.slug || '').replace(/'/g, "''");
+                        const category = (a.category || '').replace(/'/g, "''");
+                        const date = (a.date || '').replace(/'/g, "''");
+                        const endDate = (a.endDate || '').replace(/'/g, "''");
+                        const author = (a.author || 'Tim Akademik NLS').replace(/'/g, "''");
+                        const status = (a.status || 'published').replace(/'/g, "''");
+                        const coverImage = (a.coverImage || '/nls-logo-300.png').replace(/'/g, "''");
+                        const focusKeyword = (a.focusKeyword || '').replace(/'/g, "''");
+                        const metaTitle = (a.metaTitle || '').replace(/'/g, "''");
+                        const metaDescription = (a.metaDescription || '').replace(/'/g, "''");
+                        const canonicalUrl = (a.canonicalUrl || '').replace(/'/g, "''");
+                        const content = (a.content || '').replace(/'/g, "''");
+                        sql += `INSERT OR REPLACE INTO articles (id, title, slug, category, categories, date, end_date, author, status, cover_image, focus_keyword, meta_title, meta_description, canonical_url, content, seo_score, is_trashed) VALUES ('${id}', '${title}', '${slug}', '${category}', '${catJson.replace(/'/g, "''")}', '${date}', '${endDate}', '${author}', '${status}', '${coverImage}', '${focusKeyword}', '${metaTitle}', '${metaDescription}', '${canonicalUrl}', '${content}', ${a.seoScore || 85}, 0);\n`;
+                    });
+
+                    // Events
+                    this.events.forEach(e => {
+                        const hlJson = JSON.stringify(e.highlights || []);
+                        const id = (e.id || '').replace(/'/g, "''");
+                        const title = (e.title || '').replace(/'/g, "''");
+                        const category = (e.category || 'OSN').replace(/'/g, "''");
+                        const jenjang = (e.jenjang || 'SMA').replace(/'/g, "''");
+                        const jenjangLabel = (e.jenjangLabel || '').replace(/'/g, "''");
+                        const date = (e.date || '').replace(/'/g, "''");
+                        const endDate = (e.endDate || '').replace(/'/g, "''");
+                        const time = (e.time || '08:00 - 11:30 WIB').replace(/'/g, "''");
+                        const mode = (e.mode || 'Online (CBT NLS)').replace(/'/g, "''");
+                        const location = (e.location || '').replace(/'/g, "''");
+                        const badgeText = (e.badgeText || 'Pendaftaran Dibuka').replace(/'/g, "''");
+                        const whatsappMessage = (e.whatsappMessage || '').replace(/'/g, "''");
+                        const description = (e.description || '').replace(/'/g, "''");
+                        sql += `INSERT OR REPLACE INTO events (id, title, category, jenjang, jenjang_label, date, end_date, time, mode, location, badge_text, whatsapp_message, description, highlights, is_trashed) VALUES ('${id}', '${title}', '${category}', '${jenjang}', '${jenjangLabel}', '${date}', '${endDate}', '${time}', '${mode}', '${location}', '${badgeText}', '${whatsappMessage}', '${description}', '${hlJson.replace(/'/g, "''")}', 0);\n`;
+                    });
+
+                    // Teachers
+                    this.teachers.forEach(t => {
+                        const catJson = JSON.stringify(t.categories || ['OSN']);
+                        const jnjJson = JSON.stringify(t.jenjang || ['SMA']);
+                        const subJson = JSON.stringify(t.subjects || [t.subject || '']);
+                        const hlJson = JSON.stringify(t.highlights || []);
+                        const id = (t.id || '').replace(/'/g, "''");
+                        const name = (t.name || '').replace(/'/g, "''");
+                        const shortName = (t.shortName || '').replace(/'/g, "''");
+                        const photo = (t.photo || '/images/pengajar/mentor-1-math.jpg').replace(/'/g, "''");
+                        const education = (t.education || '').replace(/'/g, "''");
+                        const jenjangLabel = (t.jenjangLabel || '').replace(/'/g, "''");
+                        const subject = (t.subject || '').replace(/'/g, "''");
+                        const kebutuhanPrivat = (t.kebutuhanPrivat || '').replace(/'/g, "''");
+                        const philosophy = (t.philosophy || '').replace(/'/g, "''");
+                        sql += `INSERT OR REPLACE INTO teachers (id, name, short_name, photo, education, categories, jenjang, jenjang_label, subject, subjects, kebutuhan_privat, philosophy, highlights, rating, review_count, is_trashed) VALUES ('${id}', '${name}', '${shortName}', '${photo}', '${education}', '${catJson.replace(/'/g, "''")}', '${jnjJson.replace(/'/g, "''")}', '${jenjangLabel}', '${subject}', '${subJson.replace(/'/g, "''")}', '${kebutuhanPrivat}', '${philosophy}', '${hlJson.replace(/'/g, "''")}', 4.9, 24, 0);\n`;
+                    });
+
+                    // Teacher Applications
+                    if (this.teacherApplications && Array.isArray(this.teacherApplications)) {
+                        this.teacherApplications.forEach(app => {
+                            const catJson = JSON.stringify(app.categories || []);
+                            const jnjJson = JSON.stringify(app.jenjang || []);
+                            const hlJson = JSON.stringify(app.highlights || []);
+                            const id = (app.id || '').replace(/'/g, "''");
+                            const submittedAt = (app.submittedAt || app.submitted_at || new Date().toISOString()).replace(/'/g, "''");
+                            const status = (app.status || 'pending').replace(/'/g, "''");
+                            const nama = (app.nama || '').replace(/'/g, "''");
+                            const panggilan = (app.panggilan || '').replace(/'/g, "''");
+                            const wa = (app.wa || '').replace(/'/g, "''");
+                            const email = (app.email || '').replace(/'/g, "''");
+                            const pendidikan = (app.pendidikan || '').replace(/'/g, "''");
+                            const photo = (app.photo || '/images/pengajar/mentor-1-math.jpg').replace(/'/g, "''");
+                            const jenjangLabel = (app.jenjangLabel || app.jenjang_label || '').replace(/'/g, "''");
+                            const subject = (app.subject || '').replace(/'/g, "''");
+                            const kebutuhanPrivat = (app.kebutuhanPrivat || app.kebutuhan_privat || '').replace(/'/g, "''");
+                            const philosophy = (app.philosophy || '').replace(/'/g, "''");
+                            const portfolio = (app.portfolio || '').replace(/'/g, "''");
+                            const notes = (app.notes || '').replace(/'/g, "''");
+                            sql += `INSERT OR REPLACE INTO teacher_applications (id, submitted_at, status, nama, panggilan, wa, email, pendidikan, photo, categories, jenjang, jenjang_label, subject, kebutuhan_privat, philosophy, highlights, portfolio, notes) VALUES ('${id}', '${submittedAt}', '${status}', '${nama}', '${panggilan}', '${wa}', '${email}', '${pendidikan}', '${photo}', '${catJson.replace(/'/g, "''")}', '${jnjJson.replace(/'/g, "''")}', '${jenjangLabel}', '${subject}', '${kebutuhanPrivat}', '${philosophy}', '${hlJson.replace(/'/g, "''")}', '${portfolio}', '${notes}');\n`;
+                        });
+                    }
+
+                    sql += '\nCOMMIT;\n';
+
+                    const blob = new Blob([sql], { type: 'application/sql' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `nls_database_backup_${new Date().toISOString().split('T')[0]}.sql`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    this.showToast('Backup Database SQLite / SQL Dump berhasil diunduh!');
                 }
             };
         }
