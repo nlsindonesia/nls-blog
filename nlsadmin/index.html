@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -665,12 +665,12 @@
                 <!-- =========================================================================
                      TAB 1: MANAJEMEN KALENDER & EVENT NLS
                      ========================================================================= -->
-                                <div x-show="activeTab === ''kalender''" x-cloak class="space-y-6">
+                <div x-show="activeTab === 'kalender'" x-cloak class="space-y-6">
                     
                     <!-- =================================================================
                          VIEW 1: CREATE / EDIT EVENT BUILDER VIEW
                          ================================================================= -->
-                    <div x-show="kalenderView === ''create''" class="space-y-6">
+                    <div x-show="kalenderView === 'create'" class="space-y-6">
                         <!-- Action Bar -->
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-[#131D38] p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
                             <button type="button" @click="openPresentEventView()"
@@ -812,7 +812,7 @@
                                                 </div>
                                                 <div class="flex items-center gap-1.5 font-semibold">
                                                     <svg class="w-4 h-4 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                                                    <span x-text="(eventForm.mode || 'Online') + ' â€¢ ' + (eventForm.location || 'Platform CBT NLS')"></span>
+                                                    <span x-text="(eventForm.mode || 'Online') + ' • ' + (eventForm.location || 'Platform CBT NLS')"></span>
                                                 </div>
                                             </div>
 
@@ -820,9 +820,9 @@
 
                                             <!-- Highlights Preview -->
                                             <div class="pt-2 space-y-1 text-[11px] text-slate-700 dark:text-slate-300">
-                                                <template x-for="(hl, hlIdx) in (eventForm.highlightsRaw ? eventForm.highlightsRaw.split('\n').filter(Boolean) : ['Sistem Penilaian IRT', 'Webinar Live Pembahasan'])" :key="hlIdx">
+                                                <template x-for="(hl, hlIdx) in getPreviewHighlights()" :key="hlIdx">
                                                     <div class="flex items-center gap-1.5">
-                                                        <span class="text-emerald-500">âœ“</span>
+                                                        <span class="text-emerald-500 font-bold">✓</span>
                                                         <span x-text="hl"></span>
                                                     </div>
                                                 </template>
@@ -844,7 +844,7 @@
                     <!-- =================================================================
                          VIEW 2: PRESENT EVENT (DAFTAR EVENT YANG SUDAH DIBUAT)
                          ================================================================= -->
-                    <div x-show="kalenderView === ''present''" class="space-y-6">
+                    <div x-show="kalenderView === 'present'" class="space-y-6">
                     
                     <!-- Header Section -->
                     <div class="admin-hero-kalender flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 sm:p-8 rounded-3xl border border-sky-400/30">
@@ -1910,6 +1910,13 @@
                     this.kalenderView = 'present';
                     this.isKalenderDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
+                },
+
+                getPreviewHighlights() {
+                    if (!this.eventForm || !this.eventForm.highlightsRaw) {
+                        return ['Sistem Penilaian IRT Standar Nasional', 'Webinar Live Pembahasan Soal & Bedah Trik'];
+                    }
+                    return this.eventForm.highlightsRaw.split('\n').map(s => s.trim()).filter(Boolean);
                 },
 
                 saveEventFromBuilder() {
