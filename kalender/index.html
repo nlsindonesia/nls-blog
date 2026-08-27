@@ -647,7 +647,65 @@ html.dark .month-chip-btn {
             background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
             box-shadow: 0 4px 14px rgba(225, 29, 72, 0.35);
         }
-    </style>
+    
+/* =========================================================================
+   FULL-COLOR VIBRANT THEMED EVENT CARDS (SYNCED WITH NLS ADMIN)
+   ========================================================================= */
+.admin-card-osn {
+    background: linear-gradient(145deg, #e0f2fe 0%, #bae6fd 100%) !important;
+    border: 2.5px solid #38bdf8 !important;
+    box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.25) !important;
+}
+html.dark .admin-card-osn {
+    background: linear-gradient(145deg, #0c2d48 0%, #0f3d63 100%) !important;
+    border: 2.5px solid #0284c7 !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+}
+
+.admin-card-tka {
+    background: linear-gradient(145deg, #fef3c7 0%, #fde68a 100%) !important;
+    border: 2.5px solid #f59e0b !important;
+    box-shadow: 0 10px 25px -5px rgba(217, 119, 6, 0.25) !important;
+}
+html.dark .admin-card-tka {
+    background: linear-gradient(145deg, #452404 0%, #5e3206 100%) !important;
+    border: 2.5px solid #d97706 !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+}
+
+.admin-card-snbt {
+    background: linear-gradient(145deg, #dcfce7 0%, #bbf7d0 100%) !important;
+    border: 2.5px solid #10b981 !important;
+    box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.25) !important;
+}
+html.dark .admin-card-snbt {
+    background: linear-gradient(145deg, #063d27 0%, #095738 100%) !important;
+    border: 2.5px solid #059669 !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+}
+
+.admin-card-mitra {
+    background: linear-gradient(145deg, #f3e8ff 0%, #e9d5ff 100%) !important;
+    border: 2.5px solid #a855f7 !important;
+    box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.25) !important;
+}
+html.dark .admin-card-mitra {
+    background: linear-gradient(145deg, #320d53 0%, #461573 100%) !important;
+    border: 2.5px solid #7c3aed !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+}
+
+.admin-card-dinas {
+    background: linear-gradient(145deg, #ffe4e6 0%, #fecdd3 100%) !important;
+    border: 2.5px solid #f43f5e !important;
+    box-shadow: 0 10px 25px -5px rgba(225, 29, 72, 0.25) !important;
+}
+html.dark .admin-card-dinas {
+    background: linear-gradient(145deg, #4d0a1b 0%, #680f25 100%) !important;
+    border: 2.5px solid #e11d48 !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+}
+</style>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="/theme.css" />
@@ -1950,18 +2008,12 @@ html.dark .month-chip-btn {
 
                                 getEventAdminCardClass(cat) {
                     switch (cat) {
-                        case 'OSN':
-                            return 'bg-gradient-to-br from-sky-50 to-blue-50/60 dark:from-[#0f243a] dark:to-[#132d4b] border-2 border-sky-300 dark:border-sky-700 shadow-md shadow-sky-500/10';
-                        case 'TKA':
-                            return 'bg-gradient-to-br from-amber-50 to-orange-50/60 dark:from-[#33220f] dark:to-[#422c15] border-2 border-amber-300 dark:border-amber-700 shadow-md shadow-amber-500/10';
-                        case 'SNBT':
-                            return 'bg-gradient-to-br from-emerald-50 to-teal-50/60 dark:from-[#0f2d24] dark:to-[#143d31] border-2 border-emerald-300 dark:border-emerald-700 shadow-md shadow-emerald-500/10';
-                        case 'Mitra Sekolah':
-                            return 'bg-gradient-to-br from-purple-50 to-indigo-50/60 dark:from-[#2d124d] dark:to-[#38185f] border-2 border-purple-300 dark:border-purple-700 shadow-md shadow-purple-500/10';
-                        case 'Event Dinas':
-                            return 'bg-gradient-to-br from-rose-50 to-pink-50/60 dark:from-[#3d121c] dark:to-[#4d1825] border-2 border-rose-300 dark:border-rose-700 shadow-md shadow-rose-500/10';
-                        default:
-                            return 'bg-gradient-to-br from-sky-50 to-blue-50/60 dark:from-[#0f243a] dark:to-[#132d4b] border-2 border-sky-300 dark:border-sky-700 shadow-md shadow-sky-500/10';
+                        case 'OSN': return 'admin-card-osn';
+                        case 'TKA': return 'admin-card-tka';
+                        case 'SNBT': return 'admin-card-snbt';
+                        case 'Mitra Sekolah': return 'admin-card-mitra';
+                        case 'Event Dinas': return 'admin-card-dinas';
+                        default: return 'admin-card-osn';
                     }
                 },
 
