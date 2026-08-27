@@ -398,6 +398,70 @@ html.dark .cal-cell.selected {
     box-shadow: 0 0 0 3.5px rgba(56, 189, 248, 0.4) !important;
 }
 
+/* THEMED EVENT CARDS (Full-Color Dynamic Themes for Details Panel) */
+.event-card-item {
+    border-radius: 1.25rem;
+    padding: 1.15rem 1.25rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 14px -3px rgba(0, 0, 0, 0.05);
+}
+.event-card-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.1);
+}
+
+/* OSN: Biru */
+.card-theme-osn {
+    background: linear-gradient(145deg, #f0f9ff 0%, #e0f2fe 100%) !important;
+    border: 1.5px solid #bae6fd !important;
+}
+html.dark .card-theme-osn {
+    background: linear-gradient(145deg, #0c2340 0%, #082f49 100%) !important;
+    border-color: #0369a1 !important;
+}
+
+/* TKA: Kuning / Amber Gold */
+.card-theme-tka {
+    background: linear-gradient(145deg, #fffdf0 0%, #fef3c7 100%) !important;
+    border: 1.5px solid #fde68a !important;
+}
+html.dark .card-theme-tka {
+    background: linear-gradient(145deg, #331e08 0%, #451a03 100%) !important;
+    border-color: #92400e !important;
+}
+
+/* SNBT: Hijau / Emerald */
+.card-theme-snbt {
+    background: linear-gradient(145deg, #f0fdf4 0%, #dcfce7 100%) !important;
+    border: 1.5px solid #a7f3d0 !important;
+}
+html.dark .card-theme-snbt {
+    background: linear-gradient(145deg, #063828 0%, #064e3b 100%) !important;
+    border-color: #065f46 !important;
+}
+
+/* Mitra Sekolah: Ungu / Violet */
+.card-theme-mitra {
+    background: linear-gradient(145deg, #faf5ff 0%, #f3e8ff 100%) !important;
+    border: 1.5px solid #e9d5ff !important;
+}
+html.dark .card-theme-mitra {
+    background: linear-gradient(145deg, #280c42 0%, #3b0764 100%) !important;
+    border-color: #6b21a8 !important;
+}
+
+/* Event Dinas: Merah / Rose */
+.card-theme-dinas {
+    background: linear-gradient(145deg, #fff1f2 0%, #ffe4e6 100%) !important;
+    border: 1.5px solid #fecdd3 !important;
+}
+html.dark .card-theme-dinas {
+    background: linear-gradient(145deg, #3d0918 0%, #4c0519 100%) !important;
+    border-color: #9f1239 !important;
+}
+
 /* Event Tag Pills inside cells */
 .cal-pill {
     display: flex;
@@ -417,18 +481,17 @@ html.dark .cal-cell.selected {
 }
 
 .pill-osn { background: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
-.pill-snbt { background: #ffedd5; color: #c2410c; border-color: #fed7aa; }
-.pill-tka { background: #ccfbf1; color: #0f766e; border-color: #99f6e4; }
+.pill-tka { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+.pill-snbt { background: #d1fae5; color: #065f46; border-color: #a7f3d0; }
 .pill-mitra { background: #f3e8ff; color: #6b21a8; border-color: #e9d5ff; }
 .pill-dinas { background: #ffe4e6; color: #be123c; border-color: #fecdd3; }
 
 html.dark .pill-osn { background: #082f49; color: #7dd3fc; border-color: #0369a1; }
-html.dark .pill-snbt { background: #431407; color: #fdba74; border-color: #9a3412; }
-html.dark .pill-tka { background: #042f2e; color: #5eead4; border-color: #115e59; }
+html.dark .pill-tka { background: #451a03; color: #fde68a; border-color: #92400e; }
+html.dark .pill-snbt { background: #064e3b; color: #6ee7b7; border-color: #065f46; }
 html.dark .pill-mitra { background: #3b0764; color: #d8b4fe; border-color: #7e22ce; }
 html.dark .pill-dinas { background: #4c0519; color: #fda4af; border-color: #9f1239; }
 
-/* Quick Month Scroll Navigation */
 .month-chip-bar {
     display: flex;
     gap: 0.4rem;
@@ -1126,23 +1189,23 @@ html.dark .month-chip-btn {
                                     <span class="text-slate-500 dark:text-slate-400 font-extrabold">Petunjuk Kategori:</span>
                                     <div class="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity" @click="setCategory('OSN')">
                                         <span class="w-2.5 h-2.5 rounded-full bg-[#0284c7]"></span>
-                                        <span class="text-slate-800 dark:text-slate-200">OSN</span>
-                                    </div>
-                                    <div class="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity" @click="setCategory('SNBT')">
-                                        <span class="w-2.5 h-2.5 rounded-full bg-[#ea580c]"></span>
-                                        <span class="text-slate-800 dark:text-slate-200">SNBT</span>
+                                        <span class="text-slate-800 dark:text-slate-200">OSN (Biru)</span>
                                     </div>
                                     <div class="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity" @click="setCategory('TKA')">
-                                        <span class="w-2.5 h-2.5 rounded-full bg-[#0d9488]"></span>
-                                        <span class="text-slate-800 dark:text-slate-200">TKA</span>
+                                        <span class="w-2.5 h-2.5 rounded-full bg-[#d97706]"></span>
+                                        <span class="text-slate-800 dark:text-slate-200">TKA (Kuning)</span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity" @click="setCategory('SNBT')">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-[#059669]"></span>
+                                        <span class="text-slate-800 dark:text-slate-200">SNBT (Hijau)</span>
                                     </div>
                                     <div class="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity" @click="setCategory('Mitra Sekolah')">
                                         <span class="w-2.5 h-2.5 rounded-full bg-[#7c3aed]"></span>
-                                        <span class="text-slate-800 dark:text-slate-200">Mitra</span>
+                                        <span class="text-slate-800 dark:text-slate-200">Mitra (Ungu)</span>
                                     </div>
                                     <div class="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity" @click="setCategory('Event Dinas')">
                                         <span class="w-2.5 h-2.5 rounded-full bg-[#e11d48]"></span>
-                                        <span class="text-slate-800 dark:text-slate-200">Dinas</span>
+                                        <span class="text-slate-800 dark:text-slate-200">Dinas (Merah)</span>
                                     </div>
                                 </div>
                             </div>
@@ -1212,14 +1275,14 @@ html.dark .month-chip-btn {
                                         </div>
                                     </template>
 
-                                    <!-- Event Cards -->
+                                    <!-- Event Cards (Themed Background Colors) -->
                                     <template x-for="event in displayedEvents()" :key="event.id">
-                                        <div class="bg-slate-50/70 dark:bg-[#16223e] rounded-2xl border border-slate-200 dark:border-slate-700/80 p-4 sm:p-5 hover:shadow-lg transition-all duration-300 relative overflow-hidden group space-y-3">
+                                        <div class="event-card-item space-y-3" :class="getEventCardClass(event.category)">
                                             
                                             <!-- Left Category Color Accent Stripe -->
-                                            <div class="absolute left-0 top-0 bottom-0 w-2" :class="getCategoryStripe(event.category)"></div>
+                                            <div class="absolute left-0 top-0 bottom-0 w-2.5" :class="getCategoryStripe(event.category)"></div>
 
-                                            <div class="pl-1 space-y-2.5">
+                                            <div class="pl-2 space-y-2.5">
                                                 <!-- Badges Header -->
                                                 <div class="flex flex-wrap items-center gap-1.5">
                                                     <!-- Category Badge -->
@@ -1228,12 +1291,12 @@ html.dark .month-chip-btn {
                                                         x-text="event.category"></span>
 
                                                     <!-- Jenjang Badge -->
-                                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
+                                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80"
                                                         x-text="event.jenjangLabel || event.jenjang"></span>
 
                                                     <!-- Status Badge -->
                                                     <span x-show="event.badgeText"
-                                                        class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100/80 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 flex items-center gap-1">
+                                                        class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white/95 dark:bg-slate-900/90 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1 shadow-2xs">
                                                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                                         <span x-text="event.badgeText"></span>
                                                     </span>
@@ -1244,7 +1307,7 @@ html.dark .month-chip-btn {
                                                     x-text="event.title"></h4>
 
                                                 <!-- Meta: Date, Time, Mode -->
-                                                <div class="flex flex-col gap-1 text-xs text-slate-600 dark:text-slate-300 font-semibold pt-0.5">
+                                                <div class="flex flex-col gap-1 text-xs text-slate-700 dark:text-slate-200 font-bold pt-0.5">
                                                     <div class="flex items-center gap-1.5">
                                                         <span class="icon-[mdi--calendar-clock] text-sky-600 text-sm shrink-0"></span>
                                                         <span x-text="formatDateFull(event.date)"></span>
@@ -1264,17 +1327,17 @@ html.dark .month-chip-btn {
                                                 </div>
 
                                                 <!-- Description -->
-                                                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-normal pt-1 border-t border-slate-200/60 dark:border-slate-700/60"
+                                                <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-normal pt-1.5 border-t border-black/10 dark:border-white/10"
                                                     x-text="event.description"></p>
 
                                                 <!-- Highlights (if available) -->
                                                 <template x-if="event.highlights && event.highlights.length > 0">
-                                                    <div class="bg-white dark:bg-[#101930] p-3 rounded-xl border border-slate-200 dark:border-slate-700/60 space-y-1.5">
-                                                        <p class="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">Fasilitas &amp; Materi:</p>
+                                                    <div class="bg-white/85 dark:bg-slate-950/60 backdrop-blur-xs p-3 rounded-xl border border-black/10 dark:border-white/10 space-y-1.5">
+                                                        <p class="text-[10px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider">Fasilitas &amp; Materi:</p>
                                                         <ul class="space-y-1">
                                                             <template x-for="(hl, hIdx) in event.highlights" :key="hIdx">
-                                                                <li class="flex items-start gap-1.5 text-xs text-slate-600 dark:text-slate-400">
-                                                                    <span class="icon-[mdi--check-circle] text-emerald-500 text-sm shrink-0 mt-0.5"></span>
+                                                                <li class="flex items-start gap-1.5 text-xs text-slate-700 dark:text-slate-300 font-medium">
+                                                                    <span class="icon-[mdi--check-circle] text-emerald-600 text-sm shrink-0 mt-0.5"></span>
                                                                     <span x-text="hl"></span>
                                                                 </li>
                                                             </template>
@@ -1872,19 +1935,30 @@ html.dark .month-chip-btn {
                 getPillClass(cat) {
                     switch (cat) {
                         case 'OSN': return 'pill-osn';
-                        case 'SNBT': return 'pill-snbt';
                         case 'TKA': return 'pill-tka';
+                        case 'SNBT': return 'pill-snbt';
                         case 'Mitra Sekolah': return 'pill-mitra';
                         case 'Event Dinas': return 'pill-dinas';
                         default: return 'pill-osn';
                     }
                 },
 
+                getEventCardClass(cat) {
+                    switch (cat) {
+                        case 'OSN': return 'card-theme-osn';
+                        case 'TKA': return 'card-theme-tka';
+                        case 'SNBT': return 'card-theme-snbt';
+                        case 'Mitra Sekolah': return 'card-theme-mitra';
+                        case 'Event Dinas': return 'card-theme-dinas';
+                        default: return 'card-theme-osn';
+                    }
+                },
+
                 getCategoryDotClass(cat) {
                     switch (cat) {
                         case 'OSN': return 'bg-[#0284c7]';
-                        case 'SNBT': return 'bg-[#ea580c]';
-                        case 'TKA': return 'bg-[#0d9488]';
+                        case 'TKA': return 'bg-[#d97706]';
+                        case 'SNBT': return 'bg-[#059669]';
                         case 'Mitra Sekolah': return 'bg-[#7c3aed]';
                         case 'Event Dinas': return 'bg-[#e11d48]';
                         default: return 'bg-primary';
@@ -1894,8 +1968,8 @@ html.dark .month-chip-btn {
                 getCategoryStripe(cat) {
                     switch (cat) {
                         case 'OSN': return 'bg-[#0284c7]';
-                        case 'SNBT': return 'bg-[#ea580c]';
-                        case 'TKA': return 'bg-[#0d9488]';
+                        case 'TKA': return 'bg-[#d97706]';
+                        case 'SNBT': return 'bg-[#059669]';
                         case 'Mitra Sekolah': return 'bg-[#7c3aed]';
                         case 'Event Dinas': return 'bg-[#e11d48]';
                         default: return 'bg-primary';
@@ -1905,15 +1979,15 @@ html.dark .month-chip-btn {
                 getCategoryBadgeClass(cat) {
                     switch (cat) {
                         case 'OSN':
-                            return 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/60 dark:text-sky-300 dark:border-sky-800';
-                        case 'SNBT':
-                            return 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950/60 dark:text-orange-300 dark:border-orange-800';
+                            return 'bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-900/80 dark:text-sky-200 dark:border-sky-700';
                         case 'TKA':
-                            return 'bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-950/60 dark:text-teal-300 dark:border-teal-800';
+                            return 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-900/80 dark:text-amber-200 dark:border-amber-700';
+                        case 'SNBT':
+                            return 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-900/80 dark:text-emerald-200 dark:border-emerald-700';
                         case 'Mitra Sekolah':
-                            return 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800';
+                            return 'bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-900/80 dark:text-purple-200 dark:border-purple-700';
                         case 'Event Dinas':
-                            return 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800';
+                            return 'bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-900/80 dark:text-rose-200 dark:border-rose-700';
                         default:
                             return 'bg-slate-100 text-slate-700 border-slate-200';
                     }
