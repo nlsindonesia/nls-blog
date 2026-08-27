@@ -62,7 +62,7 @@
     margin: 0 auto;
 }
 
-/* Bulletproof Side-by-Side Grid */
+/* Bulletproof Side-by-Side Grid with Exact Equal Height */
 .cal-side-dashboard {
     display: flex;
     flex-direction: column;
@@ -75,7 +75,7 @@
         display: grid;
         grid-template-columns: 1.35fr 1fr;
         gap: 1.75rem;
-        align-items: start;
+        align-items: stretch;
     }
 }
 @media (min-width: 1280px) {
@@ -90,7 +90,6 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
 }
 
 .cal-col-right {
@@ -98,13 +97,7 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-}
-@media (min-width: 1024px) {
-    .cal-col-right {
-        position: sticky;
-        top: 5.5rem;
-    }
+    height: 100%;
 }
 
 .calendar-main-card {
@@ -114,6 +107,8 @@
     border-radius: 1.75rem;
     box-shadow: 0 20px 45px -15px rgba(0, 46, 71, 0.08), 0 0 1px rgba(0,0,0,0.05);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 html.dark .calendar-main-card {
     background: #131d38;
@@ -123,15 +118,33 @@ html.dark .calendar-main-card {
 
 .calendar-detail-card {
     width: 100%;
+    height: 100%;
     background: #ffffff;
     border: 2px solid #e2e8f0;
     border-radius: 1.75rem;
     box-shadow: 0 20px 45px -15px rgba(0, 46, 71, 0.08);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-sizing: border-box;
 }
 html.dark .calendar-detail-card {
     background: #131d38;
     border-color: #273549;
     box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.6);
+}
+
+/* Detail Card Inner Scrollable Body */
+.cal-detail-body {
+    flex: 1 1 0%;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 0.35rem;
+}
+@media (max-width: 1023px) {
+    .cal-detail-body {
+        max-height: 520px;
+    }
 }
 
 /* Custom Scrollbar for Event Panel */
@@ -144,6 +157,9 @@ html.dark .calendar-detail-card {
 .custom-scrollbar::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 9999px;
+}
+html.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #334155;
 }
 html.dark .custom-scrollbar::-webkit-scrollbar-thumb {
     background: #334155;
@@ -994,9 +1010,9 @@ html.dark .month-chip-btn {
                              ============================================== -->
                         <div class="cal-col-left">
                             
-                            <div class="calendar-main-card">
+                            <div id="cal-main-card-el" class="calendar-main-card">
                                 <!-- Month Navigation Header Bar -->
-                                <div class="p-4 sm:p-5 bg-gradient-to-r from-sky-50/80 via-white to-blue-50/80 dark:from-[#0f182e] dark:via-[#131d38] dark:to-[#0f182e] border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div class="p-4 sm:p-5 bg-gradient-to-r from-sky-50/80 via-white to-blue-50/80 dark:from-[#0f182e] dark:via-[#131d38] dark:to-[#0f182e] border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
                                     <div class="flex items-center gap-3">
                                         <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 text-white flex items-center justify-center shadow-md flex-shrink-0">
                                             <span class="icon-[mdi--calendar-month] text-2xl text-white"></span>
@@ -1033,7 +1049,7 @@ html.dark .month-chip-btn {
                                 </div>
 
                                 <!-- Quick Month Jump Bar -->
-                                <div class="px-4 sm:px-5 py-2.5 bg-slate-50/50 dark:bg-[#101930] border-b border-slate-100 dark:border-slate-800">
+                                <div class="px-4 sm:px-5 py-2.5 bg-slate-50/50 dark:bg-[#101930] border-b border-slate-100 dark:border-slate-800 shrink-0">
                                     <div class="month-chip-bar no-scrollbar">
                                         <template x-for="(mName, mIdx) in monthNames" :key="mIdx">
                                             <button type="button"
@@ -1047,7 +1063,7 @@ html.dark .month-chip-btn {
                                 </div>
 
                                 <!-- Calendar Grid Body -->
-                                <div class="p-3 sm:p-5">
+                                <div class="p-3 sm:p-5 flex-1 flex flex-col justify-between">
                                     <!-- 7-Day Header (Senin - Minggu) - FULL COLOR -->
                                     <div class="cal-grid mb-2">
                                         <div class="cal-day-header senin">Senin</div>
@@ -1106,7 +1122,7 @@ html.dark .month-chip-btn {
                                 </div>
 
                                 <!-- Legend Bar at bottom of calendar -->
-                                <div class="px-4 py-3 bg-slate-50 dark:bg-[#0c1427] border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-center gap-3 sm:gap-5 text-[11px] font-bold">
+                                <div class="px-4 py-3 bg-slate-50 dark:bg-[#0c1427] border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-center gap-3 sm:gap-5 text-[11px] font-bold shrink-0">
                                     <span class="text-slate-500 dark:text-slate-400 font-extrabold">Petunjuk Kategori:</span>
                                     <div class="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity" @click="setCategory('OSN')">
                                         <span class="w-2.5 h-2.5 rounded-full bg-[#0284c7]"></span>
@@ -1134,13 +1150,14 @@ html.dark .month-chip-btn {
 
                         <!-- ==============================================
                              KOLOM KANAN: RINCIAN & KETERANGAN AGENDA
+                             (Ukurannya sama persis dengan kalender & bisa di-scroll)
                              ============================================== -->
                         <div id="detail-kegiatan" class="cal-col-right scroll-mt-24">
                             
-                            <div class="calendar-detail-card p-5 sm:p-6 flex flex-col max-h-[840px]">
+                            <div class="calendar-detail-card p-5 sm:p-6" :style="mainCardHeight ? 'height: ' + mainCardHeight + 'px;' : ''">
                                 
-                                <!-- Panel Header -->
-                                <div class="pb-4 mb-4 border-b border-slate-100 dark:border-slate-800 shrink-0">
+                                <!-- Panel Header (Fixed at top) -->
+                                <div class="pb-3.5 mb-3.5 border-b border-slate-100 dark:border-slate-800 shrink-0">
                                     <div class="flex items-center justify-between gap-2 mb-1.5">
                                         <div class="inline-flex items-center gap-1 text-[11px] font-black text-sky-600 dark:text-sky-400 uppercase tracking-wider bg-sky-50 dark:bg-sky-950/60 px-2.5 py-0.5 rounded-full border border-sky-200 dark:border-sky-800">
                                             <span class="icon-[mdi--clipboard-text-clock-outline] text-sm"></span>
@@ -1173,12 +1190,12 @@ html.dark .month-chip-btn {
                                     </template>
                                 </div>
 
-                                <!-- Scrollable Event Cards List -->
-                                <div class="overflow-y-auto pr-1 space-y-4 flex-1 custom-scrollbar">
+                                <!-- Scrollable Event Cards List (Fills remainder & scrolls) -->
+                                <div class="cal-detail-body custom-scrollbar space-y-4">
                                     
                                     <!-- Empty State if no events -->
                                     <template x-if="displayedEvents().length === 0">
-                                        <div class="p-8 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-dashed border-slate-200 dark:border-slate-700 text-center space-y-3">
+                                        <div class="p-8 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-dashed border-slate-200 dark:border-slate-700 text-center space-y-3 my-auto">
                                             <div class="w-12 h-12 rounded-2xl bg-slate-200/70 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto text-2xl">
                                                 <span class="icon-[mdi--calendar-blank-outline]"></span>
                                             </div>
@@ -1564,10 +1581,11 @@ html.dark .month-chip-btn {
         function kalenderApp() {
             return {
                 currentYear: 2026,
-                currentMonth: 7, // 7 = Agustus 2026 (matching current context/active semester)
-                selectedCategory: 'all', // 'all', 'OSN', 'SNBT', 'TKA', 'Mitra Sekolah', 'Event Dinas'
-                selectedJenjang: 'all',  // 'all', 'SD', 'SMP', 'SMA', 'Guru / Instansi'
-                selectedDate: null,     // string 'YYYY-MM-DD'
+                currentMonth: 7, // 7 = Agustus 2026
+                selectedCategory: 'all',
+                selectedJenjang: 'all',
+                selectedDate: null,
+                mainCardHeight: null,
                 monthNames: [
                     'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
                     'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
@@ -1586,6 +1604,17 @@ html.dark .month-chip-btn {
                     } catch (e) {}
                     return (typeof window.NLS_DEFAULT_EVENTS !== "undefined") ? window.NLS_DEFAULT_EVENTS : [];
                 })(),
+
+                updateCardHeight() {
+                    if (window.innerWidth >= 1024) {
+                        const el = document.getElementById('cal-main-card-el');
+                        if (el) {
+                            this.mainCardHeight = el.offsetHeight;
+                        }
+                    } else {
+                        this.mainCardHeight = null;
+                    }
+                },
 
                 init() {
                     // Set active to August 2026 or current month
@@ -1622,7 +1651,16 @@ html.dark .month-chip-btn {
                     window.addEventListener("nls-events-updated", (e) => {
                         if (e.detail && Array.isArray(e.detail)) {
                             this.events = e.detail;
+                            this.$nextTick(() => this.updateCardHeight());
                         }
+                    });
+
+                    // Sync card height on load & resize
+                    this.$nextTick(() => {
+                        this.updateCardHeight();
+                    });
+                    window.addEventListener("resize", () => {
+                        this.updateCardHeight();
                     });
                 },
 
@@ -1656,22 +1694,26 @@ html.dark .month-chip-btn {
                 setCategory(cat) {
                     this.selectedCategory = cat;
                     this.selectedDate = null;
+                    this.$nextTick(() => this.updateCardHeight());
                 },
 
                 setJenjang(jenjang) {
                     this.selectedJenjang = jenjang;
                     this.selectedDate = null;
+                    this.$nextTick(() => this.updateCardHeight());
                 },
 
                 setMonth(mIdx) {
                     this.currentMonth = mIdx;
                     this.selectedDate = null;
+                    this.$nextTick(() => this.updateCardHeight());
                 },
 
                 resetFilters() {
                     this.selectedCategory = 'all';
                     this.selectedJenjang = 'all';
                     this.selectedDate = null;
+                    this.$nextTick(() => this.updateCardHeight());
                 },
 
                 prevMonth() {
@@ -1682,6 +1724,7 @@ html.dark .month-chip-btn {
                         this.currentMonth--;
                     }
                     this.selectedDate = null;
+                    this.$nextTick(() => this.updateCardHeight());
                 },
 
                 nextMonth() {
@@ -1692,6 +1735,7 @@ html.dark .month-chip-btn {
                         this.currentMonth++;
                     }
                     this.selectedDate = null;
+                    this.$nextTick(() => this.updateCardHeight());
                 },
 
                 goToToday() {
@@ -1699,6 +1743,7 @@ html.dark .month-chip-btn {
                     this.currentYear = 2026;
                     this.currentMonth = now.getFullYear() === 2026 ? now.getMonth() : 7;
                     this.selectedDate = null;
+                    this.$nextTick(() => this.updateCardHeight());
                 },
 
                 // Filtered Events
