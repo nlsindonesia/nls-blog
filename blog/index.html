@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <!-- Google tag (gtag.js) -->
@@ -682,7 +682,7 @@
                                         <span class="w-2 h-2 rounded-full bg-slate-400"></span>
                                         <span>Semua Kategori Berita</span>
                                     </div>
-                                    <span x-show="selectedCategory === 'all'" class="text-sky-600 font-black">✓</span>
+                                    <svg x-show="selectedCategory === 'all'" class="w-3.5 h-3.5 text-sky-600 dark:text-sky-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                 </button>
 
                                 <!-- Category Options Dynamic Loop -->
@@ -704,7 +704,7 @@
                                                 }"></span>
                                             <span x-text="cat"></span>
                                         </div>
-                                        <span x-show="selectedCategory === cat" class="text-sky-600 font-black">✓</span>
+                                        <svg x-show="selectedCategory === cat" class="w-3.5 h-3.5 text-sky-600 dark:text-sky-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                     </button>
                                 </template>
                             </div>
