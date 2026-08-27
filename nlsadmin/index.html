@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -1335,17 +1335,17 @@
 
                             <!-- Filter Category -->
                             <select x-model="eventFilter.category" @change="eventCurrentPage = 1" class="px-3.5 py-2.5 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-black text-slate-800 dark:text-white focus:outline-none focus:border-sky-500 transition-all">
-                                <option value="all">ðŸ” Semua Kategori</option>
-                                <option value="OSN">ðŸ† OSN (Olimpiade)</option>
-                                <option value="TKA">ðŸ“Š TKA (Akademik)</option>
-                                <option value="SNBT">ðŸŽ¯ SNBT (PTN)</option>
-                                <option value="Mitra Sekolah">ðŸ¤ Mitra Sekolah</option>
-                                <option value="Event Dinas">ðŸ›ï¸ Event Dinas</option>
+                                <option value="all">Semua Kategori</option>
+                                <option value="OSN">OSN (Olimpiade)</option>
+                                <option value="TKA">TKA (Akademik)</option>
+                                <option value="SNBT">SNBT (PTN)</option>
+                                <option value="Mitra Sekolah">Mitra Sekolah</option>
+                                <option value="Event Dinas">Event Dinas</option>
                             </select>
 
                             <!-- Filter Month -->
                             <select x-model="eventFilter.month" @change="eventCurrentPage = 1" class="px-3.5 py-2.5 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-black text-slate-800 dark:text-white focus:outline-none focus:border-sky-500 transition-all">
-                                <option value="all">ðŸ“… Semua Bulan 2026</option>
+                                <option value="all">Semua Bulan 2026</option>
                                 <template x-for="(m, mIdx) in monthNames" :key="mIdx">
                                     <option :value="mIdx" x-text="m + ' 2026'"></option>
                                 </template>
@@ -2784,14 +2784,14 @@
 
                 // 4. ARTICLE CMS EDITOR WITH MULTI-CATEGORY SUPPORT
                 availableArticleCategories: [
-                    { name: 'OSN & Sains', icon: 'ðŸ†' },
-                    { name: 'SNBT & UTBK', icon: 'ðŸŽ¯' },
-                    { name: 'TKA & Akademik', icon: 'ðŸ“Š' },
-                    { name: 'Tips Belajar & Prestasi', icon: 'ðŸ’¡' },
-                    { name: 'Berita Sekolah & Diknas', icon: 'ðŸ›ï¸' },
-                    { name: 'Informasi NLS', icon: 'ðŸ“¢' },
-                    { name: 'Panduan Beasiswa', icon: 'ðŸŽ“' },
-                    { name: 'Bimbel NexGen', icon: 'ðŸš€' }
+                    { name: 'OSN & Sains', icon: '🏆' },
+                    { name: 'SNBT & UTBK', icon: '🎯' },
+                    { name: 'TKA & Akademik', icon: '📊' },
+                    { name: 'Tips Belajar & Prestasi', icon: '💡' },
+                    { name: 'Berita Sekolah & Diknas', icon: '🏛️' },
+                    { name: 'Informasi NLS', icon: '📢' },
+                    { name: 'Panduan Beasiswa', icon: '🎓' },
+                    { name: 'Bimbel NexGen', icon: '🚀' }
                 ],
                 ckEditorInstance: null,
                 isHtmlView: false,

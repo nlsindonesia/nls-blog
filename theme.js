@@ -1,4 +1,4 @@
-﻿// Immediate theme initialization to prevent flash & mobile viewport lock
+// Immediate theme initialization to prevent flash & mobile viewport lock
 (function() {
     try {
         if (typeof document !== 'undefined' && document.documentElement) {
@@ -247,48 +247,48 @@ function initAlpineStores() {
                 const pkg = this.activePackage;
                 let text = '*FORMULIR PENDAFTARAN LES PRIVAT NLS*\n';
                 text += '--------------------------------------------\n';
-                text += 'ðŸ“Œ *PILIHAN PAKET:* ' + pkg.title.toUpperCase() + '\n';
-                text += 'ðŸ’° *Tarif:* ' + pkg.price + ' ' + pkg.priceUnit + ' (' + pkg.tagline + ')\n\n';
+                text += '📌 *PILIHAN PAKET:* ' + pkg.title.toUpperCase() + '\n';
+                text += '💰 *Tarif:* ' + pkg.price + ' ' + pkg.priceUnit + ' (' + pkg.tagline + ')\n\n';
 
-                text += 'ðŸ‘¤ *DATA SISWA & ORANG TUA:*\n';
-                text += 'â€¢ Nama Siswa: ' + this.formData.namaSiswa + '\n';
+                text += '👤 *DATA SISWA & ORANG TUA:*\n';
+                text += '• Nama Siswa: ' + this.formData.namaSiswa + '\n';
                 if (this.formData.namaOrtu.trim()) {
-                    text += 'â€¢ Nama Orang Tua/Wali: ' + this.formData.namaOrtu + '\n';
+                    text += '• Nama Orang Tua/Wali: ' + this.formData.namaOrtu + '\n';
                 }
-                text += 'â€¢ WhatsApp: ' + this.formData.noWa + '\n';
-                text += 'â€¢ Asal Sekolah: ' + (this.formData.asalSekolah || '-') + '\n';
-                text += 'â€¢ Tingkat/Kelas: ' + this.formData.tingkatKelas + '\n';
-                text += 'â€¢ Metode Belajar: ' + this.formData.metodeBelajar;
+                text += '• WhatsApp: ' + this.formData.noWa + '\n';
+                text += '• Asal Sekolah: ' + (this.formData.asalSekolah || '-') + '\n';
+                text += '• Tingkat/Kelas: ' + this.formData.tingkatKelas + '\n';
+                text += '• Metode Belajar: ' + this.formData.metodeBelajar;
                 if (this.formData.metodeBelajar.includes('Offline')) {
                     text += ' (+ Transport Guru Rp 50.000/sesi)';
                 }
                 text += '\n\n';
 
-                text += 'ðŸŽ¯ *PENYESUAIAN KEBUTUHAN (' + pkg.title + '):*\n';
-                text += 'â€¢ Mata Pelajaran: ' + this.formData.mataPelajaran + '\n';
+                text += '🎯 *PENYESUAIAN KEBUTUHAN (' + pkg.title + '):*\n';
+                text += '• Mata Pelajaran: ' + this.formData.mataPelajaran + '\n';
                 
                 if (this.activePackageKey === 'reguler') {
-                    text += 'â€¢ Diperuntukkan Untuk: ' + (this.formData.regulerFocus.join(', ') || '-') + '\n';
+                    text += '• Diperuntukkan Untuk: ' + (this.formData.regulerFocus.join(', ') || '-') + '\n';
                     if (this.formData.regulerTargetKampus.trim()) {
-                        text += 'â€¢ Target Kampus/Sekolah: ' + this.formData.regulerTargetKampus + '\n';
+                        text += '• Target Kampus/Sekolah: ' + this.formData.regulerTargetKampus + '\n';
                     }
                 } else if (this.activePackageKey === 'intensif') {
-                    text += 'â€¢ Diperuntukkan Untuk: ' + (this.formData.intensifFocus.join(', ') || '-') + '\n';
-                    text += 'â€¢ Pengalaman Olimpiade: ' + this.formData.intensifExperience + '\n';
+                    text += '• Diperuntukkan Untuk: ' + (this.formData.intensifFocus.join(', ') || '-') + '\n';
+                    text += '• Pengalaman Olimpiade: ' + this.formData.intensifExperience + '\n';
                 } else if (this.activePackageKey === 'internasional') {
-                    text += 'â€¢ Diperuntukkan Untuk: ' + (this.formData.internasionalFocus.join(', ') || '-') + '\n';
+                    text += '• Diperuntukkan Untuk: ' + (this.formData.internasionalFocus.join(', ') || '-') + '\n';
                     if (this.formData.internasionalTargetKampus.trim()) {
-                        text += 'â€¢ Target Kampus Dunia/PTN: ' + this.formData.internasionalTargetKampus + '\n';
+                        text += '• Target Kampus Dunia/PTN: ' + this.formData.internasionalTargetKampus + '\n';
                     }
                 }
 
-                text += '\nâ° *RENCANA JADWAL & FREKUENSI:*\n';
-                text += 'â€¢ Estimasi Sesi: ' + this.formData.sesiPerBulan + '\n';
-                text += 'â€¢ Waktu Luang: ' + this.formData.waktuBelajar + '\n';
-                text += 'â€¢ Hari Belajar: ' + (this.formData.hariPreferensi.join(', ') || '-') + '\n';
+                text += '\n⏰ *RENCANA JADWAL & FREKUENSI:*\n';
+                text += '• Estimasi Sesi: ' + this.formData.sesiPerBulan + '\n';
+                text += '• Waktu Luang: ' + this.formData.waktuBelajar + '\n';
+                text += '• Hari Belajar: ' + (this.formData.hariPreferensi.join(', ') || '-') + '\n';
 
                 if (this.formData.catatanKhusus.trim()) {
-                    text += '\nðŸ“ *Catatan Khusus:*\n' + this.formData.catatanKhusus + '\n';
+                    text += '\n📝 *Catatan Khusus:*\n' + this.formData.catatanKhusus + '\n';
                 }
 
                 text += '\n--------------------------------------------\n';
