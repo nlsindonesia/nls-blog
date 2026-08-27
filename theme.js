@@ -329,6 +329,48 @@ function initAlpineStores() {
                 const catStr = this.form.categories && this.form.categories.length > 0 ? this.form.categories.join(', ') : '-';
                 const jnjStr = this.form.jenjang && this.form.jenjang.length > 0 ? this.form.jenjang.join(', ') : '-';
                 
+                // 1. Create teacher application record for admin Teacher Verification
+                const application = {
+                    id: 'app-' + Date.now(),
+                    submittedAt: new Date().toISOString(),
+                    status: 'pending',
+                    nama: this.form.nama || '',
+                    panggilan: this.form.panggilan || '',
+                    wa: this.form.wa || '',
+                    email: this.form.email || '',
+                    pendidikan: this.form.pendidikan || '',
+                    photo: '/images/pengajar/mentor-1-math.jpg',
+                    categories: (this.form.categories && this.form.categories.length > 0) ? [...this.form.categories] : ['OSN'],
+                    jenjang: (this.form.jenjang && this.form.jenjang.length > 0) ? [...this.form.jenjang] : ['SMA'],
+                    jenjangLabel: (this.form.jenjang && this.form.jenjang.length > 0) ? this.form.jenjang.join(' & ') : 'Semua Jenjang',
+                    subject: this.form.subject || '',
+                    kebutuhanPrivat: this.form.fokusPrivat || '',
+                    philosophy: this.form.filosofi || '',
+                    highlights: [this.form.prestasi1, this.form.prestasi2, this.form.prestasi3].filter(Boolean),
+                    portfolio: this.form.portfolio || '',
+                    notes: ''
+                };
+
+                // 2. Save into localStorage & sync cross-tab
+                try {
+                    let apps = [];
+                    const stored = localStorage.getItem("nls_teacher_applications_v1");
+                    if (stored) {
+                        const parsed = JSON.parse(stored);
+                        if (Array.isArray(parsed)) apps = parsed;
+                    }
+                    apps.unshift(application);
+                    localStorage.setItem("nls_teacher_applications_v1", JSON.stringify(apps));
+                    
+                    if (typeof BroadcastChannel !== 'undefined') {
+                        const bc = new BroadcastChannel('nls_sync_channel');
+                        bc.postMessage({ type: 'TEACHER_APPLICATION_ADDED', data: application });
+                    }
+                    window.dispatchEvent(new CustomEvent('nls-teacher-application-added', { detail: application }));
+                } catch (e) {
+                    console.error('Error saving teacher application:', e);
+                }
+
                 const lines = [
                     '🌟 *PENDAFTARAN PENGAJAR & MENTOR - NEXT LEVEL STUDY* 🌟',
                     '━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
@@ -365,9 +407,18 @@ function initAlpineStores() {
 
                 const waUrl = 'https://wa.me/6285163070002?text=' + encodeURIComponent(lines.join('\n'));
                 window.open(waUrl, '_blank');
+                
+                alert('Pendaftaran berhasil dikirim! Formulir Anda telah masuk ke antrean Teacher Verification NLS dan diteruskan ke Tim Akademik.');
+
                 this.modalOpen = false;
                 this.showRegistrationModal = false;
                 this.showModal = false;
+
+                this.form = {
+                    nama: '', panggilan: '', wa: '', email: '', pendidikan: '',
+                    categories: [], jenjang: [], subject: '', fokusPrivat: '',
+                    filosofi: '', prestasi1: '', prestasi2: '', prestasi3: '', portfolio: ''
+                };
             },
             submitForm: function() {
                 this.submit();
