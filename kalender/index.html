@@ -62,7 +62,53 @@
     margin: 0 auto;
 }
 
+/* Bulletproof Side-by-Side Grid */
+.cal-side-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+    margin-bottom: 3rem;
+}
+@media (min-width: 1024px) {
+    .cal-side-dashboard {
+        display: grid;
+        grid-template-columns: 1.35fr 1fr;
+        gap: 1.75rem;
+        align-items: start;
+    }
+}
+@media (min-width: 1280px) {
+    .cal-side-dashboard {
+        grid-template-columns: 1.45fr 1fr;
+        gap: 2rem;
+    }
+}
+
+.cal-col-left {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.cal-col-right {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+@media (min-width: 1024px) {
+    .cal-col-right {
+        position: sticky;
+        top: 5.5rem;
+    }
+}
+
 .calendar-main-card {
+    width: 100%;
     background: #ffffff;
     border: 2px solid #e2e8f0;
     border-radius: 1.75rem;
@@ -76,6 +122,7 @@ html.dark .calendar-main-card {
 }
 
 .calendar-detail-card {
+    width: 100%;
     background: #ffffff;
     border: 2px solid #e2e8f0;
     border-radius: 1.75rem;
@@ -160,6 +207,7 @@ html.dark .filter-select-input {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 0.35rem;
+    width: 100%;
 }
 @media (min-width: 640px) {
     .cal-grid {
@@ -250,7 +298,7 @@ html.dark .cal-day-header.sunday { background: #4c0519; color: #fda4af; border-c
 }
 @media (min-width: 1024px) {
     .cal-cell {
-        min-height: 104px;
+        min-height: 102px;
         padding: 0.65rem;
     }
 }
@@ -401,11 +449,6 @@ html.dark .month-chip-btn {
     font-weight: 900;
     box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
 }
-        html.dark .month-chip-btn.active {
-            background: #0284c7;
-            border-color: #38bdf8;
-            color: #ffffff;
-        }
 
         /* Category Filter Navigation Bar - 1 Single Row (No Wrap) */
         .category-filter-nav {
@@ -897,12 +940,12 @@ html.dark .month-chip-btn {
                                     Filter 1: Jenis Kegiatan
                                 </label>
                                 <select x-model="selectedCategory" @change="selectedDate = null" class="filter-select-input">
-                                    <option value="all">ðŸŒŸ Semua Jenis Kegiatan (OSN, SNBT, TKA, Mitra, Dinas)</option>
-                                    <option value="OSN">ðŸ† Olimpiade Sains Nasional (OSN)</option>
-                                    <option value="SNBT">ðŸŽ¯ Seleksi Nasional Masuk PTN (SNBT)</option>
-                                    <option value="TKA">ðŸ“š Tes Kemampuan Akademik (TKA)</option>
-                                    <option value="Mitra Sekolah">ðŸ« Mitra Sekolah (LDKS, IHT, Try Out Sekolah)</option>
-                                    <option value="Event Dinas">ðŸ›ï¸ Event Dinas (Pelatihan Guru &amp; Pembinaan Diknas)</option>
+                                    <option value="all">Semua Jenis Kegiatan (OSN, SNBT, TKA, Mitra, Dinas)</option>
+                                    <option value="OSN">Olimpiade Sains Nasional (OSN)</option>
+                                    <option value="SNBT">Seleksi Nasional Masuk PTN (SNBT)</option>
+                                    <option value="TKA">Tes Kemampuan Akademik (TKA)</option>
+                                    <option value="Mitra Sekolah">Mitra Sekolah (LDKS, IHT, Try Out Sekolah)</option>
+                                    <option value="Event Dinas">Event Dinas (Pelatihan Guru &amp; Pembinaan Diknas)</option>
                                 </select>
                             </div>
 
@@ -913,11 +956,11 @@ html.dark .month-chip-btn {
                                     Filter 2: Jenjang Pendidikan
                                 </label>
                                 <select x-model="selectedJenjang" @change="selectedDate = null" class="filter-select-input">
-                                    <option value="all">ðŸŽ“ Semua Jenjang Pendidikan (SD, SMP, SMA, Guru/Umum)</option>
-                                    <option value="SD">ðŸŽ’ SD / MI / Sederajat</option>
-                                    <option value="SMP">ðŸ“˜ SMP / MTs / Sederajat</option>
-                                    <option value="SMA">ðŸŽ“ SMA / MA / SMK / Gap Year</option>
-                                    <option value="Guru / Instansi">ðŸ›ï¸ Guru / Sekolah / Dinas / Umum</option>
+                                    <option value="all">Semua Jenjang Pendidikan (SD, SMP, SMA, Guru/Umum)</option>
+                                    <option value="SD">SD / MI / Sederajat</option>
+                                    <option value="SMP">SMP / MTs / Sederajat</option>
+                                    <option value="SMA">SMA / MA / SMK / Gap Year</option>
+                                    <option value="Guru / Instansi">Guru / Sekolah / Dinas / Umum</option>
                                 </select>
                             </div>
                         </div>
@@ -927,9 +970,9 @@ html.dark .month-chip-btn {
                             <div class="flex items-center gap-2 text-slate-600 dark:text-slate-300 flex-wrap">
                                 <span class="font-medium text-xs">Menampilkan:</span>
                                 <span class="font-black text-primary text-xs" x-text="categoryLabel()"></span>
-                                <span>â€¢</span>
+                                <span>&bull;</span>
                                 <span class="font-black text-emerald-600 dark:text-emerald-400 text-xs" x-text="jenjangLabel()"></span>
-                                <span class="px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 font-extrabold text-blue-700 dark:text-blue-300 text-[11px] border border-blue-200/60 dark:border-blue-800/50">
+                                <span class="px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 font-extrabold text-blue-700 dark:text-blue-300 text-[11px] border border-blue-200/60 dark:border-blue-800/50">
                                     <span x-text="eventsInCurrentMonth().length"></span> agenda pada bulan ini
                                 </span>
                             </div>
@@ -943,13 +986,13 @@ html.dark .month-chip-btn {
                         </div>
                     </div>
 
-                    <!-- SIDE-BY-SIDE 2-COLUMN DASHBOARD (Kalender di Kiri, Keterangan di Kanan) -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start mb-12">
+                    <!-- BULLETPROOF SIDE-BY-SIDE 2-COLUMN DASHBOARD -->
+                    <div class="cal-side-dashboard">
                         
                         <!-- ==============================================
-                             KOLOM KIRI: KALENDER INTERAKTIF (7 Kolom)
+                             KOLOM KIRI: KALENDER INTERAKTIF
                              ============================================== -->
-                        <div class="lg:col-span-7 xl:col-span-7 flex flex-col gap-6">
+                        <div class="cal-col-left">
                             
                             <div class="calendar-main-card">
                                 <!-- Month Navigation Header Bar -->
@@ -965,7 +1008,7 @@ html.dark .month-chip-btn {
                                                     x-text="eventsInCurrentMonth().length + ' Agenda'"></span>
                                             </div>
                                             <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                                                Klik tanggal untuk melihat rincian di panel kanan
+                                                Pilih tanggal berpenanda untuk melihat rincian di panel kanan
                                             </p>
                                         </div>
                                     </div>
@@ -1090,9 +1133,9 @@ html.dark .month-chip-btn {
                         </div>
 
                         <!-- ==============================================
-                             KOLOM KANAN: RINCIAN & KETERANGAN AGENDA (5 Kolom)
+                             KOLOM KANAN: RINCIAN & KETERANGAN AGENDA
                              ============================================== -->
-                        <div id="detail-kegiatan" class="lg:col-span-5 xl:col-span-5 lg:sticky lg:top-24 scroll-mt-24 flex flex-col gap-4">
+                        <div id="detail-kegiatan" class="cal-col-right scroll-mt-24">
                             
                             <div class="calendar-detail-card p-5 sm:p-6 flex flex-col max-h-[840px]">
                                 
