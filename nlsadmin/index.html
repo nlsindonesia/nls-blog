@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -1293,56 +1293,71 @@
                         </button>
                     </div>
 
-                    <!-- Event Cards Grid Table -->
+                    <!-- Event Cards Grid Table (3 Events Per Page, Full-Color High-Contrast) -->
                     <div class="admin-grid-3">
                         <template x-for="event in paginatedEventsList()" :key="event.id">
-                            <div class="p-5 rounded-2xl shadow-sm hover:shadow-lg transition-all flex flex-col justify-between space-y-4 relative overflow-hidden" :class="getEventAdminCardClass(event.category)">
-                                <!-- Left Stripe -->
-                                <div class="absolute left-0 top-0 bottom-0 w-2" :class="getCategoryStripe(event.category)"></div>
+                            <div class="p-6 rounded-3xl transition-all flex flex-col justify-between space-y-4 relative overflow-hidden hover:-translate-y-1" :class="getEventAdminCardClass(event.category)">
+                                <!-- Left Category Accent Stripe -->
+                                <div class="absolute left-0 top-0 bottom-0 w-2.5" :class="getCategoryStripe(event.category)"></div>
 
-                                <div class="pl-2 space-y-2.5">
-                                    <div class="flex items-center justify-between gap-1.5 flex-wrap">
-                                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider"
+                                <div class="pl-2 space-y-3">
+                                    <!-- Category Badge & Date Row -->
+                                    <div class="flex items-center justify-between gap-2 flex-wrap">
+                                        <span class="px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider"
                                             :class="getEventCategoryBadge(event.category)"
                                             x-text="event.category"></span>
-                                        <span class="text-[11px] font-bold text-slate-500" x-text="event.date"></span>
+                                        <span class="inline-flex items-center gap-1 text-xs font-black px-2.5 py-0.5 rounded-full bg-white/70 dark:bg-black/40 text-slate-800 dark:text-slate-200 border border-slate-300/60 dark:border-white/10"
+                                            x-text="event.date"></span>
                                     </div>
 
-                                    <h4 class="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-snug"
+                                    <!-- Title -->
+                                    <h4 class="text-base sm:text-lg font-black text-slate-950 dark:text-white leading-snug"
                                         x-text="event.title"></h4>
 
-                                    <div class="space-y-1 text-xs text-slate-600 dark:text-slate-400">
-                                        <div class="flex items-center gap-1.5 font-semibold">
-                                            <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <!-- Info Row -->
+                                    <div class="p-3 rounded-2xl bg-white/80 dark:bg-black/30 border border-black/5 dark:border-white/10 space-y-1.5 text-xs text-slate-800 dark:text-slate-200">
+                                        <div class="flex items-center gap-2 font-black">
+                                            <span class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-600 flex items-center justify-center shrink-0">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                            </span>
                                             <span x-text="event.time"></span>
                                         </div>
-                                        <div class="flex items-center gap-1.5 font-semibold">
-                                            <svg class="w-4 h-4 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                                            <span x-text="event.mode + ' • ' + event.location"></span>
+                                        <div class="flex items-center gap-2 font-bold">
+                                            <span class="w-6 h-6 rounded-lg bg-teal-500/20 text-teal-600 flex items-center justify-center shrink-0">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                            </span>
+                                            <span class="truncate" x-text="event.mode + ' • ' + event.location"></span>
                                         </div>
                                     </div>
 
-                                    <p class="text-xs text-slate-500 line-clamp-2" x-text="event.description"></p>
+                                    <p class="text-xs text-slate-700 dark:text-slate-300 font-medium line-clamp-2 leading-relaxed" x-text="event.description"></p>
                                 </div>
 
-                                <!-- Action Buttons -->
-                                <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2 pl-2">
-                                    <span class="text-[10px] font-bold text-slate-400" x-text="event.jenjangLabel || event.jenjang"></span>
-                                    <div class="flex items-center gap-1">
+                                <!-- Action Buttons Row (Solid Full-Color Vivid Buttons) -->
+                                <div class="pt-3.5 border-t border-black/10 dark:border-white/10 flex items-center justify-between gap-2 pl-2">
+                                    <span class="px-2.5 py-1 rounded-xl text-[11px] font-black bg-white/70 dark:bg-black/40 text-slate-800 dark:text-slate-200 border border-black/5 dark:border-white/10"
+                                        x-text="event.jenjangLabel || event.jenjang"></span>
+                                    
+                                    <div class="flex items-center gap-1.5">
+                                        <!-- Edit Button (Vivid Sky Blue) -->
                                         <button type="button" @click="editEvent(event)"
-                                            class="p-2 rounded-lg bg-sky-50 text-sky-700 hover:bg-sky-100 dark:bg-sky-950 dark:text-sky-300 transition-all cursor-pointer"
-                                            title="Edit / Revisi">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                            class="p-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white shadow-md shadow-sky-600/30 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                                            title="Edit / Revisi Agenda">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                                         </button>
+                                        
+                                        <!-- Duplicate Button (Vivid Indigo) -->
                                         <button type="button" @click="duplicateEvent(event)"
-                                            class="p-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 transition-all cursor-pointer"
-                                            title="Duplikasi">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                                            class="p-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/30 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                                            title="Duplikasi Agenda">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                                         </button>
+                                        
+                                        <!-- Delete Button (Vivid Rose) -->
                                         <button type="button" @click="deleteEvent(event.id)"
-                                            class="p-2 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-950 dark:text-rose-300 transition-all cursor-pointer"
-                                            title="Hapus">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                            class="p-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-600/30 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                                            title="Pindahkan ke Trash">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                         </button>
                                     </div>
                                 </div>
