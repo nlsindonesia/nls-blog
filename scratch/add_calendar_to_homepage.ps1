@@ -89,366 +89,358 @@ $headScripts = @'
 
 $content = $content.Replace('<script src="/blog/default-articles.js"></script>', $headScripts)
 
-# 2. Calendar Section Markup to insert after <section id="kaleidoskop"> ... </section>
+# 2. Calendar Section Markup to insert precisely above <!-- BERITA TERKINI SECTION -->
 $calendarSectionMarkup = @'
-
-<!-- =========================================================================
-     CALENDAR & UPCOMING EVENTS SECTION (INTEGRATED FULL-COLOR SIDE-BY-SIDE)
-     ========================================================================= -->
-<section id="kalender" class="py-20 bg-surface relative overflow-hidden scroll-mt-20" x-data="homeCalendarApp()">
-    <div class="container-max px-margin-mobile md:px-margin-desktop">
-        
-        <!-- Section Header & Filter Hub -->
-        <div class="bg-white dark:bg-[#131d38] p-5 sm:p-6 rounded-3xl border-2 border-sky-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-black/40 mb-8 transition-all">
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                <!-- Title & Badge -->
-                <div class="flex items-center gap-3.5">
-                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-sky-500 to-blue-600 flex items-center justify-center text-white shadow-md shadow-sky-500/20 shrink-0">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                                Kalender Kegiatan &amp; Event Mendatang
-                            </h2>
-                            <span class="px-3 py-1 rounded-full text-xs font-black bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 border border-sky-300 dark:border-sky-800 flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span>
-                                <span x-text="categoryLabel()"></span>
-                            </span>
-                        </div>
-                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-semibold mt-0.5">
-                            Jadwal lengkap Try Out, Pelatihan Olimpiade Sains, Seleksi OSN, dan Agenda Akademik di Next Level Study.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Right Buttons: Filter Category Pill Tabs & Complete Calendar Link -->
-                <div class="flex flex-wrap items-center gap-2">
-                    <div class="inline-flex p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                        <button type="button" @click="setCategory('all')"
-                            class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer"
-                            :class="selectedCategory === 'all' ? 'bg-white dark:bg-[#131D38] text-sky-600 dark:text-sky-400 font-black shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'">
-                            Semua
-                        </button>
-                        <button type="button" @click="setCategory('OSN')"
-                            class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
-                            :class="selectedCategory === 'OSN' ? 'bg-sky-600 text-white font-black shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-sky-600'">
-                            <span class="w-2 h-2 rounded-full bg-sky-400"></span>
-                            <span>OSN</span>
-                        </button>
-                        <button type="button" @click="setCategory('SNBT')"
-                            class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
-                            :class="selectedCategory === 'SNBT' ? 'bg-emerald-600 text-white font-black shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-emerald-600'">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                            <span>SNBT</span>
-                        </button>
-                        <button type="button" @click="setCategory('TKA')"
-                            class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
-                            :class="selectedCategory === 'TKA' ? 'bg-amber-600 text-white font-black shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-amber-600'">
-                            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-                            <span>TKA</span>
-                        </button>
-                    </div>
-
-                    <a href="/kalender"
-                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-sky-600 hover:bg-sky-700 text-white font-black text-xs shadow-md hover:shadow-lg transition-all cursor-pointer">
-                        <span>Buka Kalender Penuh</span>
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- BULLETPROOF SIDE-BY-SIDE 2-COLUMN DASHBOARD -->
-        <div class="cal-side-dashboard">
-            
-            <!-- KOLOM KIRI: KALENDER INTERAKTIF -->
-            <div class="cal-col-left">
-                <div id="home-cal-main-card-el" class="calendar-main-card">
-                    <!-- Month Navigation Header Bar -->
-                    <div class="p-4 sm:p-5 bg-gradient-to-r from-sky-50/80 via-white to-blue-50/80 dark:from-[#0f182e] dark:via-[#131d38] dark:to-[#0f182e] border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
-                        <div class="flex items-center gap-3">
-                            <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 text-white flex items-center justify-center shadow-md flex-shrink-0">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <!-- =========================================================================
+             CALENDAR & UPCOMING EVENTS SECTION (INTEGRATED FULL-COLOR SIDE-BY-SIDE)
+             ========================================================================= -->
+        <section id="kalender" class="py-20 bg-surface relative overflow-hidden scroll-mt-20" x-data="homeCalendarApp()">
+            <div class="container-max px-4 sm:px-6 lg:px-8">
+                
+                <!-- Section Header & Filter Hub -->
+                <div class="bg-white dark:bg-[#131d38] p-5 sm:p-6 rounded-3xl border-2 border-sky-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-black/40 mb-8 transition-all">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                        <!-- Title & Badge -->
+                        <div class="flex items-center gap-3.5">
+                            <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-sky-500 to-blue-600 flex items-center justify-center text-white shadow-md shadow-sky-500/20 shrink-0">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                             </div>
                             <div>
-                                <div class="flex items-center gap-2">
-                                    <h3 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white" x-text="monthLabel"></h3>
-                                    <span class="px-2 py-0.5 rounded-full text-xs font-black bg-sky-100 text-sky-700 border border-sky-300 dark:bg-sky-950/80 dark:text-sky-300"
-                                        x-text="eventsInCurrentMonth().length + ' Agenda'"></span>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                                        Kalender Kegiatan &amp; Event Mendatang
+                                    </h2>
+                                    <span class="px-3 py-1 rounded-full text-xs font-black bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 border border-sky-300 dark:border-sky-800 flex items-center gap-1.5">
+                                        <span class="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span>
+                                        <span x-text="categoryLabel()"></span>
+                                    </span>
                                 </div>
-                                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                                    Pilih tanggal berpenanda untuk melihat rincian di panel kanan
+                                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-semibold mt-0.5">
+                                    Jadwal lengkap Try Out, Pelatihan Olimpiade Sains, Seleksi OSN, dan Agenda Akademik di Next Level Study.
                                 </p>
                             </div>
                         </div>
 
-                        <!-- Controls -->
-                        <div class="flex items-center gap-1.5 self-start sm:self-auto">
-                            <button type="button" @click="goToToday()"
-                                class="px-3 py-1.5 rounded-xl text-xs font-black bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all cursor-pointer shadow-xs">
-                                Hari Ini
-                            </button>
-                            <button type="button" @click="prevMonth()"
-                                class="w-9 h-9 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-sky-600 hover:text-white transition-all flex items-center justify-center cursor-pointer shadow-xs"
-                                title="Bulan Sebelumnya">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
-                            </button>
-                            <button type="button" @click="nextMonth()"
-                                class="w-9 h-9 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-sky-600 hover:text-white transition-all flex items-center justify-center cursor-pointer shadow-xs"
-                                title="Bulan Berikutnya">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Quick Month Jump Bar -->
-                    <div class="px-4 sm:px-5 py-2.5 bg-slate-50/50 dark:bg-[#101930] border-b border-slate-100 dark:border-slate-800 shrink-0">
-                        <div class="month-chip-bar no-scrollbar">
-                            <template x-for="(mName, mIdx) in monthNames" :key="mIdx">
-                                <button type="button"
-                                    @click="setMonth(mIdx)"
-                                    class="month-chip-btn"
-                                    :class="currentMonth === mIdx ? 'active' : ''"
-                                    x-text="mName">
+                        <!-- Right Buttons: Filter Category Pill Tabs & Complete Calendar Link -->
+                        <div class="flex flex-wrap items-center gap-2">
+                            <div class="inline-flex p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                                <button type="button" @click="setCategory('all')"
+                                    class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                                    :class="selectedCategory === 'all' ? 'bg-white dark:bg-[#131D38] text-sky-600 dark:text-sky-400 font-black shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'">
+                                    Semua
                                 </button>
-                            </template>
-                        </div>
-                    </div>
+                                <button type="button" @click="setCategory('OSN')"
+                                    class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
+                                    :class="selectedCategory === 'OSN' ? 'bg-sky-600 text-white font-black shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-sky-600'">
+                                    <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+                                    <span>OSN</span>
+                                </button>
+                                <button type="button" @click="setCategory('SNBT')"
+                                    class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
+                                    :class="selectedCategory === 'SNBT' ? 'bg-emerald-600 text-white font-black shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-emerald-600'">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                                    <span>SNBT</span>
+                                </button>
+                                <button type="button" @click="setCategory('TKA')"
+                                    class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
+                                    :class="selectedCategory === 'TKA' ? 'bg-amber-600 text-white font-black shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-amber-600'">
+                                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                                    <span>TKA</span>
+                                </button>
+                            </div>
 
-                    <!-- Calendar Grid Body -->
-                    <div class="p-3 sm:p-5 flex-1 flex flex-col justify-between">
-                        <!-- 7-Day Header -->
-                        <div class="cal-grid mb-2">
-                            <div class="cal-day-header senin">Senin</div>
-                            <div class="cal-day-header selasa">Selasa</div>
-                            <div class="cal-day-header rabu">Rabu</div>
-                            <div class="cal-day-header kamis">Kamis</div>
-                            <div class="cal-day-header jumat">Jumat</div>
-                            <div class="cal-day-header saturday">Sabtu</div>
-                            <div class="cal-day-header sunday">Minggu</div>
-                        </div>
-
-                        <!-- Day Cells Grid -->
-                        <div class="cal-grid">
-                            <template x-for="(cell, idx) in calendarCells" :key="idx">
-                                <div class="cal-cell"
-                                    :class="getCellClasses(cell)"
-                                    @click="onCellClick(cell)">
-                                    
-                                    <!-- Cell Top Row: Date Number & Badge -->
-                                    <div class="flex items-center justify-between w-full">
-                                        <span class="text-xs sm:text-sm font-black"
-                                            :class="getDateNumberClasses(cell)"
-                                            x-text="cell.dayNumber || ''"></span>
-
-                                        <!-- Today Badge -->
-                                        <template x-if="cell.isToday">
-                                            <span style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important; color: #ffffff !important;" class="px-1.5 py-0.5 rounded text-[8px] sm:text-[9px] font-black uppercase tracking-wider shadow-xs">Hari Ini</span>
-                                        </template>
-
-                                        <!-- Event Count Dot Indicator -->
-                                        <template x-if="cell.hasEvents && !cell.isToday">
-                                            <span class="w-2 h-2 rounded-full ring-2 ring-white dark:ring-slate-900"
-                                                :class="getCategoryDotClass(cell.events[0].category)"></span>
-                                        </template>
-                                    </div>
-
-                                    <!-- Event Pills inside Cell -->
-                                    <div class="mt-1 flex-1 flex flex-col gap-1 overflow-hidden" x-show="cell.hasEvents">
-                                        <template x-for="evt in cell.events.slice(0, 2)" :key="evt.id">
-                                            <div class="cal-pill" :class="getPillClass(evt.category)" :title="evt.title">
-                                                <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" :class="getCategoryDotClass(evt.category)"></span>
-                                                <span class="truncate" x-text="evt.title"></span>
-                                            </div>
-                                        </template>
-                                        <template x-if="cell.events.length > 2">
-                                            <div class="text-[9px] font-black text-sky-600 dark:text-sky-400 pl-1">
-                                                +<span x-text="cell.events.length - 2"></span> agenda
-                                            </div>
-                                        </template>
-                                    </div>
-                                </div>
-                            </template>
-                        </div>
-                    </div>
-
-                    <!-- Legend Bar -->
-                    <div class="px-4 py-3 bg-slate-50 dark:bg-[#0c1427] border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-center gap-3 sm:gap-5 text-[11px] font-bold shrink-0">
-                        <span class="text-slate-500 dark:text-slate-400 font-extrabold">Petunjuk Kategori:</span>
-                        <div class="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity" @click="setCategory('OSN')">
-                            <span class="w-2.5 h-2.5 rounded-full bg-[#0284c7]"></span>
-                            <span class="text-slate-800 dark:text-slate-200">OSN (Biru)</span>
-                        </div>
-                        <div class="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity" @click="setCategory('TKA')">
-                            <span class="w-2.5 h-2.5 rounded-full bg-[#d97706]"></span>
-                            <span class="text-slate-800 dark:text-slate-200">TKA (Kuning)</span>
-                        </div>
-                        <div class="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity" @click="setCategory('SNBT')">
-                            <span class="w-2.5 h-2.5 rounded-full bg-[#059669]"></span>
-                            <span class="text-slate-800 dark:text-slate-200">SNBT (Hijau)</span>
-                        </div>
-                        <div class="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity" @click="setCategory('Mitra Sekolah')">
-                            <span class="w-2.5 h-2.5 rounded-full bg-[#7c3aed]"></span>
-                            <span class="text-slate-800 dark:text-slate-200">Mitra (Ungu)</span>
-                        </div>
-                        <div class="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity" @click="setCategory('Event Dinas')">
-                            <span class="w-2.5 h-2.5 rounded-full bg-[#e11d48]"></span>
-                            <span class="text-slate-800 dark:text-slate-200">Dinas (Merah)</span>
+                            <a href="/kalender"
+                                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-sky-600 hover:bg-sky-700 text-white font-black text-xs shadow-md hover:shadow-lg transition-all cursor-pointer">
+                                <span>Buka Kalender Penuh</span>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                            </a>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- KOLOM KANAN: RINCIAN & AGENDA BULAN INI (MATCHING PRESENT EVENT VIEW) -->
-            <div class="cal-col-right">
-                <div class="calendar-detail-card p-5 sm:p-6" :style="mainCardHeight ? 'height: ' + mainCardHeight + 'px;' : ''">
+                <!-- BULLETPROOF SIDE-BY-SIDE 2-COLUMN DASHBOARD -->
+                <div class="cal-side-dashboard">
                     
-                    <!-- Panel Header -->
-                    <div class="pb-3.5 mb-3.5 border-b border-slate-100 dark:border-slate-800 shrink-0">
-                        <div class="flex items-center justify-between gap-2 mb-1.5">
-                            <div class="inline-flex items-center gap-1 text-[11px] font-black text-sky-600 dark:text-sky-400 uppercase tracking-wider bg-sky-50 dark:bg-sky-950/60 px-2.5 py-0.5 rounded-full border border-sky-200 dark:border-sky-800">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                                <span>Rincian &amp; Agenda Event</span>
-                            </div>
-                            
-                            <span class="px-2 py-0.5 rounded-full text-xs font-extrabold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                                <span x-text="displayedEvents().length"></span> Kegiatan
-                            </span>
-                        </div>
-
-                        <h3 class="text-lg sm:text-xl font-black text-slate-900 dark:text-white leading-tight">
-                            <template x-if="selectedDate">
-                                <span>Agenda: <span class="text-sky-600 dark:text-sky-400" x-text="formatDateFull(selectedDate)"></span></span>
-                            </template>
-                            <template x-if="!selectedDate">
-                                <span>Agenda: <span class="text-sky-600 dark:text-sky-400" x-text="monthLabel"></span></span>
-                            </template>
-                        </h3>
-
-                        <template x-if="selectedDate">
-                            <div class="mt-2 flex items-center justify-between">
-                                <p class="text-xs text-slate-500 font-medium">Memfilter tanggal terpilih</p>
-                                <button @click="selectedDate = null"
-                                    class="inline-flex items-center gap-1 text-xs font-bold text-sky-600 hover:text-sky-700 dark:text-sky-400 hover:underline cursor-pointer">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                                    Lihat Semua Bulan Ini
-                                </button>
-                            </div>
-                        </template>
-                    </div>
-
-                    <!-- Scrollable Event Cards List -->
-                    <div class="cal-detail-body custom-scrollbar space-y-4">
-                        
-                        <!-- Empty State -->
-                        <template x-if="displayedEvents().length === 0">
-                            <div class="p-8 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-dashed border-slate-200 dark:border-slate-700 text-center space-y-3 my-auto">
-                                <div class="w-12 h-12 rounded-2xl bg-slate-200/70 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto text-2xl">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                </div>
-                                <div>
-                                    <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200">Tidak Ada Kegiatan</h4>
-                                    <p class="text-xs text-slate-500 mt-0.5 leading-relaxed">
-                                        Tidak ditemukan agenda pada filter ini. Klik tanggal lain atau pilih bulan berikutnya.
-                                    </p>
-                                </div>
-                                <button @click="selectedDate = null; resetFilters()"
-                                    class="px-4 py-2 rounded-xl bg-sky-600 text-white text-xs font-bold hover:bg-sky-700 transition-all cursor-pointer shadow-xs">
-                                    Lihat Semua Agenda Bulan Ini
-                                </button>
-                            </div>
-                        </template>
-
-                        <!-- Event Cards (Synced with Present Event View in Admin) -->
-                        <template x-for="event in displayedEvents()" :key="event.id">
-                            <div class="p-5 sm:p-6 rounded-3xl transition-all flex flex-col justify-between space-y-4 relative overflow-hidden hover:-translate-y-1 shadow-md hover:shadow-lg"
-                                :class="getEventAdminCardClass(event.category)">
-                                
-                                <!-- Left Category Accent Stripe -->
-                                <div class="absolute left-0 top-0 bottom-0 w-2.5" :class="getCategoryStripe(event.category)"></div>
-
-                                <div class="pl-2 space-y-3">
-                                    <!-- Category Badge & Date Row -->
-                                    <div class="flex items-center justify-between gap-2 flex-wrap">
-                                        <span class="px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider"
-                                            :class="getEventCategoryBadge(event.category)"
-                                            x-text="event.category"></span>
-                                        
-                                        <span class="inline-flex items-center gap-1 text-xs font-black px-2.5 py-0.5 rounded-full bg-white/80 dark:bg-black/40 text-slate-800 dark:text-slate-200 border border-slate-300/60 dark:border-white/10"
-                                            x-text="formatDateFull ? formatDateFull(event.date) : event.date"></span>
+                    <!-- KOLOM KIRI: KALENDER INTERAKTIF -->
+                    <div class="cal-col-left">
+                        <div id="home-cal-main-card-el" class="calendar-main-card">
+                            <!-- Month Navigation Header Bar -->
+                            <div class="p-4 sm:p-5 bg-gradient-to-r from-sky-50/80 via-white to-blue-50/80 dark:from-[#0f182e] dark:via-[#131d38] dark:to-[#0f182e] border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 text-white flex items-center justify-center shadow-md flex-shrink-0">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                     </div>
-
-                                    <!-- Title -->
-                                    <h4 class="text-base sm:text-lg font-black text-slate-950 dark:text-white leading-snug"
-                                        x-text="event.title"></h4>
-
-                                    <!-- Info Box (Glassmorphic Box with Amber Clock & Teal Screen Icons) -->
-                                    <div class="p-3 rounded-2xl bg-white/80 dark:bg-black/30 border border-black/5 dark:border-white/10 space-y-1.5 text-xs text-slate-800 dark:text-slate-200">
-                                        <div class="flex items-center gap-2 font-black">
-                                            <span class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-600 flex items-center justify-center shrink-0">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                            </span>
-                                            <span x-text="event.time"></span>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <h3 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white" x-text="monthLabel"></h3>
+                                            <span class="px-2 py-0.5 rounded-full text-xs font-black bg-sky-100 text-sky-700 border border-sky-300 dark:bg-sky-950/80 dark:text-sky-300"
+                                                x-text="eventsInCurrentMonth().length + ' Agenda'"></span>
                                         </div>
-                                        <div class="flex items-center gap-2 font-bold">
-                                            <span class="w-6 h-6 rounded-lg bg-teal-500/20 text-teal-600 flex items-center justify-center shrink-0">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                                            </span>
-                                            <span class="truncate" x-text="event.mode + (event.location ? ' - ' + event.location : '')"></span>
-                                        </div>
+                                        <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                                            Pilih tanggal berpenanda untuk melihat rincian di panel kanan
+                                        </p>
                                     </div>
+                                </div>
 
-                                    <p class="text-xs text-slate-700 dark:text-slate-300 font-medium leading-relaxed" x-text="event.description"></p>
+                                <!-- Controls -->
+                                <div class="flex items-center gap-1.5 self-start sm:self-auto">
+                                    <button type="button" @click="goToToday()"
+                                        class="px-3 py-1.5 rounded-xl text-xs font-black bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all cursor-pointer shadow-xs">
+                                        Hari Ini
+                                    </button>
+                                    <button type="button" @click="prevMonth()"
+                                        class="w-9 h-9 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-sky-600 hover:text-white transition-all flex items-center justify-center cursor-pointer shadow-xs"
+                                        title="Bulan Sebelumnya">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                                    </button>
+                                    <button type="button" @click="nextMonth()"
+                                        class="w-9 h-9 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-sky-600 hover:text-white transition-all flex items-center justify-center cursor-pointer shadow-xs"
+                                        title="Bulan Berikutnya">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                                    </button>
+                                </div>
+                            </div>
 
-                                    <!-- Highlights (if available) -->
-                                    <template x-if="event.highlights && event.highlights.length > 0">
-                                        <div class="bg-white/80 dark:bg-black/30 p-3 rounded-2xl border border-black/5 dark:border-white/10 space-y-1.5">
-                                            <p class="text-[10px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider">Fasilitas &amp; Materi:</p>
-                                            <ul class="space-y-1">
-                                                <template x-for="(hl, hIdx) in event.highlights" :key="hIdx">
-                                                    <li class="flex items-start gap-1.5 text-xs text-slate-700 dark:text-slate-300 font-medium">
-                                                        <svg class="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                                                        <span x-text="hl"></span>
-                                                    </li>
+                            <!-- Quick Month Jump Bar -->
+                            <div class="px-4 sm:px-5 py-2.5 bg-slate-50/50 dark:bg-[#101930] border-b border-slate-100 dark:border-slate-800 shrink-0">
+                                <div class="month-chip-bar no-scrollbar">
+                                    <template x-for="(mName, mIdx) in monthNames" :key="mIdx">
+                                        <button type="button"
+                                            @click="setMonth(mIdx)"
+                                            class="month-chip-btn"
+                                            :class="currentMonth === mIdx ? 'active' : ''"
+                                            x-text="mName">
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Calendar Grid Body -->
+                            <div class="p-3 sm:p-5 flex-1 flex flex-col justify-between">
+                                <!-- 7-Day Header -->
+                                <div class="cal-grid mb-2">
+                                    <div class="cal-day-header senin">Senin</div>
+                                    <div class="cal-day-header selasa">Selasa</div>
+                                    <div class="cal-day-header rabu">Rabu</div>
+                                    <div class="cal-day-header kamis">Kamis</div>
+                                    <div class="cal-day-header jumat">Jumat</div>
+                                    <div class="cal-day-header saturday">Sabtu</div>
+                                    <div class="cal-day-header sunday">Minggu</div>
+                                </div>
+
+                                <!-- Day Cells Grid -->
+                                <div class="cal-grid">
+                                    <template x-for="(cell, idx) in calendarCells" :key="idx">
+                                        <div class="cal-cell"
+                                            :class="getCellClasses(cell)"
+                                            @click="onCellClick(cell)">
+                                            
+                                            <!-- Cell Top Row: Date Number & Badge -->
+                                            <div class="flex items-center justify-between w-full">
+                                                <span class="text-xs sm:text-sm font-black"
+                                                    :class="getDateNumberClasses(cell)"
+                                                    x-text="cell.dayNumber || ''"></span>
+
+                                                <!-- Today Badge -->
+                                                <template x-if="cell.isToday">
+                                                    <span style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important; color: #ffffff !important;" class="px-1.5 py-0.5 rounded text-[8px] sm:text-[9px] font-black uppercase tracking-wider shadow-xs">Hari Ini</span>
                                                 </template>
-                                            </ul>
+
+                                                <!-- Event Count Dot Indicator -->
+                                                <template x-if="cell.hasEvents && !cell.isToday">
+                                                    <span class="w-2 h-2 rounded-full ring-2 ring-white dark:ring-slate-900"
+                                                        :class="getCategoryDotClass(cell.events[0].category)"></span>
+                                                </template>
+                                            </div>
+
+                                            <!-- Event Pills inside Cell -->
+                                            <div class="mt-1 flex-1 flex flex-col gap-1 overflow-hidden" x-show="cell.hasEvents">
+                                                <template x-for="evt in cell.events.slice(0, 2)" :key="evt.id">
+                                                    <div class="cal-pill" :class="getPillClass(evt.category)" :title="evt.title">
+                                                        <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" :class="getCategoryDotClass(evt.category)"></span>
+                                                        <span class="truncate" x-text="evt.title"></span>
+                                                    </div>
+                                                </template>
+                                                <template x-if="cell.events.length > 2">
+                                                    <div class="text-[9px] font-black text-sky-600 dark:text-sky-400 pl-1">
+                                                        +<span x-text="cell.events.length - 2"></span> agenda
+                                                    </div>
+                                                </template>
+                                            </div>
                                         </div>
                                     </template>
                                 </div>
+                            </div>
 
-                                <!-- Bottom Action Row -->
-                                <div class="pt-3.5 border-t border-black/10 dark:border-white/10 flex items-center justify-between gap-2 pl-2">
-                                    <span class="px-2.5 py-1 rounded-xl text-[11px] font-black bg-white/70 dark:bg-black/40 text-slate-800 dark:text-slate-200 border border-black/5 dark:border-white/10"
-                                        x-text="event.jenjangLabel || event.jenjang"></span>
-                                    
-                                    <a :href="'https://wa.me/6285163070002?text=' + encodeURIComponent(event.whatsappMessage || ('Halo Next Level Study, saya ingin info pendaftaran untuk agenda: ' + event.title))"
-                                        target="_blank" rel="noopener noreferrer"
-                                        class="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-black text-xs shadow-md shadow-sky-600/30 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer">
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
-                                        <span>Daftar / Tanya CS</span>
-                                    </a>
+                            <!-- Legend Bar -->
+                            <div class="px-4 py-3 bg-slate-50 dark:bg-[#0c1427] border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-center gap-3 sm:gap-5 text-[11px] font-bold shrink-0">
+                                <span class="text-slate-500 dark:text-slate-400 font-extrabold">Petunjuk Kategori:</span>
+                                <div class="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity" @click="setCategory('OSN')">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-[#0284c7]"></span>
+                                    <span class="text-slate-800 dark:text-slate-200">OSN (Biru)</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity" @click="setCategory('TKA')">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-[#d97706]"></span>
+                                    <span class="text-slate-800 dark:text-slate-200">TKA (Kuning)</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity" @click="setCategory('SNBT')">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-[#059669]"></span>
+                                    <span class="text-slate-800 dark:text-slate-200">SNBT (Hijau)</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity" @click="setCategory('Mitra Sekolah')">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-[#7c3aed]"></span>
+                                    <span class="text-slate-800 dark:text-slate-200">Mitra (Ungu)</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity" @click="setCategory('Event Dinas')">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-[#e11d48]"></span>
+                                    <span class="text-slate-800 dark:text-slate-200">Dinas (Merah)</span>
                                 </div>
                             </div>
-                        </template>
+                        </div>
+                    </div>
+
+                    <!-- KOLOM KANAN: RINCIAN & AGENDA BULAN INI (MATCHING PRESENT EVENT VIEW) -->
+                    <div class="cal-col-right">
+                        <div class="calendar-detail-card p-5 sm:p-6" :style="mainCardHeight ? 'height: ' + mainCardHeight + 'px;' : ''">
+                            
+                            <!-- Panel Header -->
+                            <div class="pb-3.5 mb-3.5 border-b border-slate-100 dark:border-slate-800 shrink-0">
+                                <div class="flex items-center justify-between gap-2 mb-1.5">
+                                    <div class="inline-flex items-center gap-1 text-[11px] font-black text-sky-600 dark:text-sky-400 uppercase tracking-wider bg-sky-50 dark:bg-sky-950/60 px-2.5 py-0.5 rounded-full border border-sky-200 dark:border-sky-800">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                        <span>Rincian &amp; Agenda Event</span>
+                                    </div>
+                                    
+                                    <span class="px-2 py-0.5 rounded-full text-xs font-extrabold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                                        <span x-text="displayedEvents().length"></span> Kegiatan
+                                    </span>
+                                </div>
+
+                                <h3 class="text-lg sm:text-xl font-black text-slate-900 dark:text-white leading-tight">
+                                    <template x-if="selectedDate">
+                                        <span>Agenda: <span class="text-sky-600 dark:text-sky-400" x-text="formatDateFull(selectedDate)"></span></span>
+                                    </template>
+                                    <template x-if="!selectedDate">
+                                        <span>Agenda: <span class="text-sky-600 dark:text-sky-400" x-text="monthLabel"></span></span>
+                                    </template>
+                                </h3>
+
+                                <template x-if="selectedDate">
+                                    <div class="mt-2 flex items-center justify-between">
+                                        <p class="text-xs text-slate-500 font-medium">Memfilter tanggal terpilih</p>
+                                        <button @click="selectedDate = null"
+                                            class="inline-flex items-center gap-1 text-xs font-bold text-sky-600 hover:text-sky-700 dark:text-sky-400 hover:underline cursor-pointer">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                                            Lihat Semua Bulan Ini
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- Scrollable Event Cards List -->
+                            <div class="cal-detail-body custom-scrollbar space-y-4">
+                                
+                                <!-- Empty State -->
+                                <template x-if="displayedEvents().length === 0">
+                                    <div class="p-8 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-dashed border-slate-200 dark:border-slate-700 text-center space-y-3 my-auto">
+                                        <div class="w-12 h-12 rounded-2xl bg-slate-200/70 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto text-2xl">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200">Tidak Ada Kegiatan</h4>
+                                            <p class="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                                                Tidak ditemukan agenda pada filter ini. Klik tanggal lain atau pilih bulan berikutnya.
+                                            </p>
+                                        </div>
+                                        <button @click="selectedDate = null; resetFilters()"
+                                            class="px-4 py-2 rounded-xl bg-sky-600 text-white text-xs font-bold hover:bg-sky-700 transition-all cursor-pointer shadow-xs">
+                                            Lihat Semua Agenda Bulan Ini
+                                        </button>
+                                    </div>
+                                </template>
+
+                                <!-- Event Cards (Synced with Present Event View in Admin) -->
+                                <template x-for="event in displayedEvents()" :key="event.id">
+                                    <div class="p-5 sm:p-6 rounded-3xl transition-all flex flex-col justify-between space-y-4 relative overflow-hidden hover:-translate-y-1 shadow-md hover:shadow-lg"
+                                        :class="getEventAdminCardClass(event.category)">
+                                        
+                                        <!-- Left Category Accent Stripe -->
+                                        <div class="absolute left-0 top-0 bottom-0 w-2.5" :class="getCategoryStripe(event.category)"></div>
+
+                                        <div class="pl-2 space-y-3">
+                                            <!-- Category Badge & Date Row -->
+                                            <div class="flex items-center justify-between gap-2 flex-wrap">
+                                                <span class="px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider"
+                                                    :class="getEventCategoryBadge(event.category)"
+                                                    x-text="event.category"></span>
+                                                
+                                                <span class="inline-flex items-center gap-1 text-xs font-black px-2.5 py-0.5 rounded-full bg-white/80 dark:bg-black/40 text-slate-800 dark:text-slate-200 border border-slate-300/60 dark:border-white/10"
+                                                    x-text="formatDateFull ? formatDateFull(event.date) : event.date"></span>
+                                            </div>
+
+                                            <!-- Title -->
+                                            <h4 class="text-base sm:text-lg font-black text-slate-950 dark:text-white leading-snug"
+                                                x-text="event.title"></h4>
+
+                                            <!-- Info Box (Glassmorphic Box with Amber Clock & Teal Screen Icons) -->
+                                            <div class="p-3 rounded-2xl bg-white/80 dark:bg-black/30 border border-black/5 dark:border-white/10 space-y-1.5 text-xs text-slate-800 dark:text-slate-200">
+                                                <div class="flex items-center gap-2 font-black">
+                                                    <span class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-600 flex items-center justify-center shrink-0">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                    </span>
+                                                    <span x-text="event.time"></span>
+                                                </div>
+                                                <div class="flex items-center gap-2 font-bold">
+                                                    <span class="w-6 h-6 rounded-lg bg-teal-500/20 text-teal-600 flex items-center justify-center shrink-0">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                                    </span>
+                                                    <span class="truncate" x-text="event.mode + (event.location ? ' - ' + event.location : '')"></span>
+                                                </div>
+                                            </div>
+
+                                            <p class="text-xs text-slate-700 dark:text-slate-300 font-medium leading-relaxed" x-text="event.description"></p>
+
+                                            <!-- Highlights (if available) -->
+                                            <template x-if="event.highlights && event.highlights.length > 0">
+                                                <div class="bg-white/80 dark:bg-black/30 p-3 rounded-2xl border border-black/5 dark:border-white/10 space-y-1.5">
+                                                    <p class="text-[10px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider">Fasilitas &amp; Materi:</p>
+                                                    <ul class="space-y-1">
+                                                        <template x-for="(hl, hIdx) in event.highlights" :key="hIdx">
+                                                            <li class="flex items-start gap-1.5 text-xs text-slate-700 dark:text-slate-300 font-medium">
+                                                                <svg class="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                                                <span x-text="hl"></span>
+                                                            </li>
+                                                        </template>
+                                                    </ul>
+                                                </div>
+                                            </template>
+                                        </div>
+
+                                        <!-- Bottom Action Row -->
+                                        <div class="pt-3.5 border-t border-black/10 dark:border-white/10 flex items-center justify-between gap-2 pl-2">
+                                            <span class="px-2.5 py-1 rounded-xl text-[11px] font-black bg-white/70 dark:bg-black/40 text-slate-800 dark:text-slate-200 border border-black/5 dark:border-white/10"
+                                                x-text="event.jenjangLabel || event.jenjang"></span>
+                                            
+                                            <a :href="'https://wa.me/6285163070002?text=' + encodeURIComponent(event.whatsappMessage || ('Halo Next Level Study, saya ingin info pendaftaran untuk agenda: ' + event.title))"
+                                                target="_blank" rel="noopener noreferrer"
+                                                class="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-black text-xs shadow-md shadow-sky-600/30 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer">
+                                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+                                                <span>Daftar / Tanya CS</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
+        </section>
 '@
 
-# Target after </section> of kaleidoskop
-$kaleidoskopEnd = @'
-            </div>
-        </div>
-    </div>
-</section>
-'@
-
-$replacementWithCalendar = $kaleidoskopEnd + $calendarSectionMarkup
-$content = $content.Replace($kaleidoskopEnd, $replacementWithCalendar)
+$targetAnchor = '        <!-- BERITA TERKINI SECTION (INTEGRATED FULL-COLOR CMS & 5 COLUMNS) -->'
+$replacement = $calendarSectionMarkup + "`n`n" + $targetAnchor
+$content = $content.Replace($targetAnchor, $replacement)
 
 # 3. Alpine.js Engine homeCalendarApp() to insert before </body>
 $homeCalendarScript = @'
@@ -555,7 +547,7 @@ $homeCalendarScript = @'
                         this.currentMonth = 0;
                         this.currentYear++;
                     } else {
-                        this.currentMonth++;
+                        this.currentMonth--;
                     }
                     this.selectedDate = null;
                     this.$nextTick(() => this.updateCardHeight());
