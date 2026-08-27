@@ -2679,11 +2679,16 @@
                         if (stored) {
                             const parsed = JSON.parse(stored);
                             if (Array.isArray(parsed) && parsed.length > 0) {
+                                let updated = false;
                                 parsed.forEach(a => {
                                     if (defaultCovers[a.id] && (!a.coverImage || a.coverImage.includes('nls-logo-300.png') || a.coverImage.includes('article-placeholder'))) {
                                         a.coverImage = defaultCovers[a.id];
+                                        updated = true;
                                     }
                                 });
+                                if (updated) {
+                                    localStorage.setItem("nls_berita_articles_v1", JSON.stringify(parsed));
+                                }
                                 return parsed;
                             }
                         }

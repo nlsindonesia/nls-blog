@@ -736,10 +736,10 @@
                         
                         <!-- Card Banner Image with Hover Zoom -->
                         <div class="relative h-40 sm:h-44 overflow-hidden block bg-slate-100 dark:bg-slate-900 cursor-pointer" @click="openArticle(art)">
-                            <img :src="art.coverImage || '/nls-logo-300.png'"
+                            <img :src="art.coverImage || '/images/blog/cover-snbt-2027.jpg'"
                                 :alt="art.title"
                                 loading="lazy"
-                                onerror="this.onerror=null;this.src='/nls-logo-300.png';"
+                                onerror="this.onerror=null;this.src='/images/blog/cover-snbt-2027.jpg';"
                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             
                             <!-- Multi-Category Badges -->
@@ -830,7 +830,7 @@
                         <div class="space-y-6 max-w-3xl mx-auto">
                             <!-- Article Cover Banner -->
                             <div class="relative h-64 sm:h-80 rounded-3xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900">
-                                <img :src="activeArticle.coverImage || '/nls-logo-300.png'"
+                                <img :src="activeArticle.coverImage || '/images/blog/cover-snbt-2027.jpg'"
                                     :alt="activeArticle.title"
                                     class="w-full h-full object-cover">
                             </div>
@@ -1380,11 +1380,28 @@
                 ],
 
                 articles: (function() {
+                    const defaultCovers = {
+                        'art-1': '/images/blog/cover-snbt-2027.jpg',
+                        'art-2': '/images/blog/cover-osn-silabus.jpg',
+                        'art-3': '/images/blog/cover-jurusan-kuliah.jpg'
+                    };
                     try {
                         const stored = localStorage.getItem("nls_berita_articles_v1");
                         if (stored) {
                             const parsed = JSON.parse(stored);
-                            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                            if (Array.isArray(parsed) && parsed.length > 0) {
+                                let updated = false;
+                                parsed.forEach(a => {
+                                    if (defaultCovers[a.id] && (!a.coverImage || a.coverImage.includes('nls-logo-300.png') || a.coverImage.includes('article-placeholder'))) {
+                                        a.coverImage = defaultCovers[a.id];
+                                        updated = true;
+                                    }
+                                });
+                                if (updated) {
+                                    localStorage.setItem("nls_berita_articles_v1", JSON.stringify(parsed));
+                                }
+                                return parsed;
+                            }
                         }
                     } catch (e) {}
                     return (typeof window.NLS_DEFAULT_ARTICLES !== "undefined") ? window.NLS_DEFAULT_ARTICLES : [];
@@ -1424,11 +1441,26 @@
                 },
 
                                 loadArticles() {
+                    const defaultCovers = {
+                        'art-1': '/images/blog/cover-snbt-2027.jpg',
+                        'art-2': '/images/blog/cover-osn-silabus.jpg',
+                        'art-3': '/images/blog/cover-jurusan-kuliah.jpg'
+                    };
                     try {
                         const stored = localStorage.getItem("nls_berita_articles_v1");
                         if (stored) {
                             const parsed = JSON.parse(stored);
                             if (Array.isArray(parsed) && parsed.length > 0) {
+                                let updated = false;
+                                parsed.forEach(a => {
+                                    if (defaultCovers[a.id] && (!a.coverImage || a.coverImage.includes('nls-logo-300.png') || a.coverImage.includes('article-placeholder'))) {
+                                        a.coverImage = defaultCovers[a.id];
+                                        updated = true;
+                                    }
+                                });
+                                if (updated) {
+                                    localStorage.setItem("nls_berita_articles_v1", JSON.stringify(parsed));
+                                }
                                 this.articles = parsed;
                                 return;
                             }
