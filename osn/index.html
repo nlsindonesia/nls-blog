@@ -1314,7 +1314,7 @@ html.dark .admin-card-dinas {
                                                         x-text="event.category"></span>
                                                     
                                                     <span class="inline-flex items-center gap-1 text-xs font-black px-2.5 py-0.5 rounded-full bg-white/80 dark:bg-black/40 text-slate-800 dark:text-slate-200 border border-slate-300/60 dark:border-white/10"
-                                                        x-text="formatDateFull ? formatDateFull(event.date) : event.date"></span>
+                                                        x-text="formatEventDateRange ? formatEventDateRange(event.date, event.endDate) : (formatDateFull ? formatDateFull(event.date) : event.date)"></span>
                                                 </div>
 
                                                 <!-- Title -->
@@ -2343,63 +2343,90 @@ html.dark .admin-card-dinas {
                     this.$nextTick(() => this.updateCardHeight());
                 },
 
+                // Filtered Events
                 filteredEvents() {
-                    return this.events.filter(e => {
-                        return e.category === 'OSN' || (e.category && e.category.toUpperCase().includes('OSN'));
+                    return this.events.filter(evt => {
+                        const matchCat = this.selectedCategory === 'all' || evt.category === this.selectedCategory;
+                        const matchJenjang = this.selectedJenjang === 'all' || evt.jenjang === this.selectedJenjang;
+                        return matchCat && matchJenjang;
                     });
                 },
 
                 eventsInCurrentMonth() {
-                    const mStr = String(this.currentMonth + 1).padStart(2, '0');
-                    const prefix = `${this.currentYear}-${mStr}`;
-                    return this.filteredEvents().filter(e => e.date && e.date.startsWith(prefix));
+                    const year = this.currentYear;
+                    const month = this.currentMonth;
+                    const mStart = year + '-' + String(month + 1).padStart(2, '0') + '-01';
+                    const daysInM = new Date(year, month + 1, 0).getDate();
+                    const mEnd = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(daysInM).padStart(2, '0');
+                    
+                    return this.filteredEvents().filter(e => {
+                        const eStart = e.date || '';
+                        const eEnd = (e.endDate && e.endDate >= e.date) ? e.endDate : e.date;
+                        return eStart <= mEnd && eEnd >= mStart;
+                    });
                 },
 
                 displayedEvents() {
                     if (this.selectedDate) {
-                        return this.filteredEvents().filter(e => e.date === this.selectedDate);
+                        return this.filteredEvents().filter(e => {
+                            const eStart = e.date || '';
+                            const eEnd = (e.endDate && e.endDate >= e.date) ? e.endDate : e.date;
+                            return eStart <= this.selectedDate && eEnd >= this.selectedDate;
+                        });
                     }
                     return this.eventsInCurrentMonth();
                 },
 
+                // Calendar Cells Computation (7 Columns: Senin = 0, Minggu = 6)
                 get calendarCells() {
-                    const firstDay = new Date(this.currentYear, this.currentMonth, 1);
-                    const lastDay = new Date(this.currentYear, this.currentMonth + 1, 0);
-                    const totalDays = lastDay.getDate();
-
-                    let startDay = firstDay.getDay(); // 0 is Sunday
-                    let mondayOffset = (startDay === 0) ? 6 : startDay - 1;
-
                     const cells = [];
-                    for (let i = 0; i < mondayOffset; i++) {
-                        cells.push({ isEmpty: true });
+                    const year = this.currentYear;
+                    const month = this.currentMonth;
+
+                    const firstDayObj = new Date(year, month, 1);
+                    let startDay = firstDayObj.getDay(); // 0 = Sun, 1 = Mon ...
+                    startDay = (startDay + 6) % 7; // Monday = 0, Sunday = 6
+
+                    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+                    const now = new Date();
+                    const realTodayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+
+                    // Leading empty slots
+                    for (let i = 0; i < startDay; i++) {
+                        cells.push({
+                            isEmpty: true,
+                            key: 'empty-' + i
+                        });
                     }
 
-                    const today = new Date();
-                    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+                    // Days
+                    for (let d = 1; d <= daysInMonth; d++) {
+                        const dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+                        const dayEvents = this.filteredEvents().filter(e => {
+                            const eStart = e.date || '';
+                            const eEnd = (e.endDate && e.endDate >= e.date) ? e.endDate : e.date;
+                            return eStart <= dateStr && eEnd >= dateStr;
+                        });
+                        const isToday = (dateStr === realTodayStr);
 
-                    for (let d = 1; d <= totalDays; d++) {
-                        const dStr = String(d).padStart(2, '0');
-                        const mStr = String(this.currentMonth + 1).padStart(2, '0');
-                        const dateKey = `${this.currentYear}-${mStr}-${dStr}`;
-
-                        const dayOfWeek = (mondayOffset + d - 1) % 7; // 0=Senin, 5=Sabtu, 6=Minggu
-                        const dayEvents = this.filteredEvents().filter(e => e.date === dateKey);
+                        const dayOfWeek = (startDay + d - 1) % 7;
+                        const isSaturday = (dayOfWeek === 5);
+                        const isSunday = (dayOfWeek === 6);
+                        const isWeekend = (isSaturday || isSunday);
 
                         cells.push({
                             isEmpty: false,
                             dayNumber: d,
-                            dateStr: dateKey,
-                            isToday: (dateKey === todayStr),
-                            isSaturday: (dayOfWeek === 5),
-                            isSunday: (dayOfWeek === 6),
-                            hasEvents: dayEvents.length > 0,
-                            events: dayEvents
+                            dateStr: dateStr,
+                            key: dateStr,
+                            isToday: isToday,
+                            isWeekend: isWeekend,
+                            isSaturday: isSaturday,
+                            isSunday: isSunday,
+                            events: dayEvents,
+                            hasEvents: dayEvents.length > 0
                         });
-                    }
-
-                    while (cells.length % 7 !== 0) {
-                        cells.push({ isEmpty: true });
                     }
 
                     return cells;
@@ -2407,8 +2434,12 @@ html.dark .admin-card-dinas {
 
                 onCellClick(cell) {
                     if (cell.isEmpty) return;
-                    if (this.selectedDate === cell.dateStr) {
-                        this.selectedDate = null;
+                    if (cell.hasEvents) {
+                        if (this.selectedDate === cell.dateStr) {
+                            this.selectedDate = null;
+                        } else {
+                            this.selectedDate = cell.dateStr;
+                        }
                     } else {
                         this.selectedDate = cell.dateStr;
                     }
@@ -2416,32 +2447,37 @@ html.dark .admin-card-dinas {
                 },
 
                 getCellClasses(cell) {
-                    if (cell.isEmpty) return 'empty opacity-0 pointer-events-none';
-                    let classes = [];
-                    if (cell.isSaturday) classes.push('saturday');
-                    if (cell.isSunday) classes.push('sunday');
-                    if (cell.isToday) classes.push('today');
-                    if (cell.hasEvents) classes.push('has-events');
-                    if (this.selectedDate === cell.dateStr) classes.push('selected');
-                    return classes.join(' ');
+                    if (cell.isEmpty) {
+                        return 'empty opacity-0 pointer-events-none border-transparent bg-transparent';
+                    }
+                    let res = '';
+                    if (cell.isSunday) res += ' sunday';
+                    else if (cell.isSaturday) res += ' saturday weekend';
+                    else if (cell.isWeekend) res += ' weekend';
+
+                    if (cell.isToday) res += ' today';
+                    if (cell.hasEvents) res += ' has-events';
+                    if (this.selectedDate === cell.dateStr) res += ' selected';
+                    return res;
                 },
 
                 getDateNumberClasses(cell) {
-                    if (cell.isSunday) return 'text-rose-600 dark:text-rose-400 font-black';
-                    if (cell.isSaturday) return 'text-amber-700 dark:text-amber-400 font-bold';
-                    if (cell.isToday) return 'text-sky-700 dark:text-white font-black';
-                    return 'text-slate-800 dark:text-slate-100';
-                },
-
-                getCategoryDotClass(cat) {
-                    switch (cat) {
-                        case 'OSN': return 'bg-[#0284c7]';
-                        case 'TKA': return 'bg-[#d97706]';
-                        case 'SNBT': return 'bg-[#059669]';
-                        case 'Mitra Sekolah': return 'bg-[#7c3aed]';
-                        case 'Event Dinas': return 'bg-[#e11d48]';
-                        default: return 'bg-[#0284c7]';
+                    if (this.selectedDate === cell.dateStr) {
+                        return 'text-primary dark:text-sky-400 font-black scale-110';
                     }
+                    if (cell.isToday) {
+                        return 'text-[#0284c7] dark:text-sky-300 font-black text-sm scale-105';
+                    }
+                    if (cell.isSunday) {
+                        return 'text-rose-600 dark:text-rose-400 font-black';
+                    }
+                    if (cell.isSaturday) {
+                        return 'text-amber-600/90 dark:text-amber-400/90 font-bold';
+                    }
+                    if (cell.hasEvents) {
+                        return 'text-slate-900 dark:text-white font-black';
+                    }
+                    return 'text-slate-600 dark:text-slate-400 font-semibold';
                 },
 
                 getPillClass(cat) {
@@ -2455,7 +2491,7 @@ html.dark .admin-card-dinas {
                     }
                 },
 
-                                getEventAdminCardClass(cat) {
+                getEventAdminCardClass(cat) {
                     switch (cat) {
                         case 'OSN': return 'admin-card-osn';
                         case 'TKA': return 'admin-card-tka';
@@ -2474,6 +2510,37 @@ html.dark .admin-card-dinas {
                         case 'Mitra Sekolah': return 'bg-purple-500';
                         case 'Event Dinas': return 'bg-rose-500';
                         default: return 'bg-sky-500';
+                    }
+                },
+
+                formatEventDateRange(startDate, endDate) {
+                    if (!startDate) return '';
+                    if (!endDate || endDate === startDate) {
+                        return this.formatDateFull ? this.formatDateFull(startDate) : startDate;
+                    }
+                    try {
+                        const d1 = new Date(startDate);
+                        const d2 = new Date(endDate);
+                        if (isNaN(d1.getTime()) || isNaN(d2.getTime())) return startDate + ' s/d ' + endDate;
+                        
+                        const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                        const day1 = d1.getDate();
+                        const m1 = months[d1.getMonth()];
+                        const y1 = d1.getFullYear();
+                        
+                        const day2 = d2.getDate();
+                        const m2 = months[d2.getMonth()];
+                        const y2 = d2.getFullYear();
+                        
+                        if (y1 === y2 && m1 === m2) {
+                            return day1 + ' - ' + day2 + ' ' + m1 + ' ' + y1;
+                        } else if (y1 === y2) {
+                            return day1 + ' ' + m1 + ' - ' + day2 + ' ' + m2 + ' ' + y1;
+                        } else {
+                            return day1 + ' ' + m1 + ' ' + y1 + ' - ' + day2 + ' ' + m2 + ' ' + y2;
+                        }
+                    } catch (e) {
+                        return startDate + ' - ' + endDate;
                     }
                 },
 

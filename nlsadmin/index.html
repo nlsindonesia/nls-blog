@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -1130,22 +1130,44 @@
                                         </div>
                                     </div>
 
-                                    <div class="art-meta-row">
+                                    <!-- Tanggal Pelaksanaan (Interval / Multi-hari) -->
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                                         <div>
-                                            <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Tanggal Kegiatan *</label>
+                                            <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-between">
+                                                <span>Tanggal Mulai *</span>
+                                                <span class="text-[10px] text-sky-600 font-black">Wajib</span>
+                                            </label>
                                             <input type="date" x-model="eventForm.date" required
-                                                class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                                                class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold focus:ring-2 focus:ring-sky-500">
+                                        </div>
+                                        <div>
+                                            <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-between">
+                                                <span>Tanggal Selesai</span>
+                                                <span class="text-[10px] text-slate-400 font-medium">Opsional</span>
+                                            </label>
+                                            <input type="date" x-model="eventForm.endDate" :min="eventForm.date" placeholder="Selesai (Opsional)"
+                                                class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold focus:ring-2 focus:ring-sky-500">
                                         </div>
                                         <div>
                                             <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Waktu / Jam *</label>
                                             <input type="text" x-model="eventForm.time" required placeholder="08:00 - 11:30 WIB"
-                                                class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs">
+                                                class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold focus:ring-2 focus:ring-sky-500">
                                         </div>
                                         <div>
                                             <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Mode Pelaksanaan *</label>
                                             <input type="text" x-model="eventForm.mode" required placeholder="Online (CBT NLS)"
-                                                class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs">
+                                                class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold focus:ring-2 focus:ring-sky-500">
                                         </div>
+                                    </div>
+
+                                    <!-- Interval Range Realtime Badge -->
+                                    <div x-show="eventForm.date && eventForm.endDate && eventForm.endDate > eventForm.date" class="p-3 rounded-2xl bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800 flex items-center justify-between text-xs transition-all">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-sky-500 animate-pulse"></span>
+                                            <span class="font-bold text-slate-700 dark:text-slate-300">Periode Interval:</span>
+                                            <span class="font-black text-sky-700 dark:text-sky-300" x-text="formatEventDateRange(eventForm.date, eventForm.endDate)"></span>
+                                        </div>
+                                        <button type="button" @click="eventForm.endDate = ''" class="text-[11px] text-rose-600 dark:text-rose-400 hover:underline font-bold cursor-pointer">Hapus Interval (1 Hari)</button>
                                     </div>
 
                                     <div>
@@ -1200,7 +1222,7 @@
                                                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider"
                                                     :class="getEventCategoryBadge(eventForm.category)"
                                                     x-text="eventForm.category"></span>
-                                                <span class="text-xs font-bold text-slate-600" x-text="eventForm.date || '2026-08-15'"></span>
+                                                <span class="text-xs font-bold text-slate-600" x-text="formatEventDateRange(eventForm.date, eventForm.endDate) || '2026-08-15'"></span>
                                             </div>
 
                                             <h4 class="text-base font-black text-slate-900 dark:text-white leading-snug"
@@ -1375,7 +1397,7 @@
                                             :class="getEventCategoryBadge(event.category)"
                                             x-text="event.category"></span>
                                         <span class="inline-flex items-center gap-1 text-xs font-black px-2.5 py-0.5 rounded-full bg-white/70 dark:bg-black/40 text-slate-800 dark:text-slate-200 border border-slate-300/60 dark:border-white/10"
-                                            x-text="event.date"></span>
+                                            x-text="formatEventDateRange(event.date, event.endDate)"></span>
                                     </div>
 
                                     <!-- Title -->
@@ -1540,7 +1562,7 @@
                                         <div class="flex items-center justify-between gap-1.5 flex-wrap">
                                             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300"
                                                 x-text="event.category"></span>
-                                            <span class="text-[11px] font-bold text-slate-400" x-text="event.date"></span>
+                                            <span class="text-[11px] font-bold text-slate-400" x-text="formatEventDateRange(event.date, event.endDate)"></span>
                                         </div>
 
                                         <h4 class="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-snug line-through opacity-80"
@@ -2642,6 +2664,7 @@
                     category: 'OSN',
                     jenjang: 'SMA',
                     date: '2026-08-15',
+                    endDate: '',
                     time: '08:00 - 11:30 WIB',
                     mode: 'Online (CBT NLS)',
                     location: 'Platform CBT Next Level Study',
@@ -2895,6 +2918,7 @@
                         category: 'OSN',
                         jenjang: 'SMA',
                         date: new Date().toISOString().split('T')[0],
+                        endDate: '',
                         time: '08:00 - 11:30 WIB',
                         mode: 'Online (CBT NLS)',
                         location: 'Platform CBT Next Level Study',
@@ -2925,9 +2949,12 @@
                     return this.eventForm.highlightsRaw.split('\n').map(s => s.trim()).filter(Boolean);
                 },
 
-                saveEventFromBuilder() {
+                                saveEventFromBuilder() {
                     const f = this.eventForm;
                     const highlights = f.highlightsRaw ? f.highlightsRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
+                    const endDate = (f.endDate && f.endDate >= f.date) ? f.endDate : '';
+                    const dateDisplay = this.formatEventDateRange(f.date, endDate);
+
                     const eventData = {
                         id: f.id || 'evt-' + Date.now(),
                         title: f.title,
@@ -2935,12 +2962,13 @@
                         jenjang: f.jenjang,
                         jenjangLabel: 'Jenjang ' + f.jenjang,
                         date: f.date,
+                        endDate: endDate,
                         time: f.time,
                         mode: f.mode,
                         location: f.location,
                         description: f.description,
                         badgeText: 'Pendaftaran Dibuka',
-                        whatsappMessage: `Halo Next Level Study, saya ingin mendaftar kegiatan: ${f.title} (${f.date})`,
+                        whatsappMessage: Halo Next Level Study, saya ingin mendaftar kegiatan:  (),
                         highlights: highlights
                     };
 
@@ -2982,6 +3010,36 @@
                     }
                 },
 
+                                formatEventDateRange(startDate, endDate) {
+                    if (!startDate) return '';
+                    if (!endDate || endDate === startDate) {
+                        return this.formatDateFull ? this.formatDateFull(startDate) : startDate;
+                    }
+                    try {
+                        const d1 = new Date(startDate);
+                        const d2 = new Date(endDate);
+                        if (isNaN(d1.getTime()) || isNaN(d2.getTime())) return startDate + ' s/d ' + endDate;
+                        
+                        const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                        const day1 = d1.getDate();
+                        const m1 = months[d1.getMonth()];
+                        const y1 = d1.getFullYear();
+                        
+                        const day2 = d2.getDate();
+                        const m2 = months[d2.getMonth()];
+                        const y2 = d2.getFullYear();
+                        
+                        if (y1 === y2 && m1 === m2) {
+                            return day1 + ' - ' + day2 + ' ' + m1 + ' ' + y1;
+                        } else if (y1 === y2) {
+                            return day1 + ' ' + m1 + ' - ' + day2 + ' ' + m2 + ' ' + y1;
+                        } else {
+                            return day1 + ' ' + m1 + ' ' + y1 + ' - ' + day2 + ' ' + m2 + ' ' + y2;
+                        }
+                    } catch (e) {
+                        return startDate + ' - ' + endDate;
+                    }
+                },
                 getEventCategoryBadge(cat) {
                     switch (cat) {
                         case 'OSN':
@@ -3005,8 +3063,13 @@
                         const matchCat = this.eventFilter.category === 'all' || e.category === this.eventFilter.category;
                         let matchMonth = true;
                         if (this.eventFilter.month !== 'all') {
-                            const ym = `2026-${String(parseInt(this.eventFilter.month) + 1).padStart(2, '0')}`;
-                            matchMonth = e.date.startsWith(ym);
+                            const mIdx = parseInt(this.eventFilter.month);
+                            const mStart = '2026-' + String(mIdx + 1).padStart(2, '0') + '-01';
+                            const daysInM = new Date(2026, mIdx + 1, 0).getDate();
+                            const mEnd = '2026-' + String(mIdx + 1).padStart(2, '0') + '-' + String(daysInM).padStart(2, '0');
+                            const eStart = e.date || '';
+                            const eEnd = (e.endDate && e.endDate >= e.date) ? e.endDate : e.date;
+                            matchMonth = (eStart <= mEnd && eEnd >= mStart);
                         }
                         return matchSearch && matchCat && matchMonth;
                     });
@@ -3068,12 +3131,13 @@
                     this.eventModal.isOpen = true;
                 },
 
-                editEvent(event) {
+                                editEvent(event) {
                     this.activeTab = 'kalender';
                     this.kalenderView = 'create';
                     this.isKalenderDropdownOpen = true;
                     this.eventForm = {
                         ...event,
+                        endDate: event.endDate || '',
                         isEdit: true,
                         highlightsRaw: event.highlights ? event.highlights.join('\n') : ''
                     };
@@ -3313,6 +3377,7 @@
                         category: 'SNBT & UTBK',
                         categories: ['SNBT & UTBK'],
                         date: new Date().toISOString().split('T')[0],
+                        endDate: '',
                         author: 'Tim Akademik NLS',
                         status: 'published',
                         coverImage: '/nls-logo-300.png',
@@ -3451,6 +3516,7 @@
                         slug: '',
                         category: 'SNBT & UTBK',
                         date: new Date().toISOString().split('T')[0],
+                        endDate: '',
                         author: 'Tim Akademik NLS',
                         status: 'published',
                         coverImage: '/nls-logo-300.png',
