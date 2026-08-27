@@ -1,4 +1,7 @@
-﻿/**
+# 1. Update blog/default-articles.js
+$articlesJsPath = "c:\Users\vc\Documents\nls-blog-hame\nls-blog-hame\blog\default-articles.js"
+$articlesContent = @'
+/**
  * Master Dataset Berita & Artikel CMS Next Level Study (NLS)
  * Digunakan sebagai baseline data dan sinkronisasi antara /nlsadmin dan /blog.
  */
@@ -79,3 +82,58 @@ window.NLS_DEFAULT_ARTICLES = [
         seoScore: 90
     }
 ];
+'@
+[System.IO.File]::WriteAllText($articlesJsPath, $articlesContent, [System.Text.Encoding]::UTF8)
+
+# 2. Update nlsadmin/index.html article initialization to migrate /nls-logo-300.png covers to the real blog covers
+$adminPath = "c:\Users\vc\Documents\nls-blog-hame\nls-blog-hame\nlsadmin\index.html"
+$adminContent = [System.IO.File]::ReadAllText($adminPath, [System.Text.Encoding]::UTF8)
+
+$oldAdminInitArticles = @'
+                articles: (function() {
+                    try {
+                        const stored = localStorage.getItem("nls_berita_articles_v1");
+                        if (stored) {
+                            const parsed = JSON.parse(stored);
+                            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                        }
+                    } catch (e) {}
+                    return (typeof window.NLS_DEFAULT_ARTICLES !== "undefined") ? window.NLS_DEFAULT_ARTICLES : [];
+                })(),
+'@
+
+$newAdminInitArticles = @'
+                articles: (function() {
+                    const defaultCovers = {
+                        'art-1': '/images/blog/cover-snbt-2027.jpg',
+                        'art-2': '/images/blog/cover-osn-silabus.jpg',
+                        'art-3': '/images/blog/cover-jurusan-kuliah.jpg'
+                    };
+                    try {
+                        const stored = localStorage.getItem("nls_berita_articles_v1");
+                        if (stored) {
+                            const parsed = JSON.parse(stored);
+                            if (Array.isArray(parsed) && parsed.length > 0) {
+                                parsed.forEach(a => {
+                                    if (defaultCovers[a.id] && (!a.coverImage || a.coverImage.includes('nls-logo-300.png') || a.coverImage.includes('article-placeholder'))) {
+                                        a.coverImage = defaultCovers[a.id];
+                                    }
+                                });
+                                return parsed;
+                            }
+                        }
+                    } catch (e) {}
+                    return (typeof window.NLS_DEFAULT_ARTICLES !== "undefined") ? window.NLS_DEFAULT_ARTICLES : [];
+                })(),
+'@
+
+$adminContent = $adminContent.Replace($oldAdminInitArticles, $newAdminInitArticles)
+
+# Also update article cover image fallback & styling in present news table
+$oldThumb = '<img :src="art.coverImage || ''/nls-logo-300.png''" alt="Cover" class="w-14 h-14 rounded-2xl object-cover bg-slate-100 dark:bg-slate-800 shrink-0 border border-slate-200 dark:border-slate-700">'
+$newThumb = '<img :src="art.coverImage || ''/images/blog/cover-snbt-2027.jpg''" alt="Cover" class="w-16 h-16 rounded-2xl object-cover bg-slate-100 dark:bg-slate-800 shrink-0 border-2 border-slate-200 dark:border-slate-700 shadow-sm">'
+$adminContent = $adminContent.Replace($oldThumb, $newThumb)
+
+[System.IO.File]::WriteAllText($adminPath, $adminContent, [System.Text.Encoding]::UTF8)
+
+Write-Host "SUCCESS: Replaced article cover images with high-resolution contextual blog covers!"
