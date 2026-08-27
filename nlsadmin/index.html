@@ -3627,8 +3627,24 @@
                 },
 
                 saveArticlesToStorage() {
-                    localStorage.setItem('nls_berita_articles_v1', JSON.stringify(this.articles));
+                    const dataStr = JSON.stringify(this.articles);
+                    localStorage.setItem('nls_berita_articles_v1', dataStr);
                     window.dispatchEvent(new CustomEvent('nls-articles-updated', { detail: this.articles }));
+                    
+                    // Cross-tab real-time broadcast to /blog and homepage
+                    try {
+                        const channel = new BroadcastChannel('nls_sync_channel');
+                        channel.postMessage({ type: 'ARTICLES_UPDATED', data: this.articles });
+                        channel.close();
+                    } catch (e) {}
+
+                    // Cross-origin / legacy storage trigger
+                    try {
+                        window.dispatchEvent(new StorageEvent('storage', {
+                            key: 'nls_berita_articles_v1',
+                            newValue: dataStr
+                        }));
+                    } catch (e) {}
                 },
 
                 exportArticlesJSON() {
