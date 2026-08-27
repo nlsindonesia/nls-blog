@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -214,816 +214,189 @@
     <!-- ==========================================
          2. MAIN SUPER ADMIN DASHBOARD
          ========================================== -->
-    <div x-show="isAuthenticated" x-cloak class="min-h-screen flex flex-col bg-slate-100/60 dark:bg-[#070D1E]">
+    <div x-show="isAuthenticated" x-cloak class="min-h-screen flex bg-slate-100/70 dark:bg-[#070D1E] antialiased">
         
-        <!-- Top App Bar -->
-        <header class="sticky top-0 z-40 bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 py-3 flex items-center justify-between shadow-xs">
-            <div class="flex items-center gap-3">
-                <!-- Sidebar Toggle Button -->
-                <button type="button" @click="isSidebarOpen = !isSidebarOpen"
-                    class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all cursor-pointer shadow-2xs"
-                    title="Sembunyikan/Buka Sidebar">
-                    <span :class="isSidebarOpen ? 'icon-[mdi--menu-open]' : 'icon-[mdi--menu]'" class="text-xl"></span>
-                </button>
+        <!-- ==========================================
+             FULL-HEIGHT LEFT SIDEBAR (COLLAPSIBLE / HIDEABLE)
+             ========================================== -->
+        <!-- Mobile Overlay Backdrop -->
+        <div x-show="isSidebarOpen && isMobile" x-cloak @click="isSidebarOpen = false"
+            class="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-xs lg:hidden"></div>
 
-                <!-- Brand -->
-                <div class="flex items-center gap-2.5">
-                    <img src="/nls-logo-300.png" alt="NLS Logo" class="w-8 h-8 rounded-full object-cover shadow-2xs">
-                    <div class="hidden sm:block">
-                        <div class="flex items-center gap-2">
-                            <h2 class="text-sm font-black text-slate-900 dark:text-white tracking-tight">Next Level Study</h2>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-2xs">Super Admin</span>
-                        </div>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Pusat Kendali Ekosistem NLS</p>
+        <aside :class="[
+                isSidebarOpen ? 'w-68' : 'w-0 -translate-x-full lg:w-0 lg:translate-x-0',
+                isMobile ? 'fixed inset-y-0 left-0 z-50 shadow-2xl' : 'sticky top-0 h-screen'
+            ]"
+            class="bg-white dark:bg-[#0F172A] border-r border-slate-200 dark:border-slate-800 transition-all duration-300 flex flex-col justify-between shrink-0 overflow-hidden select-none">
+            
+            <!-- Top: Brand Header & Hide Sidebar Button -->
+            <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3 shrink-0">
+                <div class="flex items-center gap-3 min-w-0">
+                    <img src="/nls-logo-300.png" alt="NLS Logo" class="w-9 h-9 rounded-full object-cover shadow-sm shrink-0">
+                    <div class="min-w-0">
+                        <h2 class="text-sm font-black text-slate-900 dark:text-white tracking-tight truncate leading-none">Next Level Study</h2>
+                        <span class="inline-block px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-gradient-to-r from-sky-600 to-blue-600 text-white shadow-2xs mt-1">
+                            Super Admin
+                        </span>
                     </div>
+                </div>
+                
+                <!-- Sembunyikan / Hide Button Inside Sidebar -->
+                <button type="button" @click="isSidebarOpen = false"
+                    class="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer shrink-0"
+                    title="Sembunyikan Menu Sidebar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path></svg>
+                </button>
+            </div>
+
+            <!-- Middle: Menu Navigation -->
+            <div class="p-3.5 flex-1 overflow-y-auto admin-scrollbar space-y-4">
+                
+                <div class="px-2 pt-1 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                    MODUL MANAJEMEN
+                </div>
+
+                <nav class="space-y-1.5">
+                    <!-- Menu 1: Kalender & Event -->
+                    <button type="button" @click="activeTab = 'kalender'; if(isMobile) isSidebarOpen = false"
+                        :class="activeTab === 'kalender' ? 'bg-sky-50 text-sky-800 dark:bg-sky-950/80 dark:text-sky-200 font-black border border-sky-200 dark:border-sky-800 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold'"
+                        class="w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs transition-all cursor-pointer text-left group">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-xl flex items-center justify-center text-white shrink-0 shadow-2xs"
+                                :class="activeTab === 'kalender' ? 'bg-sky-500' : 'bg-slate-200 dark:bg-slate-800 text-slate-500 group-hover:bg-sky-500 group-hover:text-white'">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            </span>
+                            <span class="truncate">Kalender Event</span>
+                        </div>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-sky-100 dark:bg-sky-900 text-sky-800 dark:text-sky-200"
+                            x-text="events.length"></span>
+                    </button>
+
+                    <!-- Menu 2: Berita & Artikel CMS -->
+                    <button type="button" @click="activeTab = 'berita'; if(isMobile) isSidebarOpen = false"
+                        :class="activeTab === 'berita' ? 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-200 font-black border border-emerald-200 dark:border-emerald-800 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold'"
+                        class="w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs transition-all cursor-pointer text-left group">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-xl flex items-center justify-center text-white shrink-0 shadow-2xs"
+                                :class="activeTab === 'berita' ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-slate-800 text-slate-500 group-hover:bg-emerald-500 group-hover:text-white'">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
+                            </span>
+                            <span class="truncate">Berita &amp; Artikel</span>
+                        </div>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200"
+                            x-text="articles.length"></span>
+                    </button>
+
+                    <!-- Menu 3: Daftar Pengajar & Tutor -->
+                    <button type="button" @click="activeTab = 'pengajar'; if(isMobile) isSidebarOpen = false"
+                        :class="activeTab === 'pengajar' ? 'bg-indigo-50 text-indigo-800 dark:bg-indigo-950/80 dark:text-indigo-200 font-black border border-indigo-200 dark:border-indigo-800 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold'"
+                        class="w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs transition-all cursor-pointer text-left group">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-xl flex items-center justify-center text-white shrink-0 shadow-2xs"
+                                :class="activeTab === 'pengajar' ? 'bg-indigo-500' : 'bg-slate-200 dark:bg-slate-800 text-slate-500 group-hover:bg-indigo-500 group-hover:text-white'">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            </span>
+                            <span class="truncate">Daftar Pengajar</span>
+                        </div>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200"
+                            x-text="teachers.length"></span>
+                    </button>
+                </nav>
+
+                <!-- Quick Public Links -->
+                <div class="pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-1.5">
+                    <div class="px-2 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                        PINTASAN PUBLIK
+                    </div>
+                    <a href="/kalender" target="_blank" class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                            <span>Halaman /kalender</span>
+                        </span>
+                    </a>
+                    <a href="/pengajar" target="_blank" class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                            <span>Halaman /pengajar</span>
+                        </span>
+                    </a>
+                    <a href="/blog" target="_blank" class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                            <span>Halaman /blog</span>
+                        </span>
+                    </a>
+                </div>
+
+                <!-- Sync Status Box -->
+                <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 space-y-1">
+                    <div class="flex items-center justify-between font-black text-slate-700 dark:text-slate-300">
+                        <span>Status Sinkronisasi</span>
+                        <span class="flex h-2 w-2 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                    </div>
+                    <p class="text-[10px] leading-relaxed">Perubahan data langsung live pada seluruh halaman website.</p>
                 </div>
             </div>
 
-            <!-- Header Right Controls -->
-            <div class="flex items-center gap-2.5">
-                <!-- Quick Website Shortcut -->
-                <a href="/" target="_blank" class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sky-50 hover:text-sky-600 dark:hover:bg-sky-950/60 dark:hover:text-sky-300 border border-slate-200 dark:border-slate-700 transition-all">
-                    <span class="icon-[mdi--open-in-new] text-sm"></span>
-                    <span>Lihat Web Utama</span>
-                </a>
-
-                <!-- User Badge & Logout -->
-                <div class="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-700">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-sky-500 to-indigo-600 text-white flex items-center justify-center font-black text-xs shadow-xs">
+            <!-- Bottom: User Profile & Logout -->
+            <div class="p-3.5 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/30 shrink-0">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 text-white flex items-center justify-center font-black text-xs shadow-xs shrink-0">
                         SA
                     </div>
-                    <span class="hidden lg:inline text-xs font-bold text-slate-700 dark:text-slate-300">nlsindonesia</span>
-                    <button type="button" @click="logout()"
-                        class="p-2 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 dark:text-rose-400 transition-all cursor-pointer"
-                        title="Keluar / Logout">
-                        <span class="icon-[mdi--logout] text-lg"></span>
-                    </button>
+                    <div class="min-w-0">
+                        <p class="text-xs font-black text-slate-800 dark:text-slate-200 truncate">nlsindonesia</p>
+                        <p class="text-[10px] font-bold text-sky-600 dark:text-sky-400">Super Admin</p>
+                    </div>
                 </div>
+                <button type="button" @click="logout()"
+                    class="p-2 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 dark:text-rose-400 transition-all cursor-pointer shrink-0"
+                    title="Keluar / Logout">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                </button>
             </div>
-        </header>
+        </aside>
 
-        <!-- Body Layout: Sidebar + Main Content -->
-        <div class="flex-1 flex overflow-hidden">
+        <!-- ==========================================
+             RIGHT MAIN CONTENT AREA
+             ========================================== -->
+        <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
             
-            <!-- ==========================================
-                 SIDEBAR NAVIGATION (COLLAPSIBLE)
-                 ========================================== -->
-            <!-- Mobile Backdrop -->
-            <div x-show="isSidebarOpen && isMobile" x-cloak @click="isSidebarOpen = false"
-                class="fixed inset-0 z-30 bg-slate-900/60 backdrop-blur-xs lg:hidden"></div>
-
-            <aside :class="[
-                    isSidebarOpen ? 'sidebar-expanded' : 'sidebar-collapsed',
-                    isMobile && !isSidebarOpen ? '-translate-x-full' : 'translate-x-0'
-                ]"
-                class="fixed lg:static inset-y-0 left-0 z-30 bg-white dark:bg-[#0F172A] border-r border-slate-200 dark:border-slate-800 transition-all duration-300 flex flex-col justify-between shrink-0 shadow-sm lg:shadow-none">
+            <!-- Top App Bar for Right Area -->
+            <header class="sticky top-0 z-20 bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 py-3 flex items-center justify-between shadow-xs shrink-0">
                 
-                <!-- Sidebar Top Menu List -->
-                <div class="p-3.5 space-y-4">
-                    <!-- Sidebar Section Label -->
-                    <div x-show="isSidebarOpen" class="px-3 pt-2 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                        Modul Manajemen
-                    </div>
+                <div class="flex items-center gap-3">
+                    <!-- Toggle / Show Sidebar Button -->
+                    <button type="button" @click="isSidebarOpen = !isSidebarOpen"
+                        class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 text-xs font-bold"
+                        :title="isSidebarOpen ? 'Sembunyikan Menu Sidebar' : 'Tampilkan Menu Sidebar'">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                        <span class="hidden sm:inline" x-text="isSidebarOpen ? 'Sembunyikan Sidebar' : 'Buka Sidebar'"></span>
+                    </button>
 
-                    <nav class="space-y-1.5">
-                        <!-- Menu 1: Kalender & Event -->
-                        <button type="button" @click="activeTab = 'kalender'"
-                            :class="activeTab === 'kalender' ? 'bg-sky-50 text-sky-700 dark:bg-sky-950/80 dark:text-sky-300 font-black border border-sky-200 dark:border-sky-800 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold'"
-                            class="w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs transition-all cursor-pointer text-left group">
-                            <span class="w-8 h-8 rounded-xl flex items-center justify-center text-lg shrink-0"
-                                :class="activeTab === 'kalender' ? 'bg-sky-500 text-white shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 group-hover:text-sky-600'">
-                                <span class="icon-[mdi--calendar-month]"></span>
-                            </span>
-                            <div x-show="isSidebarOpen" class="flex-1 flex items-center justify-between overflow-hidden">
-                                <span class="truncate">Kalender Event</span>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-sky-100 dark:bg-sky-900 text-sky-800 dark:text-sky-200"
-                                    x-text="events.length"></span>
-                            </div>
-                        </button>
-
-                        <!-- Menu 2: Berita & Artikel CMS -->
-                        <button type="button" @click="activeTab = 'berita'"
-                            :class="activeTab === 'berita' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300 font-black border border-emerald-200 dark:border-emerald-800 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold'"
-                            class="w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs transition-all cursor-pointer text-left group">
-                            <span class="w-8 h-8 rounded-xl flex items-center justify-center text-lg shrink-0"
-                                :class="activeTab === 'berita' ? 'bg-emerald-500 text-white shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 group-hover:text-emerald-600'">
-                                <span class="icon-[mdi--newspaper-variant-outline]"></span>
-                            </span>
-                            <div x-show="isSidebarOpen" class="flex-1 flex items-center justify-between overflow-hidden">
-                                <span class="truncate">Berita &amp; Artikel</span>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200"
-                                    x-text="articles.length"></span>
-                            </div>
-                        </button>
-
-                        <!-- Menu 3: Daftar Pengajar & Tutor -->
-                        <button type="button" @click="activeTab = 'pengajar'"
-                            :class="activeTab === 'pengajar' ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300 font-black border border-indigo-200 dark:border-indigo-800 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold'"
-                            class="w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs transition-all cursor-pointer text-left group">
-                            <span class="w-8 h-8 rounded-xl flex items-center justify-center text-lg shrink-0"
-                                :class="activeTab === 'pengajar' ? 'bg-indigo-500 text-white shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 group-hover:text-indigo-600'">
-                                <span class="icon-[mdi--account-tie-voice]"></span>
-                            </span>
-                            <div x-show="isSidebarOpen" class="flex-1 flex items-center justify-between overflow-hidden">
-                                <span class="truncate">Daftar Pengajar</span>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200"
-                                    x-text="teachers.length"></span>
-                            </div>
-                        </button>
-                    </nav>
-
-                    <!-- Links to Public Pages -->
-                    <div x-show="isSidebarOpen" class="pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-2">
-                        <div class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                            Pintasan Publik
-                        </div>
-                        <a href="/kalender" target="_blank" class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60">
-                            <span class="flex items-center gap-2"><span class="icon-[mdi--calendar]"></span> Halaman /kalender</span>
-                            <span class="icon-[mdi--arrow-top-right] text-xs"></span>
-                        </a>
-                        <a href="/pengajar" target="_blank" class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60">
-                            <span class="flex items-center gap-2"><span class="icon-[mdi--account-group]"></span> Halaman /pengajar</span>
-                            <span class="icon-[mdi--arrow-top-right] text-xs"></span>
-                        </a>
-                        <a href="/blog" target="_blank" class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60">
-                            <span class="flex items-center gap-2"><span class="icon-[mdi--post]"></span> Halaman /blog</span>
-                            <span class="icon-[mdi--arrow-top-right] text-xs"></span>
-                        </a>
+                    <!-- Breadcrumb -->
+                    <div class="flex items-center gap-2 text-xs font-bold">
+                        <span class="text-slate-400">Portal</span>
+                        <span class="text-slate-300">/</span>
+                        <span class="text-slate-900 dark:text-white"
+                            x-text="activeTab === 'kalender' ? 'Kalender Event NLS' : (activeTab === 'berita' ? 'Berita & Artikel CMS' : 'Direktori Pengajar')"></span>
                     </div>
                 </div>
 
-                <!-- Sidebar Bottom Info -->
-                <div class="p-3 border-t border-slate-200 dark:border-slate-800">
-                    <div x-show="isSidebarOpen" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 space-y-1">
-                        <div class="flex items-center justify-between font-bold text-slate-700 dark:text-slate-300">
-                            <span>Status Sinkronisasi</span>
-                            <span class="flex h-2 w-2 relative">
-                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                            </span>
-                        </div>
-                        <p class="text-[10px]">Perubahan data langsung live pada seluruh halaman website.</p>
-                    </div>
+                <!-- Right Controls -->
+                <div class="flex items-center gap-2.5">
+                    <a href="/" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sky-50 hover:text-sky-600 dark:hover:bg-sky-950/60 dark:hover:text-sky-300 border border-slate-200 dark:border-slate-700 transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        <span>Lihat Web</span>
+                    </a>
                 </div>
-            </aside>
+            </header>
 
-            <!-- ==========================================
-                 MAIN CONTENT AREA (TABS)
-                 ========================================== -->
+            <!-- Scrolling Main Content Area -->
             <main class="flex-1 overflow-y-auto admin-scrollbar p-4 sm:p-6 lg:p-8 space-y-6">
-                
-                <!-- =========================================================================
-                     TAB 1: MANAJEMEN KALENDER & EVENT NLS
-                     ========================================================================= -->
-                <div x-show="activeTab === 'kalender'" x-cloak class="space-y-6">
-                    
-                    <!-- Header Section -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-[#131D38] p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                        <div>
-                            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300 mb-2 border border-sky-200 dark:border-sky-800">
-                                <span class="icon-[mdi--calendar-star] text-sm"></span>
-                                <span>Manajemen Kalender &amp; Agenda</span>
-                            </div>
-                            <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Jadwal Kegiatan &amp; Event NLS 2026</h2>
-                            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-                                Kelola agenda try out, simulasi olimpiade, kelas bimbingan, dan event dinas.
-                            </p>
-                        </div>
-
-                        <div class="flex flex-wrap items-center gap-2">
-                            <button type="button" @click="openEventModal()"
-                                style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important; color: #ffffff !important;"
-                                class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm shadow-md hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer text-white">
-                                <span class="icon-[mdi--plus-circle] text-lg"></span>
-                                <span>Tambah Agenda Baru</span>
-                            </button>
-                            <button type="button" @click="exportEventsJSON()"
-                                class="px-3.5 py-2.5 rounded-xl font-bold text-xs bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer">
-                                <span class="icon-[mdi--download] text-base"></span>
-                                <span>Ekspor JSON</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Statistics Chips -->
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-                        <div class="p-4 rounded-2xl bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800">
-                            <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase">Total Agenda</p>
-                            <h4 class="text-2xl font-black text-slate-900 dark:text-white mt-1" x-text="events.length"></h4>
-                        </div>
-                        <div class="p-4 rounded-2xl bg-sky-50/80 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800">
-                            <p class="text-[11px] font-bold text-sky-700 dark:text-sky-300 uppercase">OSN (Biru)</p>
-                            <h4 class="text-2xl font-black text-sky-800 dark:text-sky-200 mt-1" x-text="countEventsByCat('OSN')"></h4>
-                        </div>
-                        <div class="p-4 rounded-2xl bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800">
-                            <p class="text-[11px] font-bold text-amber-700 dark:text-amber-300 uppercase">TKA (Kuning)</p>
-                            <h4 class="text-2xl font-black text-amber-800 dark:text-amber-200 mt-1" x-text="countEventsByCat('TKA')"></h4>
-                        </div>
-                        <div class="p-4 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
-                            <p class="text-[11px] font-bold text-emerald-700 dark:text-emerald-300 uppercase">SNBT (Hijau)</p>
-                            <h4 class="text-2xl font-black text-emerald-800 dark:text-emerald-200 mt-1" x-text="countEventsByCat('SNBT')"></h4>
-                        </div>
-                        <div class="p-4 rounded-2xl bg-purple-50/80 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800">
-                            <p class="text-[11px] font-bold text-purple-700 dark:text-purple-300 uppercase">Mitra (Ungu)</p>
-                            <h4 class="text-2xl font-black text-purple-800 dark:text-purple-200 mt-1" x-text="countEventsByCat('Mitra Sekolah')"></h4>
-                        </div>
-                        <div class="p-4 rounded-2xl bg-rose-50/80 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800">
-                            <p class="text-[11px] font-bold text-rose-700 dark:text-rose-300 uppercase">Dinas (Merah)</p>
-                            <h4 class="text-2xl font-black text-rose-800 dark:text-rose-200 mt-1" x-text="countEventsByCat('Event Dinas')"></h4>
-                        </div>
-                    </div>
-
-                    <!-- Filter & Search Controls -->
-                    <div class="p-4 sm:p-5 bg-white dark:bg-[#131D38] rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
-                        <div class="flex-1 flex flex-col sm:flex-row gap-2.5">
-                            <!-- Search -->
-                            <div class="relative flex-1">
-                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-base pointer-events-none">
-                                    <span class="icon-[mdi--magnify]"></span>
-                                </span>
-                                <input type="text" x-model="eventFilter.search" placeholder="Cari judul agenda atau materi..."
-                                    class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
-                            </div>
-
-                            <!-- Filter Category -->
-                            <select x-model="eventFilter.category" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold">
-                                <option value="all">Semua Kategori</option>
-                                <option value="OSN">OSN (Olimpiade)</option>
-                                <option value="TKA">TKA (Akademik)</option>
-                                <option value="SNBT">SNBT (PTN)</option>
-                                <option value="Mitra Sekolah">Mitra Sekolah</option>
-                                <option value="Event Dinas">Event Dinas</option>
-                            </select>
-
-                            <!-- Filter Month -->
-                            <select x-model="eventFilter.month" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold">
-                                <option value="all">Semua Bulan 2026</option>
-                                <template x-for="(m, mIdx) in monthNames" :key="mIdx">
-                                    <option :value="mIdx" x-text="m + ' 2026'"></option>
-                                </template>
-                            </select>
-                        </div>
-
-                        <button @click="resetEventFilters()"
-                            x-show="eventFilter.search || eventFilter.category !== 'all' || eventFilter.month !== 'all'"
-                            class="px-3 py-2 text-xs font-bold text-rose-600 hover:underline cursor-pointer flex items-center gap-1 self-end md:self-auto">
-                            <span class="icon-[mdi--refresh]"></span> Reset Filter
-                        </button>
-                    </div>
-
-                    <!-- Event Cards Grid Table -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                        <template x-for="event in filteredEventsList()" :key="event.id">
-                            <div class="p-5 rounded-2xl bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between space-y-4 relative overflow-hidden">
-                                <!-- Left Stripe -->
-                                <div class="absolute left-0 top-0 bottom-0 w-2" :class="getCategoryStripe(event.category)"></div>
-
-                                <div class="pl-2 space-y-2.5">
-                                    <div class="flex items-center justify-between gap-1.5 flex-wrap">
-                                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider"
-                                            :class="getEventCategoryBadge(event.category)"
-                                            x-text="event.category"></span>
-                                        <span class="text-[11px] font-bold text-slate-500" x-text="event.date"></span>
-                                    </div>
-
-                                    <h4 class="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-snug"
-                                        x-text="event.title"></h4>
-
-                                    <div class="space-y-1 text-xs text-slate-600 dark:text-slate-400">
-                                        <div class="flex items-center gap-1.5 font-semibold">
-                                            <span class="icon-[mdi--clock-outline] text-amber-500"></span>
-                                            <span x-text="event.time"></span>
-                                        </div>
-                                        <div class="flex items-center gap-1.5 font-semibold">
-                                            <span class="icon-[mdi--laptop] text-teal-500"></span>
-                                            <span x-text="event.mode + ' • ' + event.location"></span>
-                                        </div>
-                                    </div>
-
-                                    <p class="text-xs text-slate-500 line-clamp-2" x-text="event.description"></p>
-                                </div>
-
-                                <!-- Action Buttons -->
-                                <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2 pl-2">
-                                    <span class="text-[10px] font-bold text-slate-400" x-text="event.jenjangLabel || event.jenjang"></span>
-                                    <div class="flex items-center gap-1">
-                                        <button type="button" @click="editEvent(event)"
-                                            class="p-2 rounded-lg bg-sky-50 text-sky-700 hover:bg-sky-100 dark:bg-sky-950 dark:text-sky-300 transition-all cursor-pointer"
-                                            title="Edit / Revisi">
-                                            <span class="icon-[mdi--pencil] text-sm"></span>
-                                        </button>
-                                        <button type="button" @click="duplicateEvent(event)"
-                                            class="p-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 transition-all cursor-pointer"
-                                            title="Duplikasi">
-                                            <span class="icon-[mdi--content-copy] text-sm"></span>
-                                        </button>
-                                        <button type="button" @click="deleteEvent(event.id)"
-                                            class="p-2 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-950 dark:text-rose-300 transition-all cursor-pointer"
-                                            title="Hapus">
-                                            <span class="icon-[mdi--trash-can-outline] text-sm"></span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-
-                <!-- =========================================================================
-                     TAB 2: MANAJEMEN BERITA & ARTIKEL CMS (RICH WYSIWYG + SEO TOOLS)
-                     ========================================================================= -->
-                <div x-show="activeTab === 'berita'" x-cloak class="space-y-6">
-                    
-                    <!-- Mode: List View -->
-                    <div x-show="!articleEditor.isOpen" class="space-y-6">
-                        <!-- Header Section -->
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-[#131D38] p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                            <div>
-                                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 mb-2 border border-emerald-200 dark:border-emerald-800">
-                                    <span class="icon-[mdi--newspaper-plus] text-sm"></span>
-                                    <span>Content Management System (CMS)</span>
-                                </div>
-                                <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Berita, Artikel &amp; Panduan Edukasi</h2>
-                                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-                                    Tulis artikel edukasi, panduan belajar, berita kegiatan, dan optimasi SEO halaman web.
-                                </p>
-                            </div>
-
-                            <div class="flex flex-wrap items-center gap-2">
-                                <button type="button" @click="openNewArticleEditor()"
-                                    style="background: linear-gradient(135deg, #059669 0%, #047857 100%) !important; color: #ffffff !important;"
-                                    class="px-4 py-2.5 rounded-xl font-black text-xs sm:text-sm shadow-md hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer text-white">
-                                    <span class="icon-[mdi--plus-circle] text-lg"></span>
-                                    <span>Tulis Berita / Artikel Baru</span>
-                                </button>
-                                <button type="button" @click="exportArticlesJSON()"
-                                    class="px-3.5 py-2.5 rounded-xl font-bold text-xs bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer">
-                                    <span class="icon-[mdi--download] text-base"></span>
-                                    <span>Ekspor JSON</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Statistics -->
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                            <div class="p-4 rounded-2xl bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800">
-                                <p class="text-[11px] font-bold text-slate-500 uppercase">Total Artikel</p>
-                                <h4 class="text-2xl font-black text-slate-900 dark:text-white mt-1" x-text="articles.length"></h4>
-                            </div>
-                            <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
-                                <p class="text-[11px] font-bold text-emerald-700 uppercase">Diterbitkan</p>
-                                <h4 class="text-2xl font-black text-emerald-800 dark:text-emerald-200 mt-1" x-text="articles.filter(a => a.status === 'published').length"></h4>
-                            </div>
-                            <div class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800">
-                                <p class="text-[11px] font-bold text-amber-700 uppercase">Draf / Konsep</p>
-                                <h4 class="text-2xl font-black text-amber-800 dark:text-amber-200 mt-1" x-text="articles.filter(a => a.status === 'draft').length"></h4>
-                            </div>
-                            <div class="p-4 rounded-2xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800">
-                                <p class="text-[11px] font-bold text-sky-700 uppercase">Skor SEO Bagus (&gt;80)</p>
-                                <h4 class="text-2xl font-black text-sky-800 dark:text-sky-200 mt-1" x-text="articles.filter(a => (a.seoScore || 0) >= 80).length"></h4>
-                            </div>
-                        </div>
-
-                        <!-- Articles Table / Cards -->
-                        <div class="bg-white dark:bg-[#131D38] rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
-                            <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
-                                <div class="relative flex-1">
-                                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-base pointer-events-none">
-                                        <span class="icon-[mdi--magnify]"></span>
-                                    </span>
-                                    <input type="text" x-model="articleSearch" placeholder="Cari judul berita atau kata kunci..."
-                                        class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                </div>
-                                <select x-model="articleCategoryFilter" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold">
-                                    <option value="all">Semua Kategori</option>
-                                    <option value="OSN & Sains">OSN &amp; Sains</option>
-                                    <option value="SNBT & UTBK">SNBT &amp; UTBK</option>
-                                    <option value="TKA & Akademik">TKA &amp; Akademik</option>
-                                    <option value="Tips Belajar & Prestasi">Tips Belajar &amp; Prestasi</option>
-                                    <option value="Berita Sekolah & Diknas">Berita Sekolah &amp; Diknas</option>
-                                    <option value="Informasi NLS">Informasi NLS</option>
-                                </select>
-                            </div>
-
-                            <div class="divide-y divide-slate-100 dark:divide-slate-800">
-                                <template x-for="art in filteredArticlesList()" :key="art.id">
-                                    <div class="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors">
-                                        <div class="flex items-start gap-3.5 flex-1 min-w-0">
-                                            <img :src="art.coverImage || '/nls-logo-300.png'" alt="Cover" class="w-14 h-14 rounded-2xl object-cover bg-slate-100 dark:bg-slate-800 shrink-0 border border-slate-200 dark:border-slate-700">
-                                            <div class="space-y-1 min-w-0">
-                                                <div class="flex items-center gap-2 flex-wrap">
-                                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300"
-                                                        x-text="art.category"></span>
-                                                    <span class="text-xs text-slate-500 font-medium" x-text="art.date"></span>
-                                                    <span class="text-xs text-slate-400">•</span>
-                                                    <span class="text-xs font-bold text-slate-600 dark:text-slate-300" x-text="art.author"></span>
-                                                </div>
-                                                <h4 class="text-sm sm:text-base font-black text-slate-900 dark:text-white truncate" x-text="art.title"></h4>
-                                                <div class="flex items-center gap-2 text-xs text-slate-500">
-                                                    <span class="font-semibold text-emerald-600 dark:text-emerald-400">SEO: <strong x-text="art.seoScore || 85"></strong>/100</span>
-                                                    <span>•</span>
-                                                    <span class="truncate">Slug: /blog/<span x-text="art.slug"></span></span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="flex items-center gap-2 self-end md:self-auto shrink-0">
-                                            <button type="button" @click="editArticle(art)"
-                                                class="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950 dark:text-emerald-300 text-xs font-bold flex items-center gap-1 transition-all cursor-pointer">
-                                                <span class="icon-[mdi--pencil]"></span> Edit Berita
-                                            </button>
-                                            <button type="button" @click="duplicateArticle(art)"
-                                                class="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all cursor-pointer"
-                                                title="Duplikasi">
-                                                <span class="icon-[mdi--content-copy]"></span>
-                                            </button>
-                                            <button type="button" @click="deleteArticle(art.id)"
-                                                class="p-1.5 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 dark:bg-rose-950 dark:text-rose-300 transition-all cursor-pointer"
-                                                title="Hapus">
-                                                <span class="icon-[mdi--trash-can-outline]"></span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </template>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Mode: Full Article & SEO Editor -->
-                    <div x-show="articleEditor.isOpen" class="space-y-6">
-                        <!-- Top Action Bar -->
-                        <div class="flex items-center justify-between gap-3 bg-white dark:bg-[#131D38] p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                            <button type="button" @click="closeArticleEditor()"
-                                class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-primary transition-colors cursor-pointer">
-                                <span class="icon-[mdi--arrow-left] text-lg"></span>
-                                <span>Kembali ke Daftar Berita</span>
-                            </button>
-
-                            <div class="flex items-center gap-2">
-                                <button type="button" @click="saveArticle('draft')"
-                                    class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:bg-slate-200 transition-all cursor-pointer">
-                                    Simpan sebagai Draf
-                                </button>
-                                <button type="button" @click="saveArticle('published')"
-                                    style="background: linear-gradient(135deg, #059669 0%, #047857 100%) !important; color: #ffffff !important;"
-                                    class="px-5 py-2 rounded-xl text-xs font-black shadow-md hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer text-white">
-                                    <span class="icon-[mdi--check-circle]"></span>
-                                    <span>Publikasikan Berita</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 2-Column Editor Grid: Left Content Editor, Right SEO Suite -->
-                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                            
-                            <!-- Left: Article Content Editor (7 Cols) -->
-                            <div class="lg:col-span-7 space-y-5">
-                                <div class="bg-white dark:bg-[#131D38] p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-5">
-                                    <!-- Title Input -->
-                                    <div>
-                                        <label class="block text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Judul Berita / Artikel</label>
-                                        <input type="text" x-model="articleEditor.form.title" @input="onTitleChange()" placeholder="Masukkan judul berita yang menarik & berbobot..."
-                                            class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-base font-black focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white">
-                                    </div>
-
-                                    <!-- Slug / URL Path -->
-                                    <div>
-                                        <label class="block text-[11px] font-bold text-slate-500 mb-1">Permalink / URL Slug:</label>
-                                        <div class="flex items-center text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-900/80 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 font-mono">
-                                            <span>https://next-level-study.com/blog/</span>
-                                            <input type="text" x-model="articleEditor.form.slug" class="bg-transparent font-bold text-emerald-600 dark:text-emerald-400 focus:outline-none flex-1 ml-1">
-                                        </div>
-                                    </div>
-
-                                    <!-- Category & Meta Row -->
-                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                        <div>
-                                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Kategori</label>
-                                            <select x-model="articleEditor.form.category" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold">
-                                                <option value="OSN & Sains">OSN &amp; Sains</option>
-                                                <option value="SNBT & UTBK">SNBT &amp; UTBK</option>
-                                                <option value="TKA & Akademik">TKA &amp; Akademik</option>
-                                                <option value="Tips Belajar & Prestasi">Tips Belajar &amp; Prestasi</option>
-                                                <option value="Berita Sekolah & Diknas">Berita Sekolah &amp; Diknas</option>
-                                                <option value="Informasi NLS">Informasi NLS</option>
-                                                <option value="Panduan Beasiswa">Panduan Beasiswa</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Penulis (Author)</label>
-                                            <input type="text" x-model="articleEditor.form.author" placeholder="Nama Penulis"
-                                                class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold">
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Tanggal Terbit</label>
-                                            <input type="date" x-model="articleEditor.form.date"
-                                                class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold">
-                                        </div>
-                                    </div>
-
-                                    <!-- Cover Image URL -->
-                                    <div>
-                                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Cover Image URL / Banner</label>
-                                        <div class="flex gap-2">
-                                            <input type="text" x-model="articleEditor.form.coverImage" placeholder="/nls-logo-300.png atau URL gambar"
-                                                class="flex-1 px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold">
-                                            <button type="button" @click="triggerArticleImageUpload()"
-                                                class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-bold border border-slate-300 dark:border-slate-700 cursor-pointer">
-                                                Upload File
-                                            </button>
-                                            <input type="file" id="artImageInput" class="hidden" accept="image/*" @change="handleArticleImageUpload($event)">
-                                        </div>
-                                    </div>
-
-                                    <!-- RICH WYSIWYG TOOLBAR -->
-                                    <div class="border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden bg-slate-50 dark:bg-[#0B132B]">
-                                        <!-- Toolbar Buttons -->
-                                        <div class="p-2 border-b border-slate-200 dark:border-slate-700 flex flex-wrap items-center gap-1 bg-slate-100/80 dark:bg-slate-900">
-                                            <!-- Headings -->
-                                            <button type="button" @click="execCmd('formatBlock', '<h1>')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-black" title="Heading 1">H1</button>
-                                            <button type="button" @click="execCmd('formatBlock', '<h2>')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-black" title="Heading 2">H2</button>
-                                            <button type="button" @click="execCmd('formatBlock', '<h3>')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-black" title="Heading 3">H3</button>
-                                            <button type="button" @click="execCmd('formatBlock', '<p>')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-bold" title="Paragraph">P</button>
-
-                                            <span class="w-px h-5 bg-slate-300 dark:bg-slate-700 mx-1"></span>
-
-                                            <!-- Formatting -->
-                                            <button type="button" @click="execCmd('bold')" class="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-sm font-bold" title="Bold (Tebal)"><span class="icon-[mdi--format-bold]"></span></button>
-                                            <button type="button" @click="execCmd('italic')" class="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-sm font-bold" title="Italic (Miring)"><span class="icon-[mdi--format-italic]"></span></button>
-                                            <button type="button" @click="execCmd('underline')" class="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-sm font-bold" title="Underline (Garis Bawah)"><span class="icon-[mdi--format-underline]"></span></button>
-                                            <button type="button" @click="execCmd('strikeThrough')" class="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-sm font-bold" title="Strikethrough (Coret)"><span class="icon-[mdi--format-strikethrough]"></span></button>
-
-                                            <span class="w-px h-5 bg-slate-300 dark:bg-slate-700 mx-1"></span>
-
-                                            <!-- Alignment -->
-                                            <button type="button" @click="execCmd('justifyLeft')" class="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-sm font-bold" title="Rata Kiri"><span class="icon-[mdi--format-align-left]"></span></button>
-                                            <button type="button" @click="execCmd('justifyCenter')" class="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-sm font-bold" title="Rata Tengah"><span class="icon-[mdi--format-align-center]"></span></button>
-                                            <button type="button" @click="execCmd('justifyRight')" class="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-sm font-bold" title="Rata Kanan"><span class="icon-[mdi--format-align-right]"></span></button>
-                                            <button type="button" @click="execCmd('justifyFull')" class="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-sm font-bold" title="Justify (Rata Kanan Kiri)"><span class="icon-[mdi--format-align-justify]"></span></button>
-
-                                            <span class="w-px h-5 bg-slate-300 dark:bg-slate-700 mx-1"></span>
-
-                                            <!-- Lists -->
-                                            <button type="button" @click="execCmd('insertUnorderedList')" class="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-sm font-bold" title="Bullet List"><span class="icon-[mdi--format-list-bulleted]"></span></button>
-                                            <button type="button" @click="execCmd('insertOrderedList')" class="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-sm font-bold" title="Numbered List"><span class="icon-[mdi--format-list-numbered]"></span></button>
-
-                                            <span class="w-px h-5 bg-slate-300 dark:bg-slate-700 mx-1"></span>
-
-                                            <!-- Inserts -->
-                                            <button type="button" @click="insertLinkPrompt()" class="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-sm font-bold" title="Sisipkan Link"><span class="icon-[mdi--link-variant]"></span></button>
-                                            <button type="button" @click="insertImagePrompt()" class="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-sm font-bold" title="Sisipkan Gambar"><span class="icon-[mdi--image-plus]"></span></button>
-                                            <button type="button" @click="insertQuote()" class="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-sm font-bold" title="Kutipan (Blockquote)"><span class="icon-[mdi--format-quote-close]"></span></button>
-                                            <button type="button" @click="insertTable()" class="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-sm font-bold" title="Sisipkan Tabel"><span class="icon-[mdi--table]"></span></button>
-                                            <button type="button" @click="execCmd('insertHorizontalRule')" class="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-sm font-bold" title="Garis Pemisah"><span class="icon-[mdi--minus]"></span></button>
-
-                                            <span class="w-px h-5 bg-slate-300 dark:bg-slate-700 mx-1"></span>
-
-                                            <button type="button" @click="execCmd('undo')" class="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-sm font-bold" title="Undo"><span class="icon-[mdi--undo]"></span></button>
-                                            <button type="button" @click="execCmd('redo')" class="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-sm font-bold" title="Redo"><span class="icon-[mdi--redo]"></span></button>
-                                            <button type="button" @click="toggleHtmlSource()"
-                                                :class="isHtmlView ? 'bg-sky-500 text-white' : ''"
-                                                class="px-2 py-1 rounded text-xs font-mono font-bold" title="Lihat Source Code HTML">&lt;/&gt;</button>
-                                        </div>
-
-                                        <!-- Content Editable Area -->
-                                        <div x-show="!isHtmlView" id="editorArea" contenteditable="true"
-                                            @input="syncEditorContent()"
-                                            class="editor-content p-4 bg-white dark:bg-[#131D38] admin-scrollbar text-slate-800 dark:text-slate-100">
-                                        </div>
-
-                                        <!-- Raw HTML Textarea (if source code toggled) -->
-                                        <textarea x-show="isHtmlView" x-model="articleEditor.form.content" @input="onHtmlAreaInput()"
-                                            class="w-full h-72 p-4 font-mono text-xs bg-slate-900 text-emerald-400 focus:outline-none"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Right: Advanced SEO Suite & Live Snippet Preview (5 Cols) -->
-                            <div class="lg:col-span-5 space-y-5">
-                                
-                                <!-- Google Search Snippet Preview -->
-                                <div class="bg-white dark:bg-[#131D38] p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
-                                    <div class="flex items-center justify-between">
-                                        <div class="inline-flex items-center gap-1 text-xs font-black uppercase tracking-wider text-sky-600 dark:text-sky-400">
-                                            <span class="icon-[mdi--google] text-base"></span>
-                                            <span>Google Snippet Preview</span>
-                                        </div>
-                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-500">Live Preview</span>
-                                    </div>
-
-                                    <!-- Snippet Card -->
-                                    <div class="google-snippet-box">
-                                        <div class="google-url flex items-center gap-1.5">
-                                            <img src="/nls-logo-300.png" class="w-3.5 h-3.5 rounded-full" alt="Icon">
-                                            <span>https://next-level-study.com › blog › <span x-text="articleEditor.form.slug || 'judul-berita'"></span></span>
-                                        </div>
-                                        <div class="google-title font-bold text-sm sm:text-base mt-1" x-text="articleEditor.form.metaTitle || articleEditor.form.title || 'Judul Artikel Next Level Study'"></div>
-                                        <div class="google-desc text-xs mt-1" x-text="articleEditor.form.metaDescription || 'Deskripsi ringkasan artikel akan tampil di sini pada hasil pencarian mesin telusur Google.'"></div>
-                                    </div>
-                                </div>
-
-                                <!-- SEO Optimization Fields -->
-                                <div class="bg-white dark:bg-[#131D38] p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
-                                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                                        <h3 class="text-sm font-black text-slate-900 dark:text-white flex items-center gap-1.5">
-                                            <span class="icon-[mdi--chart-line] text-emerald-500"></span>
-                                            <span>Pengaturan SEO &amp; Meta Tag</span>
-                                        </h3>
-                                        <span class="px-2.5 py-0.5 rounded-full text-xs font-black"
-                                            :class="calculateSeoScore() >= 80 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'"
-                                            x-text="'Skor SEO: ' + calculateSeoScore() + '/100'"></span>
-                                    </div>
-
-                                    <!-- Focus Keyword -->
-                                    <div>
-                                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Focus Keyword (Kata Kunci Utama)</label>
-                                        <input type="text" x-model="articleEditor.form.focusKeyword" placeholder="Contoh: persiapan snbt 2027"
-                                            class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold">
-                                    </div>
-
-                                    <!-- Meta Title -->
-                                    <div>
-                                        <div class="flex justify-between text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                                            <span>Meta Title</span>
-                                            <span :class="(articleEditor.form.metaTitle || '').length > 60 ? 'text-rose-500' : 'text-slate-400'"
-                                                x-text="(articleEditor.form.metaTitle || '').length + '/60 karakter'"></span>
-                                        </div>
-                                        <input type="text" x-model="articleEditor.form.metaTitle" placeholder="Judul pada tab browser & Google Search"
-                                            class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold">
-                                    </div>
-
-                                    <!-- Meta Description -->
-                                    <div>
-                                        <div class="flex justify-between text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                                            <span>Meta Description</span>
-                                            <span :class="(articleEditor.form.metaDescription || '').length > 160 ? 'text-rose-500' : 'text-slate-400'"
-                                                x-text="(articleEditor.form.metaDescription || '').length + '/160 karakter'"></span>
-                                        </div>
-                                        <textarea x-model="articleEditor.form.metaDescription" rows="3" placeholder="Ringkasan isi berita untuk mesin pencari..."
-                                            class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold"></textarea>
-                                    </div>
-
-                                    <!-- SEO Checklist -->
-                                    <div class="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
-                                        <p class="text-[11px] font-black uppercase text-slate-500">Pemeriksaan SEO Otomatis:</p>
-                                        <div class="space-y-1.5 text-xs font-medium">
-                                            <div class="flex items-center gap-2" :class="checkKeywordInTitle() ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'">
-                                                <span :class="checkKeywordInTitle() ? 'icon-[mdi--check-circle]' : 'icon-[mdi--alert-circle-outline]'"></span>
-                                                <span>Kata kunci terdapat di Judul</span>
-                                            </div>
-                                            <div class="flex items-center gap-2" :class="checkKeywordInDesc() ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'">
-                                                <span :class="checkKeywordInDesc() ? 'icon-[mdi--check-circle]' : 'icon-[mdi--alert-circle-outline]'"></span>
-                                                <span>Kata kunci terdapat di Meta Description</span>
-                                            </div>
-                                            <div class="flex items-center gap-2" :class="checkTitleLength() ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'">
-                                                <span :class="checkTitleLength() ? 'icon-[mdi--check-circle]' : 'icon-[mdi--alert-circle-outline]'"></span>
-                                                <span>Panjang judul ideal (40-65 karakter)</span>
-                                            </div>
-                                            <div class="flex items-center gap-2" :class="checkDescLength() ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'">
-                                                <span :class="checkDescLength() ? 'icon-[mdi--check-circle]' : 'icon-[mdi--alert-circle-outline]'"></span>
-                                                <span>Panjang deskripsi ideal (110-160 karakter)</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- =========================================================================
-                     TAB 3: MANAJEMEN DAFTAR PENGAJAR & TUTOR (SYNC TO /pengajar)
-                     ========================================================================= -->
-                <div x-show="activeTab === 'pengajar'" x-cloak class="space-y-6">
-                    
-                    <!-- Header Section -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-[#131D38] p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                        <div>
-                            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 mb-2 border border-indigo-200 dark:border-indigo-800">
-                                <span class="icon-[mdi--account-tie-voice] text-sm"></span>
-                                <span>Manajemen Direktori Pengajar</span>
-                            </div>
-                            <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Tim Guru &amp; Mentor Ahli NLS</h2>
-                            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-                                Tambah, revisi profil, keahlian subjek, dan prestasi pengajar yang langsung live di <a href="/pengajar" target="_blank" class="text-sky-600 font-bold hover:underline">/pengajar</a>.
-                            </p>
-                        </div>
-
-                        <div class="flex flex-wrap items-center gap-2">
-                            <button type="button" @click="openTeacherModal()"
-                                style="background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%) !important; color: #ffffff !important;"
-                                class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm shadow-md hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer text-white">
-                                <span class="icon-[mdi--account-plus] text-lg"></span>
-                                <span>Tambah Pengajar Baru</span>
-                            </button>
-                            <button type="button" @click="exportTeachersJSON()"
-                                class="px-3.5 py-2.5 rounded-xl font-bold text-xs bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer">
-                                <span class="icon-[mdi--download] text-base"></span>
-                                <span>Ekspor JSON</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Statistics Chips -->
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <div class="p-4 rounded-2xl bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800">
-                            <p class="text-[11px] font-bold text-slate-500 uppercase">Total Pengajar</p>
-                            <h4 class="text-2xl font-black text-slate-900 dark:text-white mt-1" x-text="teachers.length"></h4>
-                        </div>
-                        <div class="p-4 rounded-2xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800">
-                            <p class="text-[11px] font-bold text-sky-700 uppercase">Spesialis OSN</p>
-                            <h4 class="text-2xl font-black text-sky-800 dark:text-sky-200 mt-1" x-text="teachers.filter(t => t.categories && t.categories.includes('OSN')).length"></h4>
-                        </div>
-                        <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
-                            <p class="text-[11px] font-bold text-emerald-700 uppercase">Spesialis SNBT</p>
-                            <h4 class="text-2xl font-black text-emerald-800 dark:text-emerald-200 mt-1" x-text="teachers.filter(t => t.categories && t.categories.includes('SNBT')).length"></h4>
-                        </div>
-                        <div class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800">
-                            <p class="text-[11px] font-bold text-amber-700 uppercase">Spesialis TKA</p>
-                            <h4 class="text-2xl font-black text-amber-800 dark:text-amber-200 mt-1" x-text="teachers.filter(t => t.categories && t.categories.includes('TKA')).length"></h4>
-                        </div>
-                    </div>
-
-                    <!-- Search & Filter Controls -->
-                    <div class="p-4 sm:p-5 bg-white dark:bg-[#131D38] rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
-                        <div class="relative flex-1">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-base pointer-events-none">
-                                <span class="icon-[mdi--magnify]"></span>
-                            </span>
-                            <input type="text" x-model="teacherSearch" placeholder="Cari nama guru, mata pelajaran, atau kampus..."
-                                class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        </div>
-
-                        <select x-model="teacherCategoryFilter" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold">
-                            <option value="all">Semua Bidang Keahlian</option>
-                            <option value="OSN">Spesialis OSN</option>
-                            <option value="SNBT">Spesialis SNBT</option>
-                            <option value="TKA">Spesialis TKA</option>
-                            <option value="Kurikulum Nasional">Kurikulum Nasional</option>
-                            <option value="Kurikulum Internasional">Kurikulum Internasional</option>
-                        </select>
-                    </div>
-
-                    <!-- Teachers Grid Cards -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                        <template x-for="teacher in filteredTeachersList()" :key="teacher.id">
-                            <div class="p-5 rounded-3xl bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-4">
-                                <div class="space-y-3">
-                                    <div class="flex items-start gap-3.5">
-                                        <img :src="teacher.photo || '/images/pengajar/mentor-1-math.jpg'" alt="Photo" class="w-14 h-14 rounded-2xl object-cover border border-slate-200 dark:border-slate-700 shrink-0 bg-slate-100">
-                                        <div class="min-w-0">
-                                            <h4 class="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-snug" x-text="teacher.name"></h4>
-                                            <p class="text-xs font-bold text-indigo-600 dark:text-indigo-400 truncate" x-text="teacher.shortName"></p>
-                                            <p class="text-[11px] text-slate-500 truncate" x-text="teacher.education"></p>
-                                        </div>
-                                    </div>
-
-                                    <!-- Categories -->
-                                    <div class="flex flex-wrap gap-1">
-                                        <template x-for="(cat, cIdx) in teacher.categories" :key="cIdx">
-                                            <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
-                                                x-text="cat"></span>
-                                        </template>
-                                    </div>
-
-                                    <!-- Subject Details -->
-                                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 text-xs space-y-1">
-                                        <p class="font-bold text-slate-800 dark:text-slate-200 truncate" x-text="teacher.subject"></p>
-                                        <p class="text-[11px] text-slate-500 line-clamp-2" x-text="teacher.kebutuhanPrivat"></p>
-                                    </div>
-                                </div>
-
-                                <!-- Actions -->
-                                <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                                    <span class="text-[11px] font-bold text-slate-400" x-text="teacher.jenjangLabel || (teacher.jenjang && teacher.jenjang.join(', '))"></span>
-                                    <div class="flex items-center gap-1">
-                                        <button type="button" @click="editTeacher(teacher)"
-                                            class="p-2 rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-950 dark:text-indigo-300 transition-all cursor-pointer"
-                                            title="Edit / Revisi Pengajar">
-                                            <span class="icon-[mdi--pencil] text-sm"></span>
-                                        </button>
-                                        <button type="button" @click="duplicateTeacher(teacher)"
-                                            class="p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 transition-all cursor-pointer"
-                                            title="Duplikasi Pengajar">
-                                            <span class="icon-[mdi--content-copy] text-sm"></span>
-                                        </button>
-                                        <button type="button" @click="deleteTeacher(teacher.id)"
-                                            class="p-2 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-950 dark:text-rose-300 transition-all cursor-pointer"
-                                            title="Hapus Pengajar">
-                                            <span class="icon-[mdi--trash-can-outline] text-sm"></span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-
-            </main>
-        </div>
-    </div>
 
     <!-- ==========================================
          MODAL 1: FORM TAMBAH / EDIT EVENT KALENDER
