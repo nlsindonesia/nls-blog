@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <!-- Google tag (gtag.js) -->
@@ -795,7 +795,7 @@
                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black shadow-xs border"
                             :class="getCategoryBadgeClass(selectedCategory)">
                             <span x-text="selectedCategory"></span>
-                            <button type="button" @click="selectedCategory = 'all'" class="hover:opacity-75 cursor-pointer ml-1 font-bold">âœ•</button>
+                            <button type="button" @click="selectedCategory = 'all'" class="hover:opacity-75 cursor-pointer ml-1 font-bold">✕</button>
                         </span>
 
                         <!-- Reset All Button -->
@@ -806,13 +806,8 @@
                     </div>
                 </div>
 
-                <!-- Right: Proper Custom Interactive Category Dropdown + Link to /blog -->
+                <!-- Right: Proper Custom Interactive Category Dropdown -->
                 <div class="flex flex-col sm:flex-row sm:items-center gap-3 self-stretch lg:self-auto shrink-0">
-                    <a href="/blog" class="inline-flex items-center gap-1 text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline mr-2 self-end sm:self-auto">
-                        <span>Buka Blog Lengkap</span>
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                    </a>
-
                     <div class="flex items-center gap-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         <label class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">
@@ -963,6 +958,17 @@
                     </div>
                 </article>
             </template>
+        </div>
+
+        <!-- Bottom Action: Buka Blog Lengkap at Bottom-Right (Red X position) -->
+        <div class="mt-8 flex justify-end">
+            <a href="/blog"
+                class="inline-flex items-center gap-2.5 px-6 py-3 rounded-2xl bg-white dark:bg-[#131D38] border-2 border-sky-400/60 hover:border-sky-500 text-sky-700 dark:text-sky-300 hover:text-sky-800 dark:hover:text-white font-black text-xs sm:text-sm shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all group cursor-pointer">
+                <span>Buka Blog Lengkap</span>
+                <span class="w-7 h-7 rounded-xl bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-300 flex items-center justify-center group-hover:translate-x-1 transition-transform">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </span>
+            </a>
         </div>
     </div>
 
