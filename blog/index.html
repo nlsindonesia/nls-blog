@@ -1441,27 +1441,20 @@
                 },
 
                                 loadArticles() {
-                    const defaultCovers = {
-                        'art-1': '/images/blog/cover-snbt-2027.jpg',
-                        'art-2': '/images/blog/cover-osn-silabus.jpg',
-                        'art-3': '/images/blog/cover-jurusan-kuliah.jpg'
-                    };
                     try {
                         const stored = localStorage.getItem("nls_berita_articles_v1");
                         if (stored) {
                             const parsed = JSON.parse(stored);
                             if (Array.isArray(parsed) && parsed.length > 0) {
-                                let updated = false;
-                                parsed.forEach(a => {
-                                    if (defaultCovers[a.id] && (!a.coverImage || a.coverImage.includes('nls-logo-300.png') || a.coverImage.includes('article-placeholder'))) {
-                                        a.coverImage = defaultCovers[a.id];
-                                        updated = true;
-                                    }
-                                });
-                                if (updated) {
-                                    localStorage.setItem("nls_berita_articles_v1", JSON.stringify(parsed));
+                                if (typeof window.NLS_DEFAULT_ARTICLES !== "undefined" && Array.isArray(window.NLS_DEFAULT_ARTICLES)) {
+                                    window.NLS_DEFAULT_ARTICLES.forEach(defArt => {
+                                        if (!parsed.some(a => a.id === defArt.id)) {
+                                            parsed.unshift(defArt);
+                                        }
+                                    });
                                 }
                                 this.articles = parsed;
+                                localStorage.setItem("nls_berita_articles_v1", JSON.stringify(this.articles));
                                 return;
                             }
                         }

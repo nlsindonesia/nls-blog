@@ -1,8 +1,4 @@
-﻿/**
- * Master Dataset Berita & Artikel CMS Next Level Study (NLS)
- * Baseline data tersinkronisasi untuk /nlsadmin, /blog, dan homepage.
- */
-window.NLS_DEFAULT_ARTICLES = [
+[
   {
     "id": "art-osn-matematika",
     "title": "Tips Belajar OSN Matematika SMA: Strategi Penguasaan 4 Pilar & Problem Solving Heuristik",
@@ -191,4 +187,3 @@ window.NLS_DEFAULT_ARTICLES = [
     "seoScore": 90
   }
 ]
-;
