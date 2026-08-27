@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -1338,6 +1338,49 @@
                                 </div>
                             </div>
                         </template>
+                    </div>
+
+                    <!-- Numbered Pagination Bar (3 Events Per Page) -->
+                    <div class="p-4 sm:p-5 bg-white dark:bg-[#131D38] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+                        <!-- Left: Status Info -->
+                        <div class="text-xs font-bold text-slate-500 dark:text-slate-400 text-center sm:text-left">
+                            Menampilkan <span class="text-slate-900 dark:text-white font-black" x-text="filteredEventsList().length === 0 ? 0 : ((eventCurrentPage - 1) * eventPerPage + 1)"></span> - <span class="text-slate-900 dark:text-white font-black" x-text="Math.min(eventCurrentPage * eventPerPage, filteredEventsList().length)"></span> dari <span class="text-sky-600 dark:text-sky-400 font-black" x-text="filteredEventsList().length"></span> total agenda aktif
+                        </div>
+
+                        <!-- Right: Numbered Page Navigation -->
+                        <div class="flex items-center gap-1.5 flex-wrap justify-center" x-show="totalEventPages() > 1">
+                            <!-- Prev Button -->
+                            <button type="button" @click="goToEventPage(eventCurrentPage - 1)" :disabled="eventCurrentPage === 1"
+                                :class="eventCurrentPage === 1 ? 'opacity-40 cursor-not-allowed bg-slate-100 dark:bg-slate-800 text-slate-400' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:border-sky-500 hover:text-sky-600 border border-slate-200 dark:border-slate-700 cursor-pointer shadow-2xs'"
+                                class="px-3 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                                <span class="hidden sm:inline">Sebelumnya</span>
+                            </button>
+
+                            <!-- Page Number Buttons Loop -->
+                            <template x-for="p in getEventPaginationRange()" :key="p">
+                                <div>
+                                    <template x-if="p === '...'">
+                                        <span class="w-9 h-9 flex items-center justify-center text-xs font-bold text-slate-400 select-none">...</span>
+                                    </template>
+                                    <template x-if="p !== '...'">
+                                        <button type="button" @click="goToEventPage(p)"
+                                            :class="eventCurrentPage === p ? 'bg-sky-600 text-white font-black shadow-md shadow-sky-600/30 ring-2 ring-sky-300 dark:ring-sky-700 scale-105' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'"
+                                            class="w-9 h-9 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center"
+                                            x-text="p">
+                                        </button>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <!-- Next Button -->
+                            <button type="button" @click="goToEventPage(eventCurrentPage + 1)" :disabled="eventCurrentPage === totalEventPages()"
+                                :class="eventCurrentPage === totalEventPages() ? 'opacity-40 cursor-not-allowed bg-slate-100 dark:bg-slate-800 text-slate-400' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:border-sky-500 hover:text-sky-600 border border-slate-200 dark:border-slate-700 cursor-pointer shadow-2xs'"
+                                class="px-3 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1">
+                                <span class="hidden sm:inline">Berikutnya</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
