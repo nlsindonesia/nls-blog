@@ -370,6 +370,39 @@
             color: #c4b5fd !important;
             border-color: #7c3aed !important;
         }
+
+        /* High-Contrast Crisp Submenu Styles */
+        .submenu-btn-active {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+            border: 2px solid #0284c7 !important;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.22) !important;
+            font-weight: 900 !important;
+        }
+        html.dark .submenu-btn-active {
+            background-color: #1e293b !important;
+            color: #ffffff !important;
+            border: 2px solid #38bdf8 !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45) !important;
+        }
+
+        .submenu-btn-inactive {
+            background-color: transparent !important;
+            color: #475569 !important;
+            border: 2px solid transparent !important;
+            font-weight: 700 !important;
+        }
+        .submenu-btn-inactive:hover {
+            background-color: #f1f5f9 !important;
+            color: #0284c7 !important;
+        }
+        html.dark .submenu-btn-inactive {
+            color: #94a3b8 !important;
+        }
+        html.dark .submenu-btn-inactive:hover {
+            background-color: #1e293b !important;
+            color: #38bdf8 !important;
+        }
     </style>
 </head>
 
@@ -511,25 +544,30 @@
                         </button>
 
                         <!-- Dropdown Submenu: Create Event & Present Event -->
-                        <div x-show="isKalenderDropdownOpen" x-cloak class="pl-4 pt-1 space-y-1">
+                        <div x-show="isKalenderDropdownOpen" x-cloak class="border-l-2 border-sky-300 dark:border-sky-800 ml-4 pl-2.5 pt-1 space-y-1.5">
                             <!-- Submenu 1: Create Event -->
                             <button type="button" @click="openCreateEventView()"
-                                :class="activeTab === 'kalender' && kalenderView === 'create' ? 'bg-sky-500 text-white font-black shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:bg-sky-50 hover:text-sky-700 dark:hover:bg-slate-800 font-bold'"
-                                class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
-                                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
-                                <span>Create Event</span>
+                                :class="activeTab === 'kalender' && kalenderView === 'create' ? 'submenu-btn-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                        :class="activeTab === 'kalender' && kalenderView === 'create' ? 'bg-sky-600 ring-4 ring-sky-200 dark:ring-sky-900/80 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate">Create Event</span>
+                                </div>
+                                <span x-show="activeTab === 'kalender' && kalenderView === 'create'" class="text-[9px] px-1.5 py-0.5 rounded-full bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 font-black tracking-wide">Aktif</span>
                             </button>
 
                             <!-- Submenu 2: Present Event -->
                             <button type="button" @click="openPresentEventView()"
-                                :class="activeTab === 'kalender' && kalenderView === 'present' ? 'bg-sky-500 text-white font-black shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:bg-sky-50 hover:text-sky-700 dark:hover:bg-slate-800 font-bold'"
+                                :class="activeTab === 'kalender' && kalenderView === 'present' ? 'submenu-btn-active' : 'submenu-btn-inactive'"
                                 class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
                                 <div class="flex items-center gap-2.5 min-w-0">
-                                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                        :class="activeTab === 'kalender' && kalenderView === 'present' ? 'bg-sky-600 ring-4 ring-sky-200 dark:ring-sky-900/80 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
                                     <span class="truncate">Present Event</span>
                                 </div>
-                                <span class="text-[10px] font-black"
-                                    :class="activeTab === 'kalender' && kalenderView === 'present' ? 'text-white' : 'text-slate-400'"
+                                <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
+                                    :class="activeTab === 'kalender' && kalenderView === 'present' ? 'bg-sky-600 text-white shadow-2xs' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
                                     x-text="events.length"></span>
                             </button>
                         </div>
