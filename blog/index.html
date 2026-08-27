@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
     <!-- Google tag (gtag.js) -->
@@ -654,6 +654,42 @@
                 </div>
             </div>
 
+            <!-- Empty State -->
+            <div x-show="filteredArticles().length === 0" x-cloak class="text-center py-16 bg-white dark:bg-slate-900/60 rounded-3xl border-2 border-dashed border-slate-300 dark:border-slate-800 p-8 space-y-4 shadow-sm">
+                <div class="w-16 h-16 rounded-full bg-sky-50 dark:bg-slate-800 text-sky-600 dark:text-sky-400 flex items-center justify-center mx-auto text-3xl">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+                <h3 class="text-lg font-black text-slate-900 dark:text-white">Tidak Ada Artikel yang Cocok</h3>
+                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto">
+                    Coba gunakan kata kunci pencarian yang lain atau pilih kategori artikel berbeda di dropdown atas.
+                </p>
+                <button type="button" @click="selectedCategory = 'all'; searchQuery = ''"
+                    class="px-5 py-2.5 rounded-full bg-sky-600 hover:bg-sky-700 text-white text-xs font-black transition-all shadow-md cursor-pointer">
+                    Reset Filter Pencarian
+                </button>
+            </div>
+
+            <!-- Dynamic Themed Article Cards Grid -->
+            <div x-show="filteredArticles().length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <template x-for="art in filteredArticles()" :key="art.id">
+                    <article :class="getArticleAccentClass(art.category)"
+                        class="group bg-white dark:bg-[#131D38] rounded-3xl overflow-hidden shadow-xl shadow-slate-200/60 dark:shadow-black/50 border border-slate-200 dark:border-slate-800 flex flex-col hover:-translate-y-2 transition-all duration-300">
+                        
+                        <!-- Card Banner Image with Hover Zoom -->
+                        <div class="relative h-56 overflow-hidden block bg-slate-100 dark:bg-slate-900 cursor-pointer" @click="openArticle(art)">
+                            <img :src="art.coverImage || '/nls-logo-300.png'"
+                                :alt="art.title"
+                                loading="lazy"
+                                onerror="this.onerror=null;this.src='/nls-logo-300.png';"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            
+                            <!-- Category Badge -->
+                            <div class="absolute top-4 left-4 backdrop-blur-md px-3.5 py-1.5 rounded-full text-[11px] font-black uppercase tracking-wider shadow-md border"
+                                :class="getCategoryBadgeClass(art.category)"
+                                x-text="art.category">
+                            </div>
+                        </div>
+
                         <!-- Card Body (High Contrast Typography) -->
                         <div class="p-6 sm:p-7 flex flex-col flex-grow justify-between space-y-4">
                             <div class="space-y-3">
@@ -1293,6 +1329,7 @@
                 })(),
 
                 init() {
+                    this.loadArticles();
                     // Listen to real-time changes from /nlsadmin across tabs
                     window.addEventListener('storage', (e) => {
                         if (e.key === 'nls_berita_articles_v1' && e.newValue) {
@@ -1302,6 +1339,22 @@
                             } catch (err) {}
                         }
                     });
+                },
+
+                                loadArticles() {
+                    try {
+                        const stored = localStorage.getItem("nls_berita_articles_v1");
+                        if (stored) {
+                            const parsed = JSON.parse(stored);
+                            if (Array.isArray(parsed) && parsed.length > 0) {
+                                this.articles = parsed;
+                                return;
+                            }
+                        }
+                    } catch (e) {}
+                    if (typeof window.NLS_DEFAULT_ARTICLES !== "undefined" && Array.isArray(window.NLS_DEFAULT_ARTICLES)) {
+                        this.articles = window.NLS_DEFAULT_ARTICLES;
+                    }
                 },
 
                 filteredArticles() {
