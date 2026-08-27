@@ -573,7 +573,7 @@
         </section>
 
         <!-- ARTICLES LIST SECTION (5 ITEMS PER ROW ON DESKTOP) -->
-        <div class="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-8 -mt-12 sm:-mt-16 relative z-20 pb-16">
+        <div id="katalog-artikel" class="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-8 -mt-12 sm:-mt-16 relative z-20 pb-16 scroll-mt-24">
             
             <!-- Ambient Glowing Mesh Background for Seamless Blending -->
             <div class="absolute top-20 left-10 w-96 h-96 rounded-full bg-sky-400/10 dark:bg-sky-500/5 blur-3xl pointer-events-none -z-10"></div>
@@ -1419,6 +1419,13 @@
 
                 init() {
                     this.loadArticles();
+
+                    this.$watch('selectedCategory', () => {
+                        this.currentPage = 1;
+                    });
+                    this.$watch('searchQuery', () => {
+                        this.currentPage = 1;
+                    });
                     
                     // 1. Cross-tab Storage Event Listener
                     window.addEventListener('storage', (e) => {
@@ -1489,6 +1496,27 @@
 
                         return matchCat && matchSearch;
                     });
+                },
+
+                paginatedArticles() {
+                    const filtered = this.filteredArticles();
+                    const start = (this.currentPage - 1) * this.perPage;
+                    return filtered.slice(start, start + this.perPage);
+                },
+
+                totalPages() {
+                    const count = this.filteredArticles().length;
+                    return Math.max(1, Math.ceil(count / this.perPage));
+                },
+
+                setPage(page) {
+                    if (page >= 1 && page <= this.totalPages()) {
+                        this.currentPage = page;
+                        const el = document.getElementById('katalog-artikel');
+                        if (el) {
+                            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }
                 },
 
                 openArticle(art) {
