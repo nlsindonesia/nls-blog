@@ -550,14 +550,14 @@
                 <!-- Crisp High-Contrast Search Input Bar -->
                 <div class="max-w-2xl mx-auto pt-3">
                     <div class="relative flex items-center shadow-2xl rounded-full">
-                        <span class="absolute inset-y-0 left-0 pl-5 flex items-center text-sky-600 pointer-events-none">
+                        <div class="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center text-sky-600 pointer-events-none z-10">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        </span>
+                        </div>
                         <input type="text" x-model="searchQuery" placeholder="Cari judul artikel, tips belajar, silabus OSN, atau kata kunci..."
-                            style="color: #0f172a !important; font-weight: 700 !important;"
-                            class="w-full pl-12 pr-12 py-3.5 sm:py-4 rounded-full bg-white text-slate-900 placeholder-slate-400 text-sm sm:text-base border-2 border-sky-300 focus:outline-none focus:ring-4 focus:ring-sky-300/50 shadow-xl transition-all">
+                            style="color: #0f172a !important; font-weight: 700 !important; padding-left: 3.25rem !important;"
+                            class="w-full pr-12 py-3.5 sm:py-4 rounded-full bg-white text-slate-900 placeholder-slate-400 text-sm sm:text-base border-2 border-sky-300 focus:outline-none focus:ring-4 focus:ring-sky-300/50 shadow-xl transition-all">
                         <button type="button" x-show="searchQuery" @click="searchQuery = ''"
-                            class="absolute inset-y-0 right-0 pr-5 flex items-center text-slate-400 hover:text-rose-600 cursor-pointer transition-colors">
+                            class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center text-slate-400 hover:text-rose-600 cursor-pointer transition-colors z-10">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                         </button>
                     </div>
