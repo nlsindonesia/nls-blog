@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -15,6 +15,7 @@
     <script src="/kalender/default-events.js"></script>
     <script src="/pengajar/default-teachers.js"></script>
     <script src="/blog/default-articles.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
     
     <style>
@@ -478,6 +479,69 @@
             color: #ffffff !important;
             border: 2px solid #818cf8 !important;
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45) !important;
+        }
+            /* =========================================================================
+           CKEDITOR 5 FULL TOOLBAR STYLING & DARK THEME SUPPORT
+           ========================================================================= */
+        .ckeditor-wrapper .ck-editor__editable_inline {
+            min-height: 420px !important;
+            max-height: 650px !important;
+            padding: 1.25rem 1.5rem !important;
+            font-size: 0.95rem !important;
+            line-height: 1.8 !important;
+            color: #0f172a !important;
+            background-color: #ffffff !important;
+            border-bottom-left-radius: 1rem !important;
+            border-bottom-right-radius: 1rem !important;
+        }
+        .ckeditor-wrapper .ck.ck-toolbar {
+            background-color: #f8fafc !important;
+            border-color: #cbd5e1 !important;
+            border-top-left-radius: 1rem !important;
+            border-top-right-radius: 1rem !important;
+            padding: 0.5rem 0.75rem !important;
+        }
+        .ckeditor-wrapper .ck.ck-editor__main > .ck-editor__editable {
+            border-color: #cbd5e1 !important;
+        }
+        .ckeditor-wrapper .ck.ck-toolbar .ck-toolbar__items {
+            flex-wrap: wrap !important;
+            gap: 2px !important;
+        }
+
+        /* Dark Mode for CKEditor 5 */
+        html.dark .ckeditor-wrapper .ck-editor__editable_inline {
+            background-color: #0b132b !important;
+            color: #f1f5f9 !important;
+            border-color: #334155 !important;
+        }
+        html.dark .ckeditor-wrapper .ck.ck-toolbar {
+            background-color: #131d38 !important;
+            border-color: #334155 !important;
+        }
+        html.dark .ckeditor-wrapper .ck.ck-editor__main > .ck-editor__editable {
+            border-color: #334155 !important;
+        }
+        html.dark .ckeditor-wrapper .ck.ck-button {
+            color: #cbd5e1 !important;
+        }
+        html.dark .ckeditor-wrapper .ck.ck-button:hover {
+            background-color: #1e293b !important;
+            color: #38bdf8 !important;
+        }
+        html.dark .ckeditor-wrapper .ck.ck-button.ck-on {
+            background-color: #1e293b !important;
+            color: #38bdf8 !important;
+        }
+        html.dark .ckeditor-wrapper .ck.ck-dropdown__panel {
+            background-color: #131d38 !important;
+            border-color: #334155 !important;
+        }
+        html.dark .ckeditor-wrapper .ck.ck-list__item button {
+            color: #e2e8f0 !important;
+        }
+        html.dark .ckeditor-wrapper .ck.ck-list__item button:hover {
+            background-color: #1e293b !important;
         }
     </style>
 </head>
@@ -1426,65 +1490,19 @@
                                         </div>
                                     </div>
 
-                                    <!-- RICH WYSIWYG TOOLBAR -->
-                                    <div class="border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden bg-slate-50 dark:bg-[#0B132B]">
-                                        <!-- Toolbar Buttons -->
-                                        <div class="p-2 border-b border-slate-200 dark:border-slate-700 flex flex-wrap items-center gap-1 bg-slate-100/80 dark:bg-slate-900">
-                                            <!-- Headings -->
-                                            <button type="button" @click="execCmd('formatBlock', '<h1>')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-black" title="Heading 1">H1</button>
-                                            <button type="button" @click="execCmd('formatBlock', '<h2>')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-black" title="Heading 2">H2</button>
-                                            <button type="button" @click="execCmd('formatBlock', '<h3>')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-black" title="Heading 3">H3</button>
-                                            <button type="button" @click="execCmd('formatBlock', '<p>')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-bold" title="Paragraph">P</button>
-
-                                            <span class="w-px h-5 bg-slate-300 dark:bg-slate-700 mx-1"></span>
-
-                                            <!-- Formatting -->
-                                            <button type="button" @click="execCmd('bold')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-black" title="Bold (Tebal)"><b>B</b></button>
-                                            <button type="button" @click="execCmd('italic')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-black italic" title="Italic (Miring)"><i>I</i></button>
-                                            <button type="button" @click="execCmd('underline')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-black underline" title="Underline (Garis Bawah)"><u>U</u></button>
-                                            <button type="button" @click="execCmd('strikeThrough')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-black line-through" title="Strikethrough (Coret)"><s>S</s></button>
-
-                                            <span class="w-px h-5 bg-slate-300 dark:bg-slate-700 mx-1"></span>
-
-                                            <!-- Alignment -->
-                                            <button type="button" @click="execCmd('justifyLeft')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-bold" title="Rata Kiri">Kiri</button>
-                                            <button type="button" @click="execCmd('justifyCenter')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-bold" title="Rata Tengah">Tengah</button>
-                                            <button type="button" @click="execCmd('justifyRight')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-bold" title="Rata Kanan">Kanan</button>
-                                            <button type="button" @click="execCmd('justifyFull')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-bold" title="Justify (Rata Kanan Kiri)">Justify</button>
-
-                                            <span class="w-px h-5 bg-slate-300 dark:bg-slate-700 mx-1"></span>
-
-                                            <!-- Lists -->
-                                            <button type="button" @click="execCmd('insertUnorderedList')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-bold" title="Bullet List">• Bullet</button>
-                                            <button type="button" @click="execCmd('insertOrderedList')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-bold" title="Numbered List">1. Nomor</button>
-
-                                            <span class="w-px h-5 bg-slate-300 dark:bg-slate-700 mx-1"></span>
-
-                                            <!-- Inserts -->
-                                            <button type="button" @click="insertLinkPrompt()" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-bold" title="Sisipkan Link">🔗 Link</button>
-                                            <button type="button" @click="insertImagePrompt()" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-bold" title="Sisipkan Gambar">🖼️ Gambar</button>
-                                            <button type="button" @click="insertQuote()" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-bold" title="Kutipan (Blockquote)">❝ Quote</button>
-                                            <button type="button" @click="insertTable()" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-bold" title="Sisipkan Tabel">📊 Tabel</button>
-                                            <button type="button" @click="execCmd('insertHorizontalRule')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-bold" title="Garis Pemisah">― Garis</button>
-
-                                            <span class="w-px h-5 bg-slate-300 dark:bg-slate-700 mx-1"></span>
-
-                                            <button type="button" @click="execCmd('undo')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-bold" title="Undo">↩ Undo</button>
-                                            <button type="button" @click="execCmd('redo')" class="px-2 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-bold" title="Redo">↪ Redo</button>
-                                            <button type="button" @click="toggleHtmlSource()"
-                                                :class="isHtmlView ? 'bg-sky-500 text-white' : ''"
-                                                class="px-2 py-1 rounded text-xs font-mono font-bold" title="Lihat Source Code HTML">&lt;/&gt;</button>
+                                    <!-- CKEDITOR 5 COMPLETE RICH WYSIWYG TOOLBAR -->
+                                    <div>
+                                        <div class="flex items-center justify-between mb-2">
+                                            <label class="block text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                                                Isi Konten Berita &amp; Artikel (CKEditor 5 Full Toolbar)
+                                            </label>
+                                            <span class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                                                CKEditor 5 Active
+                                            </span>
                                         </div>
-
-                                        <!-- Content Editable Area -->
-                                        <div x-show="!isHtmlView" id="editorArea" contenteditable="true"
-                                            @input="syncEditorContent()"
-                                            class="editor-content p-4 bg-white dark:bg-[#131D38] admin-scrollbar text-slate-800 dark:text-slate-100">
+                                        <div class="ckeditor-wrapper rounded-2xl overflow-hidden shadow-2xs border border-slate-200 dark:border-slate-700">
+                                            <div id="editorArea"></div>
                                         </div>
-
-                                        <!-- Raw HTML Textarea (if source code toggled) -->
-                                        <textarea x-show="isHtmlView" x-model="articleEditor.form.content" @input="onHtmlAreaInput()"
-                                            class="w-full h-72 p-4 font-mono text-xs bg-slate-900 text-emerald-400 focus:outline-none"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -2225,6 +2243,7 @@
                 },
 
                 // 4. ARTICLE CMS EDITOR
+                ckEditorInstance: null,
                 isHtmlView: false,
                 articleEditor: {
                     isOpen: false,
@@ -2483,6 +2502,60 @@
 
                 // ==========================================
                 // BERITA & ARTIKEL CMS METHODS
+                // ==========================================
+                // CKEDITOR 5 METHODS
+                initCKEditor() {
+                    if (this.ckEditorInstance) {
+                        if (this.articleEditor.form.content) {
+                            this.ckEditorInstance.setData(this.articleEditor.form.content);
+                        }
+                        return;
+                    }
+                    const el = document.querySelector('#editorArea');
+                    if (!el || typeof ClassicEditor === 'undefined') return;
+
+                    ClassicEditor.create(el, {
+                        toolbar: {
+                            items: [
+                                'heading',
+                                '|',
+                                'bold', 'italic', 'underline', 'strikethrough',
+                                '|',
+                                'link', 'blockQuote', 'insertTable',
+                                '|',
+                                'bulletedList', 'numberedList',
+                                '|',
+                                'undo', 'redo'
+                            ],
+                            shouldNotGroupWhenFull: false
+                        },
+                        heading: {
+                            options: [
+                                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                                { model: 'heading1', view: 'h1', title: 'Heading 1 (H1)', class: 'ck-heading_heading1' },
+                                { model: 'heading2', view: 'h2', title: 'Heading 2 (H2)', class: 'ck-heading_heading2' },
+                                { model: 'heading3', view: 'h3', title: 'Heading 3 (H3)', class: 'ck-heading_heading3' }
+                            ]
+                        },
+                        table: {
+                            contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+                        },
+                        placeholder: 'Tulis konten artikel berita lengkap di sini dengan format teks, heading, link, tabel, dan kutipan...'
+                    })
+                    .then(editor => {
+                        this.ckEditorInstance = editor;
+                        if (this.articleEditor.form.content) {
+                            editor.setData(this.articleEditor.form.content);
+                        }
+                        editor.model.document.on('change:data', () => {
+                            this.articleEditor.form.content = editor.getData();
+                            this.updateSeoScore();
+                        });
+                    })
+                    .catch(error => {
+                        console.error('CKEditor init error:', error);
+                    });
+                },
                 // BERITA DROPDOWN METHODS
                 toggleBeritaDropdown() {
                     this.activeTab = 'berita';
@@ -2506,14 +2579,12 @@
                         focusKeyword: '',
                         metaTitle: '',
                         metaDescription: '',
-                        content: '<p>Tulis konten artikel lengkap di sini...</p>',
+                        content: '<p>Tulis isi konten berita atau panduan belajar lengkap di sini...</p>',
                         seoScore: 85
                     };
                     this.articleEditor.isOpen = true;
-                    this.isHtmlView = false;
                     this.$nextTick(() => {
-                        const ed = document.getElementById('editorArea');
-                        if (ed) ed.innerHTML = this.articleEditor.form.content;
+                        this.initCKEditor();
                     });
                     if (this.isMobile) this.isSidebarOpen = false;
                 },
@@ -2639,10 +2710,8 @@
                     this.articleEditor.isEdit = true;
                     this.articleEditor.form = JSON.parse(JSON.stringify(art));
                     this.articleEditor.isOpen = true;
-                    this.isHtmlView = false;
                     this.$nextTick(() => {
-                        const ed = document.getElementById('editorArea');
-                        if (ed) ed.innerHTML = this.articleEditor.form.content || '';
+                        this.initCKEditor();
                     });
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 },
