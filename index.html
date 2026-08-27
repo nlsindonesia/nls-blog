@@ -162,11 +162,11 @@ html.dark .admin-card-dinas {
         .cal-cell.selected { border-color: #0284c7 !important; background: #e0f2fe !important; box-shadow: 0 0 0 3.5px rgba(2, 132, 199, 0.35), 0 12px 24px -6px rgba(2, 132, 199, 0.3) !important; transform: scale(1.02); z-index: 20; }
         html.dark .cal-cell.selected { background: #172d57 !important; border-color: #38bdf8 !important; box-shadow: 0 0 0 3.5px rgba(56, 189, 248, 0.4) !important; }
         .cal-pill { display: flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.4rem; border-radius: 0.45rem; font-size: 0.68rem; font-weight: 800; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 0.2rem; border: 1px solid transparent; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
-        .pill-osn { background: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
-        .pill-tka { background: #fef3c7; color: #92400e; border-color: #fde68a; }
-        .pill-snbt { background: #d1fae5; color: #065f46; border-color: #a7f3d0; }
-        .pill-mitra { background: #f3e8ff; color: #6b21a8; border-color: #e9d5ff; }
-        .pill-dinas { background: #ffe4e6; color: #be123c; border-color: #fecdd3; }
+        .pill-osn { background: #e0f2fe; color: #0f172a !important; font-weight: 800; border-color: #bae6fd; }
+        .pill-tka { background: #fef3c7; color: #0f172a !important; font-weight: 800; border-color: #fde68a; }
+        .pill-snbt { background: #d1fae5; color: #0f172a !important; font-weight: 800; border-color: #a7f3d0; }
+        .pill-mitra { background: #f3e8ff; color: #0f172a !important; font-weight: 800; border-color: #e9d5ff; }
+        .pill-dinas { background: #ffe4e6; color: #0f172a !important; font-weight: 800; border-color: #fecdd3; }
         html.dark .pill-osn { background: #082f49; color: #7dd3fc; border-color: #0369a1; }
         html.dark .pill-tka { background: #451a03; color: #fde68a; border-color: #92400e; }
         html.dark .pill-snbt { background: #064e3b; color: #6ee7b7; border-color: #065f46; }
@@ -2439,12 +2439,18 @@ html.dark .admin-card-dinas {
 
                 getEventCategoryBadge(cat) {
                     switch (cat) {
-                        case 'OSN': return 'bg-sky-600 text-white shadow-sm';
-                        case 'TKA': return 'bg-amber-600 text-white shadow-sm';
-                        case 'SNBT': return 'bg-emerald-600 text-white shadow-sm';
-                        case 'Mitra Sekolah': return 'bg-purple-600 text-white shadow-sm';
-                        case 'Event Dinas': return 'bg-rose-600 text-white shadow-sm';
-                        default: return 'bg-sky-600 text-white shadow-sm';
+                        case 'OSN':
+                            return 'bg-white/95 dark:bg-sky-950/90 text-slate-950 dark:text-white font-black border-2 border-sky-400 dark:border-sky-500 shadow-xs';
+                        case 'TKA':
+                            return 'bg-white/95 dark:bg-amber-950/90 text-slate-950 dark:text-white font-black border-2 border-amber-400 dark:border-amber-500 shadow-xs';
+                        case 'SNBT':
+                            return 'bg-white/95 dark:bg-emerald-950/90 text-slate-950 dark:text-white font-black border-2 border-emerald-400 dark:border-emerald-500 shadow-xs';
+                        case 'Mitra Sekolah':
+                            return 'bg-white/95 dark:bg-purple-950/90 text-slate-950 dark:text-white font-black border-2 border-purple-400 dark:border-purple-500 shadow-xs';
+                        case 'Event Dinas':
+                            return 'bg-white/95 dark:bg-rose-950/90 text-slate-950 dark:text-white font-black border-2 border-rose-400 dark:border-rose-500 shadow-xs';
+                        default:
+                            return 'bg-white/95 dark:bg-slate-900 text-slate-950 dark:text-white font-black border-2 border-slate-400 shadow-xs';
                     }
                 },
 

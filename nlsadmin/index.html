@@ -2984,12 +2984,18 @@
 
                 getEventCategoryBadge(cat) {
                     switch (cat) {
-                        case 'OSN': return 'bg-sky-600 text-white font-black border border-sky-400 shadow-sm';
-                        case 'TKA': return 'bg-amber-600 text-white font-black border border-amber-400 shadow-sm';
-                        case 'SNBT': return 'bg-emerald-600 text-white font-black border border-emerald-400 shadow-sm';
-                        case 'Mitra Sekolah': return 'bg-purple-600 text-white font-black border border-purple-400 shadow-sm';
-                        case 'Event Dinas': return 'bg-rose-600 text-white font-black border border-rose-400 shadow-sm';
-                        default: return 'bg-slate-700 text-white font-black shadow-sm';
+                        case 'OSN':
+                            return 'bg-white/95 dark:bg-sky-950/90 text-slate-950 dark:text-white font-black border-2 border-sky-400 dark:border-sky-500 shadow-xs';
+                        case 'TKA':
+                            return 'bg-white/95 dark:bg-amber-950/90 text-slate-950 dark:text-white font-black border-2 border-amber-400 dark:border-amber-500 shadow-xs';
+                        case 'SNBT':
+                            return 'bg-white/95 dark:bg-emerald-950/90 text-slate-950 dark:text-white font-black border-2 border-emerald-400 dark:border-emerald-500 shadow-xs';
+                        case 'Mitra Sekolah':
+                            return 'bg-white/95 dark:bg-purple-950/90 text-slate-950 dark:text-white font-black border-2 border-purple-400 dark:border-purple-500 shadow-xs';
+                        case 'Event Dinas':
+                            return 'bg-white/95 dark:bg-rose-950/90 text-slate-950 dark:text-white font-black border-2 border-rose-400 dark:border-rose-500 shadow-xs';
+                        default:
+                            return 'bg-white/95 dark:bg-slate-900 text-slate-950 dark:text-white font-black border-2 border-slate-400 shadow-xs';
                     }
                 },
 
