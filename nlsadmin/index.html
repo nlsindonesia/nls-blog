@@ -4,6 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        // Auto-redirect to dedicated superadmin domain if accessed from public domains
+        if (!window.location.hostname.includes('superadmin') && !window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1')) {
+            window.location.replace('https://nls-superadmin.vercel.app');
+        }
+    </script>
     <title>Super Admin Portal - Next Level Study (NLS)</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/x-icon" href="/nls-logo.ico">
