@@ -1394,6 +1394,14 @@
 
                 <!-- Right Controls: Public View Link & User Profile with Logout -->
                 <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                    <!-- Reset / Bersihkan Cache Lokal Button -->
+                    <button type="button" @click="resetAllLocalStorageToMaster()"
+                        class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-200 dark:border-amber-800 transition-all shadow-2xs cursor-pointer"
+                        title="Bersihkan Data Uji Coba Lokal & Sinkronkan ke Database Master">
+                        <svg class="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        <span class="hidden sm:inline">Bersihkan Cache Lokal</span>
+                    </button>
+
                     <!-- Backup SQLite / SQL Dump Button -->
                     <button type="button" @click="exportDatabaseSQL()"
                         class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 border border-indigo-200 dark:border-indigo-800 transition-all shadow-2xs cursor-pointer"
@@ -6031,6 +6039,54 @@
                     a.setAttribute('href', dataStr);
                     a.setAttribute('download', `nls-pengajar-teachers-${Date.now()}.json`);
                     a.click();
+                },
+
+                resetAllLocalStorageToMaster() {
+                    if (confirm('Apakah Anda yakin ingin membersihkan semua cache/data lokal pada browser ini dan mereset ke Database Master resmi NLS? Tindakan ini akan menghapus data sampah atau data uji coba lokal yang tersimpan di peramban ini.')) {
+                        try {
+                            // 1. Clear trash storages
+                            localStorage.removeItem('nls_kalender_events_trash_v1');
+                            localStorage.removeItem('nls_berita_articles_trash_v1');
+                            localStorage.removeItem('nls_pengajar_teachers_trash_v1');
+                            localStorage.removeItem('nls_users_trash_v1');
+                            localStorage.removeItem('nls_deleted_teacher_applications_v1');
+
+                            this.trashEvents = [];
+                            this.trashArticles = [];
+                            this.trashTeachers = [];
+                            this.trashUsers = [];
+
+                            // 2. Reset active datasets to master defaults
+                            if (typeof window.NLS_DEFAULT_EVENTS !== 'undefined' && Array.isArray(window.NLS_DEFAULT_EVENTS)) {
+                                this.events = JSON.parse(JSON.stringify(window.NLS_DEFAULT_EVENTS));
+                                this.saveEventsToStorage();
+                            }
+                            if (typeof window.NLS_DEFAULT_ARTICLES !== 'undefined' && Array.isArray(window.NLS_DEFAULT_ARTICLES)) {
+                                this.articles = JSON.parse(JSON.stringify(window.NLS_DEFAULT_ARTICLES));
+                                this.saveArticlesToStorage();
+                            }
+                            if (typeof window.NLS_DEFAULT_TEACHERS !== 'undefined' && Array.isArray(window.NLS_DEFAULT_TEACHERS)) {
+                                this.teachers = JSON.parse(JSON.stringify(window.NLS_DEFAULT_TEACHERS));
+                                this.saveTeachersToStorage();
+                            }
+                            if (typeof window.NLS_DEFAULT_USERS !== 'undefined' && Array.isArray(window.NLS_DEFAULT_USERS)) {
+                                this.users = JSON.parse(JSON.stringify(window.NLS_DEFAULT_USERS));
+                                this.saveUsersToStorage();
+                            }
+
+                            // 3. Clear cloud trash via server API
+                            if (typeof fetch !== 'undefined') {
+                                fetch('/api/teacher-applications?action=empty_trash', { method: 'DELETE' }).catch(e => {});
+                            }
+
+                            // 4. Re-sync applications from cloud
+                            this.refreshTeacherApplications(false);
+
+                            this.showToast('Semua data lokal berhasil dibersihkan dan disinkronkan ke Database Master!');
+                        } catch(e) {
+                            this.showToast('Terjadi kesalahan saat membersihkan cache lokal.');
+                        }
+                    }
                 },
 
                 exportDatabaseSQL() {
