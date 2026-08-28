@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="light" lang="id">
 <head>
     <!-- Google tag (gtag.js) -->
@@ -139,6 +139,8 @@
         .container-max { max-width: 1200px; margin-left: auto; margin-right: auto; }
     </style>
 
+    <!-- Blog default dataset -->
+    <script src="/blog/default-articles.js"></script>
     <!-- Application CSS & JS Asset Bundle -->
     <link rel="preload" as="style" href="/build/assets/app-A86YIcNI.css" />
     <link rel="modulepreload" as="script" href="/build/assets/app-Bzd4avQC.js" />
@@ -720,40 +722,265 @@
 </div>
 </div>
 </section>
-<!-- Berita Terkini -->
-<section id="program" class="py-24 bg-surface-light">
-<div class="max-w-max-width mx-auto px-margin-desktop">
-<div class="flex justify-between items-center mb-16">
-<h2 class="font-headline-lg text-headline-lg text-on-surface">Tips &amp; Info SNBT Terkini</h2>
-<a class="text-primary font-bold hover:underline" href="#">Lihat Semua Blog</a>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-<article class="group cursor-pointer">
-<div class="rounded-xl overflow-hidden mb-6 aspect-video">
-<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A modern blog cover image featuring a study planner and a laptop showing SNBT practice questions. The lighting is bright and productive. It represents 'Effective SNBT Study Strategies'." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHyH_NBtKWsEgz7MFD8IyQbx_-ysMO3usVFmtYzvZSjDKBszUFp1XubhDJwFrpt6Uy5kw9qRzvXAvNhGtYQIXH09CoEyUOnCW60d5g-OBN8uI8M4hmszPinVZe2aBJ8GF1ATmt7HY494pFnZXJJ_LoeKNdJAOpUnQLhSue1WYAGzkXhnkyexwTsN9LEAqe2u1USKFxMkqMyiMovOWOlRYpN4CvUqufcD82bHTQX_CyXxKvuCnIFxWAzfkGwW-ySICQwiJsEYtkU1o">
-</div>
-<p class="text-label-sm text-primary mb-2">AKADEMIK</p>
-<h4 class="font-headline-md text-headline-md text-on-surface mb-4 group-hover:text-primary transition-colors">Bedah Kisi-kisi SNBT: Strategi Jawab Soal Penalaran Matematika</h4>
-<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Pelajari cara membedah pola soal penalaran matematika yang sering muncul di SNBT dengan logika sederhana...</p>
-</article>
-<article class="group cursor-pointer">
-<div class="rounded-xl overflow-hidden mb-6 aspect-video">
-<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="An image showcasing a professional university admission letter. This represents 'Alumni Success Stories'. The lighting is professional and prestigious, focusing on the achievement of entering a top PTN." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC04Gp-ODh3dl9UCrq7-UNMy_vQ1SH8LWSCdqJEijL7YlBJVM7GrOM07Y4Al7EhrZJ8R7ThY53MaTnvkR4cRnGUIhrVGLGhnvrrWGwHC-g5Q4gP2LyivSUwOP9FDwIeEJNZy07W434YmdZBecLBcPElXYKqV-xd_6Y2kxuS0oXVcC_bLcrXgDGOFMGMjX9va4EozKfhOwBxyaCWFqMCdujkyBIhirGb36aXogGwFPUTlnF3zIcFDQyzNNMErZtWZ1V68bZukQ97ycY">
-</div>
-<p class="text-label-sm text-primary mb-2">SUCCESS STORY</p>
-<h4 class="font-headline-md text-headline-md text-on-surface mb-4 group-hover:text-primary transition-colors">Cerita Lulusan UI: Dari Skor 400 ke 750 dalam 3 Bulan</h4>
-<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Simak perjalanan inspiratif alumni kami dalam meningkatkan skor SNBT secara drastis melalui metode belajar efektif...</p>
-</article>
-<article class="group cursor-pointer">
-<div class="rounded-xl overflow-hidden mb-6 aspect-video">
-<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="An image of a high-tech SNBT dashboard with AI-driven analytics. This represents the future of online SNBT prep. The style is tech-forward, modern, and academic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBe13HE-cnk-SzdVNHGcEhBIEyPHlY-gT-nLHQ4tj-FxCWO5Hu_tpPUOGgfHxXiemsv_2KNzscIQ0KnEduUMqnuV5fl9g7JsNt8AzoOxIggBUwKy-TehlyVEtPFfwFwMIVZA-j6wnC_-q2M9fT3HySNLO7uLcNxkT8Dk2ySktERRvjDFCZCu4aoLMLe9As-gS2EzB3nRvYP_sAsE6hiLFgt0wI_fnKQfpfr-PRHsVcIFZKMXeE6N8tzBC85oPsFZ7wTIx5oKJAXZ8w">
-</div>
-<p class="text-label-sm text-primary mb-2">TEKNOLOGI</p>
-<h4 class="font-headline-md text-headline-md text-on-surface mb-4 group-hover:text-primary transition-colors">Fitur Baru ONMOVE: Prediksi Kelolosan SNBT Berbasis AI</h4>
-<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Kini Anda bisa memprediksi peluang diterima di PTN pilihan berdasarkan hasil simulasi mingguan Anda...</p>
-</article>
-</div>
-</div>
+<!-- DYNAMIC INTERACTIVE BERITA & ARTIKEL SNBT / UTBK SECTION -->
+<section id="berita" class="py-20 bg-slate-50/50 dark:bg-[#0B132B] relative overflow-hidden scroll-mt-20" x-data="snbtNewsApp()">
+    <div class="container-max mx-auto px-4 sm:px-6 md:px-8">
+        
+        <!-- Header Banner -->
+        <div class="bg-white dark:bg-[#131d38] p-5 sm:p-6 rounded-3xl border-2 border-emerald-200 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-black/40 mb-8 transition-all">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <!-- Title & Category Badge -->
+                <div class="flex items-center gap-3.5">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 shrink-0">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                                Berita Terkini &amp; Wawasan SNBT / UTBK
+                            </h2>
+                            <span class="px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span>Kategori Khusus: SNBT &amp; UTBK</span>
+                            </span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-semibold mt-0.5">
+                            Update seleksi nasional SNBT 2027, bedah kisi-kisi TPS, analisis skor IRT, panduan pemilihan jurusan, dan strategi tembus PTN impian.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right: Total Counter & Link to Blog -->
+                <div class="flex items-center gap-3 shrink-0">
+                    <span class="px-3.5 py-1.5 rounded-2xl text-xs font-black bg-emerald-100 dark:bg-slate-800 text-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-slate-700">
+                        <span class="text-emerald-700 dark:text-emerald-400 font-black text-sm" x-text="filteredArticles().length"></span> Artikel SNBT
+                    </span>
+                    <a href="/blog"
+                        style="background: linear-gradient(135deg, #fde047 0%, #facc15 50%, #f59e0b 100%) !important; color: #451a03 !important; border: 2px solid #b45309 !important;"
+                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl font-black text-xs shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer">
+                        <span>Buka Blog Lengkap</span>
+                        <svg class="w-3.5 h-3.5 text-amber-950 font-bold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div x-show="filteredArticles().length === 0" x-cloak class="text-center py-16 bg-white dark:bg-slate-900/60 rounded-3xl border-2 border-dashed border-slate-300 dark:border-slate-800 p-8 space-y-4 shadow-sm">
+            <div class="w-16 h-16 rounded-full bg-emerald-50 dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto text-3xl">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+            <h3 class="text-lg font-black text-slate-900 dark:text-white">Tidak Ada Artikel SNBT yang Ditemukan</h3>
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto">
+                Buka katalog blog lengkap kami untuk membaca seluruh berita dan panduan persiapan PTN.
+            </p>
+            <a href="/blog"
+                class="inline-block px-5 py-2.5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs transition-all shadow-md cursor-pointer">
+                Buka Semua Artikel
+            </a>
+        </div>
+
+        <!-- Dynamic Themed Article Cards Grid: 1 row of 4 on desktop -->
+        <div x-show="paginatedArticles().length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+            <template x-for="art in paginatedArticles()" :key="art.id">
+                <article
+                    class="group bg-white dark:bg-[#131D38] rounded-3xl overflow-hidden shadow-lg shadow-slate-200/50 dark:shadow-black/40 border-2 border-emerald-200 dark:border-slate-800 flex flex-col hover:-translate-y-1.5 transition-all duration-300">
+                    
+                    <!-- Card Banner Image with Hover Zoom -->
+                    <div class="relative h-44 sm:h-48 overflow-hidden block bg-slate-100 dark:bg-slate-900 cursor-pointer" @click="openArticle(art)">
+                        <img :src="art.coverImage || '/images/blog/cover-snbt-2027.jpg'"
+                            :alt="art.title"
+                            loading="lazy"
+                            onerror="this.onerror=null;this.src='/images/blog/cover-snbt-2027.jpg';"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        
+                        <!-- Multi-Category Badges -->
+                        <div class="absolute top-3 left-3 flex flex-wrap gap-1 max-w-[88%]">
+                            <template x-for="(cat, cIdx) in (art.categories || [art.category || 'SNBT & UTBK'])" :key="cIdx">
+                                <span class="backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm border bg-emerald-100/95 text-emerald-950 border-emerald-400"
+                                    x-text="cat"></span>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="p-5 flex flex-col flex-grow justify-between space-y-3.5">
+                        <div class="space-y-2">
+                            <!-- Date & Author Row -->
+                            <div class="flex items-center gap-1.5 text-[11px] font-bold text-slate-500 dark:text-slate-400 flex-wrap">
+                                <span class="flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-extrabold">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    <span x-text="formatDisplayDate(art.date)"></span>
+                                </span>
+                                <span class="text-slate-400">&bull;</span>
+                                <span class="text-slate-800 dark:text-slate-200 font-extrabold truncate max-w-[120px]" x-text="art.author || 'Tim NLS'"></span>
+                            </div>
+
+                            <!-- Title -->
+                            <h3 class="text-[15px] sm:text-base font-black text-slate-900 dark:text-white leading-snug group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors line-clamp-2 cursor-pointer"
+                                @click="openArticle(art)"
+                                x-text="art.title">
+                            </h3>
+
+                            <!-- Description Excerpt -->
+                            <p class="text-slate-600 dark:text-slate-300 text-xs line-clamp-2 leading-relaxed font-medium"
+                                x-text="art.metaDescription || art.title">
+                            </p>
+                        </div>
+
+                        <!-- Read Button -->
+                        <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                            <button type="button" @click="openArticle(art)"
+                                class="inline-flex items-center gap-1.5 font-black text-xs text-emerald-700 dark:text-emerald-400 hover:text-emerald-900 dark:hover:text-emerald-300 group-hover:translate-x-1 transition-all cursor-pointer">
+                                <span>Baca Selengkapnya</span>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </button>
+                            
+                            <span class="text-[11px] font-bold text-slate-500" x-text="calculateReadTime(art.content) + ' min'"></span>
+                        </div>
+                    </div>
+                </article>
+            </template>
+        </div>
+
+        <!-- Numeric Pagination Navigation Bar & Complete Blog Link -->
+        <div class="mt-10 pt-6 border-t border-slate-200/80 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-5">
+            <!-- Left Info: Article Counters -->
+            <div class="text-xs font-bold text-slate-500 dark:text-slate-400 text-center md:text-left">
+                Halaman <span class="text-emerald-700 dark:text-emerald-400 font-black text-sm" x-text="currentPage"></span> dari <span class="text-slate-800 dark:text-slate-200 font-black text-sm" x-text="totalPages()"></span>
+                <span class="mx-1.5 text-slate-300 dark:text-slate-700">&bull;</span>
+                Total <span class="font-black text-slate-800 dark:text-slate-200" x-text="filteredArticles().length"></span> Berita SNBT
+            </div>
+
+            <!-- Center: Numeric Pagination Buttons -->
+            <div x-show="totalPages() > 1" class="flex items-center gap-1.5 flex-wrap justify-center">
+                <!-- Prev Button -->
+                <button type="button" @click="setPage(currentPage - 1)" :disabled="currentPage === 1"
+                    class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer border disabled:opacity-30 disabled:cursor-not-allowed"
+                    :class="currentPage === 1 ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700' : 'bg-white dark:bg-[#131D38] text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:text-emerald-700 shadow-sm'">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                    <span class="hidden sm:inline">Sebelumnya</span>
+                </button>
+
+                <!-- Number Buttons Loop -->
+                <template x-for="pageNum in totalPages()" :key="pageNum">
+                    <button type="button" @click="setPage(pageNum)"
+                        class="w-9 h-9 rounded-xl text-xs font-black transition-all flex items-center justify-center cursor-pointer shadow-sm"
+                        :class="currentPage === pageNum
+                            ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-emerald-500/30 scale-105 ring-2 ring-emerald-400/50'
+                            : 'bg-white dark:bg-[#131D38] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-emerald-400 hover:text-emerald-700'">
+                        <span x-text="pageNum"></span>
+                    </button>
+                </template>
+
+                <!-- Next Button -->
+                <button type="button" @click="setPage(currentPage + 1)" :disabled="currentPage === totalPages()"
+                    class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer border disabled:opacity-30 disabled:cursor-not-allowed"
+                    :class="currentPage === totalPages() ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700' : 'bg-white dark:bg-[#131D38] text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:text-emerald-700 shadow-sm'">
+                    <span class="hidden sm:inline">Selanjutnya</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+
+            <!-- Right: Buka Blog Lengkap Button -->
+            <div>
+                <a href="/blog"
+                    class="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-2xl bg-white dark:bg-[#131D38] border-2 border-emerald-400/60 hover:border-emerald-500 text-emerald-800 dark:text-emerald-300 hover:text-emerald-950 dark:hover:text-white font-black text-xs sm:text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all group cursor-pointer">
+                    <span>Lihat Semua Blog</span>
+                    <span class="w-6 h-6 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 flex items-center justify-center group-hover:translate-x-1 transition-transform">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Full Article Reader Modal (Pop-up View) -->
+    <div x-show="isReaderOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md"
+        @keydown.escape.window="closeReader()">
+        
+        <div class="bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden relative"
+            @click.outside="closeReader()">
+            
+            <!-- Modal Header Bar -->
+            <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3 bg-white/95 dark:bg-[#131D38]/95 backdrop-blur-sm shrink-0">
+                <div class="flex items-center gap-2 min-w-0">
+                    <span class="px-3 py-1 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-wider border bg-emerald-200 text-emerald-950 border-emerald-400"
+                        x-text="activeArticle ? activeArticle.category : 'Berita SNBT'"></span>
+                    <span class="text-xs text-slate-600 dark:text-slate-400 font-bold hidden sm:inline" x-text="activeArticle ? formatDisplayDate(activeArticle.date) : ''"></span>
+                </div>
+
+                <div class="flex items-center gap-2 shrink-0">
+                    <button type="button" @click="shareArticleToWhatsapp(activeArticle)"
+                        class="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950 dark:text-emerald-300 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
+                        title="Bagikan ke WhatsApp">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+                        <span class="hidden sm:inline">Bagikan</span>
+                    </button>
+                    <button type="button" @click="closeReader()"
+                        class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all cursor-pointer"
+                        title="Tutup Modal">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Scrollable Content -->
+            <div class="p-6 sm:p-10 overflow-y-auto space-y-6 flex-1">
+                <template x-if="activeArticle">
+                    <div class="space-y-6 max-w-3xl mx-auto">
+                        <!-- Article Cover Banner -->
+                        <div class="relative h-64 sm:h-80 rounded-3xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900">
+                            <img :src="activeArticle.coverImage || '/images/blog/cover-snbt-2027.jpg'"
+                                :alt="activeArticle.title"
+                                class="w-full h-full object-cover">
+                        </div>
+
+                        <!-- Article Header Meta -->
+                        <div class="space-y-3 border-b border-slate-200 dark:border-slate-800 pb-5">
+                            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white leading-tight"
+                                x-text="activeArticle.title"></h1>
+                            
+                            <div class="flex flex-wrap items-center gap-3 text-xs text-slate-600 dark:text-slate-400 font-semibold">
+                                <span class="flex items-center gap-1.5 font-bold text-emerald-700 dark:text-emerald-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                    <span x-text="activeArticle.author || 'Tim Akademik NLS'"></span>
+                                </span>
+                                <span>&bull;</span>
+                                <span class="flex items-center gap-1.5">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    <span x-text="formatDisplayDate(activeArticle.date)"></span>
+                                </span>
+                                <span>&bull;</span>
+                                <span class="flex items-center gap-1.5 text-slate-500">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span x-text="calculateReadTime(activeArticle.content) + ' menit baca'"></span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Article Body HTML -->
+                        <div class="prose prose-slate dark:prose-invert max-w-none text-slate-800 dark:text-slate-200 text-sm sm:text-base leading-relaxed"
+                            x-html="activeArticle.content">
+                        </div>
+
+                        <!-- WhatsApp Floating Consultation Box at bottom of reader -->
+                        <div class="p-6 rounded-3xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4 mt-8">
+                            <div>
+                                <h4 class="font-black text-lg text-white">Ingin Lolos PTN Impian di SNBT?</h4>
+                                <p class="text-xs text-emerald-100 mt-1">Dapatkan bimbingan privat atau kelas intensif persiapan SNBT bersama mentor alumni terbaik NLS.</p>
+                            </div>
+                            <a :href="'https://wa.me/6285163070002?text=' + encodeURIComponent('Halo Tim NLS, saya tertarik dengan program Bimbel SNBT setelah membaca artikel: ' + activeArticle.title)"
+                                target="_blank"
+                                class="px-5 py-3 rounded-2xl bg-white text-emerald-950 font-black text-xs whitespace-nowrap shadow-md hover:scale-105 transition-all">
+                                Tanya via WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
 </section>
 <!-- Final CTA -->
 <section class="py-24">
@@ -1089,5 +1316,139 @@
             </div>
         </template>
     </div>
+
+    <!-- Dynamic SNBT News Engine Component Script -->
+    <script>
+        function snbtNewsApp() {
+            return {
+                activeArticle: null,
+                isReaderOpen: false,
+                currentPage: 1,
+                perPage: 4,
+                articles: [],
+
+                init() {
+                    this.loadArticles();
+
+                    // 1. Cross-tab Storage Event Listener
+                    window.addEventListener('storage', (e) => {
+                        if (e.key === 'nls_berita_articles_v1' && e.newValue) {
+                            try {
+                                const parsed = JSON.parse(e.newValue);
+                                if (Array.isArray(parsed) && parsed.length > 0) {
+                                    this.articles = parsed;
+                                }
+                            } catch (err) {}
+                        }
+                    });
+
+                    // 2. BroadcastChannel Instant Sync (Zero-Latency)
+                    try {
+                        const channel = new BroadcastChannel('nls_sync_channel');
+                        channel.onmessage = (ev) => {
+                            if (ev.data && ev.data.type === 'ARTICLES_UPDATED' && Array.isArray(ev.data.data)) {
+                                this.articles = ev.data.data;
+                            }
+                        };
+                    } catch (e) {}
+
+                    // 3. Same-tab Custom Event Listener
+                    window.addEventListener('nls-articles-updated', (e) => {
+                        if (e.detail && Array.isArray(e.detail)) {
+                            this.articles = e.detail;
+                        }
+                    });
+                },
+
+                loadArticles() {
+                    try {
+                        const stored = localStorage.getItem('nls_berita_articles_v1');
+                        if (stored) {
+                            const parsed = JSON.parse(stored);
+                            if (Array.isArray(parsed) && parsed.length > 0) {
+                                this.articles = parsed;
+                                return;
+                            }
+                        }
+                    } catch (e) {}
+
+                    if (typeof window.NLS_DEFAULT_ARTICLES !== 'undefined' && Array.isArray(window.NLS_DEFAULT_ARTICLES)) {
+                        this.articles = JSON.parse(JSON.stringify(window.NLS_DEFAULT_ARTICLES));
+                        try {
+                            localStorage.setItem('nls_berita_articles_v1', JSON.stringify(this.articles));
+                        } catch (e) {}
+                    } else {
+                        this.articles = [];
+                    }
+                },
+
+                filteredArticles() {
+                    return this.articles.filter(art => {
+                        const cat = art.category || '';
+                        const cats = art.categories || [];
+                        const isSnbtCat = cat.toLowerCase().includes('snbt') || cat.toLowerCase().includes('utbk');
+                        const isSnbtInCats = cats.some(c => c.toLowerCase().includes('snbt') || c.toLowerCase().includes('utbk'));
+                        const isSnbtTitle = (art.title || '').toLowerCase().includes('snbt') || (art.title || '').toLowerCase().includes('utbk');
+                        return (isSnbtCat || isSnbtInCats || isSnbtTitle) && art.status === 'published';
+                    });
+                },
+
+                paginatedArticles() {
+                    const list = this.filteredArticles();
+                    const start = (this.currentPage - 1) * this.perPage;
+                    return list.slice(start, start + this.perPage);
+                },
+
+                totalPages() {
+                    const count = this.filteredArticles().length;
+                    return Math.max(1, Math.ceil(count / this.perPage));
+                },
+
+                setPage(p) {
+                    if (p >= 1 && p <= this.totalPages()) {
+                        this.currentPage = p;
+                        const section = document.getElementById('berita');
+                        if (section) section.scrollIntoView({ behavior: 'smooth' });
+                    }
+                },
+
+                openArticle(art) {
+                    this.activeArticle = art;
+                    this.isReaderOpen = true;
+                    document.body.classList.add('overflow-hidden');
+                },
+
+                closeReader() {
+                    this.isReaderOpen = false;
+                    document.body.classList.remove('overflow-hidden');
+                },
+
+                shareArticleToWhatsapp(art) {
+                    if (!art) return;
+                    const url = window.location.origin + '/blog#' + (art.slug || art.id);
+                    const text = encodeURIComponent(`Baca artikel menarik "${art.title}" di Next Level Study: ${url}`);
+                    window.open(`https://wa.me/?text=${text}`, '_blank');
+                },
+
+                calculateReadTime(content) {
+                    if (!content) return 3;
+                    const words = content.replace(/<[^>]*>/g, '').split(/\s+/).length;
+                    return Math.max(2, Math.ceil(words / 200));
+                },
+
+                formatDisplayDate(dStr) {
+                    if (!dStr) return '';
+                    try {
+                        const d = new Date(dStr);
+                        if (isNaN(d.getTime())) return dStr;
+                        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+                        return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+                    } catch (e) {
+                        return dStr;
+                    }
+                }
+            };
+        }
+    </script>
 </body>
 </html>

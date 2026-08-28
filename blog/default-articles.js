@@ -257,6 +257,57 @@ window.NLS_DEFAULT_ARTICLES = [
     "canonicalUrl": "https://next-level-study.com/blog/memahami-struktur-literasi-bahasa-tka",
     "content": "<h2>Literasi Tingkat Lanjut: Bukan Sekadar Membaca Paragraf</h2>\n<p>Model asesmen TKA menuntut kemampuan sintesis lintas teks, evaluasi bias penulis, dan pemahaman argumen implisit. Teks yang disajikan mencakup artikel jurnal ilmiah populer, studi kasus sosio-humaniora, dan esai analitis kontemporer.</p>\n\n<h3>Keterampilan Kunci yang Diuji:</h3>\n<ul>\n  <li><strong>Menentukan Ide Pokok & Argumen Utama:</strong> Membedakan gagasan pokok pendukung vs premis inti kalimat.</li>\n  <li><strong>Analisis Hubungan Sebab-Akibat:</strong> Menilai validitas inferensi logis antar paragraf.</li>\n  <li><strong>Kontekstualisasi Kosakata Akademik:</strong> Memahami makna leksikal kata serapan dalam konteks kalimat kompleks.</li>\n</ul>",
     "seoScore": 93
+  },
+  {
+    "id": "art-snbt-2",
+    "title": "Bedah Subtes TPS SNBT 2027: Trik Jitu Penalaran Umum & Pengetahuan Kuantitatif",
+    "slug": "bedah-subtes-tps-snbt",
+    "category": "SNBT & UTBK",
+    "categories": ["SNBT & UTBK", "Tips Belajar & Prestasi"],
+    "date": "2026-08-24",
+    "author": "Kak Alif (Teknik Elektro UI)",
+    "status": "published",
+    "coverImage": "/images/blog/cover-snbt-2027.jpg",
+    "focusKeyword": "bedah subtes tps snbt trik kuantitatif",
+    "metaTitle": "Bedah Subtes TPS SNBT 2027: Trik Penalaran Umum & Kuantitatif | NLS",
+    "metaDescription": "Pelajari strategi menjawab soal TPS Penalaran Umum dan Kuantitatif SNBT secara cepat dan akurat untuk memaksimalkan skor IRT Anda.",
+    "canonicalUrl": "https://next-level-study.com/blog/bedah-subtes-tps-snbt",
+    "content": "<h2>Kunci Menembus Skor TPS 700+ di UTBK SNBT</h2>\n<p>Tes Potensi Skolastik (TPS) menguji daya nalar kognitif dasar yang menjadi fondasi keberhasilan studi di perguruan tinggi. Penalaran Umum dan Pengetahuan Kuantitatif menyumbang proporsi bobot nilai signifikan dalam sistem pembobotan IRT.</p>\n\n<h3>1. Logika Silogisme & Penalaran Deduktif</h3>\n<p>Kuasai tabel kebenaran implikasi ($p \\rightarrow q$), kontraposisi ($\\sim q \\rightarrow \\sim p$), dan negasi kuantor (Semua vs Beberapa). Jangan terjebak asumsi dunia nyata; selalu berpijak hanya pada premis teks yang diberikan.</p>\n\n<h3>2. Aljabar Cepat & Pola Barisan Angka</h3>\n<p>Identifikasi barisan bertingkat dua, barisan Fibonacci tersembunyi, serta pola operasi aritmetika selang-seling (+, ×, -). Kuasai estimasi nilai pecahan dan persentase tanpa kalkulator manual.</p>\n\n<blockquote>\"TPS menguji seberapa efisien otak Anda memproses pola dan menemukan jalur tercepat menuju solusi logis.\"</blockquote>",
+    "seoScore": 94
+  },
+  {
+    "id": "art-snbt-3",
+    "title": "Kupas Tuntas Literasi Bahasa Indonesia & Bahasa Inggris UTBK SNBT: Membaca Kritis & Analisis Argumen",
+    "slug": "strategi-literasi-utbk-snbt",
+    "category": "SNBT & UTBK",
+    "categories": ["SNBT & UTBK", "Tips Belajar & Prestasi"],
+    "date": "2026-08-19",
+    "author": "Kak Zahra (Sastra Inggris UGM)",
+    "status": "published",
+    "coverImage": "/images/blog/cover-osn-geografi.jpg",
+    "focusKeyword": "literasi bahasa indonesia inggris utbk snbt",
+    "metaTitle": "Strategi Menguasai Literasi Bahasa Indonesia & Inggris SNBT | NLS",
+    "metaDescription": "Metode membaca cepat skimming-scanning, inferensi implisit, dan analisis teks argumentatif panjang pada subtes literasi SNBT.",
+    "canonicalUrl": "https://next-level-study.com/blog/strategi-literasi-utbk-snbt",
+    "content": "<h2>Tantangan Waktu pada Teks Panjang Subtes Literasi</h2>\n<p>Subtes Literasi dalam Bahasa Indonesia dan Bahasa Inggris menyajikan teks wacana multi-paragraf yang menuntut pemahaman kritis dalam durasi terbatas per butir soal.</p>\n\n<h3>Metode 3 Langkah 'Question-First Reading'</h3>\n<ol>\n  <li><strong>Baca Pertanyaan Terlebih Dahulu:</strong> Tandai kata kunci pada opsi jawaban sebelum membaca teks.</li>\n  <li><strong>Skimming Paragraf Pertama & Terakhir:</strong> Identifikasi tesis utama dan konklusi penulis dalam 20 detik.</li>\n  <li><strong>Scanning Kata Kunci Spesifik:</strong> Cari kalimat target yang memuat informasi pendukung secara presisi.</li>\n</ol>",
+    "seoScore": 93
+  },
+  {
+    "id": "art-snbt-4",
+    "title": "Strategi Memilih Program Studi & Analisis Keketatan PTN pada SNBT 2027",
+    "slug": "strategi-memilih-prodi-snbt",
+    "category": "SNBT & UTBK",
+    "categories": ["SNBT & UTBK", "Tips Belajar & Prestasi", "Informasi NLS"],
+    "date": "2026-08-14",
+    "author": "Kak Bima (Statistika UGM)",
+    "status": "published",
+    "coverImage": "/images/blog/cover-jurusan-kuliah.jpg",
+    "focusKeyword": "strategi memilih prodi snbt ptn favorit",
+    "metaTitle": "Strategi Memilih Prodi & Analisis Rasio Keketatan SNBT | NLS",
+    "metaDescription": "Panduan realistis memilih pilihan 1, 2, 3, dan 4 pada SNBT berdasarkan simulasi skor IRT try out dan kuota daya tampung PTN.",
+    "canonicalUrl": "https://next-level-study.com/blog/strategi-memilih-prodi-snbt",
+    "content": "<h2>Rasionalisasi Pilihan: Hindari Strategi 'Berjudi' Tanpa Data</h2>\n<p>Dengan sistem 4 pilihan pada SNBT terbaru, kombinasi program Sarjana dan Vokasi memberikan peluang kelolosan yang jauh lebih terbuka bila dirancang dengan rasionalisasi data kuota daya tampung dan rasio peminat historis.</p>\n\n<h3>Matriks Portofolio 4 Pilihan:</h3>\n<ul>\n  <li><strong>Pilihan 1 (Dream Major):</strong> Jurusan impian dengan passing grade tertinggi sesuai batas atas capaian tryout.</li>\n  <li><strong>Pilihan 2 (Target Major):</strong> Jurusan realistis dengan peluang kelolosan > 75% berdasarkan rata-rata skor stabil.</li>\n  <li><strong>Pilihan 3 & 4 (Safety Major / Vokasi Terapan):</strong> Program Sarjana Terapan (D4/D3) unggulan dengan prospek kerja industri tinggi.</li>\n</ul>",
+    "seoScore": 95
   }
 ]
 ;
