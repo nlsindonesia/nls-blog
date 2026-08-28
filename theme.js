@@ -449,6 +449,7 @@ function initAlpineStores() {
 }
 
 if (typeof window !== 'undefined') {
+    window.initAlpineStores = initAlpineStores;
     if (window.Alpine) {
         initAlpineStores();
     } else {

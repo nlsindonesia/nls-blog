@@ -437,8 +437,6 @@
     </style>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link rel="stylesheet" href="/theme.css" />
-    <script src="/theme.js"></script>
 </head>
 
 <body
@@ -1684,18 +1682,18 @@
 
                             <div class="space-y-2">
                                 <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block">
-                                    Tuliskan 3 Rekam Jejak / Prestasi Utama Anda: <span class="text-rose-500">*</span>
+                                    Tuliskan Rekam Jejak / Prestasi Utama Anda: <span class="text-xs text-slate-400 font-normal">(Opsional)</span>
                                 </label>
                                 <div class="space-y-2">
                                     <div class="flex items-center gap-2">
                                         <span class="text-amber-500 font-black text-xs shrink-0">1.</span>
-                                        <input x-model="$store.gabungPengajar.form.prestasi1" required
+                                        <input x-model="$store.gabungPengajar.form.prestasi1"
                                             class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium shadow-xs"
                                             placeholder="Contoh: Penulis panduan strategi literasi membaca SNBT standar BPPP" type="text">
                                     </div>
                                     <div class="flex items-center gap-2">
                                         <span class="text-amber-500 font-black text-xs shrink-0">2.</span>
-                                        <input x-model="$store.gabungPengajar.form.prestasi2" required
+                                        <input x-model="$store.gabungPengajar.form.prestasi2"
                                             class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium shadow-xs"
                                             placeholder="Contoh: Instruktur privat bahasa Inggris akademik dan persiapan IUP PTN" type="text">
                                     </div>
@@ -1714,7 +1712,7 @@
                                 </label>
                                 <input x-model="$store.gabungPengajar.form.portfolio"
                                     class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium shadow-xs"
-                                    placeholder="https://drive.google.com/... atau https://linkedin.com/in/..." type="url">
+                                    placeholder="https://drive.google.com/... atau https://linkedin.com/in/..." type="text">
                             </div>
                         </div>
 
@@ -2192,17 +2190,20 @@
 
         // Guaranteed Store Registration for Pengajar page
         function ensurePengajarStores() {
-            if (typeof window !== 'undefined' && window.initAlpineStores) {
-                window.initAlpineStores();
+            if (typeof window !== 'undefined') {
+                if (typeof window.initAlpineStores === 'function') {
+                    window.initAlpineStores();
+                }
             }
         }
         if (typeof window !== 'undefined') {
+            ensurePengajarStores();
             if (window.Alpine) {
                 ensurePengajarStores();
-            } else {
-                document.addEventListener('alpine:init', ensurePengajarStores);
-                document.addEventListener('DOMContentLoaded', ensurePengajarStores);
             }
+            document.addEventListener('alpine:init', ensurePengajarStores);
+            document.addEventListener('DOMContentLoaded', ensurePengajarStores);
+            window.addEventListener('load', ensurePengajarStores);
         }
     </script>
 </body>
