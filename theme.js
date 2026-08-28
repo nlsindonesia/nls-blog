@@ -315,6 +315,7 @@ function initAlpineStores() {
                 wa: '',
                 email: '',
                 pendidikan: '',
+                photo: '',
                 categories: [],
                 jenjang: [],
                 subject: '',
@@ -325,13 +326,84 @@ function initAlpineStores() {
                 prestasi3: '',
                 portfolio: ''
             },
+            handlePhotoUpload: function(event) {
+                const file = event.target.files && event.target.files[0];
+                if (!file) return;
+
+                if (!file.type.startsWith('image/')) {
+                    alert('Mohon pilih file gambar yang valid (JPG, PNG, atau WEBP).');
+                    return;
+                }
+
+                if (file.size > 3 * 1024 * 1024) {
+                    alert('Ukuran foto maksimal adalah 3MB. Mohon gunakan foto yang lebih ringan.');
+                    return;
+                }
+
+                const reader = new FileReader();
+                const self = this;
+                reader.onload = function(e) {
+                    self.form.photo = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            },
             submit: function() {
-                const catStr = this.form.categories && this.form.categories.length > 0 ? this.form.categories.join(', ') : '-';
-                const jnjStr = this.form.jenjang && this.form.jenjang.length > 0 ? this.form.jenjang.join(', ') : '-';
+                // Strict validation for Section 1
+                if (!this.form.nama || !this.form.nama.trim()) {
+                    alert('Mohon isi Nama Lengkap & Gelar Anda pada Bagian 1.');
+                    return;
+                }
+                if (!this.form.panggilan || !this.form.panggilan.trim()) {
+                    alert('Mohon isi Nama Panggilan / Sapaan pada Bagian 1.');
+                    return;
+                }
+                if (!this.form.wa || !this.form.wa.trim()) {
+                    alert('Mohon isi Nomor WhatsApp Aktif pada Bagian 1.');
+                    return;
+                }
+                if (!this.form.email || !this.form.email.trim()) {
+                    alert('Mohon isi Alamat Email Aktif pada Bagian 1.');
+                    return;
+                }
+                if (!this.form.pendidikan || !this.form.pendidikan.trim()) {
+                    alert('Mohon isi Asal Universitas & Prestasi Akademik pada Bagian 1.');
+                    return;
+                }
+                if (!this.form.photo) {
+                    alert('Mohon unggah Foto Profil Pengajar pada Bagian 1.');
+                    return;
+                }
+
+                // Strict validation for Section 2
+                if (!Array.isArray(this.form.categories) || this.form.categories.length === 0) {
+                    alert('Mohon pilih minimal 1 Bidang Keahlian & Program pada Bagian 2.');
+                    return;
+                }
+                if (!Array.isArray(this.form.jenjang) || this.form.jenjang.length === 0) {
+                    alert('Mohon pilih minimal 1 Sasaran Jenjang Mengajar pada Bagian 2.');
+                    return;
+                }
+                if (!this.form.subject || !this.form.subject.trim()) {
+                    alert('Mohon isi Spesialisasi Mata Pelajaran Utama pada Bagian 2.');
+                    return;
+                }
+
+                // Strict validation for Section 3
+                if (!this.form.fokusPrivat || !this.form.fokusPrivat.trim()) {
+                    alert('Mohon isi Fokus Kebutuhan Les Privat pada Bagian 3.');
+                    return;
+                }
+                if (!this.form.filosofi || !this.form.filosofi.trim()) {
+                    alert('Mohon isi Kutipan / Filosofi Mengajar Anda pada Bagian 3.');
+                    return;
+                }
+
+                const catStr = this.form.categories.join(', ');
+                const jnjStr = this.form.jenjang.join(', ');
                 
                 // 1. Create teacher application record for admin Teacher Verification
-                const fullName = this.form.nama || 'Calon Guru';
-                const nickName = this.form.panggilan || (fullName ? fullName.split(' ')[0] : 'Guru');
+                const fullName = this.form.nama.trim();
+                const nickName = this.form.panggilan.trim();
                 const nowIso = new Date().toISOString();
 
                 const application = {
@@ -343,24 +415,24 @@ function initAlpineStores() {
                     name: fullName,
                     panggilan: nickName,
                     shortName: nickName,
-                    wa: this.form.wa || '',
-                    phone: this.form.wa || '',
-                    email: this.form.email || '',
-                    pendidikan: this.form.pendidikan || '',
-                    education: this.form.pendidikan || '',
-                    photo: '/images/pengajar/mentor-1-math.jpg',
-                    categories: (this.form.categories && this.form.categories.length > 0) ? [...this.form.categories] : ['OSN'],
-                    jenjang: (this.form.jenjang && this.form.jenjang.length > 0) ? [...this.form.jenjang] : ['SMA'],
-                    jenjangLabel: (this.form.jenjang && this.form.jenjang.length > 0) ? this.form.jenjang.join(' & ') : 'Semua Jenjang',
-                    subject: this.form.subject || 'Mata Pelajaran',
-                    subjects: [this.form.subject || 'Mata Pelajaran'],
-                    kebutuhanPrivat: this.form.fokusPrivat || '',
-                    fokusPrivat: this.form.fokusPrivat || '',
-                    philosophy: this.form.filosofi || '',
-                    filosofi: this.form.filosofi || '',
+                    wa: this.form.wa.trim(),
+                    phone: this.form.wa.trim(),
+                    email: this.form.email.trim(),
+                    pendidikan: this.form.pendidikan.trim(),
+                    education: this.form.pendidikan.trim(),
+                    photo: this.form.photo || '/images/pengajar/mentor-1-math.jpg',
+                    categories: [...this.form.categories],
+                    jenjang: [...this.form.jenjang],
+                    jenjangLabel: this.form.jenjang.join(' & '),
+                    subject: this.form.subject.trim(),
+                    subjects: [this.form.subject.trim()],
+                    kebutuhanPrivat: this.form.fokusPrivat.trim(),
+                    fokusPrivat: this.form.fokusPrivat.trim(),
+                    philosophy: this.form.filosofi.trim(),
+                    filosofi: this.form.filosofi.trim(),
                     highlights: [this.form.prestasi1, this.form.prestasi2, this.form.prestasi3].filter(Boolean),
-                    portfolio: this.form.portfolio || '',
-                    cv_link: this.form.portfolio || '',
+                    portfolio: (this.form.portfolio || '').trim(),
+                    cv_link: (this.form.portfolio || '').trim(),
                     notes: ''
                 };
 
