@@ -454,6 +454,26 @@ window.NLS_DEFAULT_EVENTS = [
                         whatsappMessage: 'Halo Tim NLS, saya ingin daftar Simulasi OSN SMA Tahap Lanjutan (13 September 2026).'
                     },
                     {
+                        id: 'evt-sep-tka-grand',
+                        date: '2026-09-21',
+                        endDate: '2026-09-25',
+                        title: 'Grand Try Out TKA: Pemetaan Bakat & Minat 2026',
+                        category: 'TKA',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'SMA / SMK / MA',
+                        time: '08:00 - 15:00 WIB',
+                        mode: 'Online CBT & Mitra Sekolah',
+                        location: 'Platform CBT NLS & Mitra Sekolah',
+                        badgeText: 'Event Akbar',
+                        description: 'Event pemetaan akademik terbesar tahun ini. Dapatkan analisis mendalam kecocokan jurusan berdasarkan nilai Tes Kemampuan Akademik (TKA) Anda.',
+                        highlights: [
+                            'Ujian terstandar Pusmendik Kemendikdasmen RI',
+                            'Laporan komprehensif minat & bakat serta rekomendasi prodi PTN',
+                            'Perangkingan nasional & sertifikat analitik resmi NLS'
+                        ],
+                        whatsappMessage: 'Halo Next Level Study, saya ingin Daftar Grand Try Out TKA: Pemetaan Bakat & Minat.'
+                    },
+                    {
                         id: 'evt-sep-2',
                         date: '2026-09-27',
                         title: 'Grand Pemetaan Akademik & Try Out Terpadu Mitra Sekolah Se-Jabar',
