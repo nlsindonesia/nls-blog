@@ -89,6 +89,12 @@ export default async function handler(req, res) {
         }
         return res.status(200).json({
             success: true,
+            meta: {
+                total: teachersCache.length,
+                activeCount: teachersCache.filter(t => t.status !== 'trashed').length,
+                trashCount: teachersCache.filter(t => t.status === 'trashed').length,
+                timestamp: new Date().toISOString()
+            },
             total: teachersCache.length,
             activeCount: teachersCache.filter(t => t.status !== 'trashed').length,
             trashCount: teachersCache.filter(t => t.status === 'trashed').length,
@@ -107,28 +113,35 @@ export default async function handler(req, res) {
             return res.status(400).json({ success: false, message: 'Nama pengajar wajib diisi.' });
         }
 
+        const nowIso = new Date().toISOString();
         const newTeacher = {
             id: body.id || `t-${Date.now()}`,
-            name: body.name,
-            shortName: body.shortName || body.name.split(' ')[0],
+            name: body.name.trim(),
+            shortName: body.shortName ? body.shortName.trim() : body.name.trim().split(' ')[0],
             photo: body.photo || '/images/pengajar/mentor-1-math.jpg',
-            education: body.education || '',
+            education: body.education ? body.education.trim() : '',
             categories: Array.isArray(body.categories) && body.categories.length > 0 ? body.categories : ['OSN'],
             jenjang: Array.isArray(body.jenjang) && body.jenjang.length > 0 ? body.jenjang : ['SMA'],
             jenjangLabel: body.jenjangLabel || (Array.isArray(body.jenjang) ? body.jenjang.join(' & ') : 'Semua Jenjang'),
-            subject: body.subject || '',
+            subject: body.subject ? body.subject.trim() : '',
             subjects: Array.isArray(body.subjects) ? body.subjects : [body.subject || ''],
-            kebutuhanPrivat: body.kebutuhanPrivat || '',
-            philosophy: body.philosophy || '',
+            kebutuhanPrivat: body.kebutuhanPrivat ? body.kebutuhanPrivat.trim() : '',
+            philosophy: body.philosophy ? body.philosophy.trim() : '',
             highlights: Array.isArray(body.highlights) ? body.highlights : (
                 typeof body.highlightsRaw === 'string' ? body.highlightsRaw.split('\n').map(s => s.trim()).filter(Boolean) : []
             ),
-            status: body.status || 'active'
+            rating: typeof body.rating === 'number' ? body.rating : 4.9,
+            reviewCount: typeof body.reviewCount === 'number' ? body.reviewCount : 24,
+            status: body.status || 'active',
+            isTrashed: body.status === 'trashed' ? 1 : 0,
+            createdAt: body.createdAt || nowIso,
+            updatedAt: nowIso,
+            deletedAt: body.status === 'trashed' ? (body.deletedAt || nowIso) : null
         };
 
         const idx = teachersCache.findIndex(t => t.id === newTeacher.id);
         if (idx !== -1) {
-            teachersCache[idx] = newTeacher;
+            teachersCache[idx] = { ...teachersCache[idx], ...newTeacher, updatedAt: nowIso };
         } else {
             teachersCache.unshift(newTeacher);
         }
@@ -137,7 +150,7 @@ export default async function handler(req, res) {
 
         return res.status(201).json({
             success: true,
-            message: 'Data pengajar berhasil disimpan ke cloud.',
+            message: 'Data pengajar berhasil disimpan ke database terstruktur.',
             data: newTeacher
         });
     }
@@ -151,18 +164,23 @@ export default async function handler(req, res) {
         const { id, status, deletedAt } = body || {};
         if (!id) return res.status(400).json({ success: false, message: 'ID pengajar diperlukan.' });
 
+        const nowIso = new Date().toISOString();
         let teacher = teachersCache.find(t => t.id === id);
         if (!teacher) {
-            teacher = { id, name: body.name || 'Pengajar', status: status || 'active' };
+            teacher = { id, name: body.name || 'Pengajar', status: status || 'active', createdAt: nowIso };
             teachersCache.unshift(teacher);
         }
 
         Object.assign(teacher, body);
+        teacher.updatedAt = nowIso;
         if (status) {
             teacher.status = status;
             if (status === 'trashed') {
-                teacher.deletedAt = deletedAt || new Date().toISOString();
+                teacher.isTrashed = 1;
+                teacher.deletedAt = deletedAt || nowIso;
             } else {
+                teacher.isTrashed = 0;
+                teacher.deletedAt = null;
                 delete teacher.deletedAt;
             }
         }
@@ -171,7 +189,7 @@ export default async function handler(req, res) {
 
         return res.status(200).json({
             success: true,
-            message: 'Data pengajar berhasil diperbarui di cloud.',
+            message: 'Data pengajar berhasil diperbarui.',
             data: teacher
         });
     }
