@@ -4335,6 +4335,9 @@
                             }
                         };
                     } catch (e) {}
+
+                    // Fetch latest teacher applications from serverless backend on boot
+                    this.refreshTeacherApplications(false);
                 },
 
                 // AUTHENTICATION
@@ -4917,18 +4920,66 @@
                     if (this.isMobile) this.isSidebarOpen = false;
                 },
 
-                refreshTeacherApplications(showNotice = true) {
+                async refreshTeacherApplications(showNotice = true) {
                     try {
-                        const stored = localStorage.getItem("nls_teacher_applications_v1");
-                        if (stored) {
-                            const parsed = JSON.parse(stored);
-                            if (Array.isArray(parsed)) {
-                                this.teacherApplications = parsed;
-                                if (showNotice) this.showToast(`Berhasil menyinkronkan ${parsed.length} berkas calon guru.`);
-                                return;
+                        let serverApps = [];
+                        // 1. Fetch from serverless backend API
+                        if (typeof fetch !== 'undefined') {
+                            try {
+                                const res = await fetch('/api/teacher-applications');
+                                if (res.ok) {
+                                    const json = await res.json();
+                                    if (json && Array.isArray(json.data)) {
+                                        serverApps = json.data;
+                                    }
+                                }
+                            } catch (netErr) {
+                                console.warn('[NLS] Could not reach /api/teacher-applications:', netErr);
                             }
                         }
-                        if (typeof window.PengajarDatabase !== 'undefined' && Array.isArray(window.PengajarDatabase.applications)) {
+
+                        // 2. Read local applications
+                        let localApps = [];
+                        try {
+                            const stored = localStorage.getItem("nls_teacher_applications_v1");
+                            if (stored) {
+                                const parsed = JSON.parse(stored);
+                                if (Array.isArray(parsed)) localApps = parsed;
+                            }
+                        } catch (e) {}
+
+                        // 3. Merge serverApps and localApps by unique ID (preserving newest updates)
+                        const mergedMap = new Map();
+                        // Add server apps first
+                        serverApps.forEach(app => {
+                            if (app && app.id) mergedMap.set(app.id, app);
+                        });
+                        // Add or overlay local apps
+                        localApps.forEach(app => {
+                            if (app && app.id) {
+                                if (!mergedMap.has(app.id)) {
+                                    mergedMap.set(app.id, app);
+                                } else {
+                                    // If local is modified/reviewed, preserve local status
+                                    const serverApp = mergedMap.get(app.id);
+                                    if (app.status !== 'pending' && serverApp.status === 'pending') {
+                                        mergedMap.set(app.id, { ...serverApp, ...app });
+                                    }
+                                }
+                            }
+                        });
+
+                        const mergedList = Array.from(mergedMap.values());
+                        if (mergedList.length > 0) {
+                            this.teacherApplications = mergedList;
+                            try {
+                                localStorage.setItem("nls_teacher_applications_v1", JSON.stringify(mergedList));
+                            } catch(e) {}
+                            if (showNotice) this.showToast(`Berhasil menyinkronkan ${mergedList.length} berkas calon guru.`);
+                            return;
+                        }
+
+                        if (typeof window.PengajarDatabase !== 'undefined' && Array.isArray(window.PengajarDatabase.applications) && window.PengajarDatabase.applications.length > 0) {
                             this.teacherApplications = [...window.PengajarDatabase.applications];
                             if (showNotice) this.showToast(`Memuat ${this.teacherApplications.length} data dari database pengajar.`);
                             return;
@@ -5284,6 +5335,15 @@
                     app.status = 'accepted';
                     this.saveTeacherApplicationsToStorage();
 
+                    // 4. Sync status to backend API
+                    if (typeof fetch !== 'undefined') {
+                        fetch('/api/teacher-applications', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: app.id, status: 'accepted' })
+                        }).catch(e => {});
+                    }
+
                     this.showToast(`Calon guru "${app.nama}" berhasil di-accept dan langsung terbit di Present Teacher & /pengajar!`);
                 },
 
@@ -5291,6 +5351,13 @@
                     if (confirm(`Tolak pengajuan dari calon pengajar "${app.nama}"?`)) {
                         app.status = 'rejected';
                         this.saveTeacherApplicationsToStorage();
+                        if (typeof fetch !== 'undefined') {
+                            fetch('/api/teacher-applications', {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: app.id, status: 'rejected' })
+                            }).catch(e => {});
+                        }
                         this.showToast(`Pengajuan "${app.nama}" ditandai sebagai ditolak.`);
                     }
                 },
@@ -5298,6 +5365,13 @@
                 restoreApplicationToPending(app) {
                     app.status = 'pending';
                     this.saveTeacherApplicationsToStorage();
+                    if (typeof fetch !== 'undefined') {
+                        fetch('/api/teacher-applications', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: app.id, status: 'pending' })
+                        }).catch(e => {});
+                    }
                     this.showToast(`Status pengajuan "${app.nama}" dikembalikan ke Pending.`);
                 },
 
@@ -5307,6 +5381,11 @@
                     if (confirm(`Hapus data pendaftaran "${name}" dari antrean Teacher Verification?`)) {
                         this.teacherApplications = this.teacherApplications.filter(a => a.id !== id);
                         this.saveTeacherApplicationsToStorage();
+                        if (typeof fetch !== 'undefined') {
+                            fetch('/api/teacher-applications?id=' + encodeURIComponent(id), {
+                                method: 'DELETE'
+                            }).catch(e => {});
+                        }
                         this.showToast(`Data pendaftaran "${name}" berhasil dihapus.`);
                     }
                 },

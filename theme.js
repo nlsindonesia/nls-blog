@@ -364,8 +364,19 @@ function initAlpineStores() {
                     notes: ''
                 };
 
-                // 2. Save into localStorage & sync cross-tab
+                // 2. Save into serverless database API, localStorage & sync cross-tab
                 try {
+                    // Send to backend API
+                    if (typeof fetch !== 'undefined') {
+                        fetch('/api/teacher-applications', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(application)
+                        }).catch(function(err) {
+                            console.warn('[NLS] API save error:', err);
+                        });
+                    }
+
                     let apps = [];
                     const stored = localStorage.getItem("nls_teacher_applications_v1");
                     if (stored) {
