@@ -3038,27 +3038,39 @@
                             <template x-for="teacher in trashTeachers" :key="teacher.id">
                                 <div class="p-5 rounded-3xl bg-white dark:bg-[#131D38] border border-rose-200 dark:border-rose-900/60 shadow-xs flex flex-col justify-between space-y-4">
                                     <div class="space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <span x-show="teacher.isApplication"
+                                                class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-300/40">
+                                                Berkas Pendaftar
+                                            </span>
+                                            <span x-show="!teacher.isApplication"
+                                                class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-sky-100 dark:bg-sky-950 text-sky-800 dark:text-sky-300 border border-sky-300/40">
+                                                Pengajar Terbit
+                                            </span>
+                                            <span class="text-[10px] text-slate-400 font-bold" x-text="formatDisplayDate(teacher.deletedAt)"></span>
+                                        </div>
+
                                         <div class="flex items-start gap-3.5">
                                             <img :src="teacher.photo || '/images/pengajar/mentor-1-math.jpg'" alt="Photo" class="w-14 h-14 rounded-2xl object-cover border border-slate-200 opacity-60 shrink-0 bg-slate-100">
                                             <div class="min-w-0">
-                                                <h4 class="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-snug line-through opacity-80" x-text="teacher.name"></h4>
-                                                <p class="text-xs font-bold text-rose-600 dark:text-rose-400 truncate" x-text="teacher.shortName"></p>
-                                                <p class="text-[11px] text-slate-500 truncate" x-text="teacher.education"></p>
+                                                <h4 class="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-snug line-through opacity-80" x-text="teacher.nama || teacher.name"></h4>
+                                                <p class="text-xs font-bold text-rose-600 dark:text-rose-400 truncate" x-text="teacher.panggilan || teacher.shortName"></p>
+                                                <p class="text-[11px] text-slate-500 truncate" x-text="teacher.pendidikan || teacher.education"></p>
                                             </div>
                                         </div>
 
-                                        <p class="text-xs text-slate-400">Dihapus pada: <span x-text="formatDisplayDate(teacher.deletedAt)"></span></p>
+                                        <p class="text-xs text-slate-500 font-medium line-clamp-1" x-text="teacher.subject"></p>
                                     </div>
 
                                     <!-- Actions -->
                                     <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
                                         <button type="button" @click="restoreTeacher(teacher.id)"
-                                            class="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950 dark:text-emerald-300 text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer">
+                                            class="px-3.5 py-2 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950 dark:text-emerald-300 text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                                             <span>Pulihkan</span>
                                         </button>
                                         <button type="button" @click="permanentDeleteTeacher(teacher.id)"
-                                            class="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-950 dark:text-rose-300 text-xs font-black flex items-center gap-1 transition-all cursor-pointer"
+                                            class="px-3.5 py-2 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-950 dark:text-rose-300 text-xs font-black flex items-center gap-1 transition-all cursor-pointer"
                                             title="Hapus Permanen">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                             <span>Hapus Permanen</span>
@@ -4100,12 +4112,15 @@
                 teacherApplications: (function() {
                     try {
                         const stored = localStorage.getItem("nls_teacher_applications_v1");
-                        if (stored) {
+                        if (stored !== null) {
                             const parsed = JSON.parse(stored);
-                            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                            if (Array.isArray(parsed)) return parsed;
                         }
                     } catch (e) {}
-                    return [
+                    const deleted = (function() {
+                        try { return JSON.parse(localStorage.getItem('nls_deleted_teacher_applications_v1') || '[]'); } catch(e) { return []; }
+                    })();
+                    const defaults = [
                         {
                             id: 'app-sample-1',
                             submittedAt: '2026-08-27T10:30:00.000Z',
@@ -4155,6 +4170,7 @@
                             notes: ''
                         }
                     ];
+                    return defaults.filter(d => !deleted.includes(d.id));
                 })(),
 
                 teacherAppSearch: '',
@@ -4922,6 +4938,11 @@
 
                 async refreshTeacherApplications(showNotice = true) {
                     try {
+                        let deletedAppIds = [];
+                        try {
+                            deletedAppIds = JSON.parse(localStorage.getItem('nls_deleted_teacher_applications_v1') || '[]');
+                        } catch(e) {}
+
                         let serverApps = [];
                         // 1. Fetch from serverless backend API
                         if (typeof fetch !== 'undefined') {
@@ -4930,7 +4951,7 @@
                                 if (res.ok) {
                                     const json = await res.json();
                                     if (json && Array.isArray(json.data)) {
-                                        serverApps = json.data;
+                                        serverApps = json.data.filter(a => a && a.id && !deletedAppIds.includes(a.id));
                                     }
                                 }
                             } catch (netErr) {
@@ -4944,7 +4965,9 @@
                             const stored = localStorage.getItem("nls_teacher_applications_v1");
                             if (stored) {
                                 const parsed = JSON.parse(stored);
-                                if (Array.isArray(parsed)) localApps = parsed;
+                                if (Array.isArray(parsed)) {
+                                    localApps = parsed.filter(a => a && a.id && !deletedAppIds.includes(a.id));
+                                }
                             }
                         } catch (e) {}
 
@@ -4952,11 +4975,11 @@
                         const mergedMap = new Map();
                         // Add server apps first
                         serverApps.forEach(app => {
-                            if (app && app.id) mergedMap.set(app.id, app);
+                            if (app && app.id && !deletedAppIds.includes(app.id)) mergedMap.set(app.id, app);
                         });
                         // Add or overlay local apps
                         localApps.forEach(app => {
-                            if (app && app.id) {
+                            if (app && app.id && !deletedAppIds.includes(app.id)) {
                                 if (!mergedMap.has(app.id)) {
                                     mergedMap.set(app.id, app);
                                 } else {
@@ -4970,21 +4993,13 @@
                         });
 
                         const mergedList = Array.from(mergedMap.values());
-                        if (mergedList.length > 0) {
-                            this.teacherApplications = mergedList;
-                            try {
-                                localStorage.setItem("nls_teacher_applications_v1", JSON.stringify(mergedList));
-                            } catch(e) {}
-                            if (showNotice) this.showToast(`Berhasil menyinkronkan ${mergedList.length} berkas calon guru.`);
-                            return;
-                        }
+                        this.teacherApplications = mergedList;
+                        try {
+                            localStorage.setItem("nls_teacher_applications_v1", JSON.stringify(mergedList));
+                        } catch(e) {}
 
-                        if (typeof window.PengajarDatabase !== 'undefined' && Array.isArray(window.PengajarDatabase.applications) && window.PengajarDatabase.applications.length > 0) {
-                            this.teacherApplications = [...window.PengajarDatabase.applications];
-                            if (showNotice) this.showToast(`Memuat ${this.teacherApplications.length} data dari database pengajar.`);
-                            return;
-                        }
-                        if (showNotice) this.showToast('Data antrean verifikasi sudah up-to-date.');
+                        if (showNotice) this.showToast(`Berhasil menyinkronkan ${mergedList.length} berkas calon guru.`);
+                        return;
                     } catch(e) {
                         if (showNotice) this.showToast('Gagal memuat data antrean verifikasi.');
                     }
@@ -5377,16 +5392,41 @@
 
                 deleteTeacherApplication(id) {
                     const target = this.teacherApplications.find(a => a.id === id);
-                    const name = target ? target.nama : 'Pengajuan';
-                    if (confirm(`Hapus data pendaftaran "${name}" dari antrean Teacher Verification?`)) {
+                    const name = target ? (target.nama || target.name) : 'Pengajuan';
+                    if (confirm(`Pindahkan berkas pendaftaran "${name}" ke Trash Data Pengajar?`)) {
+                        // 1. Remove from active application queue
                         this.teacherApplications = this.teacherApplications.filter(a => a.id !== id);
                         this.saveTeacherApplicationsToStorage();
+
+                        // 2. Track deleted ID in persistent deleted IDs list
+                        try {
+                            const deletedIds = JSON.parse(localStorage.getItem('nls_deleted_teacher_applications_v1') || '[]');
+                            if (!deletedIds.includes(id)) {
+                                deletedIds.push(id);
+                                localStorage.setItem('nls_deleted_teacher_applications_v1', JSON.stringify(deletedIds));
+                            }
+                        } catch (e) {}
+
+                        // 3. Move into trashTeachers array
+                        if (target) {
+                            const trashed = JSON.parse(JSON.stringify(target));
+                            trashed.isApplication = true;
+                            trashed.name = target.nama || target.name || 'Calon Pengajar';
+                            trashed.shortName = target.panggilan || target.shortName || (trashed.name.split(' ')[0]);
+                            trashed.education = target.pendidikan || target.education || '';
+                            trashed.deletedAt = new Date().toISOString();
+                            this.trashTeachers.unshift(trashed);
+                            this.saveTrashTeachersToStorage();
+                        }
+
+                        // 4. Send DELETE to server API
                         if (typeof fetch !== 'undefined') {
                             fetch('/api/teacher-applications?id=' + encodeURIComponent(id), {
                                 method: 'DELETE'
                             }).catch(e => {});
                         }
-                        this.showToast(`Data pendaftaran "${name}" berhasil dihapus.`);
+
+                        this.showToast(`Berkas pendaftaran "${name}" berhasil dipindahkan ke Trash Pengajar.`);
                     }
                 },
 
@@ -5843,24 +5883,76 @@
                 restoreTeacher(id) {
                     const target = this.trashTeachers.find(t => t.id === id);
                     if (!target) return;
+
                     this.trashTeachers = this.trashTeachers.filter(t => t.id !== id);
-                    delete target.deletedAt;
-                    this.teachers.unshift(target);
-                    this.saveTeachersToStorage();
                     this.saveTrashTeachersToStorage();
-                    this.showToast(`Pengajar "${target.name}" berhasil dipulihkan!`);
+
+                    if (target.isApplication) {
+                        // Remove from deleted tracking
+                        try {
+                            let deletedIds = JSON.parse(localStorage.getItem('nls_deleted_teacher_applications_v1') || '[]');
+                            deletedIds = deletedIds.filter(x => x !== id);
+                            localStorage.setItem('nls_deleted_teacher_applications_v1', JSON.stringify(deletedIds));
+                        } catch(e) {}
+
+                        delete target.deletedAt;
+                        target.status = 'pending';
+                        this.teacherApplications.unshift(target);
+                        this.saveTeacherApplicationsToStorage();
+
+                        if (typeof fetch !== 'undefined') {
+                            fetch('/api/teacher-applications', {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: target.id, status: 'pending' })
+                            }).catch(e => {});
+                        }
+
+                        this.showToast(`Berkas pendaftaran "${target.nama || target.name}" berhasil dipulihkan ke Teacher Verification!`);
+                    } else {
+                        delete target.deletedAt;
+                        this.teachers.unshift(target);
+                        this.saveTeachersToStorage();
+                        this.showToast(`Pengajar "${target.name}" berhasil dipulihkan ke Present Teacher!`);
+                    }
                 },
 
                 permanentDeleteTeacher(id) {
-                    if (confirm('Apakah Anda yakin ingin menghapus data pengajar ini secara permanen dari Trash?')) {
+                    const target = this.trashTeachers.find(t => t.id === id);
+                    const name = target ? (target.name || target.nama) : 'Data Pengajar';
+                    if (confirm(`Apakah Anda yakin ingin menghapus "${name}" secara permanen dari Trash? Tindakan ini tidak dapat dibatalkan.`)) {
                         this.trashTeachers = this.trashTeachers.filter(t => t.id !== id);
                         this.saveTrashTeachersToStorage();
-                        this.showToast('Pengajar telah dihapus secara permanen!');
+
+                        // Keep in deleted IDs so server sync doesn't resurrect it
+                        try {
+                            const deletedIds = JSON.parse(localStorage.getItem('nls_deleted_teacher_applications_v1') || '[]');
+                            if (!deletedIds.includes(id)) {
+                                deletedIds.push(id);
+                                localStorage.setItem('nls_deleted_teacher_applications_v1', JSON.stringify(deletedIds));
+                            }
+                        } catch(e) {}
+
+                        if (typeof fetch !== 'undefined') {
+                            fetch('/api/teacher-applications?id=' + encodeURIComponent(id), {
+                                method: 'DELETE'
+                            }).catch(e => {});
+                        }
+
+                        this.showToast(`"${name}" telah dihapus secara permanen!`);
                     }
                 },
 
                 emptyTrashTeachers() {
                     if (confirm('Apakah Anda yakin ingin mengosongkan semua data di Trash Pengajar? Tindakan ini tidak dapat dibatalkan.')) {
+                        try {
+                            const deletedIds = JSON.parse(localStorage.getItem('nls_deleted_teacher_applications_v1') || '[]');
+                            this.trashTeachers.forEach(t => {
+                                if (t.id && !deletedIds.includes(t.id)) deletedIds.push(t.id);
+                            });
+                            localStorage.setItem('nls_deleted_teacher_applications_v1', JSON.stringify(deletedIds));
+                        } catch(e) {}
+
                         this.trashTeachers = [];
                         this.saveTrashTeachersToStorage();
                         this.showToast('Trash Pengajar telah dikosongkan!');
