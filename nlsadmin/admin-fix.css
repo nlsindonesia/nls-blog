@@ -45,29 +45,37 @@ html.dark .admin-card-dinas {
     box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.12) !important;
 }
 
-/* Input / select / textarea dengan border-2 -> 1px (lebih rapi) */
-main input.border-2,
-main select.border-2,
-main textarea.border-2,
-main input.border,
-main select.border {
+/* Kartu login dihapus border tebal & radius kaku */
+body > div .max-w-md {
     border-width: 1px !important;
+    border-radius: 22px !important;
+    box-shadow: 0 20px 60px -15px rgba(15, 23, 42, 0.35) !important;
 }
 
-/* Kartu umum ber-border tebal -> 1.5px */
-main .border-2 {
+/* Input / select / textarea dengan border-2 -> 1px (lebih rapi) */
+input.border-2,
+select.border-2,
+textarea.border-2,
+input.border,
+select.border {
+    border-width: 1px !important;
+}
+.border-2 {
     border-width: 1.5px !important;
 }
-main .border-\[2\.5px\] {
+.border-\[2\.5px\] {
     border-width: 1.5px !important;
+}
+.shadow-2xl {
+    box-shadow: 0 18px 45px -12px rgba(15, 23, 42, 0.28) !important;
 }
 
 /* Warna border netral di dark agar kartu tidak tampak menyala */
-html.dark main .border-slate-200,
-html.dark main .border-slate-300 {
+html.dark .border-slate-200,
+html.dark .border-slate-300 {
     border-color: #2a3a5a !important;
 }
-html.dark main .border-slate-400 {
+html.dark .border-slate-400 {
     border-color: #3b4a66 !important;
 }
 
@@ -76,36 +84,36 @@ html.dark main .border-slate-400 {
    2) FASE 2 — KETERBACAAN TEKS (ukuran & kontras)
    ============================================================ */
 
-/* Naikkan ukuran teks yang terlalu kecil */
-main .text-\[9px\]  { font-size: 0.75rem !important;   } /*  9px -> 12px */
-main .text-\[10px\] { font-size: 0.8125rem !important; } /* 10px -> 13px */
-main .text-\[11px\] { font-size: 0.8125rem !important; } /* 11px -> 13px */
+/* Naikkan ukuran teks yang terlalu kecil (berlaku semua mode) */
+.text-\[9px\]  { font-size: 0.75rem !important;   } /*  9px -> 12px */
+.text-\[10px\] { font-size: 0.8125rem !important; } /* 10px -> 13px */
+.text-\[11px\] { font-size: 0.8125rem !important; } /* 11px -> 13px */
+
+/* Tingkatkan kontras teks slate di LIGHT mode (latar putih/biru muda) */
+.text-slate-300 { color: #64748b !important; }
+.text-slate-400 { color: #64748b !important; }
+.text-slate-500 { color: #475569 !important; }
 
 /*
    Dark mode: elemen teks ber-warna slate TANPA varian dark: banyak yang
    menjadi gelap-tak-terbaca di atas kartu #131d38. Petakan ke warna terang.
    (Pasangan dark: yang sudah benar dibiarkan menang karena lebih spesifik.)
 */
-html.dark main .text-slate-400 { color: #94a3b8 !important; }
-html.dark main .text-slate-500 { color: #a5b4cb !important; }
-html.dark main .text-slate-600 { color: #cbd5e1 !important; }
-html.dark main .text-slate-700 { color: #e2e8f0 !important; }
-html.dark main .text-slate-800 { color: #f1f5f9 !important; }
-html.dark main .text-slate-900 { color: #f8fafc !important; }
-html.dark main .text-slate-950 { color: #ffffff !important; }
+html.dark .text-slate-400 { color: #94a3b8 !important; }
+html.dark .text-slate-500 { color: #a5b4cb !important; }
+html.dark .text-slate-600 { color: #cbd5e1 !important; }
+html.dark .text-slate-700 { color: #e2e8f0 !important; }
+html.dark .text-slate-800 { color: #f1f5f9 !important; }
+html.dark .text-slate-900 { color: #f8fafc !important; }
+html.dark .text-slate-950 { color: #ffffff !important; }
+html.dark .text-slate-300 { color: #a5b4cb !important; }
 
-/* Terapkan juga pada sidebar (di luar <main>) agar menu nav terbaca di dark */
-html.dark aside .text-slate-400,
-html.dark aside .text-slate-500,
-html.dark aside .text-slate-600,
-html.dark aside .text-slate-700,
-html.dark aside .text-slate-800 {
-    color: #cbd5e1 !important;
-}
+/* Contras teks pada tombol tindakan agar kontras cukup */
+html.dark .text-rose-600 { color: #fb7185 !important; }
+html.dark .text-emerald-700 { color: #34d399 !important; }
 
 /* Tingkatkan spasi antar-baris judul agar tidak berdesakan */
-main h3,
-main h4 {
+h3, h4 {
     line-height: 1.45 !important;
 }
 
@@ -115,29 +123,29 @@ main h4 {
    ============================================================ */
 
 /* Baris meta pada kartu (badge + tanggal + info) beri ruang antar-baris */
-main .flex.flex-wrap,
-main .flex.items-center.gap-2 {
+.flex.flex-wrap,
+.flex.items-center.gap-2 {
     row-gap: 0.5rem !important;
 }
 
 /* Judul & teks panjang: boleh wrap, jangan terpotong tajam */
-main .truncate {
+.truncate {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-main h4.truncate {
+h4.truncate {
     white-space: nowrap;
 }
 
 /* Pastikan line-clamp bekerja rapi (2 baris untuk deskripsi) */
-main .line-clamp-2 {
+.line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
-main .line-clamp-1 {
+.line-clamp-1 {
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
@@ -145,23 +153,33 @@ main .line-clamp-1 {
 }
 
 /* Badge kategori / tanggal: jangan susut sehingga teks terpotong */
-main .shrink-0,
-main .whitespace-nowrap {
+.shrink-0,
+.whitespace-nowrap {
     flex-shrink: 0 !important;
 }
-main .truncate.min-w-0 {
+.truncate.min-w-0 {
     min-width: 0 !important;
 }
 
 /* Wadah info di dalam kartu event: beri padding label yang cukup */
-main .rounded-2xl.bg-white\/80,
-main .rounded-2xl.bg-white\/70 {
+.rounded-2xl.bg-white\/80,
+.rounded-2xl.bg-white\/70 {
     line-height: 1.6 !important;
 }
 
 /* Tombol tindakan ikon+label pada kartu: hindari tabrakan */
-main .flex.items-center.gap-1\.5 {
+.flex.items-center.gap-1\.5 {
     column-gap: 0.4rem !important;
+}
+
+/* Modal: pastikan konten scrollable & tidak terpotong */
+.fixed.inset-0.z-50 {
+    align-items: flex-start !important;
+    overflow-y: auto !important;
+}
+.fixed.inset-0.z-50 > div {
+    margin-top: auto !important;
+    margin-bottom: auto !important;
 }
 
 /* Editor & snippet preview tetap aman dari overflow */

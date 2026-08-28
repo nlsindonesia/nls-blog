@@ -641,8 +641,90 @@
             color: #ffffff !important;
             border: none !important;
         }
+        /* =====================================================================
+           UI POLISH OVERRIDE (inline — dimuat bersama HTML, anti cache terpisah)
+           ===================================================================== */
+
+        /* Kartu event ber-warna tebal (2.5px) -> 1.5px halus */
+        .admin-card-osn, .admin-card-tka, .admin-card-snbt,
+        .admin-card-mitra, .admin-card-dinas {
+            border-width: 1.5px !important;
+            box-shadow: 0 4px 14px -4px rgba(15, 23, 42, 0.12) !important;
+        }
+        html.dark .admin-card-osn, html.dark .admin-card-tka, html.dark .admin-card-snbt,
+        html.dark .admin-card-mitra, html.dark .admin-card-dinas {
+            box-shadow: 0 6px 18px -6px rgba(0, 0, 0, 0.55) !important;
+        }
+
+        /* Submenu & nav-pill aktif -> border halus */
+        .submenu-btn-active, .submenu-berita-active, .submenu-pengajar-active {
+            border-width: 1.5px !important;
+            box-shadow: 0 3px 10px -2px rgba(15, 23, 42, 0.15) !important;
+        }
+        .nav-pill-kalender, .nav-pill-berita, .nav-pill-pengajar {
+            border-width: 1px !important;
+            box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.12) !important;
+        }
+
+        /* Input / select / textarea border-2 -> 1px */
+        input.border-2, select.border-2, textarea.border-2,
+        input.border, select.border {
+            border-width: 1px !important;
+        }
+        .border-2 { border-width: 1.5px !important; }
+        .border-\[2\.5px\] { border-width: 1.5px !important; }
+        .shadow-2xl { box-shadow: 0 18px 45px -12px rgba(15, 23, 42, 0.28) !important; }
+
+        /* Kartu login: border tebal + radius kaku -> halus */
+        .max-w-md, .max-w-\[28rem\] {
+            border-width: 1px !important;
+            border-radius: 22px !important;
+            box-shadow: 0 20px 60px -15px rgba(15, 23, 42, 0.35) !important;
+        }
+
+        /* Naikkan ukuran teks terlalu kecil (semua mode) */
+        .text-\[9px\]  { font-size: 0.75rem !important; }
+        .text-\[10px\] { font-size: 0.8125rem !important; }
+        .text-\[11px\] { font-size: 0.8125rem !important; }
+
+        /* Kontras teks slate di LIGHT mode */
+        .text-slate-300 { color: #64748b !important; }
+        .text-slate-400 { color: #64748b !important; }
+        .text-slate-500 { color: #475569 !important; }
+
+        /* Kontras teks slate di DARK mode */
+        html.dark .text-slate-400 { color: #94a3b8 !important; }
+        html.dark .text-slate-500 { color: #a5b4cb !important; }
+        html.dark .text-slate-600 { color: #cbd5e1 !important; }
+        html.dark .text-slate-700 { color: #e2e8f0 !important; }
+        html.dark .text-slate-800 { color: #f1f5f9 !important; }
+        html.dark .text-slate-900 { color: #f8fafc !important; }
+        html.dark .text-slate-950 { color: #ffffff !important; }
+        html.dark .text-slate-300 { color: #a5b4cb !important; }
+
+        /* Spasi judul & baris meta kartu */
+        h3, h4 { line-height: 1.45 !important; }
+        .flex.flex-wrap, .flex.items-center.gap-2 { row-gap: 0.5rem !important; }
+
+        /* Line clamp rapi */
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Badge kategori / tanggal jangan susut */
+        .shrink-0, .whitespace-nowrap { flex-shrink: 0 !important; }
+        .truncate.min-w-0 { min-width: 0 !important; }
+
+        /* Tombol ikon+label: jarak cukup */
+        .flex.items-center.gap-1\.5 { column-gap: 0.4rem !important; }
+
+        /* Editor & snippet aman dari overflow */
+        .editor-content { word-wrap: break-word; overflow-wrap: break-word; }
+        .google-snippet-box { word-wrap: break-word; overflow-wrap: break-word; }
     </style>
-    <link rel="stylesheet" href="/nlsadmin/admin-fix.css" />
 
 </head>
 
