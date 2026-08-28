@@ -28,23 +28,29 @@
         get pengajar() {
             return global.PengajarDatabase;
         },
+        get users() {
+            return global.UsersDatabase;
+        },
 
         // Ringkasan Statistik Database
         getSummary() {
             const kalenderCount = this.kalender ? this.kalender.events.length : 0;
             const beritaCount = this.berita ? this.berita.articles.length : 0;
             const pengajarCount = this.pengajar ? this.pengajar.teachers.length : 0;
+            const usersCount = this.users ? this.users.users.length : 0;
             const pendingAppsCount = this.pengajar ? this.pengajar.getPendingApplications().length : 0;
 
             const trashTotal =
                 (this.kalender ? this.kalender.trashEvents.length : 0) +
                 (this.berita ? this.berita.trashArticles.length : 0) +
-                (this.pengajar ? this.pengajar.trashTeachers.length : 0);
+                (this.pengajar ? this.pengajar.trashTeachers.length : 0) +
+                (this.users ? this.users.trashUsers.length : 0);
 
             return {
                 total_events: kalenderCount,
                 total_articles: beritaCount,
                 total_teachers: pengajarCount,
+                total_users: usersCount,
                 pending_teacher_applications: pendingAppsCount,
                 total_in_trash: trashTotal,
                 status: 'operational',
@@ -72,6 +78,10 @@
                         teachers: this.pengajar ? this.pengajar.teachers : [],
                         applications: this.pengajar ? this.pengajar.applications : [],
                         trash: this.pengajar ? this.pengajar.trashTeachers : []
+                    },
+                    users: {
+                        users: this.users ? this.users.users : [],
+                        trash: this.users ? this.users.trashUsers : []
                     }
                 }
             };
@@ -102,6 +112,11 @@
                 restoredModules.push('Pengajar & Pelamar Guru');
             }
 
+            if (parsed.databases.users && this.users) {
+                this.users.importJSON(parsed.databases.users.users || parsed.databases.users);
+                restoredModules.push('User Management & Roles');
+            }
+
             return {
                 success: true,
                 restoredModules: restoredModules,
@@ -130,6 +145,9 @@
     function usePengajarDb() {
         return NlsDatabase.pengajar;
     }
+    function useUsersDb() {
+        return NlsDatabase.users;
+    }
 
     // Expose ke Global Window
     global.NlsDatabase = NlsDatabase;
@@ -137,5 +155,6 @@
     global.useKalenderDb = useKalenderDb;
     global.useBeritaDb = useBeritaDb;
     global.usePengajarDb = usePengajarDb;
+    global.useUsersDb = useUsersDb;
 
 })(typeof window !== 'undefined' ? window : globalThis);
