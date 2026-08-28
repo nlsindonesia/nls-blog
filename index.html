@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <!-- Google tag (gtag.js) -->
@@ -2164,6 +2164,7 @@ html.dark .admin-card-dinas {
                 currentMonth: 7, // Agustus 2026
                 selectedDate: null,
                 selectedCategory: 'all',
+                selectedJenjang: 'all',
                 events: [],
                 mainCardHeight: null,
                 monthNames: [
@@ -2306,8 +2307,8 @@ html.dark .admin-card-dinas {
                 // Filtered Events
                 filteredEvents() {
                     return this.events.filter(evt => {
-                        const matchCat = this.selectedCategory === 'all' || evt.category === this.selectedCategory;
-                        const matchJenjang = this.selectedJenjang === 'all' || evt.jenjang === this.selectedJenjang;
+                        const matchCat = (!this.selectedCategory || this.selectedCategory === 'all') || evt.category === this.selectedCategory;
+                        const matchJenjang = (!this.selectedJenjang || this.selectedJenjang === 'all') || evt.jenjang === this.selectedJenjang;
                         return matchCat && matchJenjang;
                     });
                 },
