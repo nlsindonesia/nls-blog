@@ -1083,44 +1083,42 @@ html.dark .admin-card-dinas {
                     <div>
                         <div class="flex items-center gap-2 flex-wrap">
                             <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                                Kalender Kegiatan &amp; Agenda Pendidikan
+                                Kalender Kegiatan &amp; Agenda OSN
                             </h2>
                             <span class="px-3 py-1 rounded-full text-xs font-black bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 border border-sky-300 dark:border-sky-800 flex items-center gap-1.5">
                                 <span class="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span>
-                                <span x-text="categoryLabel()"></span>
+                                <span>Kategori Khusus: OSN &amp; Sains</span>
                             </span>
                         </div>
                         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-semibold mt-0.5">
-                            Jadwal lengkap Try Out OSN, Pelatihan Intensif Medalis, Bimbingan SNBT, dan Timeline Event Pendidikan NLS 2026.
+                            Jadwal lengkap Try Out OSN, Pelatihan Intensif Medalis, Pembinaan Olimpiade Sains, dan Timeline Seleksi OSN 2026.
                         </p>
                     </div>
                 </div>
 
-                <!-- Right Buttons: Filter Category Pill Tabs & Complete Calendar Link -->
-                <div class="flex flex-wrap items-center gap-2">
+                <!-- Right Buttons: Jenjang Filter & Complete Calendar Link -->
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <!-- Jenjang OSN Filter Tabs -->
                     <div class="inline-flex p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                        <button type="button" @click="setCategory('all')"
+                        <button type="button" @click="setJenjang('all')"
                             class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer"
-                            :class="selectedCategory === 'all' ? 'bg-white dark:bg-[#131D38] text-sky-600 dark:text-sky-400 font-black shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'">
-                            Semua
+                            :class="selectedJenjang === 'all' ? 'bg-white dark:bg-[#131D38] text-sky-600 dark:text-sky-400 font-black shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'">
+                            Semua Jenjang
                         </button>
-                        <button type="button" @click="setCategory('OSN')"
+                        <button type="button" @click="setJenjang('SMA')"
                             class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
-                            :class="selectedCategory === 'OSN' ? 'bg-sky-600 text-white font-black shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-sky-600'">
-                            <span class="w-2 h-2 rounded-full bg-sky-400"></span>
-                            <span>OSN</span>
+                            :class="selectedJenjang === 'SMA' ? 'bg-sky-600 text-white font-black shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-sky-600'">
+                            <span>SMA</span>
                         </button>
-                        <button type="button" @click="setCategory('SNBT')"
+                        <button type="button" @click="setJenjang('SMP')"
                             class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
-                            :class="selectedCategory === 'SNBT' ? 'bg-emerald-600 text-white font-black shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-emerald-600'">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                            <span>SNBT</span>
+                            :class="selectedJenjang === 'SMP' ? 'bg-sky-600 text-white font-black shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-sky-600'">
+                            <span>SMP</span>
                         </button>
-                        <button type="button" @click="setCategory('TKA')"
+                        <button type="button" @click="setJenjang('SD')"
                             class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
-                            :class="selectedCategory === 'TKA' ? 'bg-amber-600 text-white font-black shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-amber-600'">
-                            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-                            <span>TKA</span>
+                            :class="selectedJenjang === 'SD' ? 'bg-sky-600 text-white font-black shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-sky-600'">
+                            <span>SD</span>
                         </button>
                     </div>
 
@@ -1246,27 +1244,19 @@ html.dark .admin-card-dinas {
                     </div>
 
                     <!-- Legend Bar -->
-                    <div class="px-4 py-3 bg-slate-50 dark:bg-[#0c1427] border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-center gap-3 sm:gap-5 text-[11px] font-bold shrink-0">
-                        <span class="text-slate-500 dark:text-slate-400 font-extrabold">Petunjuk Kategori:</span>
-                        <div class="flex items-center gap-1.5 cursor-pointer" @click="setCategory('OSN')">
+                    <div class="px-4 py-3 bg-slate-50 dark:bg-[#0c1427] border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-[11px] font-bold shrink-0">
+                        <span class="text-slate-500 dark:text-slate-400 font-extrabold">Petunjuk Kalender:</span>
+                        <div class="flex items-center gap-1.5">
                             <span class="w-2.5 h-2.5 rounded-full bg-[#0284c7]"></span>
-                            <span class="text-slate-800 dark:text-slate-200">OSN (Biru)</span>
+                            <span class="text-slate-800 dark:text-slate-200 font-bold">Agenda OSN &amp; Sains</span>
                         </div>
-                        <div class="flex items-center gap-1.5 cursor-pointer" @click="setCategory('SNBT')">
-                            <span class="w-2.5 h-2.5 rounded-full bg-[#059669]"></span>
-                            <span class="text-slate-800 dark:text-slate-200">SNBT (Hijau)</span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-sky-500 ring-2 ring-sky-300"></span>
+                            <span class="text-slate-800 dark:text-slate-200 font-bold">Hari Ini</span>
                         </div>
-                        <div class="flex items-center gap-1.5 cursor-pointer" @click="setCategory('TKA')">
-                            <span class="w-2.5 h-2.5 rounded-full bg-[#d97706]"></span>
-                            <span class="text-slate-800 dark:text-slate-200">TKA (Kuning)</span>
-                        </div>
-                        <div class="flex items-center gap-1.5 cursor-pointer" @click="setCategory('Mitra Sekolah')">
-                            <span class="w-2.5 h-2.5 rounded-full bg-[#7c3aed]"></span>
-                            <span class="text-slate-800 dark:text-slate-200">Mitra (Ungu)</span>
-                        </div>
-                        <div class="flex items-center gap-1.5 cursor-pointer" @click="setCategory('Event Dinas')">
-                            <span class="w-2.5 h-2.5 rounded-full bg-[#e11d48]"></span>
-                            <span class="text-slate-800 dark:text-slate-200">Dinas (Merah)</span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-600"></span>
+                            <span class="text-slate-800 dark:text-slate-200 font-bold">Klik Tanggal Berpenanda</span>
                         </div>
                     </div>
                 </div>
@@ -2233,7 +2223,7 @@ html.dark .admin-card-dinas {
             return {
                 currentYear: 2026,
                 currentMonth: 7, // Agustus 2026
-                selectedCategory: 'all',
+                selectedCategory: 'OSN',
                 selectedJenjang: 'all',
                 selectedDate: null,
                 mainCardHeight: null,
@@ -2324,13 +2314,7 @@ html.dark .admin-card-dinas {
                 },
 
                 categoryLabel() {
-                    if (!this.selectedCategory || this.selectedCategory === 'all') return 'Semua Agenda Kegiatan';
-                    if (this.selectedCategory === 'OSN') return 'Kategori: OSN & Sains';
-                    if (this.selectedCategory === 'SNBT') return 'Kategori: SNBT';
-                    if (this.selectedCategory === 'TKA') return 'Kategori: TKA';
-                    if (this.selectedCategory === 'Mitra Sekolah') return 'Kategori: Mitra Sekolah';
-                    if (this.selectedCategory === 'Event Dinas') return 'Kategori: Event Dinas';
-                    return this.selectedCategory;
+                    return 'Kategori Khusus: OSN & Sains';
                 },
 
                 setCategory(cat) {
@@ -2382,18 +2366,18 @@ html.dark .admin-card-dinas {
                 },
 
                 resetFilters() {
-                    this.selectedCategory = 'all';
+                    this.selectedCategory = 'OSN';
                     this.selectedJenjang = 'all';
                     this.selectedDate = null;
                     this.$nextTick(() => this.updateCardHeight());
                 },
 
-                // Robust Filtered Events (Safe for both categories & jenjang)
+                // Strict OSN Only Filter
                 filteredEvents() {
                     return this.events.filter(evt => {
-                        const matchCat = (!this.selectedCategory || this.selectedCategory === 'all') || evt.category === this.selectedCategory;
+                        const isOsn = evt.category === 'OSN' || (evt.category && evt.category.toLowerCase().includes('osn'));
                         const matchJenjang = (!this.selectedJenjang || this.selectedJenjang === 'all') || evt.jenjang === this.selectedJenjang;
-                        return matchCat && matchJenjang;
+                        return isOsn && matchJenjang;
                     });
                 },
 
