@@ -7,16 +7,6 @@
             "dest": "/api/$1"
         },
         {
-            "src": "/",
-            "has": [
-                {
-                    "type": "host",
-                    "value": ".*(superadmin|nls-admin).*"
-                }
-            ],
-            "dest": "/nlsadmin/index.html"
-        },
-        {
             "handle": "filesystem"
         },
         {

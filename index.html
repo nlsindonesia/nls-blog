@@ -12,6 +12,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
+        if (window.location.hostname.includes('superadmin') || window.location.hostname.includes('nls-admin')) {
+            if (!window.location.pathname.startsWith('/nlsadmin')) {
+                window.location.replace('/nlsadmin');
+            }
+        }
         if (location.hash === '#') {
             history.replaceState(null, '', location.pathname + location.search);
         }

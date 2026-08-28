@@ -1,6 +1,17 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        if (window.location.hostname.includes('superadmin') || window.location.hostname.includes('nls-admin')) {
+            window.location.replace('/nlsadmin');
+        }
+        if (location.hash === '#') {
+            history.replaceState(null, '', location.pathname + location.search);
+        }
+    </script>
+    <title>Next Level Study</title>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-RDFS63LJMD"></script>
     <script>
@@ -9,23 +20,13 @@
       gtag('js', new Date());
       gtag('config', 'G-RDFS63LJMD');
     </script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script>
-        if (location.hash === '#') {
-            history.replaceState(null, '', location.pathname + location.search);
-        }
-    </script>
-    <title>Next Level Study</title>
-<meta name="description" content="Next Level Study (NLS) adalah lembaga edukasi untuk bimbingan belajar, persiapan OSN &amp; SNBT, tryout, dan les privat—online maupun tatap muka. Wujudkan level aka...">
-<link rel="canonical" href="https://next-level-study.com">
-
-
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Next Level Study">
-<meta property="og:title" content="Next Level Study">
-<meta property="og:description" content="Next Level Study (NLS) adalah lembaga edukasi untuk bimbingan belajar, persiapan OSN &amp; SNBT, tryout, dan les privat—online maupun tatap muka. Wujudkan level aka...">
-<meta property="og:url" content="https://next-level-study.com">
+    <meta name="description" content="Next Level Study (NLS) adalah lembaga edukasi untuk bimbingan belajar, persiapan OSN &amp; SNBT, tryout, dan les privat—online maupun tatap muka.">
+    <link rel="canonical" href="https://next-level-study.com">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Next Level Study">
+    <meta property="og:title" content="Next Level Study">
+    <meta property="og:description" content="Next Level Study (NLS) adalah lembaga edukasi untuk bimbingan belajar, persiapan OSN &amp; SNBT, tryout, dan les privat—online maupun tatap muka.">
+    <meta property="og:url" content="https://next-level-study.com">
 <meta property="og:image" content="/nls-logo-300.png">
 <meta property="og:locale" content="id_ID">
 
