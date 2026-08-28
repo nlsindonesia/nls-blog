@@ -4067,8 +4067,10 @@
                     kebutuhanPrivat: '',
                     philosophy: '',
                     highlightsRaw: 'Membimbing 20+ peraih medali OSN Nasional\nTutor privat Cambridge A-Level & IB Diploma\nAlumni bimbingan lolos ITB, UI, dan UGM'
-                },
-                isKalenderDropdownOpen: true,
+                isKalenderDropdownOpen: false,
+                isBeritaDropdownOpen: false,
+                isPengajarDropdownOpen: false,
+                isUserDropdownOpen: false,
 
                 eventForm: {
                     id: '',
@@ -4430,10 +4432,45 @@
                 },
 
                 // ==========================================
-                // KALENDER METHODS
+                // SIDEBAR ACCORDION & DROPDOWN TOGGLES
                 toggleKalenderDropdown() {
-                    this.activeTab = 'kalender';
                     this.isKalenderDropdownOpen = !this.isKalenderDropdownOpen;
+                    if (this.isKalenderDropdownOpen) {
+                        this.activeTab = 'kalender';
+                        this.isBeritaDropdownOpen = false;
+                        this.isPengajarDropdownOpen = false;
+                        this.isUserDropdownOpen = false;
+                    }
+                },
+
+                toggleBeritaDropdown() {
+                    this.isBeritaDropdownOpen = !this.isBeritaDropdownOpen;
+                    if (this.isBeritaDropdownOpen) {
+                        this.activeTab = 'berita';
+                        this.isKalenderDropdownOpen = false;
+                        this.isPengajarDropdownOpen = false;
+                        this.isUserDropdownOpen = false;
+                    }
+                },
+
+                togglePengajarDropdown() {
+                    this.isPengajarDropdownOpen = !this.isPengajarDropdownOpen;
+                    if (this.isPengajarDropdownOpen) {
+                        this.activeTab = 'pengajar';
+                        this.isKalenderDropdownOpen = false;
+                        this.isBeritaDropdownOpen = false;
+                        this.isUserDropdownOpen = false;
+                    }
+                },
+
+                toggleUserDropdown() {
+                    this.isUserDropdownOpen = !this.isUserDropdownOpen;
+                    if (this.isUserDropdownOpen) {
+                        this.activeTab = 'users';
+                        this.isKalenderDropdownOpen = false;
+                        this.isBeritaDropdownOpen = false;
+                        this.isPengajarDropdownOpen = false;
+                    }
                 },
 
                 openCreateEventView() {
