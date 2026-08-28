@@ -216,7 +216,40 @@
            ========================================================================= */
         
         /* Hero Banners */
+        
+        /* High Contrast Rich Hero Banners */
         .admin-hero-kalender {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 60%, #0f172a 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 14px 35px -8px rgba(2, 132, 199, 0.4) !important;
+        }
+        .admin-hero-berita {
+            background: linear-gradient(135deg, #059669 0%, #047857 60%, #0f172a 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 14px 35px -8px rgba(5, 150, 105, 0.4) !important;
+        }
+        .admin-hero-pengajar {
+            background: linear-gradient(135deg, #4f46e5 0%, #4338ca 60%, #0f172a 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 14px 35px -8px rgba(79, 70, 229, 0.4) !important;
+        }
+        .admin-hero-users {
+            background: linear-gradient(135deg, #c026d3 0%, #9333ea 60%, #0f172a 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 14px 35px -8px rgba(192, 38, 211, 0.4) !important;
+        }
+        .admin-hero-verification {
+            background: linear-gradient(135deg, #b45309 0%, #d97706 50%, #1e1b4b 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 14px 35px -8px rgba(217, 119, 6, 0.4) !important;
+        }
+        .admin-hero-trash {
+            background: linear-gradient(135deg, #881337 0%, #be123c 50%, #0f172a 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 14px 35px -8px rgba(190, 18, 60, 0.4) !important;
+        }
+
+        .admin-hero-kalender-old {
             background: linear-gradient(135deg, #0284c7 0%, #0369a1 60%, #0f172a 100%) !important;
             color: #ffffff !important;
             box-shadow: 0 14px 35px -8px rgba(2, 132, 199, 0.4);
@@ -1247,7 +1280,7 @@
                         <span class="text-slate-400">Portal</span>
                         <span class="text-slate-300">/</span>
                         <span class="text-slate-900 dark:text-white"
-                            x-text="activeTab === 'kalender' ? (kalenderView === 'create' ? 'Kalender Event / Create Event' : (kalenderView === 'trash' ? 'Kalender Event / Trash Event' : 'Kalender Event / Present Event')) : (activeTab === 'berita' ? (beritaView === 'create' ? 'Berita & Artikel / Create News' : (beritaView === 'trash' ? 'Berita & Artikel / Trash News' : 'Berita & Artikel / Present News')) : (activeTab === 'users' ? (userView === 'add' ? 'User Management / Add User' : (userView === 'trash' ? 'User Management / Trash User' : 'User Management / Present User')) : (pengajarView === 'add' ? 'Daftar Pengajar / Add Teacher' : (pengajarView === 'trash' ? 'Daftar Pengajar / Trash Teacher' : 'Daftar Pengajar / Present Teacher'))))"></span>
+                            x-text="getBreadcrumbTitle()"></span>
                     </div>
                 </div>
 
@@ -1746,7 +1779,7 @@
                          ================================================================= -->
                     <div x-show="kalenderView === 'trash'" class="space-y-6">
                         <!-- Trash Header Bar -->
-                        <div class="bg-gradient-to-r from-rose-900 via-slate-900 to-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-rose-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+                        <div class="admin-hero-trash p-6 sm:p-8 rounded-3xl border border-rose-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
                             <div>
                                 <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-rose-500/20 text-rose-300 mb-2 border border-rose-500/40">
                                     <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
@@ -2170,7 +2203,7 @@
                          ================================================================= -->
                     <div x-show="beritaView === 'trash'" class="space-y-6">
                         <!-- Trash Header Bar -->
-                        <div class="bg-gradient-to-r from-rose-900 via-slate-900 to-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-rose-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+                        <div class="admin-hero-trash p-6 sm:p-8 rounded-3xl border border-rose-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
                             <div>
                                 <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-rose-500/20 text-rose-300 mb-2 border border-rose-500/40">
                                     <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
@@ -2574,7 +2607,7 @@
                          ================================================================= -->
                     <div x-show="pengajarView === 'verification'" class="space-y-6">
                         <!-- Header Bar -->
-                        <div class="bg-gradient-to-r from-amber-600 via-orange-600 to-indigo-900 text-white p-6 sm:p-8 rounded-3xl border border-amber-400/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+                        <div class="admin-hero-verification p-6 sm:p-8 rounded-3xl border border-amber-400/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
                             <div>
                                 <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-white/20 text-white mb-2 border border-white/30 backdrop-blur-xs">
                                     <svg class="w-4 h-4 text-amber-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
@@ -2850,7 +2883,7 @@
                          ================================================================= -->
                     <div x-show="pengajarView === 'trash'" class="space-y-6">
                         <!-- Trash Header Bar -->
-                        <div class="bg-gradient-to-r from-rose-900 via-slate-900 to-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-rose-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+                        <div class="admin-hero-trash p-6 sm:p-8 rounded-3xl border border-rose-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
                             <div>
                                 <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-rose-500/20 text-rose-300 mb-2 border border-rose-500/40">
                                     <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
@@ -4746,6 +4779,32 @@
                     this.pengajarView = 'trash';
                     this.isPengajarDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
+                },
+
+                
+                getBreadcrumbTitle() {
+                    if (this.activeTab === 'kalender') {
+                        if (this.kalenderView === 'create') return 'Kalender Event / Create Event';
+                        if (this.kalenderView === 'trash') return 'Kalender Event / Trash Event';
+                        return 'Kalender Event / Present Event';
+                    }
+                    if (this.activeTab === 'berita') {
+                        if (this.beritaView === 'create') return 'Berita & Artikel / Create News';
+                        if (this.beritaView === 'trash') return 'Berita & Artikel / Trash News';
+                        return 'Berita & Artikel / Present News';
+                    }
+                    if (this.activeTab === 'pengajar') {
+                        if (this.pengajarView === 'add') return 'Daftar Pengajar / Add Teacher';
+                        if (this.pengajarView === 'verification') return 'Daftar Pengajar / Teacher Verification';
+                        if (this.pengajarView === 'trash') return 'Daftar Pengajar / Trash Teacher';
+                        return 'Daftar Pengajar / Present Teacher';
+                    }
+                    if (this.activeTab === 'users') {
+                        if (this.userView === 'add') return 'User Management / Add User';
+                        if (this.userView === 'trash') return 'User Management / Trash User';
+                        return 'User Management / Present User';
+                    }
+                    return 'Super Admin Portal';
                 },
 
                 // USER MANAGEMENT DROPDOWN & CRUD METHODS
