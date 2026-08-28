@@ -330,24 +330,37 @@ function initAlpineStores() {
                 const jnjStr = this.form.jenjang && this.form.jenjang.length > 0 ? this.form.jenjang.join(', ') : '-';
                 
                 // 1. Create teacher application record for admin Teacher Verification
+                const fullName = this.form.nama || 'Calon Guru';
+                const nickName = this.form.panggilan || (fullName ? fullName.split(' ')[0] : 'Guru');
+                const nowIso = new Date().toISOString();
+
                 const application = {
                     id: 'app-' + Date.now(),
-                    submittedAt: new Date().toISOString(),
+                    submittedAt: nowIso,
+                    applied_at: nowIso,
                     status: 'pending',
-                    nama: this.form.nama || '',
-                    panggilan: this.form.panggilan || '',
+                    nama: fullName,
+                    name: fullName,
+                    panggilan: nickName,
+                    shortName: nickName,
                     wa: this.form.wa || '',
+                    phone: this.form.wa || '',
                     email: this.form.email || '',
                     pendidikan: this.form.pendidikan || '',
+                    education: this.form.pendidikan || '',
                     photo: '/images/pengajar/mentor-1-math.jpg',
                     categories: (this.form.categories && this.form.categories.length > 0) ? [...this.form.categories] : ['OSN'],
                     jenjang: (this.form.jenjang && this.form.jenjang.length > 0) ? [...this.form.jenjang] : ['SMA'],
                     jenjangLabel: (this.form.jenjang && this.form.jenjang.length > 0) ? this.form.jenjang.join(' & ') : 'Semua Jenjang',
-                    subject: this.form.subject || '',
+                    subject: this.form.subject || 'Mata Pelajaran',
+                    subjects: [this.form.subject || 'Mata Pelajaran'],
                     kebutuhanPrivat: this.form.fokusPrivat || '',
+                    fokusPrivat: this.form.fokusPrivat || '',
                     philosophy: this.form.filosofi || '',
+                    filosofi: this.form.filosofi || '',
                     highlights: [this.form.prestasi1, this.form.prestasi2, this.form.prestasi3].filter(Boolean),
                     portfolio: this.form.portfolio || '',
+                    cv_link: this.form.portfolio || '',
                     notes: ''
                 };
 
@@ -362,11 +375,19 @@ function initAlpineStores() {
                     apps.unshift(application);
                     localStorage.setItem("nls_teacher_applications_v1", JSON.stringify(apps));
                     
+                    if (typeof window !== 'undefined' && window.PengajarDatabase && typeof window.PengajarDatabase.submitApplication === 'function') {
+                        try {
+                            window.PengajarDatabase.submitApplication(application);
+                        } catch (err) {}
+                    }
+
                     if (typeof BroadcastChannel !== 'undefined') {
                         const bc = new BroadcastChannel('nls_sync_channel');
                         bc.postMessage({ type: 'TEACHER_APPLICATION_ADDED', data: application });
+                        bc.postMessage({ type: 'TEACHER_APPLICATIONS_UPDATED', data: apps });
                     }
                     window.dispatchEvent(new CustomEvent('nls-teacher-application-added', { detail: application }));
+                    window.dispatchEvent(new CustomEvent('nls-teacher-applications-updated', { detail: apps }));
                 } catch (e) {
                     console.error('Error saving teacher application:', e);
                 }

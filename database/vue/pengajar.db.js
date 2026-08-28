@@ -227,19 +227,66 @@
                 return state.applications.filter(app => app.status === 'pending');
             },
 
+            getAcceptedApplications() {
+                return state.applications.filter(app => app.status === 'accepted' || app.status === 'approved');
+            },
+
+            getRejectedApplications() {
+                return state.applications.filter(app => app.status === 'rejected');
+            },
+
             submitApplication(applicationData) {
+                const nowIso = new Date().toISOString();
+                const fullName = applicationData.nama || applicationData.name || 'Calon Guru';
+                const nickName = applicationData.panggilan || applicationData.shortName || (fullName ? fullName.split(' ')[0] : 'Guru');
+                const waNumber = applicationData.wa || applicationData.phone || '';
+                const userEmail = applicationData.email || '';
+                const eduBackground = applicationData.pendidikan || applicationData.education || '';
+                const subjectSpecialty = applicationData.subject || 'Mata Pelajaran';
+                const cvLink = applicationData.portfolio || applicationData.cv_link || '';
+                const cats = Array.isArray(applicationData.categories) && applicationData.categories.length > 0 ? applicationData.categories : ['OSN'];
+                const jnj = Array.isArray(applicationData.jenjang) && applicationData.jenjang.length > 0 ? applicationData.jenjang : ['SMA'];
+                const jnjLbl = applicationData.jenjangLabel || jnj.join(' & ');
+
                 const newApp = {
                     id: applicationData.id || `app-${Date.now()}`,
-                    name: applicationData.name || '',
-                    phone: applicationData.phone || applicationData.wa || '',
-                    email: applicationData.email || '',
-                    education: applicationData.education || '',
-                    subject: applicationData.subject || '',
-                    cv_link: applicationData.cv_link || applicationData.portfolio || '',
-                    status: 'pending', // 'pending', 'approved', 'rejected'
-                    applied_at: new Date().toISOString()
+                    submittedAt: applicationData.submittedAt || nowIso,
+                    applied_at: applicationData.applied_at || nowIso,
+                    status: applicationData.status || 'pending', // 'pending', 'accepted', 'rejected'
+                    nama: fullName,
+                    name: fullName,
+                    panggilan: nickName,
+                    shortName: nickName,
+                    wa: waNumber,
+                    phone: waNumber,
+                    email: userEmail,
+                    pendidikan: eduBackground,
+                    education: eduBackground,
+                    photo: applicationData.photo || '/images/pengajar/mentor-1-math.jpg',
+                    categories: cats,
+                    jenjang: jnj,
+                    jenjangLabel: jnjLbl,
+                    subject: subjectSpecialty,
+                    subjects: Array.isArray(applicationData.subjects) ? applicationData.subjects : [subjectSpecialty],
+                    kebutuhanPrivat: applicationData.kebutuhanPrivat || applicationData.fokusPrivat || '',
+                    fokusPrivat: applicationData.fokusPrivat || applicationData.kebutuhanPrivat || '',
+                    philosophy: applicationData.philosophy || applicationData.filosofi || '',
+                    filosofi: applicationData.filosofi || applicationData.philosophy || '',
+                    highlights: Array.isArray(applicationData.highlights) ? applicationData.highlights : (
+                        [applicationData.prestasi1, applicationData.prestasi2, applicationData.prestasi3].filter(Boolean)
+                    ),
+                    portfolio: cvLink,
+                    cv_link: cvLink,
+                    notes: applicationData.notes || ''
                 };
-                state.applications.unshift(newApp);
+
+                const existingIndex = state.applications.findIndex(a => a.id === newApp.id);
+                if (existingIndex !== -1) {
+                    state.applications[existingIndex] = { ...state.applications[existingIndex], ...newApp };
+                } else {
+                    state.applications.unshift(newApp);
+                }
+
                 persist();
                 return newApp;
             },
@@ -249,16 +296,23 @@
                 if (appIndex === -1) throw new Error(`[PengajarDB] Aplikasi ${appId} tidak ditemukan.`);
 
                 const app = state.applications[appIndex];
-                app.status = 'approved';
+                app.status = 'accepted';
                 app.reviewed_at = new Date().toISOString();
 
-                // Auto-create teacher profile
+                // Auto-create teacher profile in teachers dataset if not exists
                 const createdTeacher = this.create({
-                    name: app.name,
-                    shortName: app.name.split(' ')[0],
-                    education: app.education,
+                    name: app.nama || app.name,
+                    shortName: app.panggilan || app.shortName || (app.nama ? app.nama.split(' ')[0] : 'Tutor'),
+                    photo: app.photo || '/images/pengajar/mentor-1-math.jpg',
+                    education: app.pendidikan || app.education,
+                    categories: app.categories || ['OSN'],
+                    jenjang: app.jenjang || ['SMA'],
+                    jenjangLabel: app.jenjangLabel || 'Semua Jenjang',
                     subject: app.subject,
-                    kebutuhanPrivat: 'Bimbel & Privat'
+                    subjects: app.subjects || [app.subject],
+                    kebutuhanPrivat: app.kebutuhanPrivat || 'Bimbel & Privat',
+                    philosophy: app.philosophy || 'Mendidik dengan integritas dan keunggulan akademik.',
+                    highlights: app.highlights && app.highlights.length > 0 ? app.highlights : ['Pengajar terverifikasi Next Level Study']
                 });
 
                 persist();

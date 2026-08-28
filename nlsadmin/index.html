@@ -31,7 +31,9 @@
     <script src="/kalender/default-events.js"></script>
     <script src="/pengajar/default-teachers.js"></script>
     <script src="/blog/default-articles.js"></script>
+    <script src="/database/vue/pengajar.db.js"></script>
     <script src="/database/vue/users.db.js"></script>
+    <script src="/database/vue/index.js"></script>
     <script src="https://cdn.ckeditor.com/4.22.1/full-all/ckeditor.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
     
@@ -4282,20 +4284,49 @@
                                 if (Array.isArray(parsed)) this.teacherApplications = parsed;
                             } catch (err) {}
                         }
+                        if (e.key === 'nls_pengajar_teachers_v1' && e.newValue) {
+                            try {
+                                const parsed = JSON.parse(e.newValue);
+                                if (Array.isArray(parsed) && parsed.length > 0) this.teachers = parsed;
+                            } catch (err) {}
+                        }
                     });
 
                     window.addEventListener('nls-teacher-application-added', (e) => {
                         if (e.detail) {
-                            this.teacherApplications.unshift(e.detail);
-                            this.showToast(`Pendaftaran guru baru dari "${e.detail.nama}" masuk ke Teacher Verification!`);
+                            const exists = this.teacherApplications.some(a => a.id === e.detail.id);
+                            if (!exists) {
+                                this.teacherApplications.unshift(e.detail);
+                            }
+                            this.showToast(`Pendaftaran guru baru dari "${e.detail.nama || e.detail.name}" masuk ke Teacher Verification!`);
+                        }
+                    });
+
+                    window.addEventListener('nls-teacher-applications-updated', (e) => {
+                        if (Array.isArray(e.detail)) {
+                            this.teacherApplications = e.detail;
                         }
                     });
 
                     try {
                         const channel = new BroadcastChannel('nls_sync_channel');
                         channel.onmessage = (ev) => {
-                            if (ev.data && ev.data.type === 'ARTICLES_UPDATED' && Array.isArray(ev.data.data)) {
+                            if (!ev.data) return;
+                            if (ev.data.type === 'ARTICLES_UPDATED' && Array.isArray(ev.data.data)) {
                                 this.articles = ev.data.data;
+                            }
+                            if (ev.data.type === 'TEACHER_APPLICATION_ADDED' && ev.data.data) {
+                                const exists = this.teacherApplications.some(a => a.id === ev.data.data.id);
+                                if (!exists) {
+                                    this.teacherApplications.unshift(ev.data.data);
+                                    this.showToast(`Pendaftaran guru baru dari "${ev.data.data.nama || ev.data.data.name}" masuk ke Teacher Verification!`);
+                                }
+                            }
+                            if (ev.data.type === 'TEACHER_APPLICATIONS_UPDATED' && Array.isArray(ev.data.data)) {
+                                this.teacherApplications = ev.data.data;
+                            }
+                            if (ev.data.type === 'TEACHERS_UPDATED' && Array.isArray(ev.data.data)) {
+                                this.teachers = ev.data.data;
                             }
                         };
                     } catch (e) {}
