@@ -2463,79 +2463,247 @@
                                     </span>
                                     <div>
                                         <h3 class="text-base font-black text-slate-900 dark:text-white" x-text="teacherForm.isEdit ? 'Revisi Profil Pengajar / Tutor' : 'Tambah Profil Pengajar / Mentor Baru'"></h3>
-                                        <p class="text-xs text-slate-500">Data akan tersinkronisasi otomatis ke /pengajar.</p>
+                                        <p class="text-xs text-slate-500">Struktur formulir diselaraskan penuh dengan Formulir Rekrutmen Pendidik NLS.</p>
                                     </div>
                                 </div>
 
-                                <form @submit.prevent="saveTeacherFromBuilder()" class="space-y-4 text-xs font-semibold">
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <form @submit.prevent="saveTeacherFromBuilder()" class="space-y-5 text-xs font-semibold">
+                                    
+                                    <!-- SECTION 1: Identitas, Pasfoto & Pendidikan (WAJIB) -->
+                                    <div class="p-4 rounded-2xl bg-slate-50/70 dark:bg-[#1a2542]/60 border border-slate-200/70 dark:border-slate-700/60 space-y-3.5">
+                                        <div class="flex items-center justify-between text-xs font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                                            <div class="flex items-center gap-2">
+                                                <span class="icon-[mdi--account-card-details-outline] text-base"></span>
+                                                <span>1. Data Diri, Pasfoto Profil &amp; Pendidikan</span>
+                                            </div>
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-200 dark:border-rose-800">Wajib Diisi</span>
+                                        </div>
+
+                                        <!-- Pasfoto Profil Upload -->
+                                        <div class="space-y-1.5 pt-1">
+                                            <label class="text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center justify-between">
+                                                <span>Pasfoto Profil Guru / Mentor <span class="text-rose-500">*</span></span>
+                                                <span class="text-[10px] text-slate-400 font-normal">Format: JPG, PNG, WEBP (Auto-Compressed)</span>
+                                            </label>
+                                            
+                                            <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-white dark:bg-[#0f172a] border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-indigo-500 transition-all">
+                                                <!-- Preview Avatar -->
+                                                <div class="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center shrink-0 shadow-xs">
+                                                    <template x-if="isTeacherPhotoUploading">
+                                                        <div class="flex flex-col items-center justify-center p-2 text-indigo-600">
+                                                            <svg class="w-6 h-6 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                                                            <span class="text-[8px] font-black mt-1">Kompresi...</span>
+                                                        </div>
+                                                    </template>
+                                                    <template x-if="!isTeacherPhotoUploading && teacherForm.photo">
+                                                        <img :src="teacherForm.photo" alt="Preview Pasfoto" class="w-full h-full object-cover">
+                                                    </template>
+                                                    <template x-if="!isTeacherPhotoUploading && !teacherForm.photo">
+                                                        <div class="text-center p-1 text-slate-400">
+                                                            <svg class="w-6 h-6 mx-auto stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                                            <span class="text-[9px] font-bold block mt-0.5">Belum Ada</span>
+                                                        </div>
+                                                    </template>
+                                                </div>
+
+                                                <!-- Upload Controls -->
+                                                <div class="flex-1 min-w-0 space-y-1.5">
+                                                    <div class="flex flex-wrap items-center gap-2">
+                                                        <label class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                                            <span x-text="teacherForm.photo ? 'Ganti Foto' : 'Pilih File Pasfoto'"></span>
+                                                            <input type="file" accept="image/png,image/jpeg,image/jpg,image/webp" class="hidden"
+                                                                @change="handleTeacherPhotoUpload($event)">
+                                                        </label>
+                                                        
+                                                        <button type="button" x-show="teacherForm.photo"
+                                                            @click="teacherForm.photo = ''"
+                                                            class="px-2.5 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 hover:bg-rose-100 text-xs font-bold transition-colors">
+                                                            Hapus
+                                                        </button>
+                                                    </div>
+                                                    <input type="text" x-model="teacherForm.photo" placeholder="Atau paste URL / path foto..."
+                                                        class="w-full px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-[11px] text-slate-600 dark:text-slate-300">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                                            <div>
+                                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                                                    Nama Lengkap &amp; Gelar <span class="text-rose-500">*</span>
+                                                </label>
+                                                <input x-model="teacherForm.name" required
+                                                    class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 text-xs font-bold shadow-xs"
+                                                    placeholder="Contoh: Raditya Pratama, S.Si." type="text">
+                                            </div>
+                                            <div>
+                                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                                                    Nama Panggilan / Sapaan <span class="text-rose-500">*</span>
+                                                </label>
+                                                <input x-model="teacherForm.shortName" required
+                                                    class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 text-xs font-bold shadow-xs"
+                                                    placeholder="Contoh: Kak Radit" type="text">
+                                            </div>
+                                        </div>
+
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                                            <div>
+                                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                                                    Nomor WhatsApp Aktif <span class="text-rose-500">*</span>
+                                                </label>
+                                                <input x-model="teacherForm.phone" required
+                                                    class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 text-xs font-semibold shadow-xs"
+                                                    placeholder="0812xxxxxxxx" type="tel">
+                                            </div>
+                                            <div>
+                                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                                                    Alamat Email Aktif <span class="text-rose-500">*</span>
+                                                </label>
+                                                <input x-model="teacherForm.email" required
+                                                    class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 text-xs font-semibold shadow-xs"
+                                                    placeholder="tutor@next-level-study.com" type="email">
+                                            </div>
+                                        </div>
+
                                         <div>
-                                            <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Nama Lengkap &amp; Gelar *</label>
-                                            <input type="text" x-model="teacherForm.name" required placeholder="Contoh: Raditya Pratama, S.Si."
-                                                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                                            <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                                                Asal Universitas, Jurusan &amp; Prestasi Akademik <span class="text-rose-500">*</span>
+                                            </label>
+                                            <input x-model="teacherForm.education" required
+                                                class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 text-xs font-semibold shadow-xs"
+                                                placeholder="Contoh: Matematika Murni ITB (Medalis Emas OSN)" type="text">
                                         </div>
+                                    </div>
+
+                                    <!-- SECTION 2: Bidang Keahlian, Program & Jenjang (WAJIB) -->
+                                    <div class="p-4 rounded-2xl bg-slate-50/70 dark:bg-[#1a2542]/60 border border-slate-200/70 dark:border-slate-700/60 space-y-3.5">
+                                        <div class="flex items-center justify-between text-xs font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                                            <div class="flex items-center gap-2">
+                                                <span class="icon-[mdi--school] text-base"></span>
+                                                <span>2. Bidang Keahlian &amp; Jenjang Sasaran</span>
+                                            </div>
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-200 dark:border-rose-800">Wajib Diisi</span>
+                                        </div>
+
+                                        <!-- Checkbox Bidang Keahlian & Program -->
                                         <div>
-                                            <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Nama Panggilan (Short Name) *</label>
-                                            <input type="text" x-model="teacherForm.shortName" required placeholder="Contoh: Kak Radit"
-                                                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                                            <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1.5">
+                                                Bidang Keahlian &amp; Program yang Dikuasai (Pilih minimal 1): <span class="text-rose-500">*</span>
+                                            </label>
+                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                                                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500 transition-all">
+                                                    <input type="checkbox" value="OSN" x-model="teacherForm.categories" class="rounded text-indigo-600 focus:ring-indigo-500">
+                                                    <span class="font-bold">🏆 Spesialis OSN (Olimpiade Sains)</span>
+                                                </label>
+                                                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500 transition-all">
+                                                    <input type="checkbox" value="SNBT" x-model="teacherForm.categories" class="rounded text-indigo-600 focus:ring-indigo-500">
+                                                    <span class="font-bold">🎯 Spesialis UTBK SNBT &amp; TPS</span>
+                                                </label>
+                                                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500 transition-all">
+                                                    <input type="checkbox" value="TKA" x-model="teacherForm.categories" class="rounded text-indigo-600 focus:ring-indigo-500">
+                                                    <span class="font-bold">📚 Spesialis TKA &amp; Ujian Mandiri</span>
+                                                </label>
+                                                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500 transition-all">
+                                                    <input type="checkbox" value="Kurikulum Nasional" x-model="teacherForm.categories" class="rounded text-indigo-600 focus:ring-indigo-500">
+                                                    <span class="font-bold">🇮🇩 Kurikulum Nasional (Merdeka/K13)</span>
+                                                </label>
+                                                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500 transition-all sm:col-span-2">
+                                                    <input type="checkbox" value="Kurikulum Internasional" x-model="teacherForm.categories" class="rounded text-indigo-600 focus:ring-indigo-500">
+                                                    <span class="font-bold">🌍 Kurikulum Internasional (Cambridge / IB)</span>
+                                                </label>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <!-- Checkbox Sasaran Jenjang -->
                                         <div>
-                                            <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Foto Profil (URL / Path)</label>
-                                            <input type="text" x-model="teacherForm.photo" placeholder="/images/pengajar/mentor-1-math.jpg"
-                                                class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs">
+                                            <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1.5">
+                                                Sasaran Jenjang Mengajar (Pilih minimal 1): <span class="text-rose-500">*</span>
+                                            </label>
+                                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                                                <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500">
+                                                    <input type="checkbox" value="SD" x-model="teacherForm.jenjang" class="rounded text-indigo-600">
+                                                    <span class="font-bold">🎒 SD / MI</span>
+                                                </label>
+                                                <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500">
+                                                    <input type="checkbox" value="SMP" x-model="teacherForm.jenjang" class="rounded text-indigo-600">
+                                                    <span class="font-bold">📘 SMP / MTs</span>
+                                                </label>
+                                                <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500">
+                                                    <input type="checkbox" value="SMA" x-model="teacherForm.jenjang" class="rounded text-indigo-600">
+                                                    <span class="font-bold">🎓 SMA / SMK</span>
+                                                </label>
+                                                <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500">
+                                                    <input type="checkbox" value="Guru / Instansi" x-model="teacherForm.jenjang" class="rounded text-indigo-600">
+                                                    <span class="font-bold">🏛️ Guru / Instansi</span>
+                                                </label>
+                                            </div>
                                         </div>
+
+                                        <!-- Spesialisasi Mata Pelajaran -->
                                         <div>
-                                            <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Almamater / Latar Belakang Kampus *</label>
-                                            <input type="text" x-model="teacherForm.education" required placeholder="Matematika ITB (Medalis Emas OSN)"
-                                                class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs">
+                                            <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                                                Spesialisasi Mata Pelajaran Utama <span class="text-rose-500">*</span>
+                                            </label>
+                                            <input x-model="teacherForm.subject" required
+                                                class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 text-xs font-bold shadow-xs"
+                                                placeholder="Contoh: Matematika Lanjut (OSN, TKA, &amp; IB / Cambridge)" type="text">
                                         </div>
                                     </div>
 
-                                    <div>
-                                        <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Kategori Spesialisasi (Centang yang sesuai) *</label>
-                                        <div class="flex flex-wrap gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
-                                            <label class="inline-flex items-center gap-1.5 cursor-pointer">
-                                                <input type="checkbox" value="OSN" x-model="teacherForm.categories" class="rounded text-indigo-600">
-                                                <span>OSN (Olimpiade)</span>
+                                    <!-- SECTION 3: Fokus Kebutuhan Les Privat & Filosofi Mengajar (WAJIB) -->
+                                    <div class="p-4 rounded-2xl bg-slate-50/70 dark:bg-[#1a2542]/60 border border-slate-200/70 dark:border-slate-700/60 space-y-3.5">
+                                        <div class="flex items-center justify-between text-xs font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                                            <div class="flex items-center gap-2">
+                                                <span class="icon-[mdi--target-account] text-base text-[#FF8A00]"></span>
+                                                <span>3. Fokus Les Privat &amp; Filosofi Edukasi</span>
+                                            </div>
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-200 dark:border-rose-800">Wajib Diisi</span>
+                                        </div>
+
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                                                Fokus Kebutuhan Les Privat yang Dilayani <span class="text-rose-500">*</span>
                                             </label>
-                                            <label class="inline-flex items-center gap-1.5 cursor-pointer">
-                                                <input type="checkbox" value="SNBT" x-model="teacherForm.categories" class="rounded text-indigo-600">
-                                                <span>SNBT (PTN)</span>
+                                            <textarea x-model="teacherForm.kebutuhanPrivat" required
+                                                class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 text-xs font-medium shadow-xs"
+                                                placeholder="Contoh: Privat intensif persiapan OSN Matematika, bimbingan UTBK SNBT TPS Penalaran Matematika, kurikulum Cambridge..." rows="2"></textarea>
+                                        </div>
+
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                                                Kutipan / Filosofi Mengajar Anda <span class="text-rose-500">*</span>
                                             </label>
-                                            <label class="inline-flex items-center gap-1.5 cursor-pointer">
-                                                <input type="checkbox" value="TKA" x-model="teacherForm.categories" class="rounded text-indigo-600">
-                                                <span>TKA (Akademik)</span>
-                                            </label>
-                                            <label class="inline-flex items-center gap-1.5 cursor-pointer">
-                                                <input type="checkbox" value="Kurikulum Nasional" x-model="teacherForm.categories" class="rounded text-indigo-600">
-                                                <span>Kurikulum Nasional</span>
-                                            </label>
-                                            <label class="inline-flex items-center gap-1.5 cursor-pointer">
-                                                <input type="checkbox" value="Kurikulum Internasional" x-model="teacherForm.categories" class="rounded text-indigo-600">
-                                                <span>Kurikulum Internasional (IB/Cambridge)</span>
-                                            </label>
+                                            <input x-model="teacherForm.philosophy" required
+                                                class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 text-xs font-semibold shadow-xs"
+                                                placeholder="Contoh: Logika matematika adalah bahasa berpikir universal untuk menaklukkan problem sains kompleks." type="text">
                                         </div>
                                     </div>
 
-                                    <div>
-                                        <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Mata Pelajaran Utama *</label>
-                                        <input type="text" x-model="teacherForm.subject" required placeholder="Contoh: Matematika Lanjut (OSN, TKA, &amp; IB / Cambridge)"
-                                            class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs">
-                                    </div>
+                                    <!-- SECTION 4: Rekam Jejak Prestasi & Link Portofolio (OPSIONAL) -->
+                                    <div class="p-4 rounded-2xl bg-slate-50/70 dark:bg-[#1a2542]/60 border border-slate-200/70 dark:border-slate-700/60 space-y-3.5">
+                                        <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                                            <span class="icon-[mdi--trophy-award] text-base"></span>
+                                            <span>4. Rekam Jejak, Prestasi &amp; Portofolio</span>
+                                        </div>
 
-                                    <div>
-                                        <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Kebutuhan Privat yang Dilayani</label>
-                                        <textarea x-model="teacherForm.kebutuhanPrivat" rows="2" placeholder="Bimbingan intensif persiapan OSN, ujian sekolah, dan olimpiade..."
-                                            class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs"></textarea>
-                                    </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                                                Poin Rekam Jejak &amp; Prestasi <span class="text-slate-400 font-normal">(Pisahkan tiap baris)</span>
+                                            </label>
+                                            <textarea x-model="teacherForm.highlightsRaw" rows="3"
+                                                placeholder="Membimbing 20+ peraih medali OSN Nasional&#10;Tutor privat Cambridge A-Level &amp; IB Diploma&#10;Alumni bimbingan lolos ITB, UI, dan UGM"
+                                                class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium shadow-xs"></textarea>
+                                        </div>
 
-                                    <div>
-                                        <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Poin Prestasi &amp; Highlights (Pisahkan tiap baris)</label>
-                                        <textarea x-model="teacherForm.highlightsRaw" rows="3" placeholder="Membimbing 20+ peraih medali OSN Nasional&#10;Tutor privat Cambridge A-Level &amp; IB Diploma&#10;Alumni bimbingan lolos ITB, UI, dan UGM"
-                                            class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs"></textarea>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1">
+                                                Link CV / Portofolio / LinkedIn <span class="text-slate-400 font-normal">(Opsional)</span>
+                                            </label>
+                                            <input x-model="teacherForm.portfolio"
+                                                class="w-full bg-white dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium shadow-xs"
+                                                placeholder="https://drive.google.com/... atau https://linkedin.com/in/..." type="text">
+                                        </div>
                                     </div>
 
                                     <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-3">
@@ -2551,6 +2719,7 @@
                                         </button>
                                     </div>
                                 </form>
+                            </div>
                             </div>
 
                             <!-- Right: Live Realtime Teacher Card Preview -->
@@ -5065,6 +5234,66 @@
                     this.isPengajarDropdownOpen = !this.isPengajarDropdownOpen;
                 },
 
+                isTeacherPhotoUploading: false,
+                handleTeacherPhotoUpload(event) {
+                    const file = event.target.files && event.target.files[0];
+                    if (!file) return;
+
+                    if (!file.type.startsWith('image/')) {
+                        alert('Mohon pilih file gambar yang valid (JPG, PNG, atau WEBP).');
+                        return;
+                    }
+
+                    if (file.size > 10 * 1024 * 1024) {
+                        alert('Ukuran foto maksimal adalah 10MB.');
+                        return;
+                    }
+
+                    this.isTeacherPhotoUploading = true;
+                    const self = this;
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = new Image();
+                        img.onload = function() {
+                            try {
+                                const canvas = document.createElement('canvas');
+                                let width = img.width;
+                                let height = img.height;
+                                const maxDimension = 600;
+
+                                if (width > height) {
+                                    if (width > maxDimension) {
+                                        height = Math.round((height * maxDimension) / width);
+                                        width = maxDimension;
+                                    }
+                                } else {
+                                    if (height > maxDimension) {
+                                        width = Math.round((width * maxDimension) / height);
+                                        height = maxDimension;
+                                    }
+                                }
+
+                                canvas.width = width;
+                                canvas.height = height;
+                                const ctx = canvas.getContext('2d');
+                                ctx.drawImage(img, 0, 0, width, height);
+
+                                self.teacherForm.photo = canvas.toDataURL('image/jpeg', 0.85);
+                            } catch(err) {
+                                self.teacherForm.photo = e.target.result;
+                            } finally {
+                                self.isTeacherPhotoUploading = false;
+                            }
+                        };
+                        img.onerror = function() {
+                            self.isTeacherPhotoUploading = false;
+                            alert('Gagal memproses file gambar.');
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                },
+
                 openAddTeacherView() {
                     this.activeTab = 'pengajar';
                     this.pengajarView = 'add';
@@ -5074,7 +5303,10 @@
                         isEdit: false,
                         name: '',
                         shortName: '',
-                        photo: '/images/pengajar/mentor-1-math.jpg',
+                        phone: '',
+                        wa: '',
+                        email: '',
+                        photo: '',
                         education: '',
                         categories: ['OSN'],
                         jenjang: ['SMA'],
@@ -5082,7 +5314,8 @@
                         subject: '',
                         kebutuhanPrivat: '',
                         philosophy: '',
-                        highlightsRaw: 'Membimbing 20+ peraih medali OSN Nasional\nTutor privat Cambridge A-Level & IB Diploma\nAlumni bimbingan lolos ITB, UI, dan UGM'
+                        highlightsRaw: 'Membimbing 20+ peraih medali OSN Nasional\nTutor privat Cambridge A-Level & IB Diploma\nAlumni bimbingan lolos ITB, UI, dan UGM',
+                        portfolio: ''
                     };
                     if (this.isMobile) this.isSidebarOpen = false;
                 },
@@ -5774,32 +6007,104 @@
 
                 saveTeacherFromBuilder() {
                     const f = this.teacherForm;
+
+                    // Section 1 validation
+                    if (!f.name || !f.name.trim()) {
+                        alert('Mohon isi Nama Lengkap & Gelar pada Bagian 1.');
+                        return;
+                    }
+                    if (!f.shortName || !f.shortName.trim()) {
+                        alert('Mohon isi Nama Panggilan / Sapaan pada Bagian 1.');
+                        return;
+                    }
+                    if (!f.phone || !f.phone.trim()) {
+                        alert('Mohon isi Nomor WhatsApp Aktif pada Bagian 1.');
+                        return;
+                    }
+                    if (!f.email || !f.email.trim()) {
+                        alert('Mohon isi Alamat Email Aktif pada Bagian 1.');
+                        return;
+                    }
+                    if (!f.education || !f.education.trim()) {
+                        alert('Mohon isi Asal Universitas & Prestasi Akademik pada Bagian 1.');
+                        return;
+                    }
+                    if (!f.photo) {
+                        alert('Mohon unggah Pasfoto Profil Pengajar pada Bagian 1.');
+                        return;
+                    }
+
+                    // Section 2 validation
+                    if (!Array.isArray(f.categories) || f.categories.length === 0) {
+                        alert('Mohon pilih minimal 1 Bidang Keahlian pada Bagian 2.');
+                        return;
+                    }
+                    if (!Array.isArray(f.jenjang) || f.jenjang.length === 0) {
+                        alert('Mohon pilih minimal 1 Sasaran Jenjang pada Bagian 2.');
+                        return;
+                    }
+                    if (!f.subject || !f.subject.trim()) {
+                        alert('Mohon isi Spesialisasi Mata Pelajaran Utama pada Bagian 2.');
+                        return;
+                    }
+
+                    // Section 3 validation
+                    if (!f.kebutuhanPrivat || !f.kebutuhanPrivat.trim()) {
+                        alert('Mohon isi Fokus Kebutuhan Les Privat pada Bagian 3.');
+                        return;
+                    }
+                    if (!f.philosophy || !f.philosophy.trim()) {
+                        alert('Mohon isi Kutipan / Filosofi Mengajar pada Bagian 3.');
+                        return;
+                    }
+
                     const highlights = f.highlightsRaw ? f.highlightsRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
                     const teacherData = {
                         id: f.id || 't-' + Date.now(),
-                        name: f.name,
-                        shortName: f.shortName,
-                        photo: f.photo || '/images/pengajar/mentor-1-math.jpg',
-                        education: f.education,
-                        categories: f.categories,
-                        jenjang: f.jenjang,
-                        jenjangLabel: f.jenjangLabel || (f.jenjang ? f.jenjang.join(', ') : 'Semua Jenjang'),
-                        subject: f.subject,
-                        subjects: [f.subject],
-                        kebutuhanPrivat: f.kebutuhanPrivat,
-                        philosophy: f.philosophy || 'Mendidik dengan kejujuran sains dan integritas tinggi.',
-                        highlights: highlights
+                        name: f.name.trim(),
+                        shortName: f.shortName.trim(),
+                        phone: f.phone.trim(),
+                        wa: f.phone.trim(),
+                        email: f.email.trim(),
+                        photo: f.photo,
+                        education: f.education.trim(),
+                        categories: [...f.categories],
+                        jenjang: [...f.jenjang],
+                        jenjangLabel: f.jenjang.join(' & '),
+                        subject: f.subject.trim(),
+                        subjects: [f.subject.trim()],
+                        kebutuhanPrivat: f.kebutuhanPrivat.trim(),
+                        fokusPrivat: f.kebutuhanPrivat.trim(),
+                        philosophy: f.philosophy.trim(),
+                        filosofi: f.philosophy.trim(),
+                        highlights: highlights,
+                        portfolio: (f.portfolio || '').trim(),
+                        cv_link: (f.portfolio || '').trim()
                     };
 
                     if (f.isEdit) {
                         const idx = this.teachers.findIndex(t => t.id === teacherData.id);
-                        if (idx !== -1) this.teachers[idx] = teacherData;
+                        if (idx !== -1) {
+                            this.teachers[idx] = teacherData;
+                        } else {
+                            this.teachers.unshift(teacherData);
+                        }
                     } else {
                         this.teachers.unshift(teacherData);
                     }
 
                     this.saveTeachersToStorage();
-                    this.showToast('Data pengajar berhasil disimpan dan langsung live di /pengajar!');
+
+                    // Sync to persistent serverless Cloud DB API
+                    if (typeof fetch !== 'undefined') {
+                        fetch('/api/teachers', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(teacherData)
+                        }).catch(e => console.warn('[NLS] Teachers sync error:', e));
+                    }
+
+                    this.showToast(`Data pengajar "${teacherData.name}" berhasil disimpan dan langsung live di /pengajar!`);
                     this.pengajarView = 'present';
                 },
                 // ==========================================
@@ -6225,7 +6530,21 @@
                     this.teacherForm = {
                         ...t,
                         isEdit: true,
-                        highlightsRaw: t.highlights ? t.highlights.join('\n') : ''
+                        name: t.name || t.nama || '',
+                        shortName: t.shortName || t.panggilan || '',
+                        phone: t.phone || t.wa || '',
+                        wa: t.wa || t.phone || '',
+                        email: t.email || '',
+                        photo: t.photo || '',
+                        education: t.education || t.pendidikan || '',
+                        categories: Array.isArray(t.categories) && t.categories.length > 0 ? t.categories : ['OSN'],
+                        jenjang: Array.isArray(t.jenjang) && t.jenjang.length > 0 ? t.jenjang : ['SMA'],
+                        jenjangLabel: t.jenjangLabel || (t.jenjang ? t.jenjang.join(' & ') : 'Semua Jenjang'),
+                        subject: t.subject || (Array.isArray(t.subjects) ? t.subjects[0] : ''),
+                        kebutuhanPrivat: t.kebutuhanPrivat || t.fokusPrivat || '',
+                        philosophy: t.philosophy || t.filosofi || '',
+                        highlightsRaw: t.highlights && Array.isArray(t.highlights) ? t.highlights.join('\n') : (t.highlightsRaw || ''),
+                        portfolio: t.portfolio || t.cv_link || ''
                     };
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 },
