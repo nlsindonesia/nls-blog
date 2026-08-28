@@ -1540,10 +1540,16 @@
                                 <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-white dark:bg-[#0f172a] border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-primary transition-all">
                                     <!-- Photo Preview Avatar -->
                                     <div class="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center shrink-0 shadow-xs">
-                                        <template x-if="$store.gabungPengajar.form.photo">
+                                        <template x-if="$store.gabungPengajar.isPhotoUploading">
+                                            <div class="flex flex-col items-center justify-center p-2 text-primary">
+                                                <svg class="w-6 h-6 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                                                <span class="text-[8px] font-black mt-1">Kompresi...</span>
+                                            </div>
+                                        </template>
+                                        <template x-if="!$store.gabungPengajar.isPhotoUploading && $store.gabungPengajar.form.photo">
                                             <img :src="$store.gabungPengajar.form.photo" alt="Preview Foto Profil" class="w-full h-full object-cover">
                                         </template>
-                                        <template x-if="!$store.gabungPengajar.form.photo">
+                                        <template x-if="!$store.gabungPengajar.isPhotoUploading && !$store.gabungPengajar.form.photo">
                                             <div class="text-center p-1 text-slate-400">
                                                 <svg class="w-6 h-6 mx-auto stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                                 <span class="text-[9px] font-bold block mt-0.5">Belum Ada</span>

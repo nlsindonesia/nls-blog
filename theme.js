@@ -326,6 +326,7 @@ function initAlpineStores() {
                 prestasi3: '',
                 portfolio: ''
             },
+            isPhotoUploading: false,
             handlePhotoUpload: function(event) {
                 const file = event.target.files && event.target.files[0];
                 if (!file) return;
@@ -335,15 +336,55 @@ function initAlpineStores() {
                     return;
                 }
 
-                if (file.size > 3 * 1024 * 1024) {
-                    alert('Ukuran foto maksimal adalah 3MB. Mohon gunakan foto yang lebih ringan.');
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('Ukuran foto maksimal adalah 10MB. Mohon gunakan foto yang lebih ringan.');
                     return;
                 }
 
-                const reader = new FileReader();
                 const self = this;
+                self.isPhotoUploading = true;
+                const reader = new FileReader();
                 reader.onload = function(e) {
-                    self.form.photo = e.target.result;
+                    const img = new Image();
+                    img.onload = function() {
+                        try {
+                            const canvas = document.createElement('canvas');
+                            let width = img.width;
+                            let height = img.height;
+                            const maxDimension = 600;
+
+                            if (width > height) {
+                                if (width > maxDimension) {
+                                    height = Math.round((height * maxDimension) / width);
+                                    width = maxDimension;
+                                }
+                            } else {
+                                if (height > maxDimension) {
+                                    width = Math.round((width * maxDimension) / height);
+                                    height = maxDimension;
+                                }
+                            }
+
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+
+                            // Compress into light and crisp 600px JPEG (~35-60KB)
+                            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                            self.form.photo = compressedDataUrl;
+                        } catch(err) {
+                            // Fallback if canvas context fails
+                            self.form.photo = e.target.result;
+                        } finally {
+                            self.isPhotoUploading = false;
+                        }
+                    };
+                    img.onerror = function() {
+                        self.isPhotoUploading = false;
+                        alert('Gagal memproses gambar. Mohon coba file gambar lain.');
+                    };
+                    img.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             },
