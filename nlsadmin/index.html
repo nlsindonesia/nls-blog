@@ -1394,6 +1394,13 @@
 
                 <!-- Right Controls: Public View Link & User Profile with Logout -->
                 <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                    <!-- Live Cloud Auto-Sync Indicator -->
+                    <div class="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[11px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 shadow-2xs"
+                        title="Auto-Sync Otomatis Aktif (Terhubung ke Cloud Database Master)">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>Auto-Sync Realtime</span>
+                    </div>
+
                     <!-- Universal Cloud Sync All Button -->
                     <button type="button" @click="syncAllFromCloud(true)"
                         class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-900/60 border border-sky-200 dark:border-sky-800 transition-all shadow-2xs cursor-pointer"
@@ -4306,8 +4313,12 @@
 
                     try {
                         const channel = new BroadcastChannel('nls_sync_channel');
+                        this._broadcastChannel = channel;
                         channel.onmessage = (ev) => {
                             if (!ev.data) return;
+                            if (ev.data.type === 'SYNC_ALL') {
+                                this.syncAllFromCloud(false);
+                            }
                             if (ev.data.type === 'ARTICLES_UPDATED' && Array.isArray(ev.data.data)) {
                                 this.articles = ev.data.data;
                             }
@@ -4327,8 +4338,26 @@
                         };
                     } catch (e) {}
 
-                    // Fetch and sync all modules from serverless cloud API on boot
+                    // 1. Initial Cloud Sync on boot
                     this.syncAllFromCloud(false);
+
+                    // 2. Instant Auto-Sync when tab or browser window becomes active/focused
+                    document.addEventListener('visibilitychange', () => {
+                        if (!document.hidden) {
+                            this.syncAllFromCloud(false);
+                        }
+                    });
+                    window.addEventListener('focus', () => {
+                        this.syncAllFromCloud(false);
+                    });
+
+                    // 3. Continuous Real-time Background Polling (Every 5 seconds)
+                    if (window._nlsAutoSyncInterval) clearInterval(window._nlsAutoSyncInterval);
+                    window._nlsAutoSyncInterval = setInterval(() => {
+                        if (!document.hidden) {
+                            this.syncAllFromCloud(false);
+                        }
+                    }, 5000);
                 },
 
                 // AUTHENTICATION
@@ -5539,8 +5568,9 @@
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ ...app, status: 'accepted' })
-                        }).catch(e => {});
+                        }).then(() => this.broadcastSync()).catch(e => {});
                     }
+                    this.broadcastSync();
 
                     this.showToast(`Calon guru "${app.nama}" berhasil di-accept dan langsung terbit di Present Teacher & /pengajar!`);
                 },
@@ -5554,8 +5584,9 @@
                                 method: 'PUT',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ ...app, status: 'rejected' })
-                            }).catch(e => {});
+                            }).then(() => this.broadcastSync()).catch(e => {});
                         }
+                        this.broadcastSync();
                         this.showToast(`Pengajuan "${app.nama}" ditandai sebagai ditolak.`);
                     }
                 },
@@ -5568,8 +5599,9 @@
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ ...app, status: 'pending' })
-                        }).catch(e => {});
+                        }).then(() => this.broadcastSync()).catch(e => {});
                     }
+                    this.broadcastSync();
                     this.showToast(`Status pengajuan "${app.nama}" dikembalikan ke Pending.`);
                 },
 
@@ -5600,8 +5632,9 @@
                                 method: 'PUT',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ id: id, status: 'trashed', deletedAt: new Date().toISOString() })
-                            }).catch(e => {});
+                            }).then(() => this.broadcastSync()).catch(e => {});
                         }
+                        this.broadcastSync();
 
                         this.showToast(`Berkas pendaftaran "${name}" berhasil dipindahkan ke Trash Pengajar.`);
                     }
@@ -6375,6 +6408,14 @@
                     } catch(e) {
                         if (showNotice) this.showToast('Terjadi kendala saat menyinkronkan data cloud.');
                     }
+                },
+
+                broadcastSync() {
+                    try {
+                        if (this._broadcastChannel) {
+                            this._broadcastChannel.postMessage({ type: 'SYNC_ALL' });
+                        }
+                    } catch(e) {}
                 },
 
                 async resetAllLocalStorageToMaster() {

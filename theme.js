@@ -394,6 +394,7 @@ function initAlpineStores() {
 
                     if (typeof BroadcastChannel !== 'undefined') {
                         const bc = new BroadcastChannel('nls_sync_channel');
+                        bc.postMessage({ type: 'SYNC_ALL' });
                         bc.postMessage({ type: 'TEACHER_APPLICATION_ADDED', data: application });
                         bc.postMessage({ type: 'TEACHER_APPLICATIONS_UPDATED', data: apps });
                     }
