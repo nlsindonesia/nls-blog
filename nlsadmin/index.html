@@ -8,6 +8,13 @@
         // Auto-redirect to dedicated superadmin domain if accessed from public domains
         if (!window.location.hostname.includes('superadmin') && !window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1')) {
             window.location.replace('https://nls-superadmin.vercel.app');
+        } else if (window.location.hostname.includes('superadmin')) {
+            // Keep clean root URL https://nls-superadmin.vercel.app/ without /nlsadmin in the address bar
+            if (window.location.pathname.startsWith('/nlsadmin')) {
+                try {
+                    window.history.replaceState(null, '', '/' + window.location.search + window.location.hash);
+                } catch(e) {}
+            }
         }
     </script>
     <title>Super Admin Portal - Next Level Study (NLS)</title>
