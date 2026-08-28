@@ -1,0 +1,265 @@
+// ==============================================================================
+// VERCEL SERVERLESS API: KALENDER EVENT NLS
+// File: /api/events.js
+// ==============================================================================
+
+// Baseline Events Dataset
+let eventsCache = [
+    {
+        id: 'evt-jan-1',
+        date: '2026-01-11',
+        title: 'Kick-Off & Diagnostic Test OSN 9 Bidang Sains',
+        category: 'OSN',
+        jenjang: 'SMA',
+        jenjangLabel: 'SMA / MA / Sederajat',
+        time: '08:30 - 11:30 WIB',
+        mode: 'Online (CBT & Zoom)',
+        location: 'Platform CBT LMS Next Level Study',
+        badgeText: 'Pendaftaran Dibuka',
+        description: 'Tes diagnostik awal pemetaan kompetensi calon peserta OSN 9 bidang sains untuk menentukan strategi bimbingan tingkat kota/kabupaten.',
+        highlights: [
+            'Pemetaan 9 bidang OSN (Matematika, Fisika, Kimia, Biologi, Informatika, Astronomi, Kebumian, Ekonomi, Geografi)',
+            'Laporan analisis kekuatan & kelemahan materi siswa',
+            'Rekomendasi modul belajar bertahap dari mentor medalis'
+        ],
+        whatsappMessage: 'Halo Tim NLS, saya ingin mendaftar Kick-Off & Diagnostic Test OSN (11 Januari 2026).',
+        status: 'active'
+    },
+    {
+        id: 'evt-jan-2',
+        date: '2026-01-18',
+        title: 'Webinar Strategi & Roadmap Lolos SNBT PTN Top 2026',
+        category: 'SNBT',
+        jenjang: 'SMA',
+        jenjangLabel: 'SMA / MA / SMK & Gap Year',
+        time: '19:00 - 21:00 WIB',
+        mode: 'Online (Live Zoom Interactive)',
+        location: 'Live Zoom Room NLS Indonesia',
+        badgeText: 'Terbuka Umum',
+        description: 'Kupas tuntas strategi pemilihan program studi, analisis rasionalisasi nilai rapor vs skor UTBK, dan jadwal tahapan resmi SNPMB.',
+        highlights: [
+            'Strategi memilih jurusan & universitas target',
+            'Analisis passing grade riil & bobot subtes SNBT',
+            'Sesi tanya jawab langsung bersama konsultan pendidikan NLS'
+        ],
+        whatsappMessage: 'Halo Tim NLS, saya ingin info Webinar Strategi SNBT 2026 (18 Januari 2026).',
+        status: 'active'
+    },
+    {
+        id: 'evt-jan-3',
+        date: '2026-01-25',
+        title: 'In-House Training (IHT) Modul Ajar Guru Mitra',
+        category: 'Mitra Sekolah',
+        jenjang: 'Guru / Instansi',
+        jenjangLabel: 'Guru & Tenaga Pendidik',
+        time: '08:00 - 15:30 WIB',
+        mode: 'Tatap Muka (Onsite)',
+        location: 'Aula SMAN 14 Jakarta & Sekolah Mitra',
+        badgeText: 'Kemitraan Eksklusif',
+        description: 'Pelatihan pembuatan perangkat ajar interaktif, asesmen diagnostik, dan integrasi soal HOTS bagi dewan guru sekolah mitra NLS.',
+        highlights: [
+            'Penyusunan modul ajar berstandar Kurikulum Merdeka',
+            'Bank soal HOTS & rubrik penilaian berbasis kompetensi',
+            'Sertifikat pelatihan 32 JP dari NLS & Dinas terkait'
+        ],
+        whatsappMessage: 'Halo Tim NLS, kami tertarik dengan program In-House Training (IHT) Guru Mitra Sekolah.',
+        status: 'active'
+    },
+    {
+        id: 'evt-feb-1',
+        date: '2026-02-08',
+        title: 'Simulasi Akbar UTBK-SNBT Gelombang 1 (Sistem IRT Nasional)',
+        category: 'SNBT',
+        jenjang: 'SMA',
+        jenjangLabel: 'SMA / MA / SMK & Gap Year',
+        time: '07:30 - 11:45 WIB',
+        mode: 'Online (CBT NLS)',
+        location: 'Platform CBT Next Level Study',
+        badgeText: 'Tryout Akbar',
+        description: 'Simulasi komprehensif 7 subtes TPS & Tes Literasi dengan format waktu, tingkat kesulitan, dan sistem pembobotan IRT persis UTBK resmi BPPP.',
+        highlights: [
+            'Format 100% identik UTBK BPPP (TPS, Literasi B. Indo & Inggris, Penalaran Matematika)',
+            'Hasil skor & perankingan nasional keluar maksimal H+1',
+            'E-Rapor analisis butir soal per subtes & rekomendasi perbaikan'
+        ],
+        whatsappMessage: 'Halo Tim NLS, saya ingin mendaftar Simulasi Akbar UTBK-SNBT Gelombang 1 (8 Februari 2026).',
+        status: 'active'
+    },
+    {
+        id: 'evt-feb-2',
+        date: '2026-02-15',
+        title: 'Bootcamp Intensif Pembahasan Soal OSN-K 2026',
+        category: 'OSN',
+        jenjang: 'SMA',
+        jenjangLabel: 'SMA / MA / Sederajat',
+        time: '09:00 - 16:00 WIB',
+        mode: 'Hybrid (Zoom & LMS)',
+        location: 'Studio NLS & Zoom Classroom',
+        badgeText: 'Sesi Intensif',
+        description: 'Bahas tuntas paket soal prediksi OSN-K 5 tahun terakhir, penguasaan trik cepat, dan teknik eliminasi jawaban bersama tim mentor medalis nasional.',
+        highlights: [
+            'Bahas 150+ variasi soal HOTS berstandar OSN-K',
+            'Teknik analisis cepat tanpa rumus panjang',
+            'Akses rekaman kelas & materi presentasi seumur hidup'
+        ],
+        whatsappMessage: 'Halo Tim NLS, saya ingin info Bootcamp Intensif OSN-K 2026 (15 Februari 2026).',
+        status: 'active'
+    },
+    {
+        id: 'evt-mar-1',
+        date: '2026-03-07',
+        endDate: '2026-03-08',
+        title: 'National Science Olympiad Prep Camp (NSOPC) 2026',
+        category: 'OSN',
+        jenjang: 'SMA',
+        jenjangLabel: 'SMA / MA / Sederajat',
+        time: '08:00 - 17:00 WIB',
+        mode: 'Online (Intensive Camp)',
+        location: 'Platform LMS & Virtual Classroom NLS',
+        badgeText: 'Camp 2 Hari',
+        description: 'Pembinaan maraton 2 hari penuh mencakup pendalaman teori fundamental, simulasi bertaraf provinsi, dan bedah silabus BPTI terbaru.',
+        highlights: [
+            '16 Jam sesi materi intensif & 4 sesi simulasi bertarget medali',
+            'Mentoring 1-on-1 bersama peraih Medali Emas OSN Nasional',
+            'Modul eksklusif "Kunci Sukses Lolos OSN-P 2026"'
+        ],
+        whatsappMessage: 'Halo Tim NLS, saya ingin mendaftar NSOPC 2026 (7-8 Maret 2026).',
+        status: 'active'
+    }
+];
+
+export default function handler(req, res) {
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+    res.setHeader(
+        'Access-Control-Allow-Headers',
+        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+    );
+
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
+    }
+
+    // GET /api/events
+    if (req.method === 'GET') {
+        const status = req.query && req.query.status;
+        let data = eventsCache;
+        if (status) {
+            data = eventsCache.filter(e => e.status === status);
+        }
+        return res.status(200).json({
+            success: true,
+            total: eventsCache.length,
+            activeCount: eventsCache.filter(e => e.status !== 'trashed').length,
+            trashCount: eventsCache.filter(e => e.status === 'trashed').length,
+            data: data
+        });
+    }
+
+    // POST /api/events (Create)
+    if (req.method === 'POST') {
+        let body = req.body;
+        if (typeof body === 'string') {
+            try { body = JSON.parse(body); } catch(e) {}
+        }
+
+        if (!body || !body.title) {
+            return res.status(400).json({ success: false, message: 'Judul event wajib diisi.' });
+        }
+
+        const newEvent = {
+            id: body.id || `evt-${Date.now()}`,
+            title: body.title,
+            category: body.category || 'OSN',
+            jenjang: body.jenjang || 'SMA',
+            jenjangLabel: body.jenjangLabel || (body.jenjang === 'SMA' ? 'SMA / MA / Sederajat' : 'Semua Jenjang'),
+            date: body.date || new Date().toISOString().split('T')[0],
+            endDate: body.endDate || '',
+            time: body.time || '08:00 - 11:30 WIB',
+            mode: body.mode || 'Online (CBT NLS)',
+            location: body.location || 'Platform CBT Next Level Study',
+            badgeText: body.badgeText || 'Pendaftaran Dibuka',
+            whatsappMessage: body.whatsappMessage || `Halo Tim NLS, saya ingin info terkait event ${body.title}`,
+            description: body.description || '',
+            highlights: Array.isArray(body.highlights) ? body.highlights : (
+                typeof body.highlightsRaw === 'string' ? body.highlightsRaw.split('\n').map(s => s.trim()).filter(Boolean) : []
+            ),
+            status: body.status || 'active'
+        };
+
+        const idx = eventsCache.findIndex(e => e.id === newEvent.id);
+        if (idx !== -1) {
+            eventsCache[idx] = newEvent;
+        } else {
+            eventsCache.unshift(newEvent);
+        }
+
+        return res.status(201).json({
+            success: true,
+            message: 'Event kalender berhasil disimpan ke cloud.',
+            data: newEvent
+        });
+    }
+
+    // PUT /api/events (Update / Trash / Restore)
+    if (req.method === 'PUT') {
+        let body = req.body;
+        if (typeof body === 'string') {
+            try { body = JSON.parse(body); } catch(e) {}
+        }
+        const { id, status, deletedAt } = body || {};
+        if (!id) return res.status(400).json({ success: false, message: 'ID event diperlukan.' });
+
+        let event = eventsCache.find(e => e.id === id);
+        if (!event) {
+            // Create if missing
+            event = { id, title: body.title || 'Event', status: status || 'active' };
+            eventsCache.unshift(event);
+        }
+
+        Object.assign(event, body);
+        if (status) {
+            event.status = status;
+            if (status === 'trashed') {
+                event.deletedAt = deletedAt || new Date().toISOString();
+            } else {
+                delete event.deletedAt;
+            }
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: 'Event berhasil diperbarui di cloud.',
+            data: event
+        });
+    }
+
+    // DELETE /api/events (Permanent Delete / Empty Trash)
+    if (req.method === 'DELETE') {
+        let body = req.body;
+        if (typeof body === 'string') {
+            try { body = JSON.parse(body); } catch(e) {}
+        }
+        const action = (req.query && req.query.action) || (body && body.action);
+        if (action === 'empty_trash') {
+            eventsCache = eventsCache.filter(e => e.status !== 'trashed');
+            return res.status(200).json({
+                success: true,
+                message: 'Semua event di tempat sampah berhasil dibersihkan.'
+            });
+        }
+
+        const id = (req.query && req.query.id) || (body && body.id);
+        if (!id) return res.status(400).json({ success: false, message: 'ID event diperlukan.' });
+
+        eventsCache = eventsCache.filter(e => e.id !== id);
+        return res.status(200).json({
+            success: true,
+            message: 'Event telah dihapus secara permanen dari server cloud.'
+        });
+    }
+
+    return res.status(405).json({ message: 'Method Not Allowed' });
+}

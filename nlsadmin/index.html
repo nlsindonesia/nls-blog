@@ -1394,11 +1394,19 @@
 
                 <!-- Right Controls: Public View Link & User Profile with Logout -->
                 <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                    <!-- Universal Cloud Sync All Button -->
+                    <button type="button" @click="syncAllFromCloud(true)"
+                        class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-900/60 border border-sky-200 dark:border-sky-800 transition-all shadow-2xs cursor-pointer"
+                        title="Sinkronkan Seluruh Menu (Kalender, Berita, Pengajar, User) ke Cloud API">
+                        <svg class="w-4 h-4 text-sky-600 dark:text-sky-400 animate-spin-hover" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        <span class="hidden sm:inline">Sync Cloud Semua Menu</span>
+                    </button>
+
                     <!-- Reset / Bersihkan Cache Lokal Button -->
                     <button type="button" @click="resetAllLocalStorageToMaster()"
                         class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-200 dark:border-amber-800 transition-all shadow-2xs cursor-pointer"
                         title="Bersihkan Data Uji Coba Lokal & Sinkronkan ke Database Master">
-                        <svg class="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        <svg class="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         <span class="hidden sm:inline">Bersihkan Cache Lokal</span>
                     </button>
 
@@ -4365,8 +4373,8 @@
                         };
                     } catch (e) {}
 
-                    // Fetch latest teacher applications from serverless backend on boot
-                    this.refreshTeacherApplications(false);
+                    // Fetch and sync all modules from serverless cloud API on boot
+                    this.syncAllFromCloud(false);
                 },
 
                 // AUTHENTICATION
@@ -4445,7 +4453,7 @@
                     return this.eventForm.highlightsRaw.split('\n').map(s => s.trim()).filter(Boolean);
                 },
 
-                                saveEventFromBuilder() {
+                async saveEventFromBuilder() {
                     const f = this.eventForm;
                     const highlights = f.highlightsRaw ? f.highlightsRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
                     const endDate = (f.endDate && f.endDate >= f.date) ? f.endDate : '';
@@ -4465,7 +4473,8 @@
                         description: f.description,
                         badgeText: 'Pendaftaran Dibuka',
                         whatsappMessage: 'Halo Next Level Study, saya ingin mendaftar kegiatan: ' + f.title + ' (' + dateDisplay + ')',
-                        highlights: highlights
+                        highlights: highlights,
+                        status: 'active'
                     };
 
                     if (f.isEdit) {
@@ -4476,7 +4485,17 @@
                     }
 
                     this.saveEventsToStorage();
-                    this.showToast('Agenda berhasil disimpan dan langsung live di /kalender!');
+
+                    // Sync to Cloud API
+                    if (typeof fetch !== 'undefined') {
+                        fetch('/api/events', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(eventData)
+                        }).catch(e => {});
+                    }
+
+                    this.showToast('Agenda berhasil disimpan dan disinkronkan ke cloud!');
                     this.kalenderView = 'present';
                 },
                 // ==========================================
@@ -4656,9 +4675,20 @@
                         this.events = this.events.filter(e => e.id !== id);
                         const trashed = JSON.parse(JSON.stringify(target));
                         trashed.deletedAt = new Date().toISOString();
+                        trashed.status = 'trashed';
                         this.trashEvents.unshift(trashed);
                         this.saveEventsToStorage();
                         this.saveTrashEventsToStorage();
+
+                        // Sync to Cloud API
+                        if (typeof fetch !== 'undefined') {
+                            fetch('/api/events', {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: id, status: 'trashed', deletedAt: trashed.deletedAt })
+                            }).catch(e => {});
+                        }
+
                         this.showToast('Agenda berhasil dipindahkan ke Trash Event!');
                     }
                 },
@@ -4668,17 +4698,38 @@
                     if (!target) return;
                     this.trashEvents = this.trashEvents.filter(e => e.id !== id);
                     delete target.deletedAt;
+                    target.status = 'active';
                     this.events.unshift(target);
                     this.saveEventsToStorage();
                     this.saveTrashEventsToStorage();
+
+                    // Sync to Cloud API
+                    if (typeof fetch !== 'undefined') {
+                        fetch('/api/events', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: id, status: 'active' })
+                        }).catch(e => {});
+                    }
+
                     this.showToast(`Agenda "${target.title}" berhasil dipulihkan!`);
                 },
 
                 permanentDeleteEvent(id) {
-                    if (confirm('Apakah Anda yakin ingin menghapus agenda ini secara permanen dari Trash?')) {
+                    const target = this.trashEvents.find(e => e.id === id);
+                    const title = target ? target.title : 'Agenda';
+                    if (confirm(`Apakah Anda yakin ingin menghapus agenda "${title}" secara permanen dari Trash? Tindakan ini tidak dapat dibatalkan.`)) {
                         this.trashEvents = this.trashEvents.filter(e => e.id !== id);
                         this.saveTrashEventsToStorage();
-                        this.showToast('Agenda telah dihapus secara permanen!');
+
+                        // Sync to Cloud API
+                        if (typeof fetch !== 'undefined') {
+                            fetch('/api/events?id=' + encodeURIComponent(id), {
+                                method: 'DELETE'
+                            }).catch(e => {});
+                        }
+
+                        this.showToast('Agenda telah dihapus secara permanen dari server cloud!');
                     }
                 },
 
@@ -4686,8 +4737,39 @@
                     if (confirm('Apakah Anda yakin ingin mengosongkan semua agenda di Trash Event? Tindakan ini tidak dapat dibatalkan.')) {
                         this.trashEvents = [];
                         this.saveTrashEventsToStorage();
-                        this.showToast('Trash Event telah dikosongkan!');
+
+                        // Sync to Cloud API
+                        if (typeof fetch !== 'undefined') {
+                            fetch('/api/events?action=empty_trash', {
+                                method: 'DELETE'
+                            }).catch(e => {});
+                        }
+
+                        this.showToast('Trash Event telah dikosongkan secara permanen!');
                     }
+                },
+
+                async syncEventsFromCloud(showNotice = false) {
+                    if (typeof fetch === 'undefined') return;
+                    try {
+                        const res = await fetch('/api/events');
+                        if (res.ok) {
+                            const json = await res.json();
+                            if (json && Array.isArray(json.data) && json.data.length > 0) {
+                                const serverActive = json.data.filter(e => e && e.status !== 'trashed');
+                                const serverTrashed = json.data.filter(e => e && e.status === 'trashed');
+
+                                if (serverActive.length > 0) {
+                                    this.events = serverActive;
+                                    this.saveEventsToStorage();
+                                }
+                                this.trashEvents = serverTrashed;
+                                this.saveTrashEventsToStorage();
+
+                                if (showNotice) this.showToast(`Kalender Event tersinkronisasi (${this.events.length} aktif, ${this.trashEvents.length} di trash).`);
+                            }
+                        }
+                    } catch(e) {}
                 },
 
                 saveTrashEventsToStorage() {
@@ -5181,7 +5263,7 @@
                     this.userFilter = { search: '', role: 'all', status: 'all' };
                 },
 
-                saveUser() {
+                async saveUser() {
                     const f = this.userForm;
                     if (!f.name || !f.username || !f.email) {
                         alert('Harap isi Nama Lengkap, Username, dan Email!');
@@ -5196,7 +5278,7 @@
                         phone: f.phone ? f.phone.trim() : '',
                         role: f.role || 'Admin Akademik',
                         role_id: f.role_id || 'admin_akademik',
-                        status: f.status || 'Aktif',
+                        status: f.status || 'Active',
                         department: f.department ? f.department.trim() : 'Divisi Operasional',
                         avatar: f.avatar || '/nls-logo-300.png',
                         notes: f.notes ? f.notes.trim() : '',
@@ -5215,8 +5297,18 @@
                     }
 
                     this.saveUsersToStorage();
+
+                    // Sync to Cloud API
+                    if (typeof fetch !== 'undefined') {
+                        fetch('/api/users', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(userData)
+                        }).catch(e => {});
+                    }
+
                     this.userView = 'present';
-                    this.showToast(`Akun "${userData.name}" berhasil disimpan!`);
+                    this.showToast(`Akun "${userData.name}" berhasil disimpan dan disinkronkan ke cloud!`);
                 },
 
                 editUser(user) {
@@ -5234,9 +5326,18 @@
                 toggleUserStatus(id) {
                     const idx = this.users.findIndex(u => u.id === id);
                     if (idx !== -1) {
-                        const newStatus = this.users[idx].status === 'Aktif' ? 'Nonaktif' : 'Aktif';
+                        const newStatus = this.users[idx].status === 'Active' || this.users[idx].status === 'Aktif' ? 'Nonaktif' : 'Active';
                         this.users[idx].status = newStatus;
                         this.saveUsersToStorage();
+
+                        if (typeof fetch !== 'undefined') {
+                            fetch('/api/users', {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: id, status: newStatus })
+                            }).catch(e => {});
+                        }
+
                         this.showToast(`Status akun "${this.users[idx].name}" diubah menjadi ${newStatus}!`);
                     }
                 },
@@ -5252,10 +5353,22 @@
 
                     if (confirm(`Pindahkan akun "${target.name}" ke Tempat Sampah (Trash)?`)) {
                         this.users = this.users.filter(u => u.id !== id);
-                        target.deleted_at = new Date().toISOString();
-                        this.trashUsers.unshift(target);
+                        const trashed = JSON.parse(JSON.stringify(target));
+                        trashed.deleted_at = new Date().toISOString();
+                        trashed.status = 'trashed';
+                        this.trashUsers.unshift(trashed);
                         this.saveUsersToStorage();
                         this.saveTrashUsersToStorage();
+
+                        // Sync to Cloud API
+                        if (typeof fetch !== 'undefined') {
+                            fetch('/api/users', {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: id, status: 'trashed', deletedAt: trashed.deleted_at })
+                            }).catch(e => {});
+                        }
+
                         this.showToast(`Akun "${target.name}" dipindahkan ke Trash!`);
                     }
                 },
@@ -5265,18 +5378,39 @@
                     if (idx !== -1) {
                         const [restored] = this.trashUsers.splice(idx, 1);
                         delete restored.deleted_at;
+                        restored.status = 'Active';
                         this.users.unshift(restored);
                         this.saveUsersToStorage();
                         this.saveTrashUsersToStorage();
+
+                        // Sync to Cloud API
+                        if (typeof fetch !== 'undefined') {
+                            fetch('/api/users', {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: id, status: 'Active' })
+                            }).catch(e => {});
+                        }
+
                         this.showToast(`Akun "${restored.name}" berhasil dipulihkan!`);
                     }
                 },
 
                 permanentDeleteUser(id) {
-                    if (confirm('Hapus akun ini secara permanen dari sistem? Tindakan ini tidak dapat dibatalkan.')) {
+                    const target = this.trashUsers.find(u => u.id === id);
+                    const name = target ? target.name : 'Pengguna';
+                    if (confirm(`Hapus akun "${name}" secara permanen dari sistem? Tindakan ini tidak dapat dibatalkan.`)) {
                         this.trashUsers = this.trashUsers.filter(u => u.id !== id);
                         this.saveTrashUsersToStorage();
-                        this.showToast('Akun pengguna telah dihapus secara permanen!');
+
+                        // Sync to Cloud API
+                        if (typeof fetch !== 'undefined') {
+                            fetch('/api/users?id=' + encodeURIComponent(id), {
+                                method: 'DELETE'
+                            }).catch(e => {});
+                        }
+
+                        this.showToast('Akun pengguna telah dihapus secara permanen dari server cloud!');
                     }
                 },
 
@@ -5284,8 +5418,39 @@
                     if (confirm('Kosongkan semua pengguna di Tempat Sampah?')) {
                         this.trashUsers = [];
                         this.saveTrashUsersToStorage();
+
+                        // Sync to Cloud API
+                        if (typeof fetch !== 'undefined') {
+                            fetch('/api/users?action=empty_trash', {
+                                method: 'DELETE'
+                            }).catch(e => {});
+                        }
+
                         this.showToast('Tempat Sampah Pengguna telah dikosongkan!');
                     }
+                },
+
+                async syncUsersFromCloud(showNotice = false) {
+                    if (typeof fetch === 'undefined') return;
+                    try {
+                        const res = await fetch('/api/users');
+                        if (res.ok) {
+                            const json = await res.json();
+                            if (json && Array.isArray(json.data) && json.data.length > 0) {
+                                const serverActive = json.data.filter(u => u && u.status !== 'trashed');
+                                const serverTrashed = json.data.filter(u => u && u.status === 'trashed');
+
+                                if (serverActive.length > 0) {
+                                    this.users = serverActive;
+                                    this.saveUsersToStorage();
+                                }
+                                this.trashUsers = serverTrashed;
+                                this.saveTrashUsersToStorage();
+
+                                if (showNotice) this.showToast(`User Management tersinkronisasi (${this.users.length} aktif, ${this.trashUsers.length} di trash).`);
+                            }
+                        }
+                    } catch(e) {}
                 },
 
                 saveUsersToStorage() {
@@ -5622,9 +5787,20 @@
                         this.articles = this.articles.filter(a => a.id !== id);
                         const trashed = JSON.parse(JSON.stringify(target));
                         trashed.deletedAt = new Date().toISOString();
+                        trashed.status = 'trashed';
                         this.trashArticles.unshift(trashed);
                         this.saveArticlesToStorage();
                         this.saveTrashArticlesToStorage();
+
+                        // Sync to Cloud API
+                        if (typeof fetch !== 'undefined') {
+                            fetch('/api/articles', {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: id, status: 'trashed', deletedAt: trashed.deletedAt })
+                            }).catch(e => {});
+                        }
+
                         this.showToast('Artikel berhasil dipindahkan ke Trash Berita!');
                     }
                 },
@@ -5634,17 +5810,38 @@
                     if (!target) return;
                     this.trashArticles = this.trashArticles.filter(a => a.id !== id);
                     delete target.deletedAt;
+                    target.status = 'published';
                     this.articles.unshift(target);
                     this.saveArticlesToStorage();
                     this.saveTrashArticlesToStorage();
+
+                    // Sync to Cloud API
+                    if (typeof fetch !== 'undefined') {
+                        fetch('/api/articles', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: id, status: 'published' })
+                        }).catch(e => {});
+                    }
+
                     this.showToast(`Artikel "${target.title}" berhasil dipulihkan!`);
                 },
 
                 permanentDeleteArticle(id) {
-                    if (confirm('Apakah Anda yakin ingin menghapus artikel ini secara permanen dari Trash?')) {
+                    const target = this.trashArticles.find(a => a.id === id);
+                    const title = target ? target.title : 'Artikel';
+                    if (confirm(`Apakah Anda yakin ingin menghapus artikel "${title}" secara permanen dari Trash? Tindakan ini tidak dapat dibatalkan.`)) {
                         this.trashArticles = this.trashArticles.filter(a => a.id !== id);
                         this.saveTrashArticlesToStorage();
-                        this.showToast('Artikel telah dihapus secara permanen!');
+
+                        // Sync to Cloud API
+                        if (typeof fetch !== 'undefined') {
+                            fetch('/api/articles?id=' + encodeURIComponent(id), {
+                                method: 'DELETE'
+                            }).catch(e => {});
+                        }
+
+                        this.showToast('Artikel telah dihapus secara permanen dari server cloud!');
                     }
                 },
 
@@ -5652,8 +5849,39 @@
                     if (confirm('Apakah Anda yakin ingin mengosongkan semua artikel di Trash Berita? Tindakan ini tidak dapat dibatalkan.')) {
                         this.trashArticles = [];
                         this.saveTrashArticlesToStorage();
-                        this.showToast('Trash Berita telah dikosongkan!');
+
+                        // Sync to Cloud API
+                        if (typeof fetch !== 'undefined') {
+                            fetch('/api/articles?action=empty_trash', {
+                                method: 'DELETE'
+                            }).catch(e => {});
+                        }
+
+                        this.showToast('Trash Berita telah dikosongkan secara permanen!');
                     }
+                },
+
+                async syncArticlesFromCloud(showNotice = false) {
+                    if (typeof fetch === 'undefined') return;
+                    try {
+                        const res = await fetch('/api/articles');
+                        if (res.ok) {
+                            const json = await res.json();
+                            if (json && Array.isArray(json.data) && json.data.length > 0) {
+                                const serverActive = json.data.filter(a => a && a.status !== 'trashed');
+                                const serverTrashed = json.data.filter(a => a && a.status === 'trashed');
+
+                                if (serverActive.length > 0) {
+                                    this.articles = serverActive;
+                                    this.saveArticlesToStorage();
+                                }
+                                this.trashArticles = serverTrashed;
+                                this.saveTrashArticlesToStorage();
+
+                                if (showNotice) this.showToast(`Berita & Artikel tersinkronisasi (${this.articles.length} aktif, ${this.trashArticles.length} di trash).`);
+                            }
+                        }
+                    } catch(e) {}
                 },
 
                 saveTrashArticlesToStorage() {
@@ -5776,7 +6004,7 @@
                     return Math.min(100, score);
                 },
 
-                saveArticle(status) {
+                async saveArticle(status) {
                     this.syncEditorContent();
                     const f = this.articleEditor.form;
                     f.status = status;
@@ -5792,16 +6020,28 @@
                     }
                     f.category = f.categories[0]; // Maintain backward compatibility for single-category consumers
 
+                    const articleData = JSON.parse(JSON.stringify(f));
+
                     if (this.articleEditor.isEdit) {
                         const idx = this.articles.findIndex(a => a.id === f.id);
-                        if (idx !== -1) this.articles[idx] = JSON.parse(JSON.stringify(f));
+                        if (idx !== -1) this.articles[idx] = articleData;
                     } else {
-                        this.articles.unshift(JSON.parse(JSON.stringify(f)));
+                        this.articles.unshift(articleData);
                     }
 
                     this.saveArticlesToStorage();
+
+                    // Sync to Cloud API
+                    if (typeof fetch !== 'undefined') {
+                        fetch('/api/articles', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(articleData)
+                        }).catch(e => {});
+                    }
+
                     this.articleEditor.isOpen = false; this.beritaView = 'present';
-                    this.showToast(`Artikel berhasil ${status === 'published' ? 'dipublikasikan' : 'disimpan sebagai draf'}!`);
+                    this.showToast(`Artikel berhasil ${status === 'published' ? 'dipublikasikan' : 'disimpan sebagai draf'} dan disinkronkan ke cloud!`);
                 },
 
                 saveArticlesToStorage() {
@@ -5912,9 +6152,20 @@
                         this.teachers = this.teachers.filter(t => t.id !== id);
                         const trashed = JSON.parse(JSON.stringify(target));
                         trashed.deletedAt = new Date().toISOString();
+                        trashed.status = 'trashed';
                         this.trashTeachers.unshift(trashed);
                         this.saveTeachersToStorage();
                         this.saveTrashTeachersToStorage();
+
+                        // Sync to Cloud API
+                        if (typeof fetch !== 'undefined') {
+                            fetch('/api/teachers', {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: id, status: 'trashed', deletedAt: trashed.deletedAt })
+                            }).catch(e => {});
+                        }
+
                         this.showToast('Pengajar berhasil dipindahkan ke Trash Pengajar!');
                     }
                 },
@@ -5943,8 +6194,18 @@
                         this.showToast(`Berkas pendaftaran "${target.nama || target.name}" berhasil dipulihkan ke Teacher Verification!`);
                     } else {
                         delete target.deletedAt;
+                        target.status = 'active';
                         this.teachers.unshift(target);
                         this.saveTeachersToStorage();
+
+                        if (typeof fetch !== 'undefined') {
+                            fetch('/api/teachers', {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: target.id, status: 'active' })
+                            }).catch(e => {});
+                        }
+
                         this.showToast(`Pengajar "${target.name}" berhasil dipulihkan ke Present Teacher!`);
                     }
                 },
@@ -5958,6 +6219,9 @@
 
                         if (typeof fetch !== 'undefined') {
                             fetch('/api/teacher-applications?id=' + encodeURIComponent(id), {
+                                method: 'DELETE'
+                            }).catch(e => {});
+                            fetch('/api/teachers?id=' + encodeURIComponent(id), {
                                 method: 'DELETE'
                             }).catch(e => {});
                         }
@@ -5975,10 +6239,53 @@
                             fetch('/api/teacher-applications?action=empty_trash', {
                                 method: 'DELETE'
                             }).catch(e => {});
+                            fetch('/api/teachers?action=empty_trash', {
+                                method: 'DELETE'
+                            }).catch(e => {});
                         }
 
                         this.showToast('Trash Pengajar telah dikosongkan secara permanen!');
                     }
+                },
+
+                async syncTeachersFromCloud(showNotice = false) {
+                    if (typeof fetch === 'undefined') return;
+                    try {
+                        const [tchRes, appRes] = await Promise.allSettled([
+                            fetch('/api/teachers'),
+                            fetch('/api/teacher-applications')
+                        ]);
+
+                        let cloudTeachers = [];
+                        let cloudTrashedTeachers = [];
+                        if (tchRes.status === 'fulfilled' && tchRes.value.ok) {
+                            const json = await tchRes.value.json();
+                            if (json && Array.isArray(json.data) && json.data.length > 0) {
+                                cloudTeachers = json.data.filter(t => t && t.status !== 'trashed');
+                                cloudTrashedTeachers = json.data.filter(t => t && t.status === 'trashed');
+                            }
+                        }
+
+                        if (cloudTeachers.length > 0) {
+                            this.teachers = cloudTeachers;
+                            this.saveTeachersToStorage();
+                        }
+
+                        // Sync applications
+                        await this.refreshTeacherApplications(false);
+
+                        // Merge trashed published teachers with trashed applications
+                        if (cloudTrashedTeachers.length > 0) {
+                            cloudTrashedTeachers.forEach(ct => {
+                                if (!this.trashTeachers.some(tt => tt.id === ct.id)) {
+                                    this.trashTeachers.push(ct);
+                                }
+                            });
+                            this.saveTrashTeachersToStorage();
+                        }
+
+                        if (showNotice) this.showToast(`Daftar Pengajar tersinkronisasi (${this.teachers.length} aktif, ${this.teacherApplications.length} pelamar).`);
+                    } catch(e) {}
                 },
 
                 saveTrashTeachersToStorage() {
@@ -5997,9 +6304,9 @@
                     }
                 },
 
-                saveTeacher() {
+                async saveTeacher() {
                     const f = this.teacherModal.form;
-                    const highlights = f.highlightsRaw.split('\n').map(s => s.trim()).filter(Boolean);
+                    const highlights = f.highlightsRaw ? f.highlightsRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
                     const teacherData = {
                         id: f.id || 't-' + Date.now(),
                         name: f.name,
@@ -6013,7 +6320,8 @@
                         subjects: [f.subject],
                         kebutuhanPrivat: f.kebutuhanPrivat,
                         philosophy: f.philosophy || 'Mendidik dengan kejujuran sains dan integritas tinggi.',
-                        highlights: highlights
+                        highlights: highlights,
+                        status: 'active'
                     };
 
                     if (this.teacherModal.isEdit) {
@@ -6024,8 +6332,18 @@
                     }
 
                     this.saveTeachersToStorage();
+
+                    // Sync to Cloud API
+                    if (typeof fetch !== 'undefined') {
+                        fetch('/api/teachers', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(teacherData)
+                        }).catch(e => {});
+                    }
+
                     this.teacherModal.isOpen = false;
-                    this.showToast('Data pengajar berhasil disimpan dan live di /pengajar!');
+                    this.showToast('Data pengajar berhasil disimpan dan disinkronkan ke cloud!');
                 },
 
                 saveTeachersToStorage() {
@@ -6041,7 +6359,23 @@
                     a.click();
                 },
 
-                resetAllLocalStorageToMaster() {
+                async syncAllFromCloud(showNotice = true) {
+                    try {
+                        await Promise.allSettled([
+                            this.syncEventsFromCloud(false),
+                            this.syncArticlesFromCloud(false),
+                            this.syncTeachersFromCloud(false),
+                            this.syncUsersFromCloud(false)
+                        ]);
+                        if (showNotice) {
+                            this.showToast('Semua menu (Kalender, Berita, Pengajar, User) berhasil disinkronkan dengan Cloud API!');
+                        }
+                    } catch(e) {
+                        if (showNotice) this.showToast('Terjadi kendala saat menyinkronkan data cloud.');
+                    }
+                },
+
+                async resetAllLocalStorageToMaster() {
                     if (confirm('Apakah Anda yakin ingin membersihkan semua cache/data lokal pada browser ini dan mereset ke Database Master resmi NLS? Tindakan ini akan menghapus data sampah atau data uji coba lokal yang tersimpan di peramban ini.')) {
                         try {
                             // 1. Clear trash storages
@@ -6074,13 +6408,17 @@
                                 this.saveUsersToStorage();
                             }
 
-                            // 3. Clear cloud trash via server API
+                            // 3. Clear cloud trash via server API on all modules
                             if (typeof fetch !== 'undefined') {
+                                fetch('/api/events?action=empty_trash', { method: 'DELETE' }).catch(e => {});
+                                fetch('/api/articles?action=empty_trash', { method: 'DELETE' }).catch(e => {});
+                                fetch('/api/teachers?action=empty_trash', { method: 'DELETE' }).catch(e => {});
                                 fetch('/api/teacher-applications?action=empty_trash', { method: 'DELETE' }).catch(e => {});
+                                fetch('/api/users?action=empty_trash', { method: 'DELETE' }).catch(e => {});
                             }
 
-                            // 4. Re-sync applications from cloud
-                            this.refreshTeacherApplications(false);
+                            // 4. Re-sync all datasets from cloud
+                            await this.syncAllFromCloud(false);
 
                             this.showToast('Semua data lokal berhasil dibersihkan dan disinkronkan ke Database Master!');
                         } catch(e) {
