@@ -1,9 +1,6 @@
-// ==============================================================================
-// VERCEL SERVERLESS API: DAFTAR PENGAJAR TERBIT NLS
-// File: /api/teachers.js
-// ==============================================================================
+import { getCloudStore, saveCloudStore } from './cloud-db.js';
 
-let teachersCache = [
+const defaultTeachers = [
     {
         id: 't-1',
         name: 'Raditya Pratama, S.Si.',
@@ -66,7 +63,7 @@ let teachersCache = [
     }
 ];
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -79,6 +76,9 @@ export default function handler(req, res) {
         res.status(200).end();
         return;
     }
+
+    const store = await getCloudStore();
+    let teachersCache = Array.isArray(store.teachers) && store.teachers.length > 0 ? store.teachers : defaultTeachers;
 
     // GET /api/teachers
     if (req.method === 'GET') {
@@ -133,6 +133,8 @@ export default function handler(req, res) {
             teachersCache.unshift(newTeacher);
         }
 
+        await saveCloudStore({ teachers: teachersCache });
+
         return res.status(201).json({
             success: true,
             message: 'Data pengajar berhasil disimpan ke cloud.',
@@ -165,6 +167,8 @@ export default function handler(req, res) {
             }
         }
 
+        await saveCloudStore({ teachers: teachersCache });
+
         return res.status(200).json({
             success: true,
             message: 'Data pengajar berhasil diperbarui di cloud.',
@@ -181,6 +185,7 @@ export default function handler(req, res) {
         const action = (req.query && req.query.action) || (body && body.action);
         if (action === 'empty_trash') {
             teachersCache = teachersCache.filter(t => t.status !== 'trashed');
+            await saveCloudStore({ teachers: teachersCache });
             return res.status(200).json({
                 success: true,
                 message: 'Semua data pengajar di tempat sampah berhasil dibersihkan.'
@@ -191,6 +196,7 @@ export default function handler(req, res) {
         if (!id) return res.status(400).json({ success: false, message: 'ID pengajar diperlukan.' });
 
         teachersCache = teachersCache.filter(t => t.id !== id);
+        await saveCloudStore({ teachers: teachersCache });
         return res.status(200).json({
             success: true,
             message: 'Data pengajar telah dihapus secara permanen dari server cloud.'

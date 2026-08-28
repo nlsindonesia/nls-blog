@@ -1,6 +1,7 @@
 {
     "name": "nls-blog-hame",
     "version": "1.0.0",
+    "type": "module",
     "description": "Static website for Next Level Study public pages",
     "scripts": {
         "dev": "npx serve . -p 3000",

@@ -1,13 +1,6 @@
-// ==============================================================================
-// VERCEL SERVERLESS API: TEACHER APPLICATIONS (REKRUTMEN PENGAJAR NLS)
-// File: /api/teacher-applications.js
-// ==============================================================================
+import { getCloudStore, saveCloudStore } from './cloud-db.js';
 
-// In-memory runtime storage for serverless instance
-let applicationsCache = [];
-
-
-export default function handler(req, res) {
+export default async function handler(req, res) {
     // Enable CORS for all origins
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -21,6 +14,9 @@ export default function handler(req, res) {
         res.status(200).end();
         return;
     }
+
+    const store = await getCloudStore();
+    let applicationsCache = Array.isArray(store.teacherApplications) ? store.teacherApplications : [];
 
     if (req.method === 'GET') {
         return res.status(200).json({
@@ -76,13 +72,14 @@ export default function handler(req, res) {
             notes: body.notes || ''
         };
 
-        // Prepend to serverless memory list
         const existsIndex = applicationsCache.findIndex(a => a.id === newApp.id);
         if (existsIndex !== -1) {
             applicationsCache[existsIndex] = newApp;
         } else {
             applicationsCache.unshift(newApp);
         }
+
+        await saveCloudStore({ teacherApplications: applicationsCache });
 
         return res.status(201).json({
             success: true,
@@ -119,6 +116,8 @@ export default function handler(req, res) {
                 delete app.deletedAt;
             }
         }
+
+        await saveCloudStore({ teacherApplications: applicationsCache });
         return res.status(200).json({ success: true, data: app });
     }
 
@@ -130,6 +129,7 @@ export default function handler(req, res) {
         const action = (req.query && req.query.action) || (body && body.action);
         if (action === 'empty_trash') {
             applicationsCache = applicationsCache.filter(a => a.status !== 'trashed');
+            await saveCloudStore({ teacherApplications: applicationsCache });
             return res.status(200).json({ success: true, message: 'Semua data di trash server berhasil dikosongkan.' });
         }
 
@@ -137,6 +137,7 @@ export default function handler(req, res) {
         if (!id) return res.status(400).json({ success: false, message: 'ID aplikasi diperlukan.' });
         
         applicationsCache = applicationsCache.filter(a => a.id !== id);
+        await saveCloudStore({ teacherApplications: applicationsCache });
         return res.status(200).json({ success: true, message: 'Aplikasi berhasil dihapus permanen dari server.' });
     }
 

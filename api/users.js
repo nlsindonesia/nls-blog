@@ -1,9 +1,6 @@
-// ==============================================================================
-// VERCEL SERVERLESS API: USER MANAGEMENT (ADMIN ACCOUNTS) NLS
-// File: /api/users.js
-// ==============================================================================
+import { getCloudStore, saveCloudStore } from './cloud-db.js';
 
-let usersCache = [
+const defaultUsers = [
     {
         id: 'usr-1',
         name: 'Super Administrator NLS',
@@ -36,7 +33,7 @@ let usersCache = [
     }
 ];
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -49,6 +46,9 @@ export default function handler(req, res) {
         res.status(200).end();
         return;
     }
+
+    const store = await getCloudStore();
+    let usersCache = Array.isArray(store.users) && store.users.length > 0 ? store.users : defaultUsers;
 
     // GET /api/users
     if (req.method === 'GET') {
@@ -95,6 +95,8 @@ export default function handler(req, res) {
             usersCache.unshift(newUser);
         }
 
+        await saveCloudStore({ users: usersCache });
+
         return res.status(201).json({
             success: true,
             message: 'Akun admin berhasil dibuat di cloud.',
@@ -127,6 +129,8 @@ export default function handler(req, res) {
             }
         }
 
+        await saveCloudStore({ users: usersCache });
+
         return res.status(200).json({
             success: true,
             message: 'Akun admin berhasil diperbarui di cloud.',
@@ -143,6 +147,7 @@ export default function handler(req, res) {
         const action = (req.query && req.query.action) || (body && body.action);
         if (action === 'empty_trash') {
             usersCache = usersCache.filter(u => u.status !== 'trashed');
+            await saveCloudStore({ users: usersCache });
             return res.status(200).json({
                 success: true,
                 message: 'Semua akun di tempat sampah berhasil dibersihkan.'
@@ -153,6 +158,7 @@ export default function handler(req, res) {
         if (!id) return res.status(400).json({ success: false, message: 'ID pengguna diperlukan.' });
 
         usersCache = usersCache.filter(u => u.id !== id);
+        await saveCloudStore({ users: usersCache });
         return res.status(200).json({
             success: true,
             message: 'Akun admin telah dihapus secara permanen dari server cloud.'

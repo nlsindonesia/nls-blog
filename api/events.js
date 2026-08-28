@@ -1,10 +1,6 @@
-// ==============================================================================
-// VERCEL SERVERLESS API: KALENDER EVENT NLS
-// File: /api/events.js
-// ==============================================================================
+import { getCloudStore, saveCloudStore } from './cloud-db.js';
 
-// Baseline Events Dataset
-let eventsCache = [
+const defaultEvents = [
     {
         id: 'evt-jan-1',
         date: '2026-01-11',
@@ -58,51 +54,51 @@ let eventsCache = [
         badgeText: 'Kemitraan Eksklusif',
         description: 'Pelatihan pembuatan perangkat ajar interaktif, asesmen diagnostik, dan integrasi soal HOTS bagi dewan guru sekolah mitra NLS.',
         highlights: [
-            'Penyusunan modul ajar berstandar Kurikulum Merdeka',
-            'Bank soal HOTS & rubrik penilaian berbasis kompetensi',
-            'Sertifikat pelatihan 32 JP dari NLS & Dinas terkait'
+            'Penyusunan modul ajar Kurikulum Merdeka berbasis diferensiasi',
+            'Pelatihan asesmen formatif & diagnostik cepat',
+            'Sertifikat pelatihan 32 JP bernomor resmi'
         ],
-        whatsappMessage: 'Halo Tim NLS, kami tertarik dengan program In-House Training (IHT) Guru Mitra Sekolah.',
+        whatsappMessage: 'Halo Tim NLS, kami tertarik dengan program In-House Training (IHT) Guru Mitra.',
         status: 'active'
     },
     {
         id: 'evt-feb-1',
         date: '2026-02-08',
-        title: 'Simulasi Akbar UTBK-SNBT Gelombang 1 (Sistem IRT Nasional)',
+        title: 'Simulasi Akbar UTBK SNBT Nasional Seri 1',
         category: 'SNBT',
         jenjang: 'SMA',
-        jenjangLabel: 'SMA / MA / SMK & Gap Year',
-        time: '07:30 - 11:45 WIB',
-        mode: 'Online (CBT NLS)',
-        location: 'Platform CBT Next Level Study',
-        badgeText: 'Tryout Akbar',
-        description: 'Simulasi komprehensif 7 subtes TPS & Tes Literasi dengan format waktu, tingkat kesulitan, dan sistem pembobotan IRT persis UTBK resmi BPPP.',
+        jenjangLabel: 'Kelas 12 & Alumni',
+        time: '08:00 - 12:00 WIB',
+        mode: 'Online (Platform CBT NLS)',
+        location: 'Platform CBT LMS Next Level Study',
+        badgeText: 'Nasional',
+        description: 'Try out berskala nasional dengan sistem IRT (Item Response Theory) presisi tinggi, pemeringkatan nasional, dan video pembahasan lengkap.',
         highlights: [
-            'Format 100% identik UTBK BPPP (TPS, Literasi B. Indo & Inggris, Penalaran Matematika)',
-            'Hasil skor & perankingan nasional keluar maksimal H+1',
-            'E-Rapor analisis butir soal per subtes & rekomendasi perbaikan'
+            'Sistem IRT termutakhir standar BP3 Kemdikbudristek',
+            'Grafik analisis kelemahan 7 subtes SNBT',
+            'Video pembahasan mendalam oleh tim master tutor NLS'
         ],
-        whatsappMessage: 'Halo Tim NLS, saya ingin mendaftar Simulasi Akbar UTBK-SNBT Gelombang 1 (8 Februari 2026).',
+        whatsappMessage: 'Halo Tim NLS, saya ingin mendaftar Simulasi Akbar UTBK Nasional Seri 1 (8 Februari 2026).',
         status: 'active'
     },
     {
         id: 'evt-feb-2',
-        date: '2026-02-15',
-        title: 'Bootcamp Intensif Pembahasan Soal OSN-K 2026',
-        category: 'OSN',
+        date: '2026-02-22',
+        title: 'Klinik Bedah Soal HOTS TKA Saintek & Soshum',
+        category: 'TKA',
         jenjang: 'SMA',
-        jenjangLabel: 'SMA / MA / Sederajat',
-        time: '09:00 - 16:00 WIB',
-        mode: 'Hybrid (Zoom & LMS)',
-        location: 'Studio NLS & Zoom Classroom',
-        badgeText: 'Sesi Intensif',
-        description: 'Bahas tuntas paket soal prediksi OSN-K 5 tahun terakhir, penguasaan trik cepat, dan teknik eliminasi jawaban bersama tim mentor medalis nasional.',
+        jenjangLabel: 'SMA Kelas 11-12',
+        time: '13:30 - 16:30 WIB',
+        mode: 'Online (Zoom Interactive)',
+        location: 'Live Class Zoom NLS',
+        badgeText: 'Workshop Intensif',
+        description: 'Sesi kupas tuntas soal-soal tingkat kesulitan tinggi (HOTS) mata pelajaran sains dan sosial humaniora bersama pakar kurikulum.',
         highlights: [
-            'Bahas 150+ variasi soal HOTS berstandar OSN-K',
-            'Teknik analisis cepat tanpa rumus panjang',
-            'Akses rekaman kelas & materi presentasi seumur hidup'
+            'Bedah pola soal analitik dan pemecahan masalah kompleks',
+            'Tips eliminasi jawaban jebakan dalam hitungan detik',
+            'Bank latihan soal HOTS terbitan eksklusif NLS'
         ],
-        whatsappMessage: 'Halo Tim NLS, saya ingin info Bootcamp Intensif OSN-K 2026 (15 Februari 2026).',
+        whatsappMessage: 'Halo Tim NLS, saya ingin info Klinik Bedah Soal HOTS TKA (22 Februari 2026).',
         status: 'active'
     },
     {
@@ -112,11 +108,11 @@ let eventsCache = [
         title: 'National Science Olympiad Prep Camp (NSOPC) 2026',
         category: 'OSN',
         jenjang: 'SMA',
-        jenjangLabel: 'SMA / MA / Sederajat',
+        jenjangLabel: 'SMP & SMA (Calon Peserta OSN-K)',
         time: '08:00 - 17:00 WIB',
-        mode: 'Online (Intensive Camp)',
-        location: 'Platform LMS & Virtual Classroom NLS',
-        badgeText: 'Camp 2 Hari',
+        mode: 'Hybrid (Onsite & Zoom)',
+        location: 'Auditorium NLS Training Center & Zoom',
+        badgeText: 'Bootcamp 2 Hari',
         description: 'Pembinaan maraton 2 hari penuh mencakup pendalaman teori fundamental, simulasi bertaraf provinsi, dan bedah silabus BPTI terbaru.',
         highlights: [
             '16 Jam sesi materi intensif & 4 sesi simulasi bertarget medali',
@@ -128,7 +124,7 @@ let eventsCache = [
     }
 ];
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -141,6 +137,9 @@ export default function handler(req, res) {
         res.status(200).end();
         return;
     }
+
+    const store = await getCloudStore();
+    let eventsCache = Array.isArray(store.events) && store.events.length > 0 ? store.events : defaultEvents;
 
     // GET /api/events
     if (req.method === 'GET') {
@@ -196,6 +195,8 @@ export default function handler(req, res) {
             eventsCache.unshift(newEvent);
         }
 
+        await saveCloudStore({ events: eventsCache });
+
         return res.status(201).json({
             success: true,
             message: 'Event kalender berhasil disimpan ke cloud.',
@@ -229,6 +230,8 @@ export default function handler(req, res) {
             }
         }
 
+        await saveCloudStore({ events: eventsCache });
+
         return res.status(200).json({
             success: true,
             message: 'Event berhasil diperbarui di cloud.',
@@ -245,6 +248,7 @@ export default function handler(req, res) {
         const action = (req.query && req.query.action) || (body && body.action);
         if (action === 'empty_trash') {
             eventsCache = eventsCache.filter(e => e.status !== 'trashed');
+            await saveCloudStore({ events: eventsCache });
             return res.status(200).json({
                 success: true,
                 message: 'Semua event di tempat sampah berhasil dibersihkan.'
@@ -255,6 +259,7 @@ export default function handler(req, res) {
         if (!id) return res.status(400).json({ success: false, message: 'ID event diperlukan.' });
 
         eventsCache = eventsCache.filter(e => e.id !== id);
+        await saveCloudStore({ events: eventsCache });
         return res.status(200).json({
             success: true,
             message: 'Event telah dihapus secara permanen dari server cloud.'

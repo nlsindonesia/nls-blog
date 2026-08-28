@@ -1,9 +1,6 @@
-// ==============================================================================
-// VERCEL SERVERLESS API: BERITA & ARTIKEL CMS NLS
-// File: /api/articles.js
-// ==============================================================================
+import { getCloudStore, saveCloudStore } from './cloud-db.js';
 
-let articlesCache = [
+const defaultArticles = [
     {
         id: 'art-osn-matematika',
         title: 'Tips Belajar OSN Matematika SMA: Strategi Penguasaan 4 Pilar & Problem Solving Heuristik',
@@ -74,7 +71,7 @@ let articlesCache = [
     }
 ];
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -87,6 +84,9 @@ export default function handler(req, res) {
         res.status(200).end();
         return;
     }
+
+    const store = await getCloudStore();
+    let articlesCache = Array.isArray(store.articles) && store.articles.length > 0 ? store.articles : defaultArticles;
 
     // GET /api/articles
     if (req.method === 'GET') {
@@ -142,6 +142,8 @@ export default function handler(req, res) {
             articlesCache.unshift(newArticle);
         }
 
+        await saveCloudStore({ articles: articlesCache });
+
         return res.status(201).json({
             success: true,
             message: 'Artikel berita berhasil dipublikasikan ke cloud.',
@@ -174,6 +176,8 @@ export default function handler(req, res) {
             }
         }
 
+        await saveCloudStore({ articles: articlesCache });
+
         return res.status(200).json({
             success: true,
             message: 'Artikel berhasil diperbarui di cloud.',
@@ -190,6 +194,7 @@ export default function handler(req, res) {
         const action = (req.query && req.query.action) || (body && body.action);
         if (action === 'empty_trash') {
             articlesCache = articlesCache.filter(a => a.status !== 'trashed');
+            await saveCloudStore({ articles: articlesCache });
             return res.status(200).json({
                 success: true,
                 message: 'Semua artikel di tempat sampah berhasil dibersihkan.'
@@ -200,6 +205,7 @@ export default function handler(req, res) {
         if (!id) return res.status(400).json({ success: false, message: 'ID artikel diperlukan.' });
 
         articlesCache = articlesCache.filter(a => a.id !== id);
+        await saveCloudStore({ articles: articlesCache });
         return res.status(200).json({
             success: true,
             message: 'Artikel telah dihapus secara permanen dari server cloud.'
