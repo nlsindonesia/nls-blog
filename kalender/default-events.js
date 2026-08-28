@@ -572,6 +572,25 @@ window.NLS_DEFAULT_EVENTS = [
                         ],
                         whatsappMessage: 'Halo Tim NLS, kami ingin mengundang program workshop PAS di sekolah kami.'
                     },
+                    {
+                        id: 'evt-nov-snbt-grand',
+                        date: '2026-11-25',
+                        title: 'Grand Try Out Nasional: Simulasi IRT Terupdate 2026',
+                        category: 'SNBT',
+                        jenjang: 'SMA',
+                        jenjangLabel: 'SMA / MA / SMK & Gap Year',
+                        time: '08:00 - 13:00 WIB',
+                        mode: 'Online (Platform CBT NLS)',
+                        location: 'Platform CBT LMS Next Level Study',
+                        badgeText: 'Simulasi Akbar IRT',
+                        description: 'Simulasi akbar SNBT paling akurat dengan sistem penilaian IRT resmi. Dapatkan analisis peluang lolos ke prodi pilihan Anda secara instan beserta evaluasi komprehensif.',
+                        highlights: [
+                            'Simulasi 7 subtes SNBT lengkap dengan sistem IRT',
+                            'Perangkingan nasional 5.2k+ peserta dan analisis klaster PTN',
+                            'Video pembahasan lengkap dan kunci jawaban interaktif'
+                        ],
+                        whatsappMessage: 'Halo Next Level Study, saya ingin mendaftar Grand Try Out Nasional: Simulasi IRT Terupdate.'
+                    },
 
                     // --- DESEMBER 2026 ---
                     {
