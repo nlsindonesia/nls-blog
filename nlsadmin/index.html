@@ -3009,6 +3009,11 @@
                             </div>
 
                             <div class="flex flex-wrap items-center gap-2">
+                                <button type="button" @click="refreshTeacherApplications(true)"
+                                    class="px-4 py-2.5 rounded-xl font-bold text-xs bg-white/20 hover:bg-white/30 text-white border border-white/30 transition-all flex items-center gap-1.5 cursor-pointer backdrop-blur-xs">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                    <span>Sync Cloud Trash</span>
+                                </button>
                                 <button type="button" @click="openPresentTeacherView()"
                                     class="px-4 py-2.5 rounded-xl font-bold text-xs bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-all flex items-center gap-1.5 cursor-pointer">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
@@ -4938,11 +4943,6 @@
 
                 async refreshTeacherApplications(showNotice = true) {
                     try {
-                        let deletedAppIds = [];
-                        try {
-                            deletedAppIds = JSON.parse(localStorage.getItem('nls_deleted_teacher_applications_v1') || '[]');
-                        } catch(e) {}
-
                         let serverApps = [];
                         // 1. Fetch from serverless backend API
                         if (typeof fetch !== 'undefined') {
@@ -4951,7 +4951,7 @@
                                 if (res.ok) {
                                     const json = await res.json();
                                     if (json && Array.isArray(json.data)) {
-                                        serverApps = json.data.filter(a => a && a.id && !deletedAppIds.includes(a.id));
+                                        serverApps = json.data;
                                     }
                                 }
                             } catch (netErr) {
@@ -4959,46 +4959,82 @@
                             }
                         }
 
-                        // 2. Read local applications
+                        // Split server items into active and trashed
+                        const serverActive = serverApps.filter(a => a && a.status !== 'trashed');
+                        const serverTrashed = serverApps.filter(a => a && a.status === 'trashed');
+
+                        // 2. Read local active applications
                         let localApps = [];
                         try {
                             const stored = localStorage.getItem("nls_teacher_applications_v1");
                             if (stored) {
                                 const parsed = JSON.parse(stored);
-                                if (Array.isArray(parsed)) {
-                                    localApps = parsed.filter(a => a && a.id && !deletedAppIds.includes(a.id));
-                                }
+                                if (Array.isArray(parsed)) localApps = parsed;
                             }
                         } catch (e) {}
 
-                        // 3. Merge serverApps and localApps by unique ID (preserving newest updates)
-                        const mergedMap = new Map();
-                        // Add server apps first
-                        serverApps.forEach(app => {
-                            if (app && app.id && !deletedAppIds.includes(app.id)) mergedMap.set(app.id, app);
+                        // 3. Read local trash
+                        let localTrash = [];
+                        try {
+                            const storedTrash = localStorage.getItem("nls_pengajar_teachers_trash_v1");
+                            if (storedTrash) {
+                                const parsedTrash = JSON.parse(storedTrash);
+                                if (Array.isArray(parsedTrash)) localTrash = parsedTrash;
+                            }
+                        } catch (e) {}
+
+                        // 4. Merge ACTIVE applications (filter out any that server marked as trashed)
+                        const activeMap = new Map();
+                        serverActive.forEach(app => {
+                            if (app && app.id) activeMap.set(app.id, app);
                         });
-                        // Add or overlay local apps
                         localApps.forEach(app => {
-                            if (app && app.id && !deletedAppIds.includes(app.id)) {
-                                if (!mergedMap.has(app.id)) {
-                                    mergedMap.set(app.id, app);
+                            if (app && app.id && !serverTrashed.some(st => st.id === app.id)) {
+                                if (!activeMap.has(app.id)) {
+                                    activeMap.set(app.id, app);
                                 } else {
-                                    // If local is modified/reviewed, preserve local status
-                                    const serverApp = mergedMap.get(app.id);
+                                    const serverApp = activeMap.get(app.id);
                                     if (app.status !== 'pending' && serverApp.status === 'pending') {
-                                        mergedMap.set(app.id, { ...serverApp, ...app });
+                                        activeMap.set(app.id, { ...serverApp, ...app });
                                     }
                                 }
                             }
                         });
 
-                        const mergedList = Array.from(mergedMap.values());
-                        this.teacherApplications = mergedList;
+                        const mergedActive = Array.from(activeMap.values());
+                        this.teacherApplications = mergedActive;
                         try {
-                            localStorage.setItem("nls_teacher_applications_v1", JSON.stringify(mergedList));
+                            localStorage.setItem("nls_teacher_applications_v1", JSON.stringify(mergedActive));
                         } catch(e) {}
 
-                        if (showNotice) this.showToast(`Berhasil menyinkronkan ${mergedList.length} berkas calon guru.`);
+                        // 5. Merge TRASHED items (both regular teachers and candidate applications)
+                        const trashMap = new Map();
+                        localTrash.forEach(t => {
+                            if (t && t.id && !mergedActive.some(ma => ma.id === t.id)) {
+                                trashMap.set(t.id, t);
+                            }
+                        });
+                        serverTrashed.forEach(st => {
+                            if (st && st.id) {
+                                const formatted = {
+                                    ...st,
+                                    isApplication: true,
+                                    name: st.nama || st.name || 'Calon Pengajar',
+                                    shortName: st.panggilan || st.shortName || ((st.nama || st.name || '').split(' ')[0]),
+                                    education: st.pendidikan || st.education || '',
+                                    deletedAt: st.deletedAt || new Date().toISOString()
+                                };
+                                trashMap.set(st.id, formatted);
+                            }
+                        });
+
+                        const mergedTrash = Array.from(trashMap.values());
+                        this.trashTeachers = mergedTrash;
+                        try {
+                            localStorage.setItem("nls_pengajar_teachers_trash_v1", JSON.stringify(mergedTrash));
+                        } catch(e) {}
+
+                        if (showNotice) this.showToast(`Sinkronisasi Cloud Berhasil (${mergedActive.length} antrean, ${mergedTrash.length} di trash).`);
                         return;
                     } catch(e) {
                         if (showNotice) this.showToast('Gagal memuat data antrean verifikasi.');
@@ -5009,6 +5045,7 @@
                     this.activeTab = 'pengajar';
                     this.pengajarView = 'trash';
                     this.isPengajarDropdownOpen = true;
+                    this.refreshTeacherApplications(false);
                     if (this.isMobile) this.isSidebarOpen = false;
                 },
 
@@ -5398,19 +5435,11 @@
                         this.teacherApplications = this.teacherApplications.filter(a => a.id !== id);
                         this.saveTeacherApplicationsToStorage();
 
-                        // 2. Track deleted ID in persistent deleted IDs list
-                        try {
-                            const deletedIds = JSON.parse(localStorage.getItem('nls_deleted_teacher_applications_v1') || '[]');
-                            if (!deletedIds.includes(id)) {
-                                deletedIds.push(id);
-                                localStorage.setItem('nls_deleted_teacher_applications_v1', JSON.stringify(deletedIds));
-                            }
-                        } catch (e) {}
-
-                        // 3. Move into trashTeachers array
+                        // 2. Move into trashTeachers array
                         if (target) {
                             const trashed = JSON.parse(JSON.stringify(target));
                             trashed.isApplication = true;
+                            trashed.status = 'trashed';
                             trashed.name = target.nama || target.name || 'Calon Pengajar';
                             trashed.shortName = target.panggilan || target.shortName || (trashed.name.split(' ')[0]);
                             trashed.education = target.pendidikan || target.education || '';
@@ -5419,10 +5448,12 @@
                             this.saveTrashTeachersToStorage();
                         }
 
-                        // 4. Send DELETE to server API
+                        // 3. Send PUT status='trashed' to cloud API for multi-browser sync
                         if (typeof fetch !== 'undefined') {
-                            fetch('/api/teacher-applications?id=' + encodeURIComponent(id), {
-                                method: 'DELETE'
+                            fetch('/api/teacher-applications', {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: id, status: 'trashed', deletedAt: new Date().toISOString() })
                             }).catch(e => {});
                         }
 
@@ -5888,13 +5919,6 @@
                     this.saveTrashTeachersToStorage();
 
                     if (target.isApplication) {
-                        // Remove from deleted tracking
-                        try {
-                            let deletedIds = JSON.parse(localStorage.getItem('nls_deleted_teacher_applications_v1') || '[]');
-                            deletedIds = deletedIds.filter(x => x !== id);
-                            localStorage.setItem('nls_deleted_teacher_applications_v1', JSON.stringify(deletedIds));
-                        } catch(e) {}
-
                         delete target.deletedAt;
                         target.status = 'pending';
                         this.teacherApplications.unshift(target);
@@ -5924,38 +5948,28 @@
                         this.trashTeachers = this.trashTeachers.filter(t => t.id !== id);
                         this.saveTrashTeachersToStorage();
 
-                        // Keep in deleted IDs so server sync doesn't resurrect it
-                        try {
-                            const deletedIds = JSON.parse(localStorage.getItem('nls_deleted_teacher_applications_v1') || '[]');
-                            if (!deletedIds.includes(id)) {
-                                deletedIds.push(id);
-                                localStorage.setItem('nls_deleted_teacher_applications_v1', JSON.stringify(deletedIds));
-                            }
-                        } catch(e) {}
-
                         if (typeof fetch !== 'undefined') {
                             fetch('/api/teacher-applications?id=' + encodeURIComponent(id), {
                                 method: 'DELETE'
                             }).catch(e => {});
                         }
 
-                        this.showToast(`"${name}" telah dihapus secara permanen!`);
+                        this.showToast(`"${name}" telah dihapus secara permanen dari cloud server!`);
                     }
                 },
 
                 emptyTrashTeachers() {
                     if (confirm('Apakah Anda yakin ingin mengosongkan semua data di Trash Pengajar? Tindakan ini tidak dapat dibatalkan.')) {
-                        try {
-                            const deletedIds = JSON.parse(localStorage.getItem('nls_deleted_teacher_applications_v1') || '[]');
-                            this.trashTeachers.forEach(t => {
-                                if (t.id && !deletedIds.includes(t.id)) deletedIds.push(t.id);
-                            });
-                            localStorage.setItem('nls_deleted_teacher_applications_v1', JSON.stringify(deletedIds));
-                        } catch(e) {}
-
                         this.trashTeachers = [];
                         this.saveTrashTeachersToStorage();
-                        this.showToast('Trash Pengajar telah dikosongkan!');
+
+                        if (typeof fetch !== 'undefined') {
+                            fetch('/api/teacher-applications?action=empty_trash', {
+                                method: 'DELETE'
+                            }).catch(e => {});
+                        }
+
+                        this.showToast('Trash Pengajar telah dikosongkan secara permanen!');
                     }
                 },
 

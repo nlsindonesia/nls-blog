@@ -162,13 +162,20 @@ export default function handler(req, res) {
         if (typeof body === 'string') {
             try { body = JSON.parse(body); } catch(e) {}
         }
-        const { id, status } = body || {};
+        const { id, status, deletedAt } = body || {};
         if (!id) return res.status(400).json({ success: false, message: 'ID aplikasi diperlukan.' });
         
         const app = applicationsCache.find(a => a.id === id);
         if (!app) return res.status(404).json({ success: false, message: 'Aplikasi tidak ditemukan.' });
         
-        if (status) app.status = status;
+        if (status) {
+            app.status = status;
+            if (status === 'trashed') {
+                app.deletedAt = deletedAt || new Date().toISOString();
+            } else if (status === 'pending' || status === 'accepted' || status === 'rejected') {
+                delete app.deletedAt;
+            }
+        }
         return res.status(200).json({ success: true, data: app });
     }
 
@@ -177,11 +184,17 @@ export default function handler(req, res) {
         if (typeof body === 'string') {
             try { body = JSON.parse(body); } catch(e) {}
         }
+        const action = (req.query && req.query.action) || (body && body.action);
+        if (action === 'empty_trash') {
+            applicationsCache = applicationsCache.filter(a => a.status !== 'trashed');
+            return res.status(200).json({ success: true, message: 'Semua data di trash server berhasil dikosongkan.' });
+        }
+
         const id = (req.query && req.query.id) || (body && body.id);
         if (!id) return res.status(400).json({ success: false, message: 'ID aplikasi diperlukan.' });
         
         applicationsCache = applicationsCache.filter(a => a.id !== id);
-        return res.status(200).json({ success: true, message: 'Aplikasi berhasil dihapus.' });
+        return res.status(200).json({ success: true, message: 'Aplikasi berhasil dihapus permanen dari server.' });
     }
 
     return res.status(405).json({ message: 'Method Not Allowed' });
