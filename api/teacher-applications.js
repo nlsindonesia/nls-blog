@@ -99,8 +99,17 @@ export default function handler(req, res) {
         const { id, status, deletedAt } = body || {};
         if (!id) return res.status(400).json({ success: false, message: 'ID aplikasi diperlukan.' });
         
-        const app = applicationsCache.find(a => a.id === id);
-        if (!app) return res.status(404).json({ success: false, message: 'Aplikasi tidak ditemukan.' });
+        let app = applicationsCache.find(a => a.id === id);
+        if (!app) {
+            app = {
+                id: id,
+                ...body,
+                status: status || 'pending'
+            };
+            applicationsCache.unshift(app);
+        } else {
+            Object.assign(app, body);
+        }
         
         if (status) {
             app.status = status;

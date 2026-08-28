@@ -2853,11 +2853,12 @@
                                                 <span>Menunggu Review</span>
                                             </span>
                                             <span x-show="app.status === 'accepted'" class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
-                                                <svg class="w-3 h-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                                <svg class="w-3 h-3 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                                                 <span>Diterima (Terbit di Present Teacher)</span>
                                             </span>
-                                            <span x-show="app.status === 'rejected'" class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-700">
-                                                âœ• Ditolak
+                                            <span x-show="app.status === 'rejected'" class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-700 flex items-center gap-1">
+                                                <svg class="w-3 h-3 text-rose-600 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                                <span>Ditolak</span>
                                             </span>
                                         </div>
                                         <span class="text-[11px] text-slate-400 font-medium" x-text="formatDisplayDate(app.submittedAt)"></span>
@@ -2951,7 +2952,8 @@
                                                 </button>
                                                 <button type="button" @click="rejectTeacherApplication(app)"
                                                     class="px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 text-xs font-bold transition-all flex items-center gap-1 cursor-pointer">
-                                                    <span>âœ• Tolak</span>
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                                    <span>Tolak</span>
                                                 </button>
                                                 <button type="button" @click="deleteTeacherApplication(app.id)"
                                                     class="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950 transition-all cursor-pointer"
@@ -5044,9 +5046,7 @@
                                     activeMap.set(app.id, app);
                                 } else {
                                     const serverApp = activeMap.get(app.id);
-                                    if (app.status !== 'pending' && serverApp.status === 'pending') {
-                                        activeMap.set(app.id, { ...serverApp, ...app });
-                                    }
+                                    activeMap.set(app.id, { ...app, ...serverApp });
                                 }
                             }
                         });
@@ -5525,7 +5525,7 @@
                         fetch('/api/teacher-applications', {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ id: app.id, status: 'accepted' })
+                            body: JSON.stringify({ ...app, status: 'accepted' })
                         }).catch(e => {});
                     }
 
@@ -5540,7 +5540,7 @@
                             fetch('/api/teacher-applications', {
                                 method: 'PUT',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ id: app.id, status: 'rejected' })
+                                body: JSON.stringify({ ...app, status: 'rejected' })
                             }).catch(e => {});
                         }
                         this.showToast(`Pengajuan "${app.nama}" ditandai sebagai ditolak.`);
@@ -5554,7 +5554,7 @@
                         fetch('/api/teacher-applications', {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ id: app.id, status: 'pending' })
+                            body: JSON.stringify({ ...app, status: 'pending' })
                         }).catch(e => {});
                     }
                     this.showToast(`Status pengajuan "${app.nama}" dikembalikan ke Pending.`);
