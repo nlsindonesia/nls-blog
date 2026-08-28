@@ -57,12 +57,24 @@ export default async function handler(req, res) {
         if (status) {
             data = usersCache.filter(u => u.status === status);
         }
+        // Exclude raw passwords from response list for enterprise security standard
+        const sanitizedData = data.map(u => {
+            const { password, passwordHash, ...safe } = u;
+            return safe;
+        });
+
         return res.status(200).json({
             success: true,
+            meta: {
+                total: usersCache.length,
+                activeCount: usersCache.filter(u => u.status !== 'trashed').length,
+                trashCount: usersCache.filter(u => u.status === 'trashed').length,
+                timestamp: new Date().toISOString()
+            },
             total: usersCache.length,
             activeCount: usersCache.filter(u => u.status !== 'trashed').length,
             trashCount: usersCache.filter(u => u.status === 'trashed').length,
-            data: data
+            data: sanitizedData
         });
     }
 
@@ -77,30 +89,40 @@ export default async function handler(req, res) {
             return res.status(400).json({ success: false, message: 'Nama dan Username wajib diisi.' });
         }
 
+        const nowIso = new Date().toISOString();
+        const safeUsername = body.username.trim().toLowerCase().replace(/[^a-z0-9._-]/g, '');
+
         const newUser = {
             id: body.id || `usr-${Date.now()}`,
-            name: body.name,
-            username: body.username,
-            email: body.email || `${body.username}@next-level-study.com`,
+            name: body.name.trim(),
+            username: safeUsername,
+            email: (body.email || `${safeUsername}@next-level-study.com`).trim().toLowerCase(),
             role: body.role || 'Staff',
+            avatar: body.avatar || '/nls-logo-300.png',
             status: body.status || 'Active',
+            isTrashed: body.status === 'trashed' ? 1 : 0,
             lastLogin: body.lastLogin || 'Belum Pernah',
-            permissions: Array.isArray(body.permissions) ? body.permissions : ['kalender', 'berita']
+            permissions: Array.isArray(body.permissions) ? body.permissions : ['kalender', 'berita'],
+            notes: body.notes ? body.notes.trim() : '',
+            createdAt: body.createdAt || nowIso,
+            updatedAt: nowIso,
+            deletedAt: body.status === 'trashed' ? (body.deletedAt || nowIso) : null
         };
 
         const idx = usersCache.findIndex(u => u.id === newUser.id || u.username === newUser.username);
         if (idx !== -1) {
-            usersCache[idx] = newUser;
+            usersCache[idx] = { ...usersCache[idx], ...newUser, updatedAt: nowIso };
         } else {
             usersCache.unshift(newUser);
         }
 
         await saveCloudStore({ users: usersCache });
 
+        const { password, passwordHash, ...safeUser } = newUser;
         return res.status(201).json({
             success: true,
-            message: 'Akun admin berhasil dibuat di cloud.',
-            data: newUser
+            message: 'Akun pengguna berhasil disimpan ke database terstruktur.',
+            data: safeUser
         });
     }
 
@@ -113,28 +135,34 @@ export default async function handler(req, res) {
         const { id, status, deletedAt } = body || {};
         if (!id) return res.status(400).json({ success: false, message: 'ID pengguna diperlukan.' });
 
+        const nowIso = new Date().toISOString();
         let user = usersCache.find(u => u.id === id);
         if (!user) {
-            user = { id, name: body.name || 'User', username: body.username || 'user', status: status || 'Active' };
+            user = { id, name: body.name || 'User', username: body.username || 'user', status: status || 'Active', createdAt: nowIso };
             usersCache.unshift(user);
         }
 
         Object.assign(user, body);
+        user.updatedAt = nowIso;
         if (status) {
             user.status = status;
             if (status === 'trashed') {
-                user.deletedAt = deletedAt || new Date().toISOString();
+                user.isTrashed = 1;
+                user.deletedAt = deletedAt || nowIso;
             } else {
+                user.isTrashed = 0;
+                user.deletedAt = null;
                 delete user.deletedAt;
             }
         }
 
         await saveCloudStore({ users: usersCache });
 
+        const { password, passwordHash, ...safeUser } = user;
         return res.status(200).json({
             success: true,
-            message: 'Akun admin berhasil diperbarui di cloud.',
-            data: user
+            message: 'Akun pengguna berhasil diperbarui.',
+            data: safeUser
         });
     }
 

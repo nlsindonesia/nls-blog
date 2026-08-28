@@ -150,6 +150,12 @@ export default async function handler(req, res) {
         }
         return res.status(200).json({
             success: true,
+            meta: {
+                total: eventsCache.length,
+                activeCount: eventsCache.filter(e => e.status !== 'trashed').length,
+                trashCount: eventsCache.filter(e => e.status === 'trashed').length,
+                timestamp: new Date().toISOString()
+            },
             total: eventsCache.length,
             activeCount: eventsCache.filter(e => e.status !== 'trashed').length,
             trashCount: eventsCache.filter(e => e.status === 'trashed').length,
@@ -168,29 +174,34 @@ export default async function handler(req, res) {
             return res.status(400).json({ success: false, message: 'Judul event wajib diisi.' });
         }
 
+        const nowIso = new Date().toISOString();
         const newEvent = {
             id: body.id || `evt-${Date.now()}`,
-            title: body.title,
+            title: body.title.trim(),
             category: body.category || 'OSN',
             jenjang: body.jenjang || 'SMA',
             jenjangLabel: body.jenjangLabel || (body.jenjang === 'SMA' ? 'SMA / MA / Sederajat' : 'Semua Jenjang'),
-            date: body.date || new Date().toISOString().split('T')[0],
+            date: body.date || nowIso.split('T')[0],
             endDate: body.endDate || '',
             time: body.time || '08:00 - 11:30 WIB',
             mode: body.mode || 'Online (CBT NLS)',
             location: body.location || 'Platform CBT Next Level Study',
             badgeText: body.badgeText || 'Pendaftaran Dibuka',
             whatsappMessage: body.whatsappMessage || `Halo Tim NLS, saya ingin info terkait event ${body.title}`,
-            description: body.description || '',
+            description: body.description ? body.description.trim() : '',
             highlights: Array.isArray(body.highlights) ? body.highlights : (
                 typeof body.highlightsRaw === 'string' ? body.highlightsRaw.split('\n').map(s => s.trim()).filter(Boolean) : []
             ),
-            status: body.status || 'active'
+            status: body.status || 'active',
+            isTrashed: body.status === 'trashed' ? 1 : 0,
+            createdAt: body.createdAt || nowIso,
+            updatedAt: nowIso,
+            deletedAt: body.status === 'trashed' ? (body.deletedAt || nowIso) : null
         };
 
         const idx = eventsCache.findIndex(e => e.id === newEvent.id);
         if (idx !== -1) {
-            eventsCache[idx] = newEvent;
+            eventsCache[idx] = { ...eventsCache[idx], ...newEvent, updatedAt: nowIso };
         } else {
             eventsCache.unshift(newEvent);
         }
@@ -199,7 +210,7 @@ export default async function handler(req, res) {
 
         return res.status(201).json({
             success: true,
-            message: 'Event kalender berhasil disimpan ke cloud.',
+            message: 'Event kalender berhasil disimpan ke database terstruktur.',
             data: newEvent
         });
     }
@@ -213,19 +224,23 @@ export default async function handler(req, res) {
         const { id, status, deletedAt } = body || {};
         if (!id) return res.status(400).json({ success: false, message: 'ID event diperlukan.' });
 
+        const nowIso = new Date().toISOString();
         let event = eventsCache.find(e => e.id === id);
         if (!event) {
-            // Create if missing
-            event = { id, title: body.title || 'Event', status: status || 'active' };
+            event = { id, title: body.title || 'Event', status: status || 'active', createdAt: nowIso };
             eventsCache.unshift(event);
         }
 
         Object.assign(event, body);
+        event.updatedAt = nowIso;
         if (status) {
             event.status = status;
             if (status === 'trashed') {
-                event.deletedAt = deletedAt || new Date().toISOString();
+                event.isTrashed = 1;
+                event.deletedAt = deletedAt || nowIso;
             } else {
+                event.isTrashed = 0;
+                event.deletedAt = null;
                 delete event.deletedAt;
             }
         }
@@ -234,7 +249,7 @@ export default async function handler(req, res) {
 
         return res.status(200).json({
             success: true,
-            message: 'Event berhasil diperbarui di cloud.',
+            message: 'Event berhasil diperbarui.',
             data: event
         });
     }

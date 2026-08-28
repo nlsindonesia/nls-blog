@@ -97,6 +97,12 @@ export default async function handler(req, res) {
         }
         return res.status(200).json({
             success: true,
+            meta: {
+                total: articlesCache.length,
+                activeCount: articlesCache.filter(a => a.status !== 'trashed').length,
+                trashCount: articlesCache.filter(a => a.status === 'trashed').length,
+                timestamp: new Date().toISOString()
+            },
             total: articlesCache.length,
             activeCount: articlesCache.filter(a => a.status !== 'trashed').length,
             trashCount: articlesCache.filter(a => a.status === 'trashed').length,
@@ -115,29 +121,42 @@ export default async function handler(req, res) {
             return res.status(400).json({ success: false, message: 'Judul artikel wajib diisi.' });
         }
 
-        const now = new Date().toISOString().split('T')[0];
+        const nowIso = new Date().toISOString();
+        const autoSlug = (body.slug || body.title)
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '');
+
         const newArticle = {
             id: body.id || `art-${Date.now()}`,
-            title: body.title,
-            slug: body.slug || body.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+            title: body.title.trim(),
+            slug: autoSlug,
             category: body.category || 'SNBT & UTBK',
             categories: Array.isArray(body.categories) && body.categories.length > 0 ? body.categories : [body.category || 'SNBT & UTBK'],
-            date: body.date || now,
+            date: body.date || nowIso.split('T')[0],
             endDate: body.endDate || '',
-            author: body.author || 'Tim Akademik NLS',
+            author: body.author ? body.author.trim() : 'Tim Akademik NLS',
+            authorId: body.authorId || null,
             status: body.status || 'published',
             coverImage: body.coverImage || '/images/blog/cover-snbt-tps.jpg',
-            focusKeyword: body.focusKeyword || '',
-            metaTitle: body.metaTitle || body.title,
-            metaDescription: body.metaDescription || '',
-            canonicalUrl: body.canonicalUrl || `https://next-level-study.com/blog/${body.slug || 'artikel'}`,
+            excerpt: body.excerpt ? body.excerpt.trim() : '',
+            focusKeyword: body.focusKeyword ? body.focusKeyword.trim() : '',
+            metaTitle: body.metaTitle ? body.metaTitle.trim() : body.title.trim(),
+            metaDescription: body.metaDescription ? body.metaDescription.trim() : '',
+            canonicalUrl: body.canonicalUrl || `https://next-level-study.com/blog/${autoSlug}`,
             content: body.content || '<p>Konten artikel Next Level Study.</p>',
-            seoScore: Number(body.seoScore) || 85
+            seoScore: Number(body.seoScore) || 85,
+            viewCount: Number(body.viewCount) || 0,
+            isTrashed: body.status === 'trashed' ? 1 : 0,
+            publishedAt: body.status === 'published' ? (body.publishedAt || nowIso) : null,
+            createdAt: body.createdAt || nowIso,
+            updatedAt: nowIso,
+            deletedAt: body.status === 'trashed' ? (body.deletedAt || nowIso) : null
         };
 
         const idx = articlesCache.findIndex(a => a.id === newArticle.id || a.slug === newArticle.slug);
         if (idx !== -1) {
-            articlesCache[idx] = newArticle;
+            articlesCache[idx] = { ...articlesCache[idx], ...newArticle, updatedAt: nowIso };
         } else {
             articlesCache.unshift(newArticle);
         }
@@ -146,7 +165,7 @@ export default async function handler(req, res) {
 
         return res.status(201).json({
             success: true,
-            message: 'Artikel berita berhasil dipublikasikan ke cloud.',
+            message: 'Artikel berita berhasil disimpan ke database terstruktur.',
             data: newArticle
         });
     }
@@ -160,18 +179,23 @@ export default async function handler(req, res) {
         const { id, status, deletedAt } = body || {};
         if (!id) return res.status(400).json({ success: false, message: 'ID artikel diperlukan.' });
 
+        const nowIso = new Date().toISOString();
         let article = articlesCache.find(a => a.id === id);
         if (!article) {
-            article = { id, title: body.title || 'Artikel', status: status || 'published' };
+            article = { id, title: body.title || 'Artikel', status: status || 'published', createdAt: nowIso };
             articlesCache.unshift(article);
         }
 
         Object.assign(article, body);
+        article.updatedAt = nowIso;
         if (status) {
             article.status = status;
             if (status === 'trashed') {
-                article.deletedAt = deletedAt || new Date().toISOString();
+                article.isTrashed = 1;
+                article.deletedAt = deletedAt || nowIso;
             } else {
+                article.isTrashed = 0;
+                article.deletedAt = null;
                 delete article.deletedAt;
             }
         }
@@ -180,7 +204,7 @@ export default async function handler(req, res) {
 
         return res.status(200).json({
             success: true,
-            message: 'Artikel berhasil diperbarui di cloud.',
+            message: 'Artikel berhasil diperbarui.',
             data: article
         });
     }
