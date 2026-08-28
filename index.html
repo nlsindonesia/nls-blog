@@ -1659,7 +1659,7 @@ html.dark .admin-card-dinas {
 
                 <template x-if="activeArticle && activeArticle.coverImage">
                     <div class="rounded-2xl overflow-hidden max-h-96 w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                        <img :src="activeArticle.coverImage" :alt="activeArticle.title" class="w-full h-full object-cover">
+                        <img :src="activeArticle.coverImage" @error="$event.target.src = '/images/blog/cover-snbt-2027.jpg'" :alt="activeArticle.title" class="w-full h-full object-cover">
                     </div>
                 </template>
 

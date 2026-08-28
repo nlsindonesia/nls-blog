@@ -1018,6 +1018,7 @@
                         <!-- Article Cover Banner -->
                         <div class="relative h-64 sm:h-80 rounded-3xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900">
                             <img :src="activeArticle.coverImage || '/images/stitch/nexgen-classroom.jpg'"
+                                @error="$event.target.src = '/images/stitch/nexgen-classroom.jpg'"
                                 :alt="activeArticle.title"
                                 class="w-full h-full object-cover">
                         </div>
