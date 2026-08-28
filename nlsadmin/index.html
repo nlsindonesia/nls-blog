@@ -5040,16 +5040,29 @@
                         serverActive.forEach(app => {
                             if (app && app.id) activeMap.set(app.id, app);
                         });
+                        const unSyncedApps = [];
                         localApps.forEach(app => {
                             if (app && app.id && !serverTrashed.some(st => st.id === app.id) && !deleted.includes(app.id)) {
                                 if (!activeMap.has(app.id)) {
                                     activeMap.set(app.id, app);
+                                    unSyncedApps.push(app);
                                 } else {
                                     const serverApp = activeMap.get(app.id);
                                     activeMap.set(app.id, { ...app, ...serverApp });
                                 }
                             }
                         });
+
+                        // Automatically upload any unsynced local application to persistent cloud DB
+                        if (unSyncedApps.length > 0 && typeof fetch !== 'undefined') {
+                            unSyncedApps.forEach(unApp => {
+                                fetch('/api/teacher-applications', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify(unApp)
+                                }).catch(e => {});
+                            });
+                        }
 
                         const mergedActive = Array.from(activeMap.values());
                         this.teacherApplications = mergedActive;
@@ -6353,10 +6366,11 @@
                             this.syncEventsFromCloud(false),
                             this.syncArticlesFromCloud(false),
                             this.syncTeachersFromCloud(false),
+                            this.refreshTeacherApplications(false),
                             this.syncUsersFromCloud(false)
                         ]);
                         if (showNotice) {
-                            this.showToast('Semua menu (Kalender, Berita, Pengajar, User) berhasil disinkronkan dengan Cloud API!');
+                            this.showToast('Semua menu (Kalender, Berita, Pengajar, Verifikasi, User) berhasil disinkronkan dengan Cloud API!');
                         }
                     } catch(e) {
                         if (showNotice) this.showToast('Terjadi kendala saat menyinkronkan data cloud.');
