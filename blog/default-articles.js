@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Master Dataset Berita & Artikel CMS Next Level Study (NLS)
  * Baseline data tersinkronisasi untuk /nlsadmin, /blog, dan homepage.
  */
@@ -189,6 +189,74 @@ window.NLS_DEFAULT_ARTICLES = [
     "canonicalUrl": "https://next-level-study.com/blog/memilih-jurusan",
     "content": "<h2>Salah Jurusan: Masalah Klasik yang Harus Dihindari</h2>\n<p>Riset menunjukkan lebih dari 80% mahasiswa di Indonesia merasa salah memilih program studi. Memilih jurusan kuliah adalah keputusan strategis yang akan membentuk lintasan karier dan pengembangan profesional Anda di masa depan.</p>\n\n<h3>Formula 3A dalam Memilih Jurusan</h3>\n<ol>\n  <li><strong>Aptitude (Bakat & Kemampuan Akademik):</strong> Ukur performa nilai rapor dan skor try out pada mata pelajaran kunci.</li>\n  <li><strong>Affinity (Minat & Gairah Belajar):</strong> Bidang apa yang membuat Anda bersemangat untuk belajar secara mandiri tanpa paksaan?</li>\n  <li><strong>Application (Peluang Kerja & Tren Industri):</strong> Analisis kebutuhan industri 5-10 tahun ke depan, seperti Data Science, Artificial Intelligence, Green Energy, dan Bioteknologi.</li>\n</ol>",
     "seoScore": 90
+  },
+  {
+    "id": "art-tka-1",
+    "title": "Panduan Resmi TKA Pusmendik Kemendikdasmen: Struktur Tes, Domain Materi & Bobot Penilaian",
+    "slug": "panduan-resmi-tka-pusmendik",
+    "category": "TKA & Akademik",
+    "categories": ["TKA & Akademik", "Berita Sekolah & Diknas", "Tips Belajar & Prestasi"],
+    "date": "2026-08-25",
+    "author": "Tim Akademik NLS",
+    "status": "published",
+    "coverImage": "/images/blog/cover-osn-matematika.jpg",
+    "focusKeyword": "panduan resmi tka pusmendik kemendikdasmen",
+    "metaTitle": "Panduan Resmi TKA Pusmendik Kemendikdasmen RI | Next Level Study",
+    "metaDescription": "Ulasan komprehensif panduan resmi Tes Kemampuan Akademik (TKA) Pusmendik Kemendikdasmen: domain materi wajib, pilihan saintek/soshum, dan sistem penilaian terstandar.",
+    "canonicalUrl": "https://next-level-study.com/blog/panduan-resmi-tka-pusmendik",
+    "content": "<h2>Regulasi Resmi TKA: Standarisasi Capaian Akademik Nasional</h2>\n<p>Pusat Asesmen Pendidikan (Pusmendik) Kemendikdasmen RI secara resmi menyelenggarakan Tes Kemampuan Akademik (TKA) sebagai instrumen evaluasi capaian belajar siswa terstandar nasional. Nilai TKA menjadi tolok ukur obyektif untuk pemetaan mutu sekolah, seleksi lanjutan, dan penguatan portofolio SNBP.</p>\n\n<h3>1. Struktur Mata Pelajaran Wajib</h3>\n<ul>\n  <li><strong>Bahasa Indonesia:</strong> Penalaran teks kompleks, literasi kritis, dan analisis wacana ilmiah.</li>\n  <li><strong>Matematika:</strong> Logika numerik, pemodelan matematis aljabar, kalkulus terapan, dan statistika probabilitas.</li>\n  <li><strong>Bahasa Inggris:</strong> Critical reading comprehension, sintaksis kontekstual, dan inferensi akademik internasional.</li>\n</ul>\n\n<h3>2. Domain Mata Pelajaran Pilihan</h3>\n<p>Siswa dapat memilih mata pelajaran peminatan sesuai rumpun studi yang ditargetkan di perguruan tinggi (Fisika, Kimia, Biologi untuk Saintek; Ekonomi, Sosiologi, Geografi untuk Soshum; serta Bahasa & Vokasi Terapan).</p>\n\n<blockquote>\"TKA bukan sekadar ujian hafalan rumus, melainkan uji penalaran kognitif tingkat tinggi (HOTS) yang mengukur kedalaman konsep.\"</blockquote>",
+    "seoScore": 95
+  },
+  {
+    "id": "art-tka-2",
+    "title": "5 Strategi Cepat & Tepat Menyelesaikan Soal Penalaran Matematika & Kalkulus TKA",
+    "slug": "tips-matematika-kalkulus-tka",
+    "category": "TKA & Akademik",
+    "categories": ["TKA & Akademik", "Tips Belajar & Prestasi"],
+    "date": "2026-08-22",
+    "author": "Kak Daniel (Matematika ITB)",
+    "status": "published",
+    "coverImage": "/images/blog/cover-osn-fisika.jpg",
+    "focusKeyword": "soal kalkulus matematika tka",
+    "metaTitle": "5 Strategi Cepat Menyelesaikan Soal Kalkulus Matematika TKA | NLS",
+    "metaDescription": "Pelajari trik cepat menyelesaikan soal kalkulus, aljabar, dan pemodelan fungsi pada Tes Kemampuan Akademik (TKA) secara tepat dan presisi.",
+    "canonicalUrl": "https://next-level-study.com/blog/tips-matematika-kalkulus-tka",
+    "content": "<h2>Menguasai Soal Matematika TKA Tanpa Terjebak Waktu</h2>\n<p>Subtes Matematika dalam TKA terkenal dengan soal bertipe analisis kontekstual bergradasi tinggi. Berikut 5 strategi kunci yang terbukti efektif meningkatkan skor TKA secara signifikan:</p>\n\n<h3>1. Visualisasi Grafik dan Sketsa Fungsi Cepat</h3>\n<p>Sebagian besar soal kalkulus (turunan dan integral aplikasi) dapat diselesaikan jauh lebih cepat dengan menggambar sketsa grafik fungsi dasar dan titik stasionernya daripada melakukan eliminasi aljabar panjang.</p>\n\n<h3>2. Identifikasi Kata Kunci Heuristik</h3>\n<p>Perhatikan kata kunci seperti 'laju perubahan maksimum', 'titik belok', atau 'luas optimum'. Hubungkan langsung dengan turunan pertama $f'(x) = 0$ atau turunan kedua $f''(x)$.</p>\n\n<h3>3. Substitusi Nilai Ekstrem (Boundary Value Testing)</h3>\n<p>Untuk soal pertidaksamaan rasional atau limit tak hingga, uji nilai batas $x = 0, 1, -1$ atau nilai mendekati asimtot untuk mengeliminasi 3 pilihan ganda yang salah dalam hitungan detik.</p>\n\n<h3>4. Penguasaan Rumus Identitas Cepat</h3>\n<p>Kuasai identitas trigonometri ganda, aturan rantai diferensial bersusun, dan integral parsial metode tabular (metode DI Tanzalin).</p>\n\n<blockquote>\"Kecepatan berhitung lahir dari kejelasan konsep, bukan dari tergesa-gesa membaca soal.\"</blockquote>",
+    "seoScore": 94
+  },
+  {
+    "id": "art-tka-3",
+    "title": "Manajemen Waktu & Strategi Pengerjaan Saat Simulasi TKA Berstandar Nasional",
+    "slug": "manajemen-waktu-simulasi-tka",
+    "category": "TKA & Akademik",
+    "categories": ["TKA & Akademik", "Tips Belajar & Prestasi"],
+    "date": "2026-08-18",
+    "author": "Kak Sarah (Psikologi UI)",
+    "status": "published",
+    "coverImage": "/images/blog/cover-osn-biologi.jpg",
+    "focusKeyword": "manajemen waktu simulasi tka",
+    "metaTitle": "Manajemen Waktu Saat Simulasi Try Out TKA Nasional | NLS",
+    "metaDescription": "Panduan manajemen alokasi waktu per butir soal, teknik eliminasi opsi cerdas, dan mitigasi stres saat menghadapi simulasi TKA nasional.",
+    "canonicalUrl": "https://next-level-study.com/blog/manajemen-waktu-simulasi-tka",
+    "content": "<h2>Strategi Alokasi Waktu: Kunci Lolos Ambang Batas Tertinggi</h2>\n<p>Banyak siswa dengan kemampuan akademik mumpuni gagal memaksimalkan skor TKA hanya karena kehabisan waktu di 10 soal terakhir. Kunci keberhasilan terletak pada strategi <em>Time Management</em> yang disiplin.</p>\n\n<h3>Sistem 3 Ronde Pengerjaan Soal</h3>\n<ol>\n  <li><strong>Ronde 1 (40% Waktu):</strong> Kerjakan soal-soal langsung paham dengan tingkat kepastian jawaban > 90%. Lewati segera soal dengan bacaan > 3 paragraf.</li>\n  <li><strong>Ronde 2 (45% Waktu):</strong> Selesaikan soal tipe analisis menengah dan hitungan yang membutuhkan 2-3 langkah pengerjaan.</li>\n  <li><strong>Ronde 3 (15% Waktu Terakhir):</strong> Evaluasi soal bertanda ragu-ragu dan soal menantang dengan teknik eliminasi opsi rasional.</li>\n</ol>",
+    "seoScore": 92
+  },
+  {
+    "id": "art-tka-4",
+    "title": "Kupas Tuntas Literasi Bahasa Indonesia & Bahasa Inggris pada Standar Baru TKA",
+    "slug": "memahami-struktur-literasi-bahasa-tka",
+    "category": "TKA & Akademik",
+    "categories": ["TKA & Akademik", "Tips Belajar & Prestasi"],
+    "date": "2026-08-15",
+    "author": "Kak Nabila (Linguistik UGM)",
+    "status": "published",
+    "coverImage": "/images/blog/cover-osn-kimia.jpg",
+    "focusKeyword": "literasi bahasa indonesia inggris tka",
+    "metaTitle": "Kupas Tuntas Struktur Literasi Bahasa Indonesia & Inggris TKA | NLS",
+    "metaDescription": "Memahami model soal literasi kritis, analisis teks argumentatif, inferensi konteks, dan struktur bacaan pada kurikulum baru TKA Pusmendik.",
+    "canonicalUrl": "https://next-level-study.com/blog/memahami-struktur-literasi-bahasa-tka",
+    "content": "<h2>Literasi Tingkat Lanjut: Bukan Sekadar Membaca Paragraf</h2>\n<p>Model asesmen TKA menuntut kemampuan sintesis lintas teks, evaluasi bias penulis, dan pemahaman argumen implisit. Teks yang disajikan mencakup artikel jurnal ilmiah populer, studi kasus sosio-humaniora, dan esai analitis kontemporer.</p>\n\n<h3>Keterampilan Kunci yang Diuji:</h3>\n<ul>\n  <li><strong>Menentukan Ide Pokok & Argumen Utama:</strong> Membedakan gagasan pokok pendukung vs premis inti kalimat.</li>\n  <li><strong>Analisis Hubungan Sebab-Akibat:</strong> Menilai validitas inferensi logis antar paragraf.</li>\n  <li><strong>Kontekstualisasi Kosakata Akademik:</strong> Memahami makna leksikal kata serapan dalam konteks kalimat kompleks.</li>\n</ul>",
+    "seoScore": 93
   }
 ]
 ;
