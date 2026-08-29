@@ -499,7 +499,23 @@
     <nav x-data="{ 
         isMobileMenuOpen: false, 
         activeDesktopMenu: null,
-        studentSession: null,
+                studentSession: (function() {
+            try {
+                const raw = localStorage.getItem('nls_auth_session') || localStorage.getItem('nls_student_auth_session');
+                if (!raw) return null;
+                const s = JSON.parse(raw);
+                if (!s || typeof s !== 'object') return null;
+                return {
+                    name: s.name || 'Siswa NLS',
+                    nisn: s.nisn || 'NISN: Terdaftar',
+                    school: s.school || '',
+                    targetProgram: s.targetProgram || 'Program NLS',
+                    avatar: s.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+                    role: s.role || 'student',
+                    roleLabel: (s.role === 'teacher' || (s.roleLabel && s.roleLabel.includes('Guru'))) ? 'Guru Aktif' : ((s.role === 'super_admin') ? 'Super Admin' : 'Siswa Aktif')
+                };
+            } catch(e) { return null; }
+        })(),
         profileDropdownOpen: false,
         initAuth() {
             const syncSession = (session) => {

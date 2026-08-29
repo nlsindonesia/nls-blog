@@ -97,9 +97,9 @@
                 } catch(e) {}
             }
 
-            // Also check API directly
+            // Also check API directly (only apply if a valid session exists in API)
             this.fetchSessionFromApi().then(session => {
-                if (session !== undefined) {
+                if (session && typeof session === 'object' && (session.name || session.email || session.username || session.role || session.id)) {
                     this.onRemoteSessionReceived(session);
                 }
             });
@@ -110,10 +110,10 @@
                 const res = await fetch('/api/auth-session?_t=' + Date.now());
                 if (res.ok) {
                     const data = await res.json();
-                    return data && data.success ? data.session : null;
+                    return data && data.success && data.session ? data.session : null;
                 }
             } catch(e) {}
-            return undefined;
+            return null;
         },
 
         async broadcastLogin(sessionData) {
@@ -213,20 +213,18 @@
         },
 
         onRemoteSessionReceived(session) {
-            if (session) {
+            if (session && typeof session === 'object' && (session.name || session.email || session.username || session.role || session.id)) {
+                const current = this.getLocalSession();
+                const isChanged = !current || current.id !== session.id || current.role !== session.role || current.name !== session.name;
                 this.setLocalSession(session);
-                this.callbacks.forEach(cb => {
-                    try { cb(session, true); } catch(e) {}
-                });
-            } else {
-                const hadSession = !!this.getLocalSession();
-                if (hadSession) {
-                    this.clearLocalSession();
+                if (isChanged) {
                     this.callbacks.forEach(cb => {
-                        try { cb(null, false); } catch(e) {}
+                        try { cb(session, true); } catch(e) {}
                     });
                 }
             }
+            // If remote session is null or empty from a passive check, DO NOT clear the local session!
+            // Local session remains authoritative and persistent until an explicit LOGOUT event.
         },
 
         onRemoteSessionCleared() {
