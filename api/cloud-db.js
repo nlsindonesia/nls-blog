@@ -14,7 +14,9 @@ let localMemoryCache = {
     events: [],
     articles: [],
     teachers: [],
-    users: []
+    users: [],
+    courses: [],
+    quizSubmissions: []
 };
 
 function httpsRequest(url, method, data = null, headers = {}) {
@@ -70,7 +72,9 @@ export async function getCloudStore() {
                     events: Array.isArray(remoteData.events) ? remoteData.events : (Array.isArray(localMemoryCache.events) ? localMemoryCache.events : []),
                     articles: Array.isArray(remoteData.articles) ? remoteData.articles : (Array.isArray(localMemoryCache.articles) ? localMemoryCache.articles : []),
                     teachers: Array.isArray(remoteData.teachers) ? remoteData.teachers : (Array.isArray(localMemoryCache.teachers) ? localMemoryCache.teachers : []),
-                    users: Array.isArray(remoteData.users) ? remoteData.users : (Array.isArray(localMemoryCache.users) ? localMemoryCache.users : [])
+                    users: Array.isArray(remoteData.users) ? remoteData.users : (Array.isArray(localMemoryCache.users) ? localMemoryCache.users : []),
+                    courses: Array.isArray(remoteData.courses) ? remoteData.courses : (Array.isArray(localMemoryCache.courses) ? localMemoryCache.courses : []),
+                    quizSubmissions: Array.isArray(remoteData.quizSubmissions) ? remoteData.quizSubmissions : (Array.isArray(localMemoryCache.quizSubmissions) ? localMemoryCache.quizSubmissions : [])
                 };
             }
             return localMemoryCache;

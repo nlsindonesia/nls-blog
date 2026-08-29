@@ -1694,6 +1694,11 @@
                     // Fetch latest courses from cloud API
                     this.fetchCoursesFromCloud();
 
+                    // Background live sync polling every 10 seconds
+                    setInterval(() => {
+                        this.fetchCoursesFromCloud();
+                    }, 10000);
+
                     // Router: Listen to URL back/forward & hash changes
                     window.addEventListener('hashchange', () => {
                         this.handleUrlRoute();
@@ -2114,8 +2119,35 @@
                     };
                     this.quizResults.unshift(newAttempt);
 
+                    // Save locally
+                    try {
+                        localStorage.setItem('nls_lms_quiz_results_v1', JSON.stringify(this.quizResults));
+                    } catch(e) {}
+
                     // Mark module completed
                     this.getActiveModule().completed = true;
+
+                    // Send live submission to Super Admin Cloud API
+                    if (typeof fetch !== 'undefined') {
+                        fetch('/api/quiz-results', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                studentName: this.studentProfile.name || 'Siswa NLS',
+                                studentEmail: this.studentProfile.email || '',
+                                nisn: this.studentProfile.nisn || '',
+                                school: this.studentProfile.school || '',
+                                courseId: this.studyRoom.course ? this.studyRoom.course.id : '',
+                                courseTitle: this.studyRoom.course ? this.studyRoom.course.title : 'Program NLS',
+                                moduleTitle: this.getActiveModule().title,
+                                category: this.studyRoom.course ? this.studyRoom.course.category : 'School',
+                                score: score,
+                                totalQuestions: totalQ,
+                                correctCount: correct,
+                                answers: this.userAnswers
+                            })
+                        }).catch(e => {});
+                    }
 
                     this.showToast(`Kuis Selesai! Skor Anda: ${score}/100. Riwayat telah tersimpan.`);
                     this.studyRoom.isTakingQuiz = false;
