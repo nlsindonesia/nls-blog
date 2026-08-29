@@ -333,12 +333,12 @@ html.dark .admin-card-dinas {
             const syncSession = (session) => {
                 if (session) {
                     this.studentSession = {
-                        name: session.name || (session.role === 'superadmin' ? 'Super Admin' : 'Siswa NLS'),
-                        nisn: session.nisn || (session.role === 'superadmin' ? 'Super Admin Portal' : 'NISN: Terdaftar'),
+                        name: session.name || 'Siswa NLS',
+                        nisn: session.nisn || 'NISN: Terdaftar',
                         school: session.school || '',
-                        targetProgram: session.targetProgram || (session.role === 'superadmin' ? 'Super Admin Portal' : 'Program NLS'),
+                        targetProgram: session.targetProgram || 'Program NLS',
                         avatar: session.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-                        role: session.role || 'student'
+                        role: 'student'
                     };
                 } else {
                     this.studentSession = null;

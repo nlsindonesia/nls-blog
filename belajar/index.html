@@ -2601,14 +2601,14 @@
                         if (session) {
                             this.isLoggedIn = true;
                             this.studentProfile = {
-                                name: session.name || (session.role === 'superadmin' ? 'Super Admin NLS' : 'Siswa NLS'),
-                                nisn: session.nisn || (session.role === 'superadmin' ? 'Role: Super Admin' : 'NISN: Terdaftar'),
-                                school: session.school || (session.role === 'superadmin' ? 'Pusat Operasional NLS' : 'Sekolah NLS'),
-                                grade: session.level || session.grade || (session.role === 'superadmin' ? 'Super Administrator' : 'Jenjang Siswa'),
+                                name: session.name || 'Siswa NLS',
+                                nisn: session.nisn || 'NISN: Terdaftar',
+                                school: session.school || 'Sekolah NLS',
+                                grade: session.level || session.grade || 'Jenjang Siswa',
                                 email: session.email || '',
                                 phone: session.phone || '',
                                 parentPhone: session.parentPhone || '-',
-                                target: session.targetProgram || (session.role === 'superadmin' ? 'Master Administration' : 'Program Unggulan NLS'),
+                                target: session.targetProgram || 'Program Unggulan NLS',
                                 avatar: session.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'
                             };
                         } else {

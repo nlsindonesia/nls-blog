@@ -48,8 +48,6 @@
     <script src="/database/vue/users.db.js"></script>
     <script src="/database/vue/index.js"></script>
     <script src="https://cdn.ckeditor.com/4.22.1/full-all/ckeditor.js"></script>
-    <!-- NLS Universal Cross-Subdomain SSO Client -->
-    <script src="/sso-client.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
     
     <style>
@@ -4893,14 +4891,7 @@
     <script>
         function superAdminApp() {
             return {
-                isAuthenticated: sessionStorage.getItem('nls_admin_auth') === 'true' || 
-                                 localStorage.getItem('nls_admin_auth_persistent') === 'true' ||
-                                 ((function() {
-                                     try {
-                                         const s = JSON.parse(localStorage.getItem('nls_auth_session') || '{}');
-                                         return s && (s.role === 'superadmin' || s.username === 'nlsindonesia');
-                                     } catch(e) { return false; }
-                                 })()),
+                isAuthenticated: sessionStorage.getItem('nls_admin_auth') === 'true',
                 showPassword: false,
                 isSidebarOpen: window.innerWidth >= 1024,
                 isMobile: window.innerWidth < 1024,
@@ -5440,21 +5431,6 @@
                             this.syncAllFromCloud(false);
                         }
                     }, 5000);
-
-                    // 4. Cross-Subdomain SSO Real-time Listener
-                    if (window.NlsSSO) {
-                        window.NlsSSO.onSessionChange((session, isLoggedIn) => {
-                            if (isLoggedIn && session && (session.role === 'superadmin' || session.username === 'nlsindonesia')) {
-                                this.isAuthenticated = true;
-                                sessionStorage.setItem('nls_admin_auth', 'true');
-                                localStorage.setItem('nls_admin_auth_persistent', 'true');
-                            } else if (!isLoggedIn) {
-                                this.isAuthenticated = false;
-                                sessionStorage.removeItem('nls_admin_auth');
-                                localStorage.removeItem('nls_admin_auth_persistent');
-                            }
-                        });
-                    }
                 },
 
                 // AUTHENTICATION
@@ -5463,23 +5439,6 @@
                         this.isAuthenticated = true;
                         this.loginError = false;
                         sessionStorage.setItem('nls_admin_auth', 'true');
-                        localStorage.setItem('nls_admin_auth_persistent', 'true');
-
-                        const adminSession = {
-                            role: 'superadmin',
-                            username: 'nlsindonesia',
-                            name: 'Super Administrator NLS',
-                            email: 'admin@next-level-study.com',
-                            school: 'Pusat Operasional NLS',
-                            level: 'Super Admin',
-                            avatar: '/nls-logo-300.png',
-                            loggedInAt: new Date().toISOString()
-                        };
-
-                        if (window.NlsSSO) {
-                            window.NlsSSO.broadcastLogin(adminSession);
-                        }
-
                         this.showToast('Selamat datang, Super Admin NLS!');
                     } else {
                         this.loginError = true;
@@ -5490,12 +5449,7 @@
                 logout() {
                     this.isAuthenticated = false;
                     sessionStorage.removeItem('nls_admin_auth');
-                    localStorage.removeItem('nls_admin_auth_persistent');
                     this.loginForm = { username: '', password: '' };
-
-                    if (window.NlsSSO) {
-                        window.NlsSSO.broadcastLogout();
-                    }
                 },
 
                 // TOAST
