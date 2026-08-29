@@ -543,7 +543,7 @@
                         }
 
                         this.isLoading = false;
-                        this.showToast('Login berhasil! Mengalihkan ke Beranda...', 'success');
+                        this.showToast('Login berhasil! Mengalihkan ke Portal Belajar...', 'success');
 
                         setTimeout(() => {
                             window.location.href = this.getRedirectTarget();
@@ -555,10 +555,10 @@
                     const params = new URLSearchParams(window.location.search);
                     const courseId = params.get('course');
                     const returnUrl = params.get('returnUrl') || params.get('redirect');
-                    let target = '/';
+                    let target = 'https://nls-belajar.vercel.app';
                     if (courseId) {
                         target = `https://nls-belajar.vercel.app/course/${courseId}`;
-                    } else if (returnUrl) {
+                    } else if (returnUrl && !returnUrl.startsWith('/login') && returnUrl !== '/') {
                         target = returnUrl;
                     }
                     if (window.NlsSSO && typeof window.NlsSSO.createCrossDomainUrl === 'function') {
@@ -628,7 +628,7 @@
                         }
 
                         this.isLoading = false;
-                        this.showToast('Pendaftaran Berhasil! Selamat datang di Next Level Study!', 'success');
+                        this.showToast('Pendaftaran Berhasil! Mengalihkan ke Portal Belajar...', 'success');
 
                         setTimeout(() => {
                             window.location.href = this.getRedirectTarget();
@@ -669,7 +669,7 @@
                         }
 
                         this.isLoading = false;
-                        this.showToast('Berhasil masuk dengan akun Google!', 'success');
+                        this.showToast('Berhasil masuk dengan Google! Mengalihkan ke Portal Belajar...', 'success');
 
                         setTimeout(() => {
                             window.location.href = this.getRedirectTarget();
