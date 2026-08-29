@@ -1,18 +1,96 @@
 {
     "cleanUrls": true,
     "trailingSlash": false,
-    "routes": [
+    "rewrites": [
         {
-            "src": "/api/(.*)",
-            "dest": "/api/$1"
+            "source": "/api/(.*)",
+            "destination": "/api/$1"
         },
         {
-            "handle": "filesystem"
+            "source": "/",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "nls-belajar.vercel.app"
+                }
+            ],
+            "destination": "/belajar/index.html"
         },
         {
-            "src": "/(.*)",
-            "status": 404,
-            "dest": "/404.html"
+            "source": "/",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "belajar.next-level-study.com"
+                }
+            ],
+            "destination": "/belajar/index.html"
+        },
+        {
+            "source": "/",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "nls-superadmin.vercel.app"
+                }
+            ],
+            "destination": "/nlsadmin/index.html"
+        },
+        {
+            "source": "/",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "admin.next-level-study.com"
+                }
+            ],
+            "destination": "/nlsadmin/index.html"
+        }
+    ],
+    "redirects": [
+        {
+            "source": "/belajar",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "nls-belajar.vercel.app"
+                }
+            ],
+            "destination": "/",
+            "permanent": false
+        },
+        {
+            "source": "/belajar/",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "nls-belajar.vercel.app"
+                }
+            ],
+            "destination": "/",
+            "permanent": false
+        },
+        {
+            "source": "/nlsadmin",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "nls-superadmin.vercel.app"
+                }
+            ],
+            "destination": "/",
+            "permanent": false
+        },
+        {
+            "source": "/nlsadmin/",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "nls-superadmin.vercel.app"
+                }
+            ],
+            "destination": "/",
+            "permanent": false
         }
     ]
 }

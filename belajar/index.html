@@ -11,6 +11,15 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        // Clean URL to root "/" if accessed directly on nls-belajar subdomain
+        if ((window.location.hostname.includes('belajar') || window.location.hostname.includes('lms')) && 
+            (window.location.pathname === '/belajar' || window.location.pathname === '/belajar/')) {
+            try {
+                history.replaceState(null, '', '/' + window.location.search + window.location.hash);
+            } catch(e) {}
+        }
+    </script>
     <title>Dashboard Siswa - Next Level Study Belajar | NLS LMS</title>
     <meta name="description" content="Portal belajar interaktif siswa Next Level Study (NLS): akses modul materi, video pembelajaran, kuis latihan topik, dan evaluasi hasil belajar.">
     <link rel="icon" type="image/x-icon" href="/nls-logo.ico">
