@@ -1387,6 +1387,52 @@
                             this.studentProfile = { ...this.studentProfile, ...JSON.parse(savedProfile) };
                         }
                     } catch(e) {}
+
+                    // Load local courses if available
+                    try {
+                        const savedCourses = localStorage.getItem('nls_lms_courses_v1');
+                        if (savedCourses) {
+                            const parsed = JSON.parse(savedCourses);
+                            if (Array.isArray(parsed) && parsed.length > 0) {
+                                this.courses = parsed.filter(c => c && c.status !== 'trashed');
+                            }
+                        }
+                    } catch(e) {}
+
+                    // Listen to real-time broadcast channel from Super Admin
+                    if (typeof BroadcastChannel !== 'undefined') {
+                        const bc = new BroadcastChannel('nls_sync_channel');
+                        bc.onmessage = (ev) => {
+                            if (ev.data && ev.data.type === 'COURSES_UPDATED' && Array.isArray(ev.data.data)) {
+                                this.courses = ev.data.data.filter(c => c && c.status !== 'trashed');
+                            }
+                        };
+                    }
+
+                    window.addEventListener('nls-courses-updated', (ev) => {
+                        if (ev.detail && Array.isArray(ev.detail)) {
+                            this.courses = ev.detail.filter(c => c && c.status !== 'trashed');
+                        }
+                    });
+
+                    // Fetch latest courses from cloud API
+                    this.fetchCoursesFromCloud();
+                },
+
+                async fetchCoursesFromCloud() {
+                    if (typeof fetch === 'undefined') return;
+                    try {
+                        const res = await fetch('/api/courses');
+                        if (res.ok) {
+                            const json = await res.json();
+                            if (json && Array.isArray(json.data) && json.data.length > 0) {
+                                this.courses = json.data.filter(c => c && c.status !== 'trashed');
+                                try {
+                                    localStorage.setItem('nls_lms_courses_v1', JSON.stringify(json.data));
+                                } catch(e) {}
+                            }
+                        }
+                    } catch(e) {}
                 },
 
                 toggleDarkMode() {

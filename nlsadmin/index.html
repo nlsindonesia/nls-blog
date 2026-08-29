@@ -1321,6 +1321,291 @@
                         </div>
                     </div>
 
+                    <!-- =========================================================================
+                         MODUL LMS & KURIKULUM COURSES
+                         ========================================================================= -->
+                    <div class="pt-3 pb-1 px-3">
+                        <span class="text-[9px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">LMS COURSES &amp; MATERI</span>
+                    </div>
+
+                    <!-- Menu 5: School (SD, SMP, SMA) -->
+                    <div class="space-y-1">
+                        <button type="button" @click="toggleSchoolDropdown()"
+                            :class="activeTab === 'lms_courses' && lmsCategory === 'School' ? 'nav-pill-school font-black bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold'"
+                            class="w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs transition-all cursor-pointer text-left group">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-2xs transition-colors"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'School' ? 'bg-sky-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 group-hover:bg-sky-600 group-hover:text-white'">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                </span>
+                                <span class="truncate">School</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-sky-100 dark:bg-sky-950 text-sky-800 dark:text-sky-200"
+                                    x-text="countCoursesByCategory('School')"></span>
+                                <svg class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200"
+                                    :class="isSchoolDropdownOpen ? 'rotate-180 text-sky-600' : ''"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </button>
+
+                        <div x-show="isSchoolDropdownOpen" x-cloak class="border-l-2 border-sky-300 dark:border-sky-800 ml-4 pl-2.5 pt-1 space-y-1.5">
+                            <button type="button" @click="openLmsCategory('School', 'SD')"
+                                :class="activeTab === 'lms_courses' && lmsCategory === 'School' && lmsLevel === 'SD' ? 'submenu-school-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                        :class="activeTab === 'lms_courses' && lmsCategory === 'School' && lmsLevel === 'SD' ? 'bg-sky-600 ring-4 ring-sky-200 dark:ring-sky-900/80 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate">SD / MI</span>
+                                </div>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'School' && lmsLevel === 'SD' ? 'bg-sky-600 text-white shadow-2xs' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
+                                    x-text="countCoursesByLevel('School', 'SD')"></span>
+                            </button>
+
+                            <button type="button" @click="openLmsCategory('School', 'SMP')"
+                                :class="activeTab === 'lms_courses' && lmsCategory === 'School' && lmsLevel === 'SMP' ? 'submenu-school-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                        :class="activeTab === 'lms_courses' && lmsCategory === 'School' && lmsLevel === 'SMP' ? 'bg-sky-600 ring-4 ring-sky-200 dark:ring-sky-900/80 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate">SMP / MTs</span>
+                                </div>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'School' && lmsLevel === 'SMP' ? 'bg-sky-600 text-white shadow-2xs' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
+                                    x-text="countCoursesByLevel('School', 'SMP')"></span>
+                            </button>
+
+                            <button type="button" @click="openLmsCategory('School', 'SMA')"
+                                :class="activeTab === 'lms_courses' && lmsCategory === 'School' && lmsLevel === 'SMA' ? 'submenu-school-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                        :class="activeTab === 'lms_courses' && lmsCategory === 'School' && lmsLevel === 'SMA' ? 'bg-sky-600 ring-4 ring-sky-200 dark:ring-sky-900/80 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate">SMA / MA</span>
+                                </div>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'School' && lmsLevel === 'SMA' ? 'bg-sky-600 text-white shadow-2xs' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
+                                    x-text="countCoursesByLevel('School', 'SMA')"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Menu 6: Olimpiade (OSN SD, OSN SMP, OSN SMA, ONMIPA, Internasional) -->
+                    <div class="space-y-1">
+                        <button type="button" @click="toggleOlimpiadeDropdown()"
+                            :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' ? 'nav-pill-olimpiade font-black bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold'"
+                            class="w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs transition-all cursor-pointer text-left group">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-2xs transition-colors"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' ? 'bg-amber-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 group-hover:bg-amber-500 group-hover:text-white'">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+                                </span>
+                                <span class="truncate">Olimpiade</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-200"
+                                    x-text="countCoursesByCategory('Olimpiade')"></span>
+                                <svg class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200"
+                                    :class="isOlimpiadeDropdownOpen ? 'rotate-180 text-amber-600' : ''"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </button>
+
+                        <div x-show="isOlimpiadeDropdownOpen" x-cloak class="border-l-2 border-amber-300 dark:border-amber-800 ml-4 pl-2.5 pt-1 space-y-1.5">
+                            <button type="button" @click="openLmsCategory('Olimpiade', 'OSN SD')"
+                                :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' && lmsLevel === 'OSN SD' ? 'submenu-olimpiade-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                        :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' && lmsLevel === 'OSN SD' ? 'bg-amber-500 ring-4 ring-amber-200 dark:ring-amber-900/80 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate">OSN SD</span>
+                                </div>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' && lmsLevel === 'OSN SD' ? 'bg-amber-500 text-white shadow-2xs' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
+                                    x-text="countCoursesByLevel('Olimpiade', 'OSN SD')"></span>
+                            </button>
+
+                            <button type="button" @click="openLmsCategory('Olimpiade', 'OSN SMP')"
+                                :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' && lmsLevel === 'OSN SMP' ? 'submenu-olimpiade-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                        :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' && lmsLevel === 'OSN SMP' ? 'bg-amber-500 ring-4 ring-amber-200 dark:ring-amber-900/80 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate">OSN SMP</span>
+                                </div>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' && lmsLevel === 'OSN SMP' ? 'bg-amber-500 text-white shadow-2xs' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
+                                    x-text="countCoursesByLevel('Olimpiade', 'OSN SMP')"></span>
+                            </button>
+
+                            <button type="button" @click="openLmsCategory('Olimpiade', 'OSN SMA')"
+                                :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' && lmsLevel === 'OSN SMA' ? 'submenu-olimpiade-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                        :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' && lmsLevel === 'OSN SMA' ? 'bg-amber-500 ring-4 ring-amber-200 dark:ring-amber-900/80 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate">OSN SMA</span>
+                                </div>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' && lmsLevel === 'OSN SMA' ? 'bg-amber-500 text-white shadow-2xs' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
+                                    x-text="countCoursesByLevel('Olimpiade', 'OSN SMA')"></span>
+                            </button>
+
+                            <button type="button" @click="openLmsCategory('Olimpiade', 'ONMIPA')"
+                                :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' && lmsLevel === 'ONMIPA' ? 'submenu-olimpiade-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                        :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' && lmsLevel === 'ONMIPA' ? 'bg-amber-500 ring-4 ring-amber-200 dark:ring-amber-900/80 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate">ONMIPA</span>
+                                </div>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' && lmsLevel === 'ONMIPA' ? 'bg-amber-500 text-white shadow-2xs' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
+                                    x-text="countCoursesByLevel('Olimpiade', 'ONMIPA')"></span>
+                            </button>
+
+                            <button type="button" @click="openLmsCategory('Olimpiade', 'Internasional')"
+                                :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' && lmsLevel === 'Internasional' ? 'submenu-olimpiade-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                        :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' && lmsLevel === 'Internasional' ? 'bg-amber-500 ring-4 ring-amber-200 dark:ring-amber-900/80 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate">Internasional</span>
+                                </div>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' && lmsLevel === 'Internasional' ? 'bg-amber-500 text-white shadow-2xs' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
+                                    x-text="countCoursesByLevel('Olimpiade', 'Internasional')"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Menu 7: TKA (TKA SD, TKA SMP, TKA SMA) -->
+                    <div class="space-y-1">
+                        <button type="button" @click="toggleTkaDropdown()"
+                            :class="activeTab === 'lms_courses' && lmsCategory === 'TKA' ? 'nav-pill-tka font-black bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold'"
+                            class="w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs transition-all cursor-pointer text-left group">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-2xs transition-colors"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'TKA' ? 'bg-emerald-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 group-hover:bg-emerald-600 group-hover:text-white'">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                                </span>
+                                <span class="truncate">TKA</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-200"
+                                    x-text="countCoursesByCategory('TKA')"></span>
+                                <svg class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200"
+                                    :class="isTkaDropdownOpen ? 'rotate-180 text-emerald-600' : ''"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </button>
+
+                        <div x-show="isTkaDropdownOpen" x-cloak class="border-l-2 border-emerald-300 dark:border-emerald-800 ml-4 pl-2.5 pt-1 space-y-1.5">
+                            <button type="button" @click="openLmsCategory('TKA', 'TKA SD')"
+                                :class="activeTab === 'lms_courses' && lmsCategory === 'TKA' && lmsLevel === 'TKA SD' ? 'submenu-tka-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                        :class="activeTab === 'lms_courses' && lmsCategory === 'TKA' && lmsLevel === 'TKA SD' ? 'bg-emerald-600 ring-4 ring-emerald-200 dark:ring-emerald-900/80 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate">TKA SD</span>
+                                </div>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'TKA' && lmsLevel === 'TKA SD' ? 'bg-emerald-600 text-white shadow-2xs' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
+                                    x-text="countCoursesByLevel('TKA', 'TKA SD')"></span>
+                            </button>
+
+                            <button type="button" @click="openLmsCategory('TKA', 'TKA SMP')"
+                                :class="activeTab === 'lms_courses' && lmsCategory === 'TKA' && lmsLevel === 'TKA SMP' ? 'submenu-tka-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                        :class="activeTab === 'lms_courses' && lmsCategory === 'TKA' && lmsLevel === 'TKA SMP' ? 'bg-emerald-600 ring-4 ring-emerald-200 dark:ring-emerald-900/80 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate">TKA SMP</span>
+                                </div>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'TKA' && lmsLevel === 'TKA SMP' ? 'bg-emerald-600 text-white shadow-2xs' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
+                                    x-text="countCoursesByLevel('TKA', 'TKA SMP')"></span>
+                            </button>
+
+                            <button type="button" @click="openLmsCategory('TKA', 'TKA SMA')"
+                                :class="activeTab === 'lms_courses' && lmsCategory === 'TKA' && lmsLevel === 'TKA SMA' ? 'submenu-tka-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                        :class="activeTab === 'lms_courses' && lmsCategory === 'TKA' && lmsLevel === 'TKA SMA' ? 'bg-emerald-600 ring-4 ring-emerald-200 dark:ring-emerald-900/80 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate">TKA SMA</span>
+                                </div>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'TKA' && lmsLevel === 'TKA SMA' ? 'bg-emerald-600 text-white shadow-2xs' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
+                                    x-text="countCoursesByLevel('TKA', 'TKA SMA')"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Menu 8: Collage Preparation (SNBT, Mandiri, Kedinasan) -->
+                    <div class="space-y-1">
+                        <button type="button" @click="toggleCollegeDropdown()"
+                            :class="activeTab === 'lms_courses' && lmsCategory === 'Collage Preparation' ? 'nav-pill-college font-black bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold'"
+                            class="w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs transition-all cursor-pointer text-left group">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-2xs transition-colors"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'Collage Preparation' ? 'bg-rose-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 group-hover:bg-rose-600 group-hover:text-white'">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+                                </span>
+                                <span class="truncate">Collage Preparation</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-200"
+                                    x-text="countCoursesByCategory('Collage Preparation')"></span>
+                                <svg class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200"
+                                    :class="isCollegeDropdownOpen ? 'rotate-180 text-rose-600' : ''"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </button>
+
+                        <div x-show="isCollegeDropdownOpen" x-cloak class="border-l-2 border-rose-300 dark:border-rose-800 ml-4 pl-2.5 pt-1 space-y-1.5">
+                            <button type="button" @click="openLmsCategory('Collage Preparation', 'SNBT')"
+                                :class="activeTab === 'lms_courses' && lmsCategory === 'Collage Preparation' && lmsLevel === 'SNBT' ? 'submenu-college-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                        :class="activeTab === 'lms_courses' && lmsCategory === 'Collage Preparation' && lmsLevel === 'SNBT' ? 'bg-rose-600 ring-4 ring-rose-200 dark:ring-rose-900/80 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate">SNBT (UTBK)</span>
+                                </div>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'Collage Preparation' && lmsLevel === 'SNBT' ? 'bg-rose-600 text-white shadow-2xs' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
+                                    x-text="countCoursesByLevel('Collage Preparation', 'SNBT')"></span>
+                            </button>
+
+                            <button type="button" @click="openLmsCategory('Collage Preparation', 'Mandiri')"
+                                :class="activeTab === 'lms_courses' && lmsCategory === 'Collage Preparation' && lmsLevel === 'Mandiri' ? 'submenu-college-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                        :class="activeTab === 'lms_courses' && lmsCategory === 'Collage Preparation' && lmsLevel === 'Mandiri' ? 'bg-rose-600 ring-4 ring-rose-200 dark:ring-rose-900/80 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate">Ujian Mandiri</span>
+                                </div>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'Collage Preparation' && lmsLevel === 'Mandiri' ? 'bg-rose-600 text-white shadow-2xs' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
+                                    x-text="countCoursesByLevel('Collage Preparation', 'Mandiri')"></span>
+                            </button>
+
+                            <button type="button" @click="openLmsCategory('Collage Preparation', 'Kedinasan')"
+                                :class="activeTab === 'lms_courses' && lmsCategory === 'Collage Preparation' && lmsLevel === 'Kedinasan' ? 'submenu-college-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                        :class="activeTab === 'lms_courses' && lmsCategory === 'Collage Preparation' && lmsLevel === 'Kedinasan' ? 'bg-rose-600 ring-4 ring-rose-200 dark:ring-rose-900/80 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate">Kedinasan</span>
+                                </div>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'Collage Preparation' && lmsLevel === 'Kedinasan' ? 'bg-rose-600 text-white shadow-2xs' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
+                                    x-text="countCoursesByLevel('Collage Preparation', 'Kedinasan')"></span>
+                            </button>
+                        </div>
+                    </div>
+
                 </nav>
 
                 <!-- Vue 3 Database Explorer Hub -->
@@ -3880,6 +4165,447 @@
 
             </div>
 
+            <!-- =========================================================================
+                 TAB 5: LMS COURSES & KURIKULUM BUILDER (SCHOOL, OLIMPIADE, TKA, COLLEGE PREP)
+                 ========================================================================= -->
+            <div x-show="activeTab === 'lms_courses'" x-cloak class="space-y-6">
+
+                <!-- Hero Section LMS Courses -->
+                <div class="rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-xl transition-all"
+                    :class="getLmsHeroGradient()">
+                    <div class="relative z-10 max-w-3xl space-y-3">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-[11px] font-extrabold uppercase tracking-wide">
+                            <span x-text="'MANAJEMEN KELAS: ' + lmsCategory.toUpperCase()"></span>
+                            <span class="w-1 h-1 rounded-full bg-white"></span>
+                            <span x-text="lmsLevel"></span>
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-tight" x-text="getLmsHeroTitle()"></h2>
+                        <p class="text-xs sm:text-sm text-white/90 leading-relaxed" x-text="getLmsHeroSubtitle()"></p>
+                        
+                        <div class="pt-2 flex flex-wrap items-center gap-3">
+                            <button type="button" @click="openCreateCourseModal()"
+                                class="px-5 py-2.5 rounded-xl bg-white text-slate-900 font-extrabold text-xs shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer">
+                                <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                                <span>+ Buat Kelas / Course Baru</span>
+                            </button>
+                            <a href="/belajar" target="_blank"
+                                class="px-4 py-2.5 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs backdrop-blur-xs transition-all flex items-center gap-1.5">
+                                <span>Buka Portal Siswa (nls-belajar)</span>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 Quick Metric Cards for LMS -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-1.5">
+                        <div class="flex items-center justify-between text-slate-400">
+                            <span class="text-[11px] font-bold uppercase tracking-wider">Total Kelas</span>
+                            <span class="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-600">📚</span>
+                        </div>
+                        <div class="text-2xl font-black text-slate-900 dark:text-white" x-text="getFilteredLmsCourses().length"></div>
+                        <p class="text-[10px] text-slate-400">Di kategori &amp; jenjang ini</p>
+                    </div>
+
+                    <div class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-1.5">
+                        <div class="flex items-center justify-between text-slate-400">
+                            <span class="text-[11px] font-bold uppercase tracking-wider">Total Modul / Bab</span>
+                            <span class="p-1.5 rounded-lg bg-sky-50 dark:bg-sky-950 text-sky-600">📑</span>
+                        </div>
+                        <div class="text-2xl font-black text-slate-900 dark:text-white" x-text="getTotalModulesCount()"></div>
+                        <p class="text-[10px] text-slate-400">Kurikulum aktif</p>
+                    </div>
+
+                    <div class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-1.5">
+                        <div class="flex items-center justify-between text-slate-400">
+                            <span class="text-[11px] font-bold uppercase tracking-wider">Kuis &amp; Video</span>
+                            <span class="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950 text-emerald-600">🎥</span>
+                        </div>
+                        <div class="text-2xl font-black text-slate-900 dark:text-white" x-text="getTotalQuizzesAndVideosCount()"></div>
+                        <p class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">Interaktif &amp; Siap Diuji</p>
+                    </div>
+
+                    <div class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-1.5">
+                        <div class="flex items-center justify-between text-slate-400">
+                            <span class="text-[11px] font-bold uppercase tracking-wider">Status Sync Cloud</span>
+                            <span class="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950 text-emerald-600">⚡</span>
+                        </div>
+                        <div class="text-sm font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 pt-1">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>Terhubung ke nls-belajar</span>
+                        </div>
+                        <p class="text-[10px] text-slate-400">Otomatis sinkron real-time</p>
+                    </div>
+                </div>
+
+                <!-- Course Management List & Table -->
+                <div class="bg-white dark:bg-[#131D38] rounded-3xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-xs space-y-5">
+                    
+                    <!-- Search & Filter Header -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm font-black text-slate-900 dark:text-white" x-text="'Daftar Course ' + lmsCategory + ' (' + lmsLevel + ')'"></span>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
+                                x-text="getFilteredLmsCourses().length + ' Kelas'"></span>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <div class="relative w-full sm:w-64">
+                                <input type="text" x-model="lmsCourseSearch" placeholder="Cari judul course / mentor..."
+                                    class="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-hidden focus:ring-2 focus:ring-indigo-500">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                </span>
+                            </div>
+
+                            <button type="button" @click="openCreateCourseModal()"
+                                class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs transition-all shadow-md shadow-indigo-600/20 flex items-center gap-1.5 shrink-0 cursor-pointer">
+                                <span>+ Tambah</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Course Cards Grid -->
+                    <template x-if="getFilteredLmsCourses().length === 0">
+                        <div class="p-12 text-center text-slate-400 space-y-3">
+                            <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-2xl">📚</div>
+                            <h4 class="text-sm font-bold text-slate-700 dark:text-slate-300">Belum Ada Course di Jenjang Ini</h4>
+                            <p class="text-xs text-slate-400 max-w-sm mx-auto">Klik tombol "+ Buat Kelas / Course Baru" di atas untuk menambahkan kurikulum kelas.</p>
+                        </div>
+                    </template>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                        <template x-for="course in getFilteredLmsCourses()" :key="course.id">
+                            <div class="rounded-3xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 p-5 sm:p-6 flex flex-col justify-between space-y-4 hover:border-indigo-400 dark:hover:border-indigo-600 transition-all">
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-2">
+                                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase"
+                                                :class="getCategoryBadgeClass(course.category)" x-text="course.category"></span>
+                                            <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300" x-text="course.level"></span>
+                                        </div>
+                                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                                            Dipublikasikan
+                                        </span>
+                                    </div>
+
+                                    <div>
+                                        <h3 class="text-base font-black text-slate-900 dark:text-white leading-snug" x-text="course.title"></h3>
+                                        <p class="text-xs text-slate-500 mt-1 line-clamp-2" x-text="course.description"></p>
+                                    </div>
+
+                                    <!-- Mentor & Content breakdown chips -->
+                                    <div class="p-3 rounded-2xl bg-white dark:bg-[#131D38] border border-slate-100 dark:border-slate-800 text-xs space-y-2">
+                                        <div class="flex items-center justify-between text-slate-600 dark:text-slate-300 font-semibold">
+                                            <span class="text-slate-400">Mentor Pengajar:</span>
+                                            <span class="font-bold text-slate-800 dark:text-slate-200" x-text="course.mentor"></span>
+                                        </div>
+                                        <div class="flex items-center gap-2 pt-1 border-t border-slate-100 dark:border-slate-800/80 text-[10px] font-bold">
+                                            <span class="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
+                                                x-text="(course.modules ? course.modules.filter(m => m.type === 'materi').length : 0) + ' Materi Teks/PDF'"></span>
+                                            <span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
+                                                x-text="(course.modules ? course.modules.filter(m => m.type === 'kuis').length : 0) + ' Kuis'"></span>
+                                            <span class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
+                                                x-text="(course.modules ? course.modules.filter(m => m.type === 'video').length : 0) + ' Video'"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2">
+                                    <button type="button" @click="openModuleBuilder(course)"
+                                        class="flex-1 py-2.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                                        <span>Kelola Isi (Materi / Kuis / Video)</span>
+                                    </button>
+                                    
+                                    <button type="button" @click="editCourseInfo(course)"
+                                        class="p-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all cursor-pointer" title="Edit Info Course">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                    </button>
+
+                                    <button type="button" @click="deleteCourse(course.id)"
+                                        class="p-2.5 rounded-xl bg-rose-100 hover:bg-rose-200 dark:bg-rose-950 dark:hover:bg-rose-900 text-rose-700 dark:text-rose-300 transition-all cursor-pointer" title="Hapus Course">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- =========================================================================
+                 MODAL LMS 1: COURSE BUILDER (TAMBAH / EDIT KELAS BARU)
+                 ========================================================================= -->
+            <div x-show="courseModal.isOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs overflow-y-auto">
+                <div class="bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 max-w-xl w-full shadow-2xl space-y-5 my-8"
+                    @click.outside="courseModal.isOpen = false">
+                    
+                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
+                        <div class="flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl">📚</span>
+                            <div>
+                                <h3 class="text-base sm:text-lg font-black text-slate-900 dark:text-white" x-text="courseModal.isEdit ? 'Revisi Info Course' : 'Buat Course / Kelas Baru'"></h3>
+                                <p class="text-xs text-slate-500" x-text="'Kategori: ' + courseModal.form.category + ' • ' + courseModal.form.level"></p>
+                            </div>
+                        </div>
+                        <button type="button" @click="courseModal.isOpen = false" class="p-2 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+
+                    <form @submit.prevent="saveCourseData()" class="space-y-4 text-xs font-semibold">
+                        <div>
+                            <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Judul Course / Kelas *</label>
+                            <input type="text" x-model="courseModal.form.title" required placeholder="Contoh: Masterclass OSN Fisika Mekanika SMA"
+                                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Kategori *</label>
+                                <select x-model="courseModal.form.category" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                                    <option value="School">School</option>
+                                    <option value="Olimpiade">Olimpiade</option>
+                                    <option value="TKA">TKA</option>
+                                    <option value="Collage Preparation">Collage Preparation</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Jenjang / Sub-Level *</label>
+                                <input type="text" x-model="courseModal.form.level" required placeholder="Contoh: SMA / OSN SMA / SNBT"
+                                    class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Pilih Guru / Mentor Pengajar *</label>
+                            <select x-model="courseModal.form.mentor" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                                <template x-for="t in teachers" :key="t.id">
+                                    <option :value="t.name" x-text="t.name + ' (' + t.subject + ')'"></option>
+                                </template>
+                                <option value="Tim Akademik NLS">Tim Akademik NLS</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Deskripsi Ringkas Kelas *</label>
+                            <textarea x-model="courseModal.form.description" rows="3" required placeholder="Jelaskan silabus inti, target capaian siswa, dan materi yang dipelajari..."
+                                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs"></textarea>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-3">
+                            <button type="button" @click="courseModal.isOpen = false"
+                                class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold cursor-pointer">
+                                Batal
+                            </button>
+                            <button type="submit"
+                                class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black shadow-lg shadow-indigo-600/30 active:scale-95 transition-all cursor-pointer">
+                                Simpan Course
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- =========================================================================
+                 MODAL LMS 2: MODULE & CONTENT BUILDER (MATERI, KUIS, VIDEO)
+                 ========================================================================= -->
+            <div x-show="moduleModal.isOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-900/80 backdrop-blur-sm overflow-y-auto">
+                <div class="bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden my-auto"
+                    @click.outside="moduleModal.isOpen = false">
+                    
+                    <!-- Header -->
+                    <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/60 dark:bg-slate-900/60">
+                        <div class="flex items-center gap-3">
+                            <span class="w-11 h-11 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl shadow-md">🛠️</span>
+                            <div>
+                                <h3 class="text-base sm:text-lg font-black text-slate-900 dark:text-white">Penyusun Konten &amp; Modul Pembelajaran</h3>
+                                <p class="text-xs text-indigo-600 dark:text-indigo-400 font-bold" x-text="moduleModal.course ? moduleModal.course.title : ''"></p>
+                            </div>
+                        </div>
+                        <button type="button" @click="moduleModal.isOpen = false" class="p-2 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+
+                    <!-- 3 Selection Tabs: Buat Materi, Buat Kuis, Buat Video -->
+                    <div class="px-6 pt-4 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2 overflow-x-auto">
+                        <button type="button" @click="moduleModal.activeType = 'materi'"
+                            class="px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center gap-2 shrink-0 cursor-pointer"
+                            :class="moduleModal.activeType === 'materi' ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'">
+                            <span>📄 Buat Materi (Teks &amp; PDF)</span>
+                        </button>
+
+                        <button type="button" @click="moduleModal.activeType = 'kuis'"
+                            class="px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center gap-2 shrink-0 cursor-pointer"
+                            :class="moduleModal.activeType === 'kuis' ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'">
+                            <span>📝 Buat Kuis Interaktif</span>
+                        </button>
+
+                        <button type="button" @click="moduleModal.activeType = 'video'"
+                            class="px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center gap-2 shrink-0 cursor-pointer"
+                            :class="moduleModal.activeType === 'video' ? 'bg-amber-500 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'">
+                            <span>🎥 Buat Video Pembelajaran</span>
+                        </button>
+                    </div>
+
+                    <!-- Content Form Body -->
+                    <div class="p-6 overflow-y-auto flex-1 space-y-5 text-xs font-semibold">
+                        
+                        <!-- TAB 1: FORM BUAT MATERI -->
+                        <div x-show="moduleModal.activeType === 'materi'" class="space-y-4">
+                            <div>
+                                <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Judul Materi / Bab *</label>
+                                <input type="text" x-model="moduleForm.title" placeholder="Contoh: Bab 1: Teorema Limit Aljabar &amp; Kalkulus"
+                                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Estimasi Durasi Belajar *</label>
+                                    <input type="text" x-model="moduleForm.duration" placeholder="Contoh: 30 Menit"
+                                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                                </div>
+                                <div>
+                                    <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Link Lampiran PDF Materi (Download)</label>
+                                    <input type="url" x-model="moduleForm.pdfUrl" placeholder="https://next-level-study.com/materials/..."
+                                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Ringkasan &amp; Poin Inti Materi (Teks Pembelajaran) *</label>
+                                <textarea x-model="moduleForm.summary" rows="5" placeholder="Tuliskan rangkuman konsep, rumus utama, teorema kunci, dan panduan belajar siswa..."
+                                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- TAB 2: FORM BUAT KUIS -->
+                        <div x-show="moduleModal.activeType === 'kuis'" class="space-y-5">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Judul Kuis Evaluasi *</label>
+                                    <input type="text" x-model="moduleForm.title" placeholder="Contoh: Kuis Evaluasi Bab 1: Limit Aljabar"
+                                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                                </div>
+                                <div>
+                                    <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Durasi Pengerjaan Kuis *</label>
+                                    <input type="text" x-model="moduleForm.duration" placeholder="Contoh: 15 Menit"
+                                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                                </div>
+                            </div>
+
+                            <!-- Dynamic Quiz Question Builder -->
+                            <div class="space-y-4 pt-2 border-t border-slate-100 dark:border-slate-800">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">Butir Soal Kuis Pilihan Ganda</span>
+                                    <button type="button" @click="addQuizQuestionItem()"
+                                        class="px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-[11px] font-bold hover:bg-emerald-700 transition-all cursor-pointer">
+                                        + Tambah Butir Soal
+                                    </button>
+                                </div>
+
+                                <template x-for="(qItem, qIdx) in quizQuestionList" :key="qIdx">
+                                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <span class="font-black text-indigo-600 dark:text-indigo-400" x-text="'Soal No. ' + (qIdx + 1)"></span>
+                                            <button type="button" @click="removeQuizQuestionItem(qIdx)" class="text-rose-500 hover:text-rose-700 font-bold text-xs cursor-pointer">Hapus Soal</button>
+                                        </div>
+
+                                        <div>
+                                            <label class="block mb-1 text-slate-600 dark:text-slate-400 font-bold">Teks Pertanyaan *</label>
+                                            <input type="text" x-model="qItem.question" placeholder="Tuliskan soal pilihan ganda..."
+                                                class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-[#131d38] text-xs font-semibold">
+                                        </div>
+
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <div>
+                                                <label class="block text-[10px] text-slate-400">Pilihan A</label>
+                                                <input type="text" x-model="qItem.options[0]" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-[#131d38] text-xs">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] text-slate-400">Pilihan B</label>
+                                                <input type="text" x-model="qItem.options[1]" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-[#131d38] text-xs">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] text-slate-400">Pilihan C</label>
+                                                <input type="text" x-model="qItem.options[2]" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-[#131d38] text-xs">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] text-slate-400">Pilihan D</label>
+                                                <input type="text" x-model="qItem.options[3]" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-[#131d38] text-xs">
+                                            </div>
+                                        </div>
+
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                                            <div>
+                                                <label class="block text-[11px] text-emerald-600 dark:text-emerald-400 font-bold">Kunci Jawaban Benar (Isi Sama dengan Pilihan) *</label>
+                                                <input type="text" x-model="qItem.correctAnswer" placeholder="Salin teks jawaban yang benar persis..."
+                                                    class="w-full px-3 py-2 rounded-xl border border-emerald-300 dark:border-emerald-700 bg-emerald-50/50 dark:bg-emerald-950/30 text-xs font-bold">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[11px] text-indigo-600 dark:text-indigo-400 font-bold">Penjelasan &amp; Pembahasan Soal *</label>
+                                                <input type="text" x-model="qItem.explanation" placeholder="Trik cara cepat / pembuktian rumus..."
+                                                    class="w-full px-3 py-2 rounded-xl border border-indigo-300 dark:border-indigo-700 bg-indigo-50/50 dark:bg-indigo-950/30 text-xs font-semibold">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- TAB 3: FORM BUAT VIDEO -->
+                        <div x-show="moduleModal.activeType === 'video'" class="space-y-4">
+                            <div>
+                                <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Judul Video Pembelajaran *</label>
+                                <input type="text" x-model="moduleForm.title" placeholder="Contoh: Video Bedah Trik 30 Detik Soal Limit"
+                                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">URL Video (YouTube / Vimeo / MP4) *</label>
+                                    <input type="url" x-model="moduleForm.videoUrl" placeholder="https://www.youtube.com/watch?v=..."
+                                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                                </div>
+                                <div>
+                                    <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Durasi Video *</label>
+                                    <input type="text" x-model="moduleForm.duration" placeholder="Contoh: 35 Menit"
+                                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Catatan Penting Video</label>
+                                <textarea x-model="moduleForm.summary" rows="4" placeholder="Tuliskan catatan referensi menit kunci pembahasan soal..."
+                                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Footer Action -->
+                    <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 flex items-center justify-between gap-3">
+                        <span class="text-[11px] text-slate-400">Konten akan langsung tampil di portal siswa (nls-belajar).</span>
+                        <div class="flex items-center gap-3">
+                            <button type="button" @click="moduleModal.isOpen = false"
+                                class="px-5 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold cursor-pointer">
+                                Batal
+                            </button>
+                            <button type="button" @click="saveModuleToCourse()"
+                                class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black shadow-lg shadow-indigo-600/30 active:scale-95 transition-all cursor-pointer">
+                                Simpan Modul ke Kelas Ini
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
 
             </main>
         </div>
@@ -4248,6 +4974,77 @@
                 isBeritaDropdownOpen: false,
                 isPengajarDropdownOpen: false,
                 isUserDropdownOpen: false,
+                isSchoolDropdownOpen: false,
+                isOlimpiadeDropdownOpen: false,
+                isTkaDropdownOpen: false,
+                isCollegeDropdownOpen: false,
+
+                lmsCategory: 'School',
+                lmsLevel: 'SMA',
+                lmsCourseSearch: '',
+
+                courses: (function() {
+                    try {
+                        const stored = localStorage.getItem("nls_lms_courses_v1");
+                        if (stored) {
+                            const parsed = JSON.parse(stored);
+                            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                        }
+                    } catch(e) {}
+                    return (typeof window.NLS_DEFAULT_COURSES !== "undefined") ? window.NLS_DEFAULT_COURSES : [];
+                })(),
+
+                trashCourses: (function() {
+                    try {
+                        const stored = localStorage.getItem("nls_lms_courses_trash_v1");
+                        if (stored) {
+                            const parsed = JSON.parse(stored);
+                            if (Array.isArray(parsed)) return parsed;
+                        }
+                    } catch(e) {}
+                    return [];
+                })(),
+
+                courseModal: {
+                    isOpen: false,
+                    isEdit: false,
+                    form: {
+                        id: '',
+                        category: 'School',
+                        level: 'SMA',
+                        title: '',
+                        description: '',
+                        mentor: 'Kak Raditya Pratama, S.Si.',
+                        mentor_id: 't-1',
+                        coverImage: '/images/stitch/pillar-study.jpg',
+                        status: 'published'
+                    }
+                },
+
+                moduleModal: {
+                    isOpen: false,
+                    course: null,
+                    activeType: 'materi'
+                },
+
+                moduleForm: {
+                    id: '',
+                    title: '',
+                    type: 'materi',
+                    duration: '30 Menit',
+                    summary: '',
+                    pdfUrl: '',
+                    videoUrl: ''
+                },
+
+                quizQuestionList: [
+                    {
+                        question: '',
+                        options: ['', '', '', ''],
+                        correctAnswer: '',
+                        explanation: ''
+                    }
+                ],
 
                 eventForm: {
                     id: '',
@@ -7018,6 +7815,298 @@
                     a.click();
                     URL.revokeObjectURL(url);
                     this.showToast('Backup Database SQLite / SQL Dump berhasil diunduh!');
+                },
+
+                // =========================================================================
+                // LMS COURSES & CONTENT BUILDER METHODS (SCHOOL, OLIMPIADE, TKA, COLLEGE)
+                // =========================================================================
+                toggleSchoolDropdown() {
+                    this.isSchoolDropdownOpen = !this.isSchoolDropdownOpen;
+                },
+                toggleOlimpiadeDropdown() {
+                    this.isOlimpiadeDropdownOpen = !this.isOlimpiadeDropdownOpen;
+                },
+                toggleTkaDropdown() {
+                    this.isTkaDropdownOpen = !this.isTkaDropdownOpen;
+                },
+                toggleCollegeDropdown() {
+                    this.isCollegeDropdownOpen = !this.isCollegeDropdownOpen;
+                },
+
+                openLmsCategory(category, level) {
+                    this.activeTab = 'lms_courses';
+                    this.lmsCategory = category;
+                    this.lmsLevel = level;
+                    if (category === 'School') this.isSchoolDropdownOpen = true;
+                    if (category === 'Olimpiade') this.isOlimpiadeDropdownOpen = true;
+                    if (category === 'TKA') this.isTkaDropdownOpen = true;
+                    if (category === 'Collage Preparation') this.isCollegeDropdownOpen = true;
+                },
+
+                countCoursesByCategory(category) {
+                    if (!this.courses || !Array.isArray(this.courses)) return 0;
+                    return this.courses.filter(c => c && c.category === category && c.status !== 'trashed').length;
+                },
+
+                countCoursesByLevel(category, level) {
+                    if (!this.courses || !Array.isArray(this.courses)) return 0;
+                    return this.courses.filter(c => c && c.category === category && c.level === level && c.status !== 'trashed').length;
+                },
+
+                getFilteredLmsCourses() {
+                    if (!this.courses || !Array.isArray(this.courses)) return [];
+                    const q = (this.lmsCourseSearch || '').toLowerCase().trim();
+                    return this.courses.filter(c => {
+                        if (!c || c.status === 'trashed') return false;
+                        const matchCat = c.category === this.lmsCategory;
+                        const matchLvl = !this.lmsLevel || c.level === this.lmsLevel;
+                        const matchSearch = !q || (c.title && c.title.toLowerCase().includes(q)) || (c.mentor && c.mentor.toLowerCase().includes(q)) || (c.description && c.description.toLowerCase().includes(q));
+                        return matchCat && matchLvl && matchSearch;
+                    });
+                },
+
+                getTotalModulesCount() {
+                    const list = this.getFilteredLmsCourses();
+                    return list.reduce((acc, c) => acc + (Array.isArray(c.modules) ? c.modules.length : (c.totalModules || 0)), 0);
+                },
+
+                getTotalQuizzesAndVideosCount() {
+                    const list = this.getFilteredLmsCourses();
+                    let count = 0;
+                    list.forEach(c => {
+                        if (Array.isArray(c.modules)) {
+                            count += c.modules.filter(m => m.type === 'kuis' || m.type === 'video').length;
+                        }
+                    });
+                    return count;
+                },
+
+                getLmsHeroTitle() {
+                    return `Manajemen Kelas & Kurikulum: ${this.lmsCategory} (${this.lmsLevel})`;
+                },
+
+                getLmsHeroSubtitle() {
+                    if (this.lmsCategory === 'School') return 'Susun materi kurikulum sekolah, buat evaluasi kuis topik, dan video pembelajaran interaktif untuk siswa SD, SMP, dan SMA.';
+                    if (this.lmsCategory === 'Olimpiade') return 'Rancang masterclass pembinaan olimpiade sains, bank soal kompetisi, dan bedah teori bersama mentor medalis.';
+                    if (this.lmsCategory === 'TKA') return 'Kelola modul Tes Kemampuan Akademik (TKA) dan materi pemantapan ujian sekolah standar.';
+                    if (this.lmsCategory === 'Collage Preparation') return 'Susun modul persiapan UTBK SNBT, Ujian Mandiri PTN Top 3, dan SKD Sekolah Kedinasan.';
+                    return 'Kelola modul pembelajaran, kuis latihan, dan video interaktif.';
+                },
+
+                getLmsHeroGradient() {
+                    if (this.lmsCategory === 'School') return 'bg-gradient-to-r from-sky-700 via-indigo-800 to-indigo-950';
+                    if (this.lmsCategory === 'Olimpiade') return 'bg-gradient-to-r from-amber-700 via-orange-800 to-slate-950';
+                    if (this.lmsCategory === 'TKA') return 'bg-gradient-to-r from-emerald-700 via-teal-800 to-slate-950';
+                    if (this.lmsCategory === 'Collage Preparation') return 'bg-gradient-to-r from-rose-700 via-purple-800 to-slate-950';
+                    return 'bg-gradient-to-r from-indigo-700 via-indigo-900 to-slate-950';
+                },
+
+                openCreateCourseModal() {
+                    this.courseModal.isEdit = false;
+                    this.courseModal.form = {
+                        id: 'c-' + Date.now(),
+                        category: this.lmsCategory,
+                        level: this.lmsLevel,
+                        title: '',
+                        description: '',
+                        mentor: (this.teachers && this.teachers[0]) ? this.teachers[0].name : 'Tim Akademik NLS',
+                        mentor_id: (this.teachers && this.teachers[0]) ? this.teachers[0].id : 't-1',
+                        coverImage: '/images/stitch/pillar-study.jpg',
+                        status: 'published',
+                        modules: []
+                    };
+                    this.courseModal.isOpen = true;
+                },
+
+                editCourseInfo(course) {
+                    this.courseModal.isEdit = true;
+                    this.courseModal.form = JSON.parse(JSON.stringify(course));
+                    this.courseModal.isOpen = true;
+                },
+
+                saveCourseData() {
+                    const form = this.courseModal.form;
+                    if (!form.title || !form.title.trim()) {
+                        alert('Judul course wajib diisi.');
+                        return;
+                    }
+
+                    const newCourse = {
+                        ...form,
+                        title: form.title.trim(),
+                        modules: Array.isArray(form.modules) ? form.modules : [],
+                        totalModules: Array.isArray(form.modules) ? form.modules.length : 0,
+                        updated_at: new Date().toISOString()
+                    };
+
+                    const idx = this.courses.findIndex(c => c.id === newCourse.id);
+                    if (idx !== -1) {
+                        this.courses[idx] = newCourse;
+                    } else {
+                        newCourse.created_at = new Date().toISOString();
+                        this.courses.unshift(newCourse);
+                    }
+
+                    this.saveCoursesToStorage();
+                    this.courseModal.isOpen = false;
+                    this.showToast(this.courseModal.isEdit ? 'Info Course berhasil diperbarui!' : 'Course baru berhasil dibuat & dipublikasikan!');
+
+                    // Cloud sync
+                    if (typeof fetch !== 'undefined') {
+                        fetch('/api/courses', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(newCourse)
+                        }).catch(e => {});
+                    }
+                },
+
+                deleteCourse(id) {
+                    if (confirm('Pindahkan course ini ke Tempat Sampah?')) {
+                        const idx = this.courses.findIndex(c => c.id === id);
+                        if (idx !== -1) {
+                            const [deleted] = this.courses.splice(idx, 1);
+                            deleted.status = 'trashed';
+                            deleted.deletedAt = new Date().toISOString();
+                            this.trashCourses.unshift(deleted);
+                            this.saveCoursesToStorage();
+                            this.showToast('Course berhasil dipindahkan ke Tempat Sampah.');
+
+                            if (typeof fetch !== 'undefined') {
+                                fetch('/api/courses', {
+                                    method: 'PUT',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ id: id, status: 'trashed', deletedAt: deleted.deletedAt })
+                                }).catch(e => {});
+                            }
+                        }
+                    }
+                },
+
+                openModuleBuilder(course) {
+                    this.moduleModal.course = course;
+                    this.moduleModal.activeType = 'materi';
+                    this.moduleForm = {
+                        id: 'm-' + Date.now(),
+                        title: '',
+                        type: 'materi',
+                        duration: '30 Menit',
+                        summary: '',
+                        pdfUrl: '',
+                        videoUrl: ''
+                    };
+                    this.quizQuestionList = [
+                        {
+                            question: '',
+                            options: ['', '', '', ''],
+                            correctAnswer: '',
+                            explanation: ''
+                        }
+                    ];
+                    this.moduleModal.isOpen = true;
+                },
+
+                addQuizQuestionItem() {
+                    this.quizQuestionList.push({
+                        question: '',
+                        options: ['', '', '', ''],
+                        correctAnswer: '',
+                        explanation: ''
+                    });
+                },
+
+                removeQuizQuestionItem(idx) {
+                    if (this.quizQuestionList.length > 1) {
+                        this.quizQuestionList.splice(idx, 1);
+                    } else {
+                        alert('Minimal 1 butir soal harus tersedia.');
+                    }
+                },
+
+                saveModuleToCourse() {
+                    if (!this.moduleForm.title || !this.moduleForm.title.trim()) {
+                        alert('Judul modul wajib diisi.');
+                        return;
+                    }
+
+                    const course = this.moduleModal.course;
+                    if (!course) return;
+
+                    const newMod = {
+                        id: this.moduleForm.id || ('m-' + Date.now()),
+                        title: this.moduleForm.title.trim(),
+                        type: this.moduleModal.activeType,
+                        duration: this.moduleForm.duration || '30 Menit',
+                        summary: this.moduleForm.summary || '',
+                        pdfUrl: this.moduleForm.pdfUrl || '',
+                        videoUrl: this.moduleForm.videoUrl || '',
+                        completed: false
+                    };
+
+                    if (this.moduleModal.activeType === 'kuis') {
+                        newMod.questions = JSON.parse(JSON.stringify(this.quizQuestionList.filter(q => q.question && q.question.trim())));
+                    }
+
+                    if (!Array.isArray(course.modules)) {
+                        course.modules = [];
+                    }
+                    course.modules.push(newMod);
+                    course.totalModules = course.modules.length;
+                    course.updated_at = new Date().toISOString();
+
+                    const idx = this.courses.findIndex(c => c.id === course.id);
+                    if (idx !== -1) {
+                        this.courses[idx] = { ...course };
+                    }
+
+                    this.saveCoursesToStorage();
+                    this.moduleModal.isOpen = false;
+                    this.showToast(`Modul "${newMod.title}" (${newMod.type.toUpperCase()}) berhasil ditambahkan ke kelas!`);
+
+                    // Cloud sync
+                    if (typeof fetch !== 'undefined') {
+                        fetch('/api/courses', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: course.id, modules: course.modules })
+                        }).catch(e => {});
+                    }
+                },
+
+                saveCoursesToStorage() {
+                    try {
+                        localStorage.setItem("nls_lms_courses_v1", JSON.stringify(this.courses));
+                        localStorage.setItem("nls_lms_courses_trash_v1", JSON.stringify(this.trashCourses));
+                        if (typeof BroadcastChannel !== 'undefined') {
+                            const bc = new BroadcastChannel('nls_sync_channel');
+                            bc.postMessage({ type: 'COURSES_UPDATED', data: this.courses });
+                        }
+                        window.dispatchEvent(new CustomEvent('nls-courses-updated', { detail: this.courses }));
+                    } catch (e) {}
+                },
+
+                async syncCoursesFromCloud(showNotice = false) {
+                    if (typeof fetch === 'undefined') return;
+                    try {
+                        const res = await fetch('/api/courses');
+                        if (res.ok) {
+                            const json = await res.json();
+                            if (json && Array.isArray(json.data) && json.data.length > 0) {
+                                const serverActive = json.data.filter(c => c && c.status !== 'trashed');
+                                const serverTrashed = json.data.filter(c => c && c.status === 'trashed');
+
+                                if (serverActive.length > 0) {
+                                    this.courses = serverActive;
+                                    this.saveCoursesToStorage();
+                                }
+                                if (serverTrashed.length > 0) {
+                                    this.trashCourses = serverTrashed;
+                                    localStorage.setItem("nls_lms_courses_trash_v1", JSON.stringify(this.trashCourses));
+                                }
+                                if (showNotice) this.showToast(`Data Courses tersinkronisasi (${this.courses.length} kelas aktif).`);
+                            }
+                        }
+                    } catch(e) {}
                 }
             };
         }
