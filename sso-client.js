@@ -174,6 +174,10 @@
             try {
                 localStorage.setItem('nls_auth_session', JSON.stringify(session));
                 localStorage.setItem('nls_student_auth_session', JSON.stringify(session));
+                if (session.role === 'super_admin') {
+                    localStorage.setItem('nls_admin_auth', 'true');
+                    sessionStorage.setItem('nls_admin_auth', 'true');
+                }
                 localStorage.setItem('nls_student_profile_v1', JSON.stringify({
                     name: session.name || 'Siswa NLS',
                     nisn: session.nisn || 'NISN: Terdaftar',
@@ -181,7 +185,9 @@
                     email: session.email || '',
                     phone: session.phone || '',
                     avatar: session.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-                    target: session.targetProgram || 'Program Unggulan NLS'
+                    target: session.targetProgram || 'Program Unggulan NLS',
+                    role: session.role || 'student',
+                    roleLabel: session.roleLabel || 'Siswa'
                 }));
             } catch(e) {}
         },
@@ -190,6 +196,8 @@
             try {
                 localStorage.removeItem('nls_auth_session');
                 localStorage.removeItem('nls_student_auth_session');
+                localStorage.removeItem('nls_admin_auth');
+                sessionStorage.removeItem('nls_admin_auth');
             } catch(e) {}
         },
 
