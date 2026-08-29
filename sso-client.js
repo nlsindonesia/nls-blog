@@ -10,7 +10,7 @@
     if (window.NlsSSO) return;
 
     const NlsSSO = {
-        hubUrl: 'https://nls-blog-plum.vercel.app/sso-hub.html',
+        hubUrl: 'https://nls-blog-plum.vercel.app/sso-hub',
         iframe: null,
         ready: false,
         callbacks: [],
