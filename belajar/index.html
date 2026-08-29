@@ -70,6 +70,9 @@
         }
     </script>
 
+    <!-- NLS Universal Cross-Subdomain SSO Client -->
+    <script src="/sso-client.js"></script>
+
     <!-- Alpine.js for State Management -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
 
@@ -2594,37 +2597,55 @@
                 },
 
                 initAuthSession() {
-                    try {
-                        const auth = localStorage.getItem('nls_student_auth_session');
-                        const profile = localStorage.getItem('nls_student_profile_v1');
-                        if (auth) {
-                            const parsedAuth = JSON.parse(auth);
-                            const parsedProfile = profile ? JSON.parse(profile) : {};
+                    const applySession = (session) => {
+                        if (session) {
                             this.isLoggedIn = true;
                             this.studentProfile = {
-                                name: parsedAuth.name || parsedProfile.name || 'Siswa NLS',
-                                nisn: parsedAuth.nisn || parsedProfile.nisn || 'NISN: Terdaftar',
-                                school: parsedAuth.school || parsedProfile.school || 'Sekolah NLS',
-                                grade: parsedAuth.level || parsedProfile.grade || 'Jenjang Siswa',
-                                email: parsedAuth.email || parsedProfile.email || '',
-                                phone: parsedAuth.phone || parsedProfile.phone || '',
-                                parentPhone: parsedProfile.parentPhone || '-',
-                                target: parsedAuth.targetProgram || parsedProfile.target || 'Program Unggulan NLS',
-                                avatar: parsedAuth.avatar || parsedProfile.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'
+                                name: session.name || (session.role === 'superadmin' ? 'Super Admin NLS' : 'Siswa NLS'),
+                                nisn: session.nisn || (session.role === 'superadmin' ? 'Role: Super Admin' : 'NISN: Terdaftar'),
+                                school: session.school || (session.role === 'superadmin' ? 'Pusat Operasional NLS' : 'Sekolah NLS'),
+                                grade: session.level || session.grade || (session.role === 'superadmin' ? 'Super Administrator' : 'Jenjang Siswa'),
+                                email: session.email || '',
+                                phone: session.phone || '',
+                                parentPhone: session.parentPhone || '-',
+                                target: session.targetProgram || (session.role === 'superadmin' ? 'Master Administration' : 'Program Unggulan NLS'),
+                                avatar: session.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'
                             };
                         } else {
                             this.isLoggedIn = false;
                             this.studentProfile = null;
                         }
+                    };
+
+                    try {
+                        const local = (window.NlsSSO && window.NlsSSO.getLocalSession()) || 
+                                      (function() {
+                                          try {
+                                              const a = localStorage.getItem('nls_student_auth_session') || localStorage.getItem('nls_auth_session');
+                                              return a ? JSON.parse(a) : null;
+                                          } catch(e) { return null; }
+                                      })();
+                        applySession(local);
                     } catch(e) {
                         this.isLoggedIn = false;
                         this.studentProfile = null;
+                    }
+
+                    if (window.NlsSSO) {
+                        window.NlsSSO.onSessionChange((session, isLoggedIn) => {
+                            applySession(session);
+                        });
                     }
                 },
 
                 logoutStudent() {
                     try {
-                        localStorage.removeItem('nls_student_auth_session');
+                        if (window.NlsSSO) {
+                            window.NlsSSO.broadcastLogout();
+                        } else {
+                            localStorage.removeItem('nls_student_auth_session');
+                            localStorage.removeItem('nls_auth_session');
+                        }
                         this.isLoggedIn = false;
                         this.studentProfile = null;
                         this.userDropdownOpen = false;

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>NLS SSO Central Hub</title>
+</head>
+<body style="display:none;">
+    <script>
+        // ==============================================================================
+        // Next Level Study (NLS) - Universal Cross-Subdomain SSO Central Hub Bridge
+        // Manages shared authentication session across all NLS subdomains
+        // ==============================================================================
+        (function() {
+            const STORAGE_KEY = 'nls_sso_master_session';
+
+            function getMasterSession() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    return raw ? JSON.parse(raw) : null;
+                } catch(e) {
+                    return null;
+                }
+            }
+
+            function setMasterSession(session) {
+                try {
+                    if (!session) {
+                        localStorage.removeItem(STORAGE_KEY);
+                    } else {
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+                    }
+                } catch(e) {}
+            }
+
+            // Sync with Serverless Cloud Session API
+            async function syncWithCloudAPI() {
+                try {
+                    const res = await fetch('/api/auth-session');
+                    if (res.ok) {
+                        const json = await res.json();
+                        if (json && json.success) {
+                            if (json.session) {
+                                setMasterSession(json.session);
+                            } else {
+                                setMasterSession(null);
+                            }
+                        }
+                    }
+                } catch(e) {}
+            }
+
+            // Initial Cloud Sync
+            syncWithCloudAPI();
+
+            // Listen for cross-window / cross-iframe messages
+            window.addEventListener('message', async function(event) {
+                // Ensure message is an object
+                const data = event.data;
+                if (!data || typeof data !== 'object') return;
+
+                const origin = event.origin;
+
+                // Handle GET request
+                if (data.type === 'NLS_SSO_GET') {
+                    let session = getMasterSession();
+                    if (!session) {
+                        // Attempt fallback to API
+                        try {
+                            const res = await fetch('/api/auth-session');
+                            if (res.ok) {
+                                const json = await res.json();
+                                if (json && json.session) {
+                                    session = json.session;
+                                    setMasterSession(session);
+                                }
+                            }
+                        } catch(e) {}
+                    }
+
+                    event.source && event.source.postMessage({
+                        type: 'NLS_SSO_SESSION',
+                        session: session,
+                        requestId: data.requestId
+                    }, origin || '*');
+                    return;
+                }
+
+                // Handle SET request (Login)
+                if (data.type === 'NLS_SSO_SET') {
+                    setMasterSession(data.session);
+                    // Sync to Cloud API
+                    try {
+                        await fetch('/api/auth-session', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data.session)
+                        });
+                    } catch(e) {}
+
+                    event.source && event.source.postMessage({
+                        type: 'NLS_SSO_UPDATED',
+                        session: data.session,
+                        requestId: data.requestId
+                    }, origin || '*');
+                    return;
+                }
+
+                // Handle CLEAR request (Logout)
+                if (data.type === 'NLS_SSO_CLEAR') {
+                    setMasterSession(null);
+                    // Sync to Cloud API
+                    try {
+                        await fetch('/api/auth-session', { method: 'DELETE' });
+                    } catch(e) {}
+
+                    event.source && event.source.postMessage({
+                        type: 'NLS_SSO_CLEARED',
+                        requestId: data.requestId
+                    }, origin || '*');
+                    return;
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

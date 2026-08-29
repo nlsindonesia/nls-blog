@@ -16,7 +16,8 @@ let localMemoryCache = {
     teachers: [],
     users: [],
     courses: [],
-    quizSubmissions: []
+    quizSubmissions: [],
+    activeSession: null
 };
 
 function httpsRequest(url, method, data = null, headers = {}) {
@@ -74,7 +75,8 @@ export async function getCloudStore() {
                     teachers: Array.isArray(remoteData.teachers) ? remoteData.teachers : (Array.isArray(localMemoryCache.teachers) ? localMemoryCache.teachers : []),
                     users: Array.isArray(remoteData.users) ? remoteData.users : (Array.isArray(localMemoryCache.users) ? localMemoryCache.users : []),
                     courses: Array.isArray(remoteData.courses) ? remoteData.courses : (Array.isArray(localMemoryCache.courses) ? localMemoryCache.courses : []),
-                    quizSubmissions: Array.isArray(remoteData.quizSubmissions) ? remoteData.quizSubmissions : (Array.isArray(localMemoryCache.quizSubmissions) ? localMemoryCache.quizSubmissions : [])
+                    quizSubmissions: Array.isArray(remoteData.quizSubmissions) ? remoteData.quizSubmissions : (Array.isArray(localMemoryCache.quizSubmissions) ? localMemoryCache.quizSubmissions : []),
+                    activeSession: remoteData.activeSession !== undefined ? remoteData.activeSession : (localMemoryCache.activeSession || null)
                 };
             }
             return localMemoryCache;

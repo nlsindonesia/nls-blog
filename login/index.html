@@ -42,6 +42,9 @@
         }
     </script>
 
+    <!-- NLS Universal Cross-Subdomain SSO Client -->
+    <script src="/sso-client.js"></script>
+
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
@@ -534,6 +537,11 @@
                             target: studentData.targetProgram
                         }));
 
+                        // Broadcast SSO to all other subdomains
+                        if (window.NlsSSO) {
+                            window.NlsSSO.broadcastLogin(studentData);
+                        }
+
                         this.isLoading = false;
                         this.showToast('Login berhasil! Mengalihkan ke Beranda...', 'success');
 
@@ -547,13 +555,16 @@
                     const params = new URLSearchParams(window.location.search);
                     const courseId = params.get('course');
                     const returnUrl = params.get('returnUrl') || params.get('redirect');
+                    let target = '/';
                     if (courseId) {
-                        return `https://nls-belajar.vercel.app/course/${courseId}`;
+                        target = `https://nls-belajar.vercel.app/course/${courseId}`;
+                    } else if (returnUrl) {
+                        target = returnUrl;
                     }
-                    if (returnUrl) {
-                        return returnUrl;
+                    if (window.NlsSSO && typeof window.NlsSSO.createCrossDomainUrl === 'function') {
+                        return window.NlsSSO.createCrossDomainUrl(target);
                     }
-                    return '/';
+                    return target;
                 },
 
                 handleRegister() {
@@ -611,6 +622,11 @@
                             target: newStudent.targetProgram
                         }));
 
+                        // Broadcast SSO to all other subdomains
+                        if (window.NlsSSO) {
+                            window.NlsSSO.broadcastLogin(newStudent);
+                        }
+
                         this.isLoading = false;
                         this.showToast('Pendaftaran Berhasil! Selamat datang di Next Level Study!', 'success');
 
@@ -646,6 +662,11 @@
                             avatar: googleStudent.avatar,
                             target: googleStudent.targetProgram
                         }));
+
+                        // Broadcast SSO to all other subdomains
+                        if (window.NlsSSO) {
+                            window.NlsSSO.broadcastLogin(googleStudent);
+                        }
 
                         this.isLoading = false;
                         this.showToast('Berhasil masuk dengan akun Google!', 'success');
