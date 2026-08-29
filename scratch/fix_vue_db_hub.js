@@ -1,0 +1,554 @@
+const fs = require('fs');
+
+const vueDbContent = `<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 3 Database Hub - Next Level Study (NLS)</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/x-icon" href="/nls-logo.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0B5A8A',
+                        'primary-dark': '#08476e',
+                        secondary: '#FF8A00',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Datasets -->
+    <script src="/kalender/default-events.js"></script>
+    <script src="/pengajar/default-teachers.js"></script>
+    <script src="/blog/default-articles.js"></script>
+
+    <!-- Vue 3 Reactive Database Modules -->
+    <script src="/database/vue/kalender.db.js"></script>
+    <script src="/database/vue/berita.db.js"></script>
+    <script src="/database/vue/pengajar.db.js"></script>
+    <script src="/database/vue/users.db.js"></script>
+    <script src="/database/vue/index.js"></script>
+
+    <!-- Vue 3 Production Runtime -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+    <style>
+        [v-cloak] { display: none !important; }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased">
+    <div id="app" v-cloak class="flex-1 flex flex-col">
+        
+        <!-- Header -->
+        <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-30 px-4 sm:px-8 py-4 shadow-md">
+            <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-emerald-500/20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-lg sm:text-xl font-black text-white tracking-tight">NLS Vue 3 Database Explorer</h1>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase tracking-widest">Reaktif</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Pusat Manajemen Basis Data Reaktif Berdasarkan Menu NLS Admin</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <a href="/nlsadmin" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 hover:text-white transition-all inline-flex items-center gap-2 border border-slate-700">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        <span>Kembali ke Admin Portal</span>
+                    </a>
+                    <button type="button" @click="exportMasterBackup()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black transition-all shadow-md inline-flex items-center gap-2 cursor-pointer">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        <span>Export Full JSON</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-8 space-y-6">
+            
+            <!-- Summary Metric Cards (5 Modules) in Responsive Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
+                <!-- Card 1: Kalender -->
+                <div @click="activeTab = 'kalender'" class="p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer"
+                    :class="activeTab === 'kalender' ? 'bg-sky-950/50 border-sky-500 shadow-lg shadow-sky-500/10 ring-2 ring-sky-500/20' : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-sky-400 uppercase tracking-wider">Menu 1</span>
+                        <span class="p-1.5 rounded-lg bg-sky-500/20 text-sky-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        </span>
+                    </div>
+                    <div class="text-2xl font-black text-white mb-1">{{ kalenderStats.total }}</div>
+                    <div class="text-xs text-slate-400">Events / Kegiatan</div>
+                    <div class="text-[11px] text-sky-400 font-semibold mt-2">kalender.db.js</div>
+                </div>
+
+                <!-- Card 2: Berita -->
+                <div @click="activeTab = 'berita'" class="p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer"
+                    :class="activeTab === 'berita' ? 'bg-emerald-950/50 border-emerald-500 shadow-lg shadow-emerald-500/10 ring-2 ring-emerald-500/20' : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Menu 2</span>
+                        <span class="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                        </span>
+                    </div>
+                    <div class="text-2xl font-black text-white mb-1">{{ beritaStats.total }}</div>
+                    <div class="text-xs text-slate-400">Artikel &amp; Berita CMS</div>
+                    <div class="text-[11px] text-emerald-400 font-semibold mt-2">berita.db.js</div>
+                </div>
+
+                <!-- Card 3: Pengajar -->
+                <div @click="activeTab = 'pengajar'" class="p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer"
+                    :class="activeTab === 'pengajar' ? 'bg-indigo-950/50 border-indigo-500 shadow-lg shadow-indigo-500/10 ring-2 ring-indigo-500/20' : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Menu 3</span>
+                        <span class="p-1.5 rounded-lg bg-indigo-500/20 text-indigo-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        </span>
+                    </div>
+                    <div class="text-2xl font-black text-white mb-1">{{ pengajarStats.total }}</div>
+                    <div class="text-xs text-slate-400">Pengajar &amp; Mentor</div>
+                    <div class="text-[11px] text-indigo-400 font-semibold mt-2">pengajar.db.js</div>
+                </div>
+
+                <!-- Card 4: Users -->
+                <div @click="activeTab = 'users'" class="p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer"
+                    :class="activeTab === 'users' ? 'bg-fuchsia-950/50 border-fuchsia-500 shadow-lg shadow-fuchsia-500/10 ring-2 ring-fuchsia-500/20' : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-fuchsia-400 uppercase tracking-wider">Menu 4</span>
+                        <span class="p-1.5 rounded-lg bg-fuchsia-500/20 text-fuchsia-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                        </span>
+                    </div>
+                    <div class="text-2xl font-black text-white mb-1">{{ usersStats.total }}</div>
+                    <div class="text-xs text-slate-400">User &amp; Hak Akses</div>
+                    <div class="text-[11px] text-fuchsia-400 font-semibold mt-2">users.db.js</div>
+                </div>
+
+                <!-- Card 5: Master Sync -->
+                <div @click="activeTab = 'backup'" class="p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer"
+                    :class="activeTab === 'backup' ? 'bg-amber-950/50 border-amber-500 shadow-lg shadow-amber-500/10 ring-2 ring-amber-500/20' : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Master Sync</span>
+                        <span class="p-1.5 rounded-lg bg-amber-500/20 text-amber-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        </span>
+                    </div>
+                    <div class="text-2xl font-black text-white mb-1">{{ summary.total_in_trash || 0 }}</div>
+                    <div class="text-xs text-slate-400">Total di Trash</div>
+                    <div class="text-[11px] text-amber-400 font-semibold mt-2">index.js (Master DB)</div>
+                </div>
+            </div>
+
+            <!-- ==========================================
+                 Database Tab 1: Kalender Events
+                 ========================================== -->
+            <div v-show="activeTab === 'kalender'" class="bg-slate-900/90 rounded-3xl border border-slate-800 p-6 space-y-6 shadow-xl">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-xl font-bold text-white">Database: Kalender Events</h2>
+                            <code class="text-xs bg-slate-950 text-sky-400 px-2 py-0.5 rounded border border-slate-800">/database/vue/kalender.db.js</code>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1">Mengelola dataset agenda try out, simulasi CBT, dan event bimbel olimpiade.</p>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <input type="text" v-model="kalenderSearch" placeholder="Cari event..." class="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                        <button @click="resetKalender()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 cursor-pointer">Reset Default</button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-950/70 text-slate-400 uppercase text-[10px] font-black border-b border-slate-800">
+                            <tr>
+                                <th class="py-3 px-4">ID</th>
+                                <th class="py-3 px-4">Nama Kegiatan</th>
+                                <th class="py-3 px-4">Kategori</th>
+                                <th class="py-3 px-4">Jenjang</th>
+                                <th class="py-3 px-4">Tanggal &amp; Waktu</th>
+                                <th class="py-3 px-4 text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/80">
+                            <tr v-for="ev in filteredKalenderEvents" :key="ev.id" class="hover:bg-slate-800/40 transition-colors">
+                                <td class="py-3 px-4 font-mono text-[11px] text-sky-400">{{ ev.id }}</td>
+                                <td class="py-3 px-4 font-bold text-white max-w-xs">{{ ev.title }}</td>
+                                <td class="py-3 px-4">
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-950 text-sky-300 border border-sky-800">{{ ev.category }}</span>
+                                </td>
+                                <td class="py-3 px-4 text-slate-400">{{ ev.jenjang }}</td>
+                                <td class="py-3 px-4 text-slate-300">{{ ev.date }} | {{ ev.time }}</td>
+                                <td class="py-3 px-4 text-right">
+                                    <button @click="deleteKalenderEvent(ev.id)" class="text-rose-400 hover:text-rose-300 font-bold hover:underline cursor-pointer">Trash</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ==========================================
+                 Database Tab 2: Berita & Artikel CMS
+                 ========================================== -->
+            <div v-show="activeTab === 'berita'" class="bg-slate-900/90 rounded-3xl border border-slate-800 p-6 space-y-6 shadow-xl">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-xl font-bold text-white">Database: Berita &amp; Artikel CMS</h2>
+                            <code class="text-xs bg-slate-950 text-emerald-400 px-2 py-0.5 rounded border border-slate-800">/database/vue/berita.db.js</code>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1">Mengelola artikel edukasi, optimasi SEO keyword, dan panduan belajar NLS.</p>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <input type="text" v-model="beritaSearch" placeholder="Cari artikel..." class="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+                        <button @click="resetBerita()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 cursor-pointer">Reset Default</button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-950/70 text-slate-400 uppercase text-[10px] font-black border-b border-slate-800">
+                            <tr>
+                                <th class="py-3 px-4">ID</th>
+                                <th class="py-3 px-4">Judul Artikel</th>
+                                <th class="py-3 px-4">Kategori</th>
+                                <th class="py-3 px-4">Penulis &amp; Tanggal</th>
+                                <th class="py-3 px-4">Status</th>
+                                <th class="py-3 px-4 text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/80">
+                            <tr v-for="art in filteredBeritaArticles" :key="art.id" class="hover:bg-slate-800/40 transition-colors">
+                                <td class="py-3 px-4 font-mono text-[11px] text-emerald-400">{{ art.id }}</td>
+                                <td class="py-3 px-4 font-bold text-white max-w-sm">{{ art.title }}</td>
+                                <td class="py-3 px-4">
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-800">{{ art.category }}</span>
+                                </td>
+                                <td class="py-3 px-4 text-slate-400">{{ art.author }} | {{ art.date }}</td>
+                                <td class="py-3 px-4">
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-emerald-400 border border-emerald-500/30">{{ art.status }}</span>
+                                </td>
+                                <td class="py-3 px-4 text-right">
+                                    <button @click="deleteBeritaArticle(art.id)" class="text-rose-400 hover:text-rose-300 font-bold hover:underline cursor-pointer">Trash</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ==========================================
+                 Database Tab 3: Pengajar & Mentor
+                 ========================================== -->
+            <div v-show="activeTab === 'pengajar'" class="bg-slate-900/90 rounded-3xl border border-slate-800 p-6 space-y-6 shadow-xl">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-xl font-bold text-white">Database: Pengajar &amp; Mentor</h2>
+                            <code class="text-xs bg-slate-950 text-indigo-400 px-2 py-0.5 rounded border border-slate-800">/database/vue/pengajar.db.js</code>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1">Mengelola profil tutor pengajar, spesialisasi mapel, dan prestasi alumni.</p>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <input type="text" v-model="pengajarSearch" placeholder="Cari pengajar..." class="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+                        <button @click="resetPengajar()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 cursor-pointer">Reset Default</button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-950/70 text-slate-400 uppercase text-[10px] font-black border-b border-slate-800">
+                            <tr>
+                                <th class="py-3 px-4">ID</th>
+                                <th class="py-3 px-4">Nama Mentor</th>
+                                <th class="py-3 px-4">Mata Pelajaran</th>
+                                <th class="py-3 px-4">Almamater / Pendidikan</th>
+                                <th class="py-3 px-4">Kategori</th>
+                                <th class="py-3 px-4 text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/80">
+                            <tr v-for="t in filteredPengajarTeachers" :key="t.id" class="hover:bg-slate-800/40 transition-colors">
+                                <td class="py-3 px-4 font-mono text-[11px] text-indigo-400">{{ t.id }}</td>
+                                <td class="py-3 px-4 font-bold text-white">{{ t.name }} ({{ t.shortName }})</td>
+                                <td class="py-3 px-4 font-semibold text-slate-200">{{ t.subject }}</td>
+                                <td class="py-3 px-4 text-slate-400 max-w-xs truncate">{{ t.education }}</td>
+                                <td class="py-3 px-4">
+                                    <span v-for="c in (t.categories || [])" :key="c" class="inline-block px-1.5 py-0.5 rounded text-[9px] font-bold bg-indigo-950 text-indigo-300 border border-indigo-800 mr-1">{{ c }}</span>
+                                </td>
+                                <td class="py-3 px-4 text-right">
+                                    <button @click="deleteTeacher(t.id)" class="text-rose-400 hover:text-rose-300 font-bold hover:underline cursor-pointer">Trash</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ==========================================
+                 Database Tab 4: User Management & Roles
+                 ========================================== -->
+            <div v-show="activeTab === 'users'" class="bg-slate-900/90 rounded-3xl border border-slate-800 p-6 space-y-6 shadow-xl">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-xl font-bold text-white">Database: User Management &amp; Roles</h2>
+                            <code class="text-xs bg-slate-950 text-fuchsia-400 px-2 py-0.5 rounded border border-slate-800">/database/vue/users.db.js</code>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1">Mengelola akun staf internal, pembagian peran, dan hak akses modul.</p>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <input type="text" v-model="usersSearch" placeholder="Cari pengguna / peran..." class="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-fuchsia-500">
+                        <button @click="resetUsers()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 cursor-pointer">Reset Default</button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-950/70 text-slate-400 uppercase text-[10px] font-black border-b border-slate-800">
+                            <tr>
+                                <th class="py-3 px-4">ID</th>
+                                <th class="py-3 px-4">Nama Lengkap &amp; Username</th>
+                                <th class="py-3 px-4">Peran (*Role*)</th>
+                                <th class="py-3 px-4">Kontak Resmi</th>
+                                <th class="py-3 px-4">Status</th>
+                                <th class="py-3 px-4 text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/80">
+                            <tr v-for="u in filteredUsersList" :key="u.id" class="hover:bg-slate-800/40 transition-colors">
+                                <td class="py-3 px-4 font-mono text-[11px] text-fuchsia-400">{{ u.id }}</td>
+                                <td class="py-3 px-4 font-bold text-white">
+                                    {{ u.name }}
+                                    <span class="block text-[11px] font-normal text-slate-400">@{{ u.username }}</span>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-fuchsia-950 text-fuchsia-300 border border-fuchsia-800">{{ u.role }}</span>
+                                    <div class="text-[10px] text-slate-400 mt-0.5">{{ u.department }}</div>
+                                </td>
+                                <td class="py-3 px-4 text-slate-300">
+                                    <div>{{ u.email }}</div>
+                                    <div class="text-[11px] text-emerald-400 font-medium">{{ u.phone }}</div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                                        :class="u.status === 'Aktif' ? 'bg-emerald-950 text-emerald-300 border border-emerald-700' : 'bg-slate-800 text-slate-400'">{{ u.status }}</span>
+                                </td>
+                                <td class="py-3 px-4 text-right">
+                                    <button @click="deleteUser(u.id)" class="text-rose-400 hover:text-rose-300 font-bold hover:underline cursor-pointer">Trash</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ==========================================
+                 Database Tab 5: Master Backup & Raw JSON
+                 ========================================== -->
+            <div v-show="activeTab === 'backup'" class="bg-slate-900/90 rounded-3xl border border-slate-800 p-6 space-y-6 shadow-xl">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-xl font-bold text-white">Master Backup &amp; Live JSON Viewer</h2>
+                        <code class="text-xs bg-slate-950 text-amber-400 px-2 py-0.5 rounded border border-slate-800">/database/vue/index.js</code>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-1">Ekspor seluruh basis data ke format JSON mandiri atau impor file cadangan.</p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-300">Live JSON Payload:</span>
+                        <button @click="copyJsonPayload()" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded-lg border border-slate-700 cursor-pointer">Salin JSON</button>
+                    </div>
+                    <pre class="p-4 rounded-xl bg-slate-950 text-emerald-400 font-mono text-[11px] max-h-96 overflow-y-auto leading-relaxed border border-slate-800">{{ masterJsonText }}</pre>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        const { createApp, ref, computed, reactive, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                const activeTab = ref('kalender');
+                const kalenderSearch = ref('');
+                const beritaSearch = ref('');
+                const pengajarSearch = ref('');
+                const usersSearch = ref('');
+
+                // Access database instances
+                const kalenderDb = window.KalenderDatabase;
+                const beritaDb = window.BeritaDatabase;
+                const pengajarDb = window.PengajarDatabase;
+                const usersDb = window.UsersDatabase;
+                const masterDb = window.NlsDatabase;
+
+                const summary = computed(() => {
+                    return masterDb ? masterDb.getSummary() : {};
+                });
+
+                const kalenderStats = computed(() => ({
+                    total: kalenderDb ? kalenderDb.events.length : 0
+                }));
+
+                const beritaStats = computed(() => ({
+                    total: beritaDb ? beritaDb.articles.length : 0
+                }));
+
+                const pengajarStats = computed(() => ({
+                    total: pengajarDb ? pengajarDb.teachers.length : 0
+                }));
+
+                const usersStats = computed(() => ({
+                    total: usersDb ? usersDb.users.length : 0
+                }));
+
+                const filteredKalenderEvents = computed(() => {
+                    if (!kalenderDb) return [];
+                    return kalenderDb.search(kalenderSearch.value);
+                });
+
+                const filteredBeritaArticles = computed(() => {
+                    if (!beritaDb) return [];
+                    return beritaDb.search(beritaSearch.value);
+                });
+
+                const filteredPengajarTeachers = computed(() => {
+                    if (!pengajarDb) return [];
+                    return pengajarDb.search(pengajarSearch.value);
+                });
+
+                const filteredUsersList = computed(() => {
+                    if (!usersDb) return [];
+                    return usersDb.search(usersSearch.value);
+                });
+
+                const masterJsonText = computed(() => {
+                    return masterDb ? masterDb.exportFullBackup() : '{}';
+                });
+
+                function deleteKalenderEvent(id) {
+                    if (confirm(\`Pindahkan event "\${id}" ke tempat sampah?\`)) {
+                        kalenderDb.moveToTrash(id);
+                    }
+                }
+
+                function deleteBeritaArticle(id) {
+                    if (confirm(\`Pindahkan artikel "\${id}" ke tempat sampah?\`)) {
+                        beritaDb.moveToTrash(id);
+                    }
+                }
+
+                function deleteTeacher(id) {
+                    if (confirm(\`Pindahkan pengajar "\${id}" ke tempat sampah?\`)) {
+                        pengajarDb.moveToTrash(id);
+                    }
+                }
+
+                function deleteUser(id) {
+                    if (confirm(\`Pindahkan user "\${id}" ke tempat sampah?\`)) {
+                        usersDb.moveToTrash(id);
+                    }
+                }
+
+                function resetKalender() {
+                    if (confirm('Reset database Kalender ke data default?')) {
+                        kalenderDb.resetToDefault();
+                    }
+                }
+
+                function resetBerita() {
+                    if (confirm('Reset database Berita ke data default?')) {
+                        beritaDb.resetToDefault();
+                    }
+                }
+
+                function resetPengajar() {
+                    if (confirm('Reset database Pengajar ke data default?')) {
+                        pengajarDb.resetToDefault();
+                    }
+                }
+
+                function resetUsers() {
+                    if (confirm('Reset database Users ke data default?')) {
+                        usersDb.resetToDefault();
+                    }
+                }
+
+                function exportMasterBackup() {
+                    if (!masterDb) return;
+                    const jsonStr = masterDb.exportFullBackup();
+                    const blob = new Blob([jsonStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = \`nls-full-database-\${new Date().toISOString().split('T')[0]}.json\`;
+                    a.click();
+                }
+
+                function copyJsonPayload() {
+                    navigator.clipboard.writeText(masterJsonText.value).then(() => {
+                        alert('JSON berhasil disalin ke clipboard!');
+                    });
+                }
+
+                return {
+                    activeTab,
+                    kalenderSearch,
+                    beritaSearch,
+                    pengajarSearch,
+                    usersSearch,
+                    summary,
+                    kalenderStats,
+                    beritaStats,
+                    pengajarStats,
+                    usersStats,
+                    filteredKalenderEvents,
+                    filteredBeritaArticles,
+                    filteredPengajarTeachers,
+                    filteredUsersList,
+                    masterJsonText,
+                    deleteKalenderEvent,
+                    deleteBeritaArticle,
+                    deleteTeacher,
+                    deleteUser,
+                    resetKalender,
+                    resetBerita,
+                    resetPengajar,
+                    resetUsers,
+                    exportMasterBackup,
+                    copyJsonPayload
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+
+</html>
+`;
+
+fs.writeFileSync('nlsadmin/vue-db.html', vueDbContent, 'utf8');
+fs.writeFileSync('nlsadmin/vue-db/index.html', vueDbContent, 'utf8');
+console.log('✅ Generated clean and complete nlsadmin/vue-db.html and nlsadmin/vue-db/index.html');
