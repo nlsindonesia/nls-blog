@@ -12,12 +12,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
-        // Clean URL to root "/" if accessed directly on nls-belajar subdomain
-        if ((window.location.hostname.includes('belajar') || window.location.hostname.includes('lms')) && 
-            (window.location.pathname === '/belajar' || window.location.pathname === '/belajar/')) {
-            try {
-                history.replaceState(null, '', '/' + window.location.search + window.location.hash);
-            } catch(e) {}
+        // Clean URL to root "/" or clean slug path if accessed with /belajar prefix on nls-belajar subdomain
+        if (window.location.hostname.includes('belajar') || window.location.hostname.includes('lms')) {
+            if (window.location.pathname === '/belajar' || window.location.pathname === '/belajar/') {
+                try {
+                    history.replaceState(null, '', '/' + window.location.search + window.location.hash);
+                } catch(e) {}
+            } else if (window.location.pathname.startsWith('/belajar/')) {
+                try {
+                    const cleanPath = window.location.pathname.replace(/^\/belajar/, '') || '/';
+                    history.replaceState(null, '', cleanPath + window.location.search + window.location.hash);
+                } catch(e) {}
+            }
         }
     </script>
     <title>Dashboard Siswa - Next Level Study Belajar | NLS LMS</title>
@@ -1702,46 +1708,53 @@
 
                 syncUrlRoute(push = true) {
                     if (this._isRoutingPopState) return;
-                    let hash = '#/dashboard';
+                    let path = '/';
                     if (this.activeTab === 'dashboard') {
-                        hash = '#/dashboard';
+                        path = '/';
                     } else if (this.activeTab === 'profil') {
-                        hash = `#/profil/${this.profilView || 'saya'}`;
+                        path = `/profil/${this.profilView || 'saya'}`;
                     } else if (this.activeTab === 'school') {
-                        hash = `#/school/${this.schoolLevel || 'sma'}`;
+                        path = `/school/${this.schoolLevel || 'sma'}`;
                     } else if (this.activeTab === 'olimpiade') {
-                        hash = `#/olimpiade/${this.olimpiadeType || 'osn_sma'}`;
+                        path = `/olimpiade/${this.olimpiadeType || 'osn_sma'}`;
                     } else if (this.activeTab === 'tka') {
-                        hash = `#/tka/${this.tkaLevel || 'tka_sma'}`;
+                        path = `/tka/${this.tkaLevel || 'tka_sma'}`;
                     } else if (this.activeTab === 'college') {
-                        hash = `#/college/${this.collegeType || 'snbt'}`;
+                        path = `/college/${this.collegeType || 'snbt'}`;
                     } else if (this.activeTab === 'myclass') {
-                        hash = `#/my-class/${this.myclassView || 'actived'}`;
+                        path = `/my-class/${this.myclassView || 'actived'}`;
                     } else if (this.activeTab === 'study_room') {
-                        const courseId = this.studyRoom.course ? this.studyRoom.course.id : 'default';
-                        hash = `#/course/${courseId}`;
+                        const courseId = this.studyRoom.course ? this.studyRoom.course.id : 'c-sch-1';
+                        path = `/course/${courseId}`;
                     }
 
-                    if (window.location.hash !== hash) {
+                    const currentPath = window.location.pathname.replace(/^\/belajar/, '') || '/';
+                    if (currentPath !== path || window.location.hash) {
                         try {
                             if (push) {
-                                history.pushState({ tab: this.activeTab, sub: hash }, '', hash);
+                                history.pushState({ tab: this.activeTab, path: path }, '', path);
                             } else {
-                                history.replaceState({ tab: this.activeTab, sub: hash }, '', hash);
+                                history.replaceState({ tab: this.activeTab, path: path }, '', path);
                             }
                         } catch(e) {}
                     }
                 },
 
                 handleUrlRoute() {
-                    const rawHash = window.location.hash || '';
-                    const cleanHash = rawHash.replace(/^#\/?/, '').toLowerCase().trim();
-                    if (!cleanHash || cleanHash === 'dashboard') {
+                    let rawRoute = '';
+                    if (window.location.hash && window.location.hash.length > 1) {
+                        rawRoute = window.location.hash.replace(/^#\/?/, '').toLowerCase().trim();
+                    } else {
+                        rawRoute = window.location.pathname.replace(/^\/belajar/, '').replace(/^\//, '').toLowerCase().trim();
+                    }
+
+                    if (!rawRoute || rawRoute === 'dashboard') {
                         this.activeTab = 'dashboard';
+                        if (window.location.hash) this.syncUrlRoute(false);
                         return;
                     }
 
-                    const parts = cleanHash.split('/');
+                    const parts = rawRoute.split('/');
                     const section = parts[0];
                     const sub = parts[1] || '';
 
@@ -1781,6 +1794,11 @@
                         }
                     } else {
                         this.activeTab = 'dashboard';
+                    }
+
+                    // Clean any old hash if present and sync clean path
+                    if (window.location.hash) {
+                        this.syncUrlRoute(false);
                     }
 
                     setTimeout(() => {

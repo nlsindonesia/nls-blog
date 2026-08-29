@@ -7,7 +7,7 @@
             "destination": "/api/$1"
         },
         {
-            "source": "/",
+            "source": "/((?!api/|_next/|favicon|.*\\..*).*)",
             "has": [
                 {
                     "type": "host",
@@ -17,7 +17,7 @@
             "destination": "/belajar"
         },
         {
-            "source": "/",
+            "source": "/((?!api/|_next/|favicon|.*\\..*).*)",
             "has": [
                 {
                     "type": "host",
@@ -27,7 +27,7 @@
             "destination": "/belajar"
         },
         {
-            "source": "/",
+            "source": "/((?!api/|_next/|favicon|.*\\..*).*)",
             "has": [
                 {
                     "type": "host",
@@ -37,7 +37,7 @@
             "destination": "/nlsadmin"
         },
         {
-            "source": "/",
+            "source": "/((?!api/|_next/|favicon|.*\\..*).*)",
             "has": [
                 {
                     "type": "host",
