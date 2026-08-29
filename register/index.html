@@ -2,9 +2,12 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=/login?tab=register">
-    <script>window.location.replace('/login?tab=register');</script>
     <title>Pendaftaran Siswa Baru - Next Level Study</title>
+    <script>
+        const query = window.location.search;
+        const target = '/login?tab=register' + (query ? '&' + query.replace(/^\?/, '') : '');
+        window.location.replace(target);
+    </script>
 </head>
 <body>
     <p>Mengalihkan ke halaman pendaftaran...</p>

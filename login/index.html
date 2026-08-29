@@ -538,11 +538,22 @@
                         this.showToast('Login berhasil! Mengalihkan ke Beranda...', 'success');
 
                         setTimeout(() => {
-                            const params = new URLSearchParams(window.location.search);
-                            const returnUrl = params.get('returnUrl') || '/';
-                            window.location.href = returnUrl;
+                            window.location.href = this.getRedirectTarget();
                         }, 1000);
                     }, 800);
+                },
+
+                getRedirectTarget() {
+                    const params = new URLSearchParams(window.location.search);
+                    const courseId = params.get('course');
+                    const returnUrl = params.get('returnUrl') || params.get('redirect');
+                    if (courseId) {
+                        return `https://nls-belajar.vercel.app/course/${courseId}`;
+                    }
+                    if (returnUrl) {
+                        return returnUrl;
+                    }
+                    return '/';
                 },
 
                 handleRegister() {
@@ -604,7 +615,7 @@
                         this.showToast('Pendaftaran Berhasil! Selamat datang di Next Level Study!', 'success');
 
                         setTimeout(() => {
-                            window.location.href = '/';
+                            window.location.href = this.getRedirectTarget();
                         }, 1200);
                     }, 1000);
                 },
@@ -640,7 +651,7 @@
                         this.showToast('Berhasil masuk dengan akun Google!', 'success');
 
                         setTimeout(() => {
-                            window.location.href = '/';
+                            window.location.href = this.getRedirectTarget();
                         }, 1000);
                     }, 800);
                 },
