@@ -2720,7 +2720,6 @@
                                     </div>
                                 </form>
                             </div>
-                            </div>
 
                             <!-- Right: Live Realtime Teacher Card Preview -->
                             <div class="space-y-4">
@@ -3378,7 +3377,7 @@
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             </span>
                         </div>
-                        <div class="text-2xl font-black text-slate-900 dark:text-white" x-text="users.filter(u => u.status === 'Aktif').length"></div>
+                        <div class="text-2xl font-black text-slate-900 dark:text-white" x-text="users.filter(u => u.status === 'Active' || u.status === 'Aktif').length"></div>
                         <p class="text-[10px] text-slate-400 mt-1 font-medium">Bisa login ke portal</p>
                     </div>
 
@@ -3710,7 +3709,7 @@
                                             <td class="py-4 px-4">
                                                 <div class="space-y-1">
                                                     <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wide"
-                                                        :class="getUserRoleBadgeClass(user.role_id)">
+                                                        :class="getUserRoleBadgeClass(user.role_id, user.role)">
                                                         <span x-text="user.role"></span>
                                                     </span>
                                                     <div class="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate" x-text="user.department || 'Operasional'"></div>
@@ -3729,8 +3728,8 @@
                                             <!-- Status -->
                                             <td class="py-4 px-4">
                                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black"
-                                                    :class="user.status === 'Aktif' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'">
-                                                    <span class="w-1.5 h-1.5 rounded-full" :class="user.status === 'Aktif' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'"></span>
+                                                    :class="(user.status === 'Aktif' || user.status === 'Active') ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'">
+                                                    <span class="w-1.5 h-1.5 rounded-full" :class="(user.status === 'Aktif' || user.status === 'Active') ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'"></span>
                                                     <span x-text="user.status"></span>
                                                 </span>
                                             </td>
@@ -5541,27 +5540,45 @@
                     this.userForm.role = roleName;
                 },
 
-                getUserRoleBadgeClass(role_id) {
-                    switch (role_id) {
-                        case 'super_admin':
-                            return 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-200 dark:border-rose-800';
-                        case 'admin_akademik':
-                            return 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 border border-sky-200 dark:border-sky-800';
-                        case 'content_editor':
-                            return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800';
-                        case 'koordinator_pengajar':
-                            return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800';
-                        case 'customer_service':
-                            return 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-200 dark:border-amber-800';
-                        case 'tutor_mentor':
-                            return 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300 border border-purple-200 dark:border-purple-800';
-                        default:
-                            return 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700';
+                getUserRoleBadgeClass(role_id, role = '') {
+                    const key = ((role_id || '') + ' ' + (role || '')).toLowerCase();
+                    if (key.includes('super')) {
+                        return 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-200 dark:border-rose-800';
                     }
+                    if (key.includes('akademik') || key.includes('admin')) {
+                        return 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 border border-sky-200 dark:border-sky-800';
+                    }
+                    if (key.includes('editor') || key.includes('content') || key.includes('berita')) {
+                        return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800';
+                    }
+                    if (key.includes('pengajar') || key.includes('koordinator')) {
+                        return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800';
+                    }
+                    if (key.includes('service') || key.includes('cs') || key.includes('layanan')) {
+                        return 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-200 dark:border-amber-800';
+                    }
+                    if (key.includes('mentor') || key.includes('tutor')) {
+                        return 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300 border border-purple-200 dark:border-purple-800';
+                    }
+                    return 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700';
                 },
 
                 countUsersByRole(role_id) {
-                    return this.users.filter(u => u.role_id === role_id).length;
+                    if (!this.users || !Array.isArray(this.users)) return 0;
+                    return this.users.filter(u => {
+                        const uRole = (u.role || '').toLowerCase();
+                        const uRoleId = (u.role_id || '').toLowerCase();
+                        if (role_id === 'super_admin') {
+                            return uRoleId === 'super_admin' || uRole.includes('super');
+                        }
+                        if (role_id === 'editor' || role_id === 'content_editor') {
+                            return uRoleId === 'editor' || uRoleId === 'content_editor' || uRole.includes('editor');
+                        }
+                        if (role_id === 'mentor' || role_id === 'tutor_mentor') {
+                            return uRoleId === 'mentor' || uRoleId === 'tutor_mentor' || uRole.includes('mentor') || uRole.includes('tutor');
+                        }
+                        return uRoleId === role_id || uRole.replace(/\s+/g, '_') === role_id;
+                    }).length;
                 },
 
                 filteredUsersList() {
@@ -5575,8 +5592,30 @@
                             (u.role && u.role.toLowerCase().includes(q)) ||
                             (u.department && u.department.toLowerCase().includes(q));
 
-                        const matchRole = this.userFilter.role === 'all' || u.role_id === this.userFilter.role;
-                        const matchStatus = this.userFilter.status === 'all' || u.status === this.userFilter.status;
+                        let matchRole = true;
+                        if (this.userFilter.role !== 'all') {
+                            const uRole = (u.role || '').toLowerCase();
+                            const uRoleId = (u.role_id || '').toLowerCase();
+                            const target = this.userFilter.role.toLowerCase();
+                            if (target === 'super_admin') {
+                                matchRole = uRoleId === 'super_admin' || uRole.includes('super');
+                            } else if (target === 'content_editor' || target === 'editor') {
+                                matchRole = uRoleId === 'content_editor' || uRoleId === 'editor' || uRole.includes('editor');
+                            } else if (target === 'tutor_mentor' || target === 'mentor') {
+                                matchRole = uRoleId === 'tutor_mentor' || uRoleId === 'mentor' || uRole.includes('mentor') || uRole.includes('tutor');
+                            } else {
+                                matchRole = uRoleId === target || uRole.includes(target) || uRole.replace(/\s+/g, '_') === target;
+                            }
+                        }
+
+                        let matchStatus = true;
+                        if (this.userFilter.status !== 'all') {
+                            if (this.userFilter.status === 'Aktif' || this.userFilter.status === 'Active') {
+                                matchStatus = u.status === 'Active' || u.status === 'Aktif';
+                            } else {
+                                matchStatus = u.status === this.userFilter.status;
+                            }
+                        }
 
                         return matchSearch && matchRole && matchStatus;
                     });

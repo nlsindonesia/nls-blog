@@ -7,8 +7,11 @@ const defaultUsers = [
         username: 'nlsindonesia',
         email: 'admin@next-level-study.com',
         role: 'Super Admin',
+        role_id: 'super_admin',
         status: 'Active',
+        department: 'Operasional',
         lastLogin: '2026-08-28 21:00',
+        last_login: '2026-08-28 21:00',
         permissions: ['all']
     },
     {
@@ -17,8 +20,11 @@ const defaultUsers = [
         username: 'akademik.nls',
         email: 'akademik@next-level-study.com',
         role: 'Editor',
+        role_id: 'editor',
         status: 'Active',
+        department: 'Operasional',
         lastLogin: '2026-08-28 14:30',
+        last_login: '2026-08-28 14:30',
         permissions: ['kalender', 'berita', 'pengajar']
     },
     {
@@ -27,8 +33,11 @@ const defaultUsers = [
         username: 'tutor.osn',
         email: 'tutor.osn@next-level-study.com',
         role: 'Mentor',
+        role_id: 'mentor',
         status: 'Active',
+        department: 'Operasional',
         lastLogin: '2026-08-27 19:15',
+        last_login: '2026-08-27 19:15',
         permissions: ['pengajar']
     }
 ];
