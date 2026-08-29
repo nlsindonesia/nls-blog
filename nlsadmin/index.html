@@ -3692,14 +3692,14 @@
 
                     <form @submit.prevent="saveUser()" class="space-y-6">
                         <!-- Basic Info Grid -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                             <!-- Nama Lengkap -->
                             <div class="space-y-1.5">
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
-                                    Nama Lengkap & Gelar <span class="text-rose-500">*</span>
+                                    Nama Lengkap &amp; Gelar <span class="text-rose-500">*</span>
                                 </label>
                                 <input type="text" x-model="userForm.name" required
-                                    placeholder="Contoh: Kak Raditya Pratama, M.Sc."
+                                    placeholder="Contoh: Muhammad Faiz / Dr. Hendra, M.Sc."
                                     class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-bold focus:outline-hidden focus:ring-2 focus:ring-fuchsia-500">
                             </div>
 
@@ -3711,7 +3711,7 @@
                                 <div class="relative">
                                     <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-bold text-xs">@</span>
                                     <input type="text" x-model="userForm.username" required
-                                        placeholder="raditya.akademik"
+                                        placeholder="faiz.student / hendra.tutor"
                                         class="w-full pl-8 pr-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-bold focus:outline-hidden focus:ring-2 focus:ring-fuchsia-500">
                                 </div>
                             </div>
@@ -3722,27 +3722,63 @@
                                     Alamat Email Resmi <span class="text-rose-500">*</span>
                                 </label>
                                 <input type="email" x-model="userForm.email" required
-                                    placeholder="raditya@next-level-study.com"
+                                    placeholder="faiz@gmail.com / admin@nls.com"
                                     class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-bold focus:outline-hidden focus:ring-2 focus:ring-fuchsia-500">
                             </div>
 
                             <!-- WhatsApp -->
                             <div class="space-y-1.5">
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
-                                    Nomor WhatsApp / Kontak Aktif
+                                    Nomor WhatsApp Aktif <span class="text-rose-500">*</span>
                                 </label>
-                                <input type="tel" x-model="userForm.phone"
-                                    placeholder="Contoh: 081286096600"
+                                <input type="tel" x-model="userForm.phone" required
+                                    placeholder="Contoh: 081234567890"
                                     class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-bold focus:outline-hidden focus:ring-2 focus:ring-fuchsia-500">
                             </div>
 
-                            <!-- Departemen / Divisi -->
+                            <!-- NISN / NIP -->
                             <div class="space-y-1.5">
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
-                                    Departemen / Divisi Kerja
+                                    NISN Siswa / NIP Pengajar
                                 </label>
-                                <input type="text" x-model="userForm.department"
-                                    placeholder="Contoh: Divisi Kurikulum & OSN"
+                                <input type="text" x-model="userForm.nisn"
+                                    placeholder="Contoh: 0081293412 / NIP: 19890412..."
+                                    class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-bold focus:outline-hidden focus:ring-2 focus:ring-fuchsia-500">
+                            </div>
+
+                            <!-- Asal Sekolah / Institusi -->
+                            <div class="space-y-1.5">
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                                    Asal Sekolah / Institusi
+                                </label>
+                                <input type="text" x-model="userForm.school"
+                                    placeholder="Contoh: SMA Negeri 1 Bekasi"
+                                    class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-bold focus:outline-hidden focus:ring-2 focus:ring-fuchsia-500">
+                            </div>
+
+                            <!-- Jenjang Pendidikan -->
+                            <div class="space-y-1.5">
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                                    Jenjang Pendidikan
+                                </label>
+                                <select x-model="userForm.level"
+                                    class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-bold focus:outline-hidden focus:ring-2 focus:ring-fuchsia-500 cursor-pointer">
+                                    <option value="SD">SD (Sekolah Dasar)</option>
+                                    <option value="SMP">SMP (Sekolah Menengah Pertama)</option>
+                                    <option value="SMA">SMA (Sekolah Menengah Atas)</option>
+                                    <option value="Alumni">Gap Year / Alumni</option>
+                                    <option value="Guru">Tenaga Pendidik / Guru</option>
+                                    <option value="Staff">Staff &amp; Tim Manajemen</option>
+                                </select>
+                            </div>
+
+                            <!-- Target Program -->
+                            <div class="space-y-1.5">
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                                    Target Program Unggulan
+                                </label>
+                                <input type="text" x-model="userForm.targetProgram"
+                                    placeholder="Contoh: Persiapan OSN &amp; SNBT"
                                     class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-bold focus:outline-hidden focus:ring-2 focus:ring-fuchsia-500">
                             </div>
 
@@ -3751,9 +3787,9 @@
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
                                     Status Akun
                                 </label>
-                                <div class="flex items-center gap-3 pt-1">
+                                <div class="flex items-center gap-3 pt-2">
                                     <label class="flex items-center gap-2 cursor-pointer">
-                                        <input type="radio" value="Aktif" x-model="userForm.status" class="text-fuchsia-600 focus:ring-fuchsia-500">
+                                        <input type="radio" value="Active" x-model="userForm.status" class="text-fuchsia-600 focus:ring-fuchsia-500">
                                         <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Aktif (Dapat Login)</span>
                                     </label>
                                     <label class="flex items-center gap-2 cursor-pointer">
@@ -3768,29 +3804,57 @@
                         <div class="space-y-3 pt-3 border-t border-slate-100 dark:border-slate-800">
                             <div>
                                 <label class="block text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
-                                    Penentuan Peran & Hak Akses (*Role Permission*) <span class="text-rose-500">*</span>
+                                    Penentuan Peran &amp; Hak Akses (*Role Permission*) <span class="text-rose-500">*</span>
                                 </label>
                                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                                    Pilih peran pengguna untuk menentukan menu dan wewenang yang dapat diakses di portal.
+                                    Super Admin memiliki wewenang penuh untuk menetapkan atau mengubah peran pengguna kapan saja.
                                 </p>
                             </div>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                                <!-- Role 1: Super Admin -->
+                                <!-- Role 1: Siswa (Student) -->
+                                <div @click="setUserRole('student', 'Siswa')"
+                                    class="p-4 rounded-2xl border-2 transition-all cursor-pointer relative"
+                                    :class="userForm.role_id === 'student' || userForm.role === 'student' || userForm.role === 'Siswa' ? 'border-blue-500 bg-blue-50/70 dark:bg-blue-950/40 shadow-sm' : 'border-slate-200 dark:border-slate-800 hover:border-blue-300 bg-slate-50/50 dark:bg-slate-900/40'">
+                                    <div class="flex items-center justify-between gap-2 mb-1.5">
+                                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-200">Siswa (Student)</span>
+                                        <span x-show="userForm.role_id === 'student' || userForm.role === 'student' || userForm.role === 'Siswa'" class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                                    </div>
+                                    <h4 class="text-xs font-black text-slate-900 dark:text-white">Akses Siswa LMS</h4>
+                                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">
+                                        Mengikuti kelas, mengerjakan kuis CBT, unduh modul PDF, dan mengelola profil belajar.
+                                    </p>
+                                </div>
+
+                                <!-- Role 2: Guru / Pengajar (Teacher) -->
+                                <div @click="setUserRole('teacher', 'Guru / Pengajar')"
+                                    class="p-4 rounded-2xl border-2 transition-all cursor-pointer relative"
+                                    :class="userForm.role_id === 'teacher' || userForm.role === 'teacher' || userForm.role.includes('Guru') || userForm.role.includes('Pengajar') ? 'border-purple-500 bg-purple-50/70 dark:bg-purple-950/40 shadow-sm' : 'border-slate-200 dark:border-slate-800 hover:border-purple-300 bg-slate-50/50 dark:bg-slate-900/40'">
+                                    <div class="flex items-center justify-between gap-2 mb-1.5">
+                                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-200">Guru / Pengajar</span>
+                                        <span x-show="userForm.role_id === 'teacher' || userForm.role === 'teacher' || userForm.role.includes('Guru') || userForm.role.includes('Pengajar')" class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                                    </div>
+                                    <h4 class="text-xs font-black text-slate-900 dark:text-white">Tutor &amp; Mentor Ahli</h4>
+                                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">
+                                        Akses jadwal bimbingan, verifikasi kurikulum materi ajar, dan pendampingan tryout.
+                                    </p>
+                                </div>
+
+                                <!-- Role 3: Super Admin -->
                                 <div @click="setUserRole('super_admin', 'Super Admin')"
                                     class="p-4 rounded-2xl border-2 transition-all cursor-pointer relative"
-                                    :class="userForm.role_id === 'super_admin' ? 'border-rose-500 bg-rose-50/70 dark:bg-rose-950/40 shadow-sm' : 'border-slate-200 dark:border-slate-800 hover:border-rose-300 bg-slate-50/50 dark:bg-slate-900/40'">
+                                    :class="userForm.role_id === 'super_admin' || userForm.role.includes('Super') ? 'border-rose-500 bg-rose-50/70 dark:bg-rose-950/40 shadow-sm' : 'border-slate-200 dark:border-slate-800 hover:border-rose-300 bg-slate-50/50 dark:bg-slate-900/40'">
                                     <div class="flex items-center justify-between gap-2 mb-1.5">
                                         <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-200">Super Admin</span>
-                                        <span x-show="userForm.role_id === 'super_admin'" class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                                        <span x-show="userForm.role_id === 'super_admin' || userForm.role.includes('Super')" class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
                                     </div>
-                                    <h4 class="text-xs font-black text-slate-900 dark:text-white">Akses Penuh</h4>
+                                    <h4 class="text-xs font-black text-slate-900 dark:text-white">Akses Penuh Sistem</h4>
                                     <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">
                                         Seluruh modul (Kalender, Berita CMS, Pengajar, User Management, Database Backup).
                                     </p>
                                 </div>
 
-                                <!-- Role 2: Admin Akademik -->
+                                <!-- Role 4: Admin Akademik -->
                                 <div @click="setUserRole('admin_akademik', 'Admin Akademik')"
                                     class="p-4 rounded-2xl border-2 transition-all cursor-pointer relative"
                                     :class="userForm.role_id === 'admin_akademik' ? 'border-sky-500 bg-sky-50/70 dark:bg-sky-950/40 shadow-sm' : 'border-slate-200 dark:border-slate-800 hover:border-sky-300 bg-slate-50/50 dark:bg-slate-900/40'">
@@ -3798,13 +3862,13 @@
                                         <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-sky-100 text-sky-800 dark:bg-sky-900 dark:text-sky-200">Admin Akademik</span>
                                         <span x-show="userForm.role_id === 'admin_akademik'" class="w-2.5 h-2.5 rounded-full bg-sky-500"></span>
                                     </div>
-                                    <h4 class="text-xs font-black text-slate-900 dark:text-white">Kalender & CBT</h4>
+                                    <h4 class="text-xs font-black text-slate-900 dark:text-white">Kalender &amp; CBT</h4>
                                     <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">
                                         Kelola jadwal agenda, event try out berkala, webinar, dan jadwal kelas olimpiade.
                                     </p>
                                 </div>
 
-                                <!-- Role 3: Content Editor -->
+                                <!-- Role 5: Content Editor -->
                                 <div @click="setUserRole('content_editor', 'Content Editor')"
                                     class="p-4 rounded-2xl border-2 transition-all cursor-pointer relative"
                                     :class="userForm.role_id === 'content_editor' ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 shadow-sm' : 'border-slate-200 dark:border-slate-800 hover:border-emerald-300 bg-slate-50/50 dark:bg-slate-900/40'">
@@ -3812,13 +3876,13 @@
                                         <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Content Editor</span>
                                         <span x-show="userForm.role_id === 'content_editor'" class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
                                     </div>
-                                    <h4 class="text-xs font-black text-slate-900 dark:text-white">Berita & Artikel CMS</h4>
+                                    <h4 class="text-xs font-black text-slate-900 dark:text-white">Berita &amp; Artikel CMS</h4>
                                     <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">
                                         Tulis artikel blog edukasi, optimasi SEO keyword, dan publikasi wawasan belajar.
                                     </p>
                                 </div>
 
-                                <!-- Role 4: Koordinator Pengajar -->
+                                <!-- Role 6: Koordinator Pengajar -->
                                 <div @click="setUserRole('koordinator_pengajar', 'Koordinator Pengajar')"
                                     class="p-4 rounded-2xl border-2 transition-all cursor-pointer relative"
                                     :class="userForm.role_id === 'koordinator_pengajar' ? 'border-indigo-500 bg-indigo-50/70 dark:bg-indigo-950/40 shadow-sm' : 'border-slate-200 dark:border-slate-800 hover:border-indigo-300 bg-slate-50/50 dark:bg-slate-900/40'">
@@ -3826,37 +3890,9 @@
                                         <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300">Koordinator Pengajar</span>
                                         <span x-show="userForm.role_id === 'koordinator_pengajar'" class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
                                     </div>
-                                    <h4 class="text-xs font-black text-slate-900 dark:text-white">Pengajar & Verifikasi</h4>
+                                    <h4 class="text-xs font-black text-slate-900 dark:text-white">Pengajar &amp; Verifikasi</h4>
                                     <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">
                                         Kelola profil tutor, kurasi berkas lamaran guru, dan seleksi calon pengajar.
-                                    </p>
-                                </div>
-
-                                <!-- Role 5: Customer Service -->
-                                <div @click="setUserRole('customer_service', 'Customer Service')"
-                                    class="p-4 rounded-2xl border-2 transition-all cursor-pointer relative"
-                                    :class="userForm.role_id === 'customer_service' ? 'border-amber-500 bg-amber-50/70 dark:bg-amber-950/40 shadow-sm' : 'border-slate-200 dark:border-slate-800 hover:border-amber-300 bg-slate-50/50 dark:bg-slate-900/40'">
-                                    <div class="flex items-center justify-between gap-2 mb-1.5">
-                                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">Customer Service</span>
-                                        <span x-show="userForm.role_id === 'customer_service'" class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-                                    </div>
-                                    <h4 class="text-xs font-black text-slate-900 dark:text-white">Layanan & Pendaftaran</h4>
-                                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">
-                                        Respon konsultasi pendaftaran siswa, bimbingan program, dan informasi kontak.
-                                    </p>
-                                </div>
-
-                                <!-- Role 6: Tutor / Mentor Ahli -->
-                                <div @click="setUserRole('tutor_mentor', 'Tutor / Mentor Ahli')"
-                                    class="p-4 rounded-2xl border-2 transition-all cursor-pointer relative"
-                                    :class="userForm.role_id === 'tutor_mentor' ? 'border-purple-500 bg-purple-50/70 dark:bg-purple-950/40 shadow-sm' : 'border-slate-200 dark:border-slate-800 hover:border-purple-300 bg-slate-50/50 dark:bg-slate-900/40'">
-                                    <div class="flex items-center justify-between gap-2 mb-1.5">
-                                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300">Tutor / Mentor</span>
-                                        <span x-show="userForm.role_id === 'tutor_mentor'" class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
-                                    </div>
-                                    <h4 class="text-xs font-black text-slate-900 dark:text-white">Pengajar Spesialis</h4>
-                                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">
-                                        Akses jadwal kelas dan catatan pembinaan materi khusus jenjang terkait.
                                     </p>
                                 </div>
                             </div>
@@ -3886,7 +3922,7 @@
                                     Catatan Tambahan / Memo Internal
                                 </label>
                                 <input type="text" x-model="userForm.notes"
-                                    placeholder="Contoh: PJ Try Out OSN Matematika Wilayah Barat"
+                                    placeholder="Contoh: Siswa Binaan Kelas Olimpiade / PJ Materi"
                                     class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-bold focus:outline-hidden focus:ring-2 focus:ring-fuchsia-500">
                             </div>
                         </div>
@@ -3917,7 +3953,7 @@
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                             </span>
                             <input type="text" x-model="userFilter.search"
-                                placeholder="Cari nama pengguna, username, email, WhatsApp, divisi..."
+                                placeholder="Cari nama pengguna, email, NISN, sekolah, peran..."
                                 class="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-fuchsia-500">
                         </div>
 
@@ -3926,19 +3962,19 @@
                             <select x-model="userFilter.role"
                                 class="px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 focus:outline-hidden focus:ring-2 focus:ring-fuchsia-500 cursor-pointer">
                                 <option value="all">Semua Peran (All Roles)</option>
+                                <option value="student">Siswa (Student)</option>
+                                <option value="teacher">Guru / Pengajar (Teacher)</option>
                                 <option value="super_admin">Super Admin</option>
                                 <option value="admin_akademik">Admin Akademik</option>
                                 <option value="content_editor">Content Editor</option>
                                 <option value="koordinator_pengajar">Koordinator Pengajar</option>
-                                <option value="customer_service">Customer Service</option>
-                                <option value="tutor_mentor">Tutor / Mentor Ahli</option>
                             </select>
 
                             <!-- Status Filter Dropdown -->
                             <select x-model="userFilter.status"
                                 class="px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 focus:outline-hidden focus:ring-2 focus:ring-fuchsia-500 cursor-pointer">
                                 <option value="all">Semua Status</option>
-                                <option value="Aktif">Hanya Aktif</option>
+                                <option value="Active">Hanya Aktif</option>
                                 <option value="Nonaktif">Hanya Nonaktif</option>
                             </select>
 
@@ -3956,12 +3992,12 @@
                             <table class="w-full text-left border-collapse">
                                 <thead>
                                     <tr class="bg-slate-50/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                                        <th class="py-3.5 px-4 sm:px-6">Pengguna</th>
-                                        <th class="py-3.5 px-4">Peran & Divisi</th>
+                                        <th class="py-3.5 px-4 sm:px-6">Pengguna &amp; Identitas</th>
+                                        <th class="py-3.5 px-4">Peran (Role Otoritas)</th>
+                                        <th class="py-3.5 px-4">Sekolah &amp; Target</th>
                                         <th class="py-3.5 px-4">Kontak Resmi</th>
-                                        <th class="py-3.5 px-4">Status</th>
-                                        <th class="py-3.5 px-4">Aktivitas Terakhir</th>
-                                        <th class="py-3.5 px-4 sm:px-6 text-right">Aksi</th>
+                                        <th class="py-3.5 px-4">Status Akun</th>
+                                        <th class="py-3.5 px-4 sm:px-6 text-right">Aksi &amp; Ubah Peran</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80 text-xs">
@@ -3976,20 +4012,39 @@
                                                         class="w-10 h-10 rounded-2xl object-cover shrink-0 border border-slate-200 dark:border-slate-700 shadow-2xs">
                                                     <div class="min-w-0">
                                                         <div class="font-black text-slate-900 dark:text-white truncate" x-text="user.name"></div>
-                                                        <div class="text-[11px] text-slate-400 dark:text-slate-500 font-bold truncate">@<span x-text="user.username"></span></div>
+                                                        <div class="text-[11px] text-slate-400 dark:text-slate-500 font-bold truncate">
+                                                            <span x-text="user.nisn || ('@' + (user.username || 'user'))"></span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </td>
 
-                                            <!-- Role & Department -->
+                                            <!-- Role & Quick Role Changer -->
                                             <td class="py-4 px-4">
-                                                <div class="space-y-1">
+                                                <div class="space-y-1.5">
                                                     <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wide"
                                                         :class="getUserRoleBadgeClass(user.role_id, user.role)">
-                                                        <span x-text="user.role"></span>
+                                                        <span x-text="user.roleLabel || user.role"></span>
                                                     </span>
-                                                    <div class="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate" x-text="user.department || 'Operasional'"></div>
+                                                    <!-- Quick Role Selector for Super Admin -->
+                                                    <div class="pt-0.5">
+                                                        <select @change="changeUserRoleDirectly(user.id, $event.target.value)"
+                                                            class="text-[10px] font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 py-1 px-2 focus:outline-hidden focus:ring-1 focus:ring-fuchsia-500 cursor-pointer">
+                                                            <option value="student" :selected="user.role === 'student' || user.role_id === 'student' || user.role === 'Siswa'">Set: Siswa</option>
+                                                            <option value="teacher" :selected="user.role === 'teacher' || user.role_id === 'teacher' || user.role.includes('Guru') || user.role.includes('Pengajar')">Set: Guru / Pengajar</option>
+                                                            <option value="admin_akademik" :selected="user.role_id === 'admin_akademik'">Set: Admin Akademik</option>
+                                                            <option value="content_editor" :selected="user.role_id === 'content_editor'">Set: Content Editor</option>
+                                                            <option value="koordinator_pengajar" :selected="user.role_id === 'koordinator_pengajar'">Set: Koordinator Pengajar</option>
+                                                            <option value="super_admin" :selected="user.role === 'super_admin' || user.role_id === 'super_admin'">Set: Super Admin</option>
+                                                        </select>
+                                                    </div>
                                                 </div>
+                                            </td>
+
+                                            <!-- School & Target -->
+                                            <td class="py-4 px-4 space-y-0.5">
+                                                <div class="font-bold text-slate-900 dark:text-white truncate" x-text="user.school || 'Sekolah NLS'"></div>
+                                                <div class="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400 truncate" x-text="user.targetProgram || user.grade || 'Program Unggulan'"></div>
                                             </td>
 
                                             <!-- Contact -->
@@ -4010,9 +4065,6 @@
                                                 </span>
                                             </td>
 
-                                            <!-- Last Login -->
-                                            <td class="py-4 px-4 text-slate-500 dark:text-slate-400 text-[11px] font-medium" x-text="user.last_login || 'Belum Login'"></td>
-
                                             <!-- Actions -->
                                             <td class="py-4 px-4 sm:px-6 text-right">
                                                 <div class="inline-flex items-center gap-1">
@@ -4026,9 +4078,9 @@
                                                     <!-- Toggle Status Button -->
                                                     <button type="button" @click="toggleUserStatus(user.id)"
                                                         class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all cursor-pointer"
-                                                        :title="user.status === 'Aktif' ? 'Bekukan Akun' : 'Aktifkan Akun'">
-                                                        <svg x-show="user.status === 'Aktif'" class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
-                                                        <svg x-show="user.status !== 'Aktif'" class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                        :title="(user.status === 'Aktif' || user.status === 'Active') ? 'Bekukan / Nonaktifkan Akun' : 'Aktifkan Akun'">
+                                                        <svg x-show="user.status === 'Aktif' || user.status === 'Active'" class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+                                                        <svg x-show="user.status !== 'Aktif' && user.status !== 'Active'" class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                                     </button>
 
                                                     <!-- Delete to Trash Button -->
@@ -6360,10 +6412,15 @@
                         username: '',
                         email: '',
                         phone: '',
-                        role: 'Admin Akademik',
-                        role_id: 'admin_akademik',
-                        status: 'Aktif',
-                        department: 'Divisi Operasional',
+                        nisn: '',
+                        school: '',
+                        level: 'SMA',
+                        grade: '',
+                        targetProgram: 'Persiapan OSN & SNBT',
+                        role: 'Siswa',
+                        role_id: 'student',
+                        status: 'Active',
+                        department: 'Siswa Reguler',
                         avatar: '/nls-logo-300.png',
                         password: '',
                         notes: ''
@@ -6393,8 +6450,48 @@
                     this.userForm.role = roleName;
                 },
 
+                async changeUserRoleDirectly(id, newRoleId) {
+                    const idx = this.users.findIndex(u => u.id === id);
+                    if (idx === -1) return;
+
+                    let roleLabel = 'Siswa';
+                    if (newRoleId === 'teacher') roleLabel = 'Guru / Pengajar';
+                    else if (newRoleId === 'super_admin') roleLabel = 'Super Admin';
+                    else if (newRoleId === 'admin_akademik') roleLabel = 'Admin Akademik';
+                    else if (newRoleId === 'content_editor') roleLabel = 'Content Editor';
+                    else if (newRoleId === 'koordinator_pengajar') roleLabel = 'Koordinator Pengajar';
+
+                    this.users[idx].role = newRoleId;
+                    this.users[idx].role_id = newRoleId;
+                    this.users[idx].roleLabel = roleLabel;
+                    this.saveUsersToStorage();
+
+                    // Sync to Cloud API
+                    try {
+                        await fetch('/api/users', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                id: id,
+                                role: newRoleId,
+                                role_id: newRoleId,
+                                roleLabel: roleLabel
+                            })
+                        });
+                        this.showToast(`Peran pengguna "${this.users[idx].name}" berhasil diubah menjadi "${roleLabel}".`);
+                    } catch(e) {
+                        this.showToast(`Peran tersimpan di sesi lokal.`);
+                    }
+                },
+
                 getUserRoleBadgeClass(role_id, role = '') {
                     const key = ((role_id || '') + ' ' + (role || '')).toLowerCase();
+                    if (key.includes('student') || key.includes('siswa')) {
+                        return 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800';
+                    }
+                    if (key.includes('teacher') || key.includes('guru') || key.includes('pengajar') || key.includes('tutor') || key.includes('mentor')) {
+                        return 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300 border border-purple-200 dark:border-purple-800';
+                    }
                     if (key.includes('super')) {
                         return 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-200 dark:border-rose-800';
                     }
@@ -6404,14 +6501,8 @@
                     if (key.includes('editor') || key.includes('content') || key.includes('berita')) {
                         return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800';
                     }
-                    if (key.includes('pengajar') || key.includes('koordinator')) {
+                    if (key.includes('koordinator')) {
                         return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800';
-                    }
-                    if (key.includes('service') || key.includes('cs') || key.includes('layanan')) {
-                        return 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-200 dark:border-amber-800';
-                    }
-                    if (key.includes('mentor') || key.includes('tutor')) {
-                        return 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300 border border-purple-200 dark:border-purple-800';
                     }
                     return 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700';
                 },
@@ -6421,14 +6512,17 @@
                     return this.users.filter(u => {
                         const uRole = (u.role || '').toLowerCase();
                         const uRoleId = (u.role_id || '').toLowerCase();
+                        if (role_id === 'student') {
+                            return uRoleId === 'student' || uRole.includes('siswa') || uRole === 'student';
+                        }
+                        if (role_id === 'teacher') {
+                            return uRoleId === 'teacher' || uRole.includes('guru') || uRole.includes('pengajar') || uRole.includes('tutor') || uRole.includes('mentor');
+                        }
                         if (role_id === 'super_admin') {
                             return uRoleId === 'super_admin' || uRole.includes('super');
                         }
                         if (role_id === 'editor' || role_id === 'content_editor') {
                             return uRoleId === 'editor' || uRoleId === 'content_editor' || uRole.includes('editor');
-                        }
-                        if (role_id === 'mentor' || role_id === 'tutor_mentor') {
-                            return uRoleId === 'mentor' || uRoleId === 'tutor_mentor' || uRole.includes('mentor') || uRole.includes('tutor');
                         }
                         return uRoleId === role_id || uRole.replace(/\s+/g, '_') === role_id;
                     }).length;
@@ -6442,6 +6536,8 @@
                             (u.username && u.username.toLowerCase().includes(q)) ||
                             (u.email && u.email.toLowerCase().includes(q)) ||
                             (u.phone && u.phone.toLowerCase().includes(q)) ||
+                            (u.nisn && u.nisn.toLowerCase().includes(q)) ||
+                            (u.school && u.school.toLowerCase().includes(q)) ||
                             (u.role && u.role.toLowerCase().includes(q)) ||
                             (u.department && u.department.toLowerCase().includes(q));
 
@@ -6450,12 +6546,14 @@
                             const uRole = (u.role || '').toLowerCase();
                             const uRoleId = (u.role_id || '').toLowerCase();
                             const target = this.userFilter.role.toLowerCase();
-                            if (target === 'super_admin') {
+                            if (target === 'student') {
+                                matchRole = uRoleId === 'student' || uRole.includes('siswa') || uRole === 'student';
+                            } else if (target === 'teacher') {
+                                matchRole = uRoleId === 'teacher' || uRole.includes('guru') || uRole.includes('pengajar') || uRole.includes('tutor') || uRole.includes('mentor');
+                            } else if (target === 'super_admin') {
                                 matchRole = uRoleId === 'super_admin' || uRole.includes('super');
                             } else if (target === 'content_editor' || target === 'editor') {
                                 matchRole = uRoleId === 'content_editor' || uRoleId === 'editor' || uRole.includes('editor');
-                            } else if (target === 'tutor_mentor' || target === 'mentor') {
-                                matchRole = uRoleId === 'tutor_mentor' || uRoleId === 'mentor' || uRole.includes('mentor') || uRole.includes('tutor');
                             } else {
                                 matchRole = uRoleId === target || uRole.includes(target) || uRole.replace(/\s+/g, '_') === target;
                             }
@@ -6485,18 +6583,32 @@
                         return;
                     }
 
+                    let roleLabel = 'Siswa';
+                    if (f.role_id === 'teacher' || f.role === 'teacher') roleLabel = 'Guru / Pengajar';
+                    else if (f.role_id === 'super_admin' || f.role === 'super_admin') roleLabel = 'Super Admin';
+                    else if (f.role_id === 'admin_akademik') roleLabel = 'Admin Akademik';
+                    else if (f.role_id === 'content_editor') roleLabel = 'Content Editor';
+                    else if (f.role_id === 'koordinator_pengajar') roleLabel = 'Koordinator Pengajar';
+
                     const userData = {
                         id: f.id || ('usr-' + Date.now()),
                         name: f.name.trim(),
                         username: f.username.trim().replace(/^@/, ''),
                         email: f.email.trim(),
                         phone: f.phone ? f.phone.trim() : '',
-                        role: f.role || 'Admin Akademik',
-                        role_id: f.role_id || 'admin_akademik',
+                        nisn: f.nisn ? f.nisn.trim() : '',
+                        school: f.school ? f.school.trim() : 'Next Level Study',
+                        level: f.level || 'SMA',
+                        grade: f.grade || '',
+                        targetProgram: f.targetProgram || '',
+                        role: f.role_id || f.role || 'student',
+                        role_id: f.role_id || 'student',
+                        roleLabel: roleLabel,
                         status: f.status || 'Active',
-                        department: f.department ? f.department.trim() : 'Divisi Operasional',
+                        department: f.department ? f.department.trim() : (f.role_id === 'student' ? 'Siswa Reguler' : 'Operasional'),
                         avatar: f.avatar || '/nls-logo-300.png',
                         notes: f.notes ? f.notes.trim() : '',
+                        password: f.password || '@Maman123$',
                         last_login: f.last_login || 'Belum pernah login',
                         created_at: f.created_at || new Date().toISOString(),
                         updated_at: new Date().toISOString()
@@ -6523,7 +6635,7 @@
                     }
 
                     this.userView = 'present';
-                    this.showToast(`Akun "${userData.name}" berhasil disimpan dan disinkronkan ke cloud!`);
+                    this.showToast(`Akun "${userData.name}" (${roleLabel}) berhasil disimpan dan disinkronkan!`);
                 },
 
                 editUser(user) {
@@ -6532,6 +6644,7 @@
                     this.isUserDropdownOpen = true;
                     this.userForm = {
                         ...user,
+                        role_id: user.role_id || user.role || 'student',
                         isEdit: true,
                         password: ''
                     };

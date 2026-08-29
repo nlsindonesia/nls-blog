@@ -2601,14 +2601,18 @@
                         if (session) {
                             this.isLoggedIn = true;
                             this.studentProfile = {
+                                id: session.id || '',
                                 name: session.name || 'Siswa NLS',
                                 nisn: session.nisn || 'NISN: Terdaftar',
                                 school: session.school || 'Sekolah NLS',
-                                grade: session.level || session.grade || 'Jenjang Siswa',
+                                level: session.level || 'SMA',
+                                grade: session.grade || session.level || '12 SMA - IPA',
                                 email: session.email || '',
                                 phone: session.phone || '',
                                 parentPhone: session.parentPhone || '-',
-                                target: session.targetProgram || 'Program Unggulan NLS',
+                                target: session.targetProgram || session.target || 'Program Unggulan NLS',
+                                role: session.role || 'student',
+                                roleLabel: session.roleLabel || (session.role === 'teacher' ? 'Guru / Pengajar' : 'Siswa'),
                                 avatar: session.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'
                             };
                         } else {
@@ -2888,10 +2892,44 @@
                     reader.readAsDataURL(file);
                 },
 
-                saveStudentProfile() {
+                async saveStudentProfile() {
                     localStorage.setItem('nls_student_profile_v1', JSON.stringify(this.studentProfile));
-                    this.showToast('Informasi profil siswa berhasil disimpan!');
+                    
+                    try {
+                        const savedSession = localStorage.getItem('nls_student_auth_session');
+                        if (savedSession) {
+                            const sess = JSON.parse(savedSession);
+                            const updatedSess = { ...sess, ...this.studentProfile, targetProgram: this.studentProfile.target };
+                            localStorage.setItem('nls_student_auth_session', JSON.stringify(updatedSess));
+                            if (window.NlsSSO) window.NlsSSO.broadcastLogin(updatedSess);
+                        }
+                    } catch(e) {}
+
+                    this.showToast('Informasi profil siswa berhasil disimpan!', 'success');
                     this.profilView = 'saya';
+
+                    // Sync to Cloud Master Database
+                    try {
+                        fetch('/api/users', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                action: 'update_profile',
+                                id: this.studentProfile.id,
+                                email: this.studentProfile.email,
+                                name: this.studentProfile.name,
+                                school: this.studentProfile.school,
+                                nisn: this.studentProfile.nisn,
+                                grade: this.studentProfile.grade,
+                                phone: this.studentProfile.phone,
+                                parentPhone: this.studentProfile.parentPhone,
+                                targetProgram: this.studentProfile.target,
+                                avatar: this.studentProfile.avatar
+                            })
+                        }).then(r => r.json()).then(d => {
+                            if (d.success) console.log('Profile synced to cloud database:', d.user);
+                        }).catch(err => console.warn('Cloud sync error:', err));
+                    } catch(err) {}
                 },
 
                 showToast(msg, type = 'success') {
