@@ -14,7 +14,7 @@
                     "value": "nls-belajar.vercel.app"
                 }
             ],
-            "destination": "/belajar/index.html"
+            "destination": "/belajar"
         },
         {
             "source": "/",
@@ -24,7 +24,7 @@
                     "value": "belajar.next-level-study.com"
                 }
             ],
-            "destination": "/belajar/index.html"
+            "destination": "/belajar"
         },
         {
             "source": "/",
@@ -34,7 +34,7 @@
                     "value": "nls-superadmin.vercel.app"
                 }
             ],
-            "destination": "/nlsadmin/index.html"
+            "destination": "/nlsadmin"
         },
         {
             "source": "/",
@@ -44,53 +44,7 @@
                     "value": "admin.next-level-study.com"
                 }
             ],
-            "destination": "/nlsadmin/index.html"
-        }
-    ],
-    "redirects": [
-        {
-            "source": "/belajar",
-            "has": [
-                {
-                    "type": "host",
-                    "value": "nls-belajar.vercel.app"
-                }
-            ],
-            "destination": "/",
-            "permanent": false
-        },
-        {
-            "source": "/belajar/",
-            "has": [
-                {
-                    "type": "host",
-                    "value": "nls-belajar.vercel.app"
-                }
-            ],
-            "destination": "/",
-            "permanent": false
-        },
-        {
-            "source": "/nlsadmin",
-            "has": [
-                {
-                    "type": "host",
-                    "value": "nls-superadmin.vercel.app"
-                }
-            ],
-            "destination": "/",
-            "permanent": false
-        },
-        {
-            "source": "/nlsadmin/",
-            "has": [
-                {
-                    "type": "host",
-                    "value": "nls-superadmin.vercel.app"
-                }
-            ],
-            "destination": "/",
-            "permanent": false
+            "destination": "/nlsadmin"
         }
     ]
 }
