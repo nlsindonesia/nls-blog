@@ -1,7 +1,7 @@
 import { getCloudStore, saveCloudStore } from './cloud-db.js';
 
 const defaultCourses = [
-    // School
+    // School SD (Kelas 1-6)
     {
         id: 'c-sch-1',
         category: 'School',
@@ -49,12 +49,44 @@ const defaultCourses = [
         updated_at: '2026-08-28T00:00:00.000Z'
     },
     {
+        id: 'c-sch-1b',
+        category: 'School',
+        level: 'SD',
+        title: 'IPA & Eksplorasi Sains Alam SD',
+        description: 'Pemahaman sains tematik, makhluk hidup, energi, lingkungan hidup, dan metode eksperimen sederhana.',
+        mentor: 'Dr. Sarah Kartika, M.Sc.',
+        mentor_id: 't-2',
+        totalModules: 8,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-02T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
+    {
+        id: 'c-sch-1c',
+        category: 'School',
+        level: 'SD',
+        title: 'Bahasa Inggris Dasar & Literasi Membaca SD',
+        description: 'Vocabulary harian, reading comprehension cerita anak, dan tata bahasa dasar komunikatif.',
+        mentor: 'Miss Jessica Aurelia, B.Ed.',
+        mentor_id: 't-4',
+        totalModules: 6,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-03T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
+
+    // School SMP (Kelas 7-9)
+    {
         id: 'c-sch-2',
         category: 'School',
         level: 'SMP',
         title: 'Fisika & IPA Terpadu SMP',
         description: 'Pemahaman mendalam konsep gaya, energi, getaran gelombang, serta persiapan ujian sumatif SMP.',
-        mentor: 'Dr. Nurul Azizah, M.Biotech.',
+        mentor: 'Dr. Sarah Kartika, M.Sc.',
         mentor_id: 't-2',
         totalModules: 10,
         status: 'published',
@@ -86,6 +118,38 @@ const defaultCourses = [
         created_at: '2026-08-05T00:00:00.000Z',
         updated_at: '2026-08-28T00:00:00.000Z'
     },
+    {
+        id: 'c-sch-2b',
+        category: 'School',
+        level: 'SMP',
+        title: 'Matematika Aljabar & Geometri Bangun Ruang SMP',
+        description: 'Persamaan linear, phytagoras, lingkaran, transformasi geometri, dan statistik data SMP.',
+        mentor: 'Kak Raditya Pratama, S.Si.',
+        mentor_id: 't-1',
+        totalModules: 12,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-06T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
+    {
+        id: 'c-sch-2c',
+        category: 'School',
+        level: 'SMP',
+        title: 'Bahasa Inggris & Reading Comprehension SMP',
+        description: 'Grammar structure, narrative text, report text, dan latihan soal ujian sekolah SMP.',
+        mentor: 'Miss Jessica Aurelia, B.Ed.',
+        mentor_id: 't-4',
+        totalModules: 8,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-07T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
+
+    // School SMA (Kelas 10-12)
     {
         id: 'c-sch-3',
         category: 'School',
@@ -119,28 +183,65 @@ const defaultCourses = [
                         explanation: 'Gunakan aturan rantai: f\'(x) = 3(3x² - 2)² . (6x) = 18x(3x² - 2)².'
                     }
                 ]
-            },
-            {
-                id: 'm-3',
-                title: 'Video Pembelajaran: Aplikasi Turunan dalam Optimasi',
-                type: 'video',
-                duration: '45 Menit',
-                videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-                summary: 'Mencari nilai maksimum dan minimum pada soal cerita pemodelan ekonomi dan fisika.'
             }
         ],
         created_at: '2026-08-10T00:00:00.000Z',
         updated_at: '2026-08-28T00:00:00.000Z'
     },
+    {
+        id: 'c-sch-3b',
+        category: 'School',
+        level: 'SMA',
+        title: 'Fisika Mekanika & Elektromagnetika SMA',
+        description: 'Dinamika gerak, fluida, termodinamika, medan listrik, dan rangkaian arus bolak-balik.',
+        mentor: 'Dr. Sarah Kartika, M.Sc.',
+        mentor_id: 't-2',
+        totalModules: 14,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-11T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
+    {
+        id: 'c-sch-3c',
+        category: 'School',
+        level: 'SMA',
+        title: 'Kimia Struktur Atom & Stoikiometri Larutan SMA',
+        description: 'Ikatan kimia, termokimia, kesetimbangan reaksi, asam-basa, dan elektrokimia SMA.',
+        mentor: 'Kak Dimas Arya, S.Si.',
+        mentor_id: 't-3',
+        totalModules: 12,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-11T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
+    {
+        id: 'c-sch-3d',
+        category: 'School',
+        level: 'SMA',
+        title: 'Biologi Sel, Genetika & Evolusi SMA',
+        description: 'Metabolisme enzim, sintesis protein, hukum mendel, bioteknologi modern, dan fisiologi tubuh.',
+        mentor: 'dr. Amanda Putri',
+        mentor_id: 't-5',
+        totalModules: 10,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-11T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
 
-    // Olimpiade
+    // Olimpiade OSN SD
     {
         id: 'c-oly-1',
         category: 'Olimpiade',
         level: 'OSN SD',
         title: 'Pembinaan Intensif OSN Matematika SD',
         description: 'Latihan soal teori bilangan, geometri olimpiade, dan kombinatorika tingkat kabupaten hingga nasional.',
-        mentor: 'Bima Wicaksono, M.Eng.',
+        mentor: 'Kak Rifki Pratama, S.Si.',
         mentor_id: 't-3',
         totalModules: 10,
         status: 'published',
@@ -150,13 +251,30 @@ const defaultCourses = [
         updated_at: '2026-08-28T00:00:00.000Z'
     },
     {
+        id: 'c-oly-1b',
+        category: 'Olimpiade',
+        level: 'OSN SD',
+        title: 'Klinik Juara OSN IPA & Sains Eksplorasi SD',
+        description: 'Mekanika dasar, astronomi tata surya, ekosistem lingkungan, dan eksperimen olimpiade SD.',
+        mentor: 'Dr. Sarah Kartika, M.Sc.',
+        mentor_id: 't-2',
+        totalModules: 8,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-13T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
+
+    // Olimpiade OSN SMP
+    {
         id: 'c-oly-2',
         category: 'Olimpiade',
         level: 'OSN SMP',
         title: 'Klinik Soal OSN IPA & Fisika SMP',
         description: 'Bedah soal mekanika fluida, optik, dan astronomi dasar olimpiade sains SMP.',
-        mentor: 'Bima Wicaksono, M.Eng.',
-        mentor_id: 't-3',
+        mentor: 'Dr. Sarah Kartika, M.Sc.',
+        mentor_id: 't-2',
         totalModules: 12,
         status: 'published',
         coverImage: '/images/stitch/pillar-study.jpg',
@@ -165,13 +283,45 @@ const defaultCourses = [
         updated_at: '2026-08-28T00:00:00.000Z'
     },
     {
+        id: 'c-oly-2b',
+        category: 'Olimpiade',
+        level: 'OSN SMP',
+        title: 'Pembinaan Juara OSN Matematika SMP',
+        description: 'Aljabar olimpiade, teori bilangan lanjut, geometri euclid, dan trik pigeonhole principle.',
+        mentor: 'Kak Rifki Pratama, S.Si.',
+        mentor_id: 't-3',
+        totalModules: 12,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-16T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
+    {
+        id: 'c-oly-2c',
+        category: 'Olimpiade',
+        level: 'OSN SMP',
+        title: 'Masterclass OSN IPS Terpadu SMP',
+        description: 'Geografi keruangan, sejarah peradaban, ekonomi mikro-makro, dan sosiologi kompetisi.',
+        mentor: 'Drs. Hendra Gunawan, M.Pd.',
+        mentor_id: 't-6',
+        totalModules: 10,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-17T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
+
+    // Olimpiade OSN SMA
+    {
         id: 'c-oly-3',
         category: 'Olimpiade',
         level: 'OSN SMA',
         title: 'Masterclass OSN Fisika Teori & Kalkulus',
         description: 'Mekanika analitik Lagrangian, elektromagnetika lanjut, dan termodinamika olimpiade nasional & IPhO.',
-        mentor: 'Bima Wicaksono, M.Eng.',
-        mentor_id: 't-3',
+        mentor: 'Dr. Sarah Kartika, M.Sc.',
+        mentor_id: 't-2',
         totalModules: 14,
         status: 'published',
         coverImage: '/images/stitch/pillar-study.jpg',
@@ -180,12 +330,59 @@ const defaultCourses = [
         updated_at: '2026-08-28T00:00:00.000Z'
     },
     {
+        id: 'c-oly-3b',
+        category: 'Olimpiade',
+        level: 'OSN SMA',
+        title: 'OSN Matematika Kombinatorika & Teori Bilangan SMA',
+        description: 'Persamaan diophantine, fungsi pembangkit, ketidaksamaan Cauchy-Schwarz, dan geometri projektif.',
+        mentor: 'Kak Raditya Pratama, S.Si.',
+        mentor_id: 't-1',
+        totalModules: 14,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-19T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
+    {
+        id: 'c-oly-3c',
+        category: 'Olimpiade',
+        level: 'OSN SMA',
+        title: 'OSN Kimia Organik & Termodinamika Kimia SMA',
+        description: 'Mekanisme reaksi organik, spektroskopi NMR/IR, kinetika reaksi, dan kimia koordinasi IChO.',
+        mentor: 'Kak Dimas Arya, S.Si.',
+        mentor_id: 't-3',
+        totalModules: 12,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-19T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
+    {
+        id: 'c-oly-3d',
+        category: 'Olimpiade',
+        level: 'OSN SMA',
+        title: 'OSN Informatika Algoritma & Pemrograman C++',
+        description: 'Dynamic programming, graph theory, segment tree, dan teknik problem solving standar IOI.',
+        mentor: 'Kak Fakhri Irfan, S.Kom.',
+        mentor_id: 't-7',
+        totalModules: 12,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-19T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
+
+    // Olimpiade ONMIPA
+    {
         id: 'c-oly-4',
         category: 'Olimpiade',
         level: 'ONMIPA',
-        title: 'ONMIPA Matematika Analisis Real',
-        description: 'Pelatihan mahasiswa untuk seleksi ONMIPA wilayah & nasional mata uji Analisis Real.',
-        mentor: 'Kak Raditya Pratama, S.Si.',
+        title: 'ONMIPA Matematika Analisis Real & Aljabar Linear',
+        description: 'Pelatihan mahasiswa untuk seleksi ONMIPA wilayah & nasional mata uji Analisis Real & Aljabar Abstrak.',
+        mentor: 'Prof. Tim Akademik NLS',
         mentor_id: 't-1',
         totalModules: 8,
         status: 'published',
@@ -195,13 +392,45 @@ const defaultCourses = [
         updated_at: '2026-08-28T00:00:00.000Z'
     },
     {
+        id: 'c-oly-4b',
+        category: 'Olimpiade',
+        level: 'ONMIPA',
+        title: 'ONMIPA Fisika Kuantum & Elektrodinamika Klasik',
+        description: 'Persamaan Schrödinger, operator mekanika kuantum, dan persamaan Maxwell pada medium dielektrik.',
+        mentor: 'Dr. Sarah Kartika, M.Sc.',
+        mentor_id: 't-2',
+        totalModules: 10,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-20T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
+
+    // Olimpiade Internasional
+    {
         id: 'c-oly-5',
         category: 'Olimpiade',
         level: 'Internasional',
         title: 'International Physics Olympiad (IPhO) Preparation',
-        description: 'Advanced problem-solving for IMO/IPhO candidate camp.',
-        mentor: 'Bima Wicaksono, M.Eng.',
-        mentor_id: 't-3',
+        description: 'Advanced problem-solving for IMO/IPhO candidate camp and Asian Physics Olympiad (APhO).',
+        mentor: 'Dr. Sarah Kartika, M.Sc.',
+        mentor_id: 't-2',
+        totalModules: 15,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-21T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
+    {
+        id: 'c-oly-5b',
+        category: 'Olimpiade',
+        level: 'Internasional',
+        title: 'International Mathematical Olympiad (IMO) Shortlist Problems',
+        description: 'Bedah soal shortlist IMO bidang Functional Equation, Number Theory, and Combinatorics.',
+        mentor: 'Kak Raditya Pratama, S.Si.',
+        mentor_id: 't-1',
         totalModules: 15,
         status: 'published',
         coverImage: '/images/stitch/pillar-study.jpg',
@@ -210,13 +439,13 @@ const defaultCourses = [
         updated_at: '2026-08-28T00:00:00.000Z'
     },
 
-    // TKA
+    // TKA SD
     {
         id: 'c-tka-1',
         category: 'TKA',
         level: 'TKA SD',
         title: 'Penguatan TKA & Asesmen Standar SD',
-        description: 'Persiapan asesmen kompetensi dan seleksi masuk SMP unggulan.',
+        description: 'Persiapan asesmen kompetensi minimum, penalaran numerasi, dan seleksi masuk SMP unggulan.',
         mentor: 'Tim Kurikulum NLS',
         mentor_id: 't-1',
         totalModules: 6,
@@ -226,6 +455,23 @@ const defaultCourses = [
         created_at: '2026-08-22T00:00:00.000Z',
         updated_at: '2026-08-28T00:00:00.000Z'
     },
+    {
+        id: 'c-tka-1b',
+        category: 'TKA',
+        level: 'TKA SD',
+        title: 'Simulasi Tes Potensi Akademik Masuk SMP Unggulan',
+        description: 'Latihan soal logika spasial, verbal analogi, dan aritmatika cepat untuk ujian seleksi SMP favorit.',
+        mentor: 'Kak Raditya Pratama, S.Si.',
+        mentor_id: 't-1',
+        totalModules: 8,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-22T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
+
+    // TKA SMP
     {
         id: 'c-tka-2',
         category: 'TKA',
@@ -242,12 +488,29 @@ const defaultCourses = [
         updated_at: '2026-08-28T00:00:00.000Z'
     },
     {
+        id: 'c-tka-2b',
+        category: 'TKA',
+        level: 'TKA SMP',
+        title: 'Drilling Soal Skolastik & Literasi Masuk SMA Unggulan',
+        description: 'Bedah tipe soal Tes Potensi Akademik (TPA), Bahasa Inggris Akademik, dan Sains terpadu.',
+        mentor: 'Dr. Sarah Kartika, M.Sc.',
+        mentor_id: 't-2',
+        totalModules: 10,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-23T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
+
+    // TKA SMA
+    {
         id: 'c-tka-3',
         category: 'TKA',
         level: 'TKA SMA',
         title: 'Tes Kemampuan Akademik Saintek SMA',
-        description: 'Standarisasi pemahaman konsep Fisika, Kimia, Matematika, dan Biologi.',
-        mentor: 'Dr. Nurul Azizah, M.Biotech.',
+        description: 'Standarisasi pemahaman konsep Fisika, Kimia, Matematika Lanjut, dan Biologi.',
+        mentor: 'Tim Sains NLS',
         mentor_id: 't-2',
         totalModules: 12,
         status: 'published',
@@ -256,8 +519,23 @@ const defaultCourses = [
         created_at: '2026-08-24T00:00:00.000Z',
         updated_at: '2026-08-28T00:00:00.000Z'
     },
+    {
+        id: 'c-tka-3b',
+        category: 'TKA',
+        level: 'TKA SMA',
+        title: 'Tes Kemampuan Akademik Soshum SMA',
+        description: 'Pemantapan materi Sejarah Kritis, Geografi Terpadu, Sosiologi, dan Ekonomi Analitik.',
+        mentor: 'Drs. Hendra Gunawan, M.Pd.',
+        mentor_id: 't-6',
+        totalModules: 12,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-24T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
 
-    // College Prep
+    // College Prep SNBT
     {
         id: 'c-clg-1',
         category: 'Collage Preparation',
@@ -274,6 +552,38 @@ const defaultCourses = [
         updated_at: '2026-08-28T00:00:00.000Z'
     },
     {
+        id: 'c-clg-1b',
+        category: 'Collage Preparation',
+        level: 'SNBT',
+        title: 'UTBK SNBT 2026: Literasi Bahasa Indonesia & Bahasa Inggris',
+        description: 'Teknik skimming & scanning, inferensi teks kompleks, dan analisis wacana kritis UTBK.',
+        mentor: 'Miss Jessica Aurelia, B.Ed.',
+        mentor_id: 't-4',
+        totalModules: 14,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-25T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
+    {
+        id: 'c-clg-1c',
+        category: 'Collage Preparation',
+        level: 'SNBT',
+        title: 'UTBK SNBT 2026: Pemahaman Bacaan & Penalaran Deduktif-Induktif',
+        description: 'Strategi menjawab soal PBM, PPU, penalaran logis analitis, dan silogisme skolastik.',
+        mentor: 'Tim Kurikulum NLS',
+        mentor_id: 't-1',
+        totalModules: 12,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-25T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
+
+    // College Prep Mandiri
+    {
         id: 'c-clg-2',
         category: 'Collage Preparation',
         level: 'Mandiri',
@@ -288,6 +598,23 @@ const defaultCourses = [
         created_at: '2026-08-26T00:00:00.000Z',
         updated_at: '2026-08-28T00:00:00.000Z'
     },
+    {
+        id: 'c-clg-2b',
+        category: 'Collage Preparation',
+        level: 'Mandiri',
+        title: 'Masterclass SM ITB & SMUP Unpad Saintek',
+        description: 'Penguasaan soal level tinggi Matematika, Fisika, dan Kimia Ujian Mandiri Kampus Favorit.',
+        mentor: 'Dr. Sarah Kartika, M.Sc.',
+        mentor_id: 't-2',
+        totalModules: 12,
+        status: 'published',
+        coverImage: '/images/stitch/pillar-study.jpg',
+        modules: [],
+        created_at: '2026-08-26T00:00:00.000Z',
+        updated_at: '2026-08-28T00:00:00.000Z'
+    },
+
+    // College Prep Kedinasan
     {
         id: 'c-clg-3',
         category: 'Collage Preparation',
@@ -321,6 +648,15 @@ export default async function handler(req, res) {
 
     const store = await getCloudStore();
     let coursesCache = Array.isArray(store.courses) && store.courses.length > 0 ? store.courses : defaultCourses;
+
+    // Ensure all default courses exist in coursesCache
+    if (Array.isArray(coursesCache)) {
+        defaultCourses.forEach(def => {
+            if (!coursesCache.some(c => c && c.id === def.id)) {
+                coursesCache.push(def);
+            }
+        });
+    }
 
     // GET /api/courses
     if (req.method === 'GET') {
