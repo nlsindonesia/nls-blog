@@ -6,7 +6,7 @@
 import https from 'https';
 
 const CLOUD_BINS = {
-    users: 'https://extendsclass.com/api/json-storage/bin/eaedfeb',
+    users: 'https://extendsclass.com/api/json-storage/bin/ffffcfd',
     events: 'https://extendsclass.com/api/json-storage/bin/dedebcc',
     articles: 'https://extendsclass.com/api/json-storage/bin/ebcaeab',
     teachers: 'https://extendsclass.com/api/json-storage/bin/dadcdeb',
