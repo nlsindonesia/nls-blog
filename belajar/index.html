@@ -372,34 +372,50 @@
                     </div>
                 </div>
 
-                <!-- 7. MY CLASS (Submenu: Actived Class, Quiz Result) -->
-                <div>
-                    <button type="button" @click="toggleMenu('myclass')"
-                        class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all"
-                        :class="activeTab === 'myclass' ? 'bg-fuchsia-50 dark:bg-fuchsia-950/60 text-fuchsia-700 dark:text-fuchsia-300 font-bold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/80'">
-                        <div class="flex items-center gap-3">
-                            <svg class="w-4 h-4 text-fuchsia-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                            <span>My Class</span>
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="px-1.5 py-0.5 rounded-full text-[9px] font-black bg-fuchsia-600 text-white" x-text="myActivedClasses.length"></span>
-                            <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="openMenus.myclass ? 'rotate-180 text-fuchsia-600' : 'text-slate-400'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                        </div>
-                    </button>
+                <!-- 7. MY CLASS (PREMIUM SPECIAL MENU) -->
+                <div class="pt-2">
+                    <div class="p-1 rounded-2xl bg-gradient-to-r from-violet-600/20 via-fuchsia-600/20 to-indigo-600/20 border border-violet-500/30 dark:border-violet-500/40 shadow-xs">
+                        <button type="button" @click="toggleMenu('myclass')"
+                            class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all relative overflow-hidden group cursor-pointer"
+                            :class="activeTab === 'myclass' ? 'bg-gradient-to-r from-violet-600 via-indigo-600 to-fuchsia-600 text-white font-black shadow-md shadow-fuchsia-500/30' : 'bg-white/80 dark:bg-[#131d38]/90 text-slate-800 dark:text-slate-100 hover:bg-white dark:hover:bg-[#1a264a] font-extrabold'">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 shadow-2xs"
+                                    :class="activeTab === 'myclass' ? 'bg-white text-violet-700' : 'bg-gradient-to-tr from-violet-600 to-fuchsia-600 text-white'">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                                </span>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-xs tracking-tight">My Class</span>
+                                    <span class="px-1.5 py-0.2 rounded-full text-[8px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 shadow-2xs">PRO</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-black"
+                                    :class="activeTab === 'myclass' ? 'bg-white/25 text-white' : 'bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-2xs'"
+                                    x-text="myActivedClasses.length"></span>
+                                <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="openMenus.myclass ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </button>
 
-                    <div x-show="openMenus.myclass" x-collapse class="pl-7 pr-1 py-1 space-y-1">
-                        <button type="button" @click="openMyClassView('actived')"
-                            class="w-full text-left px-3 py-2 rounded-lg text-[11px] transition-all flex items-center justify-between"
-                            :class="activeTab === 'myclass' && myclassView === 'actived' ? 'submenu-item-active' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'">
-                            <span>Actived Class</span>
-                            <span class="text-[9px] font-bold text-fuchsia-600" x-text="myActivedClasses.length + ' Kelas'"></span>
-                        </button>
-                        <button type="button" @click="openMyClassView('quiz_result')"
-                            class="w-full text-left px-3 py-2 rounded-lg text-[11px] transition-all flex items-center justify-between"
-                            :class="activeTab === 'myclass' && myclassView === 'quiz_result' ? 'submenu-item-active' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'">
-                            <span>Quiz Result</span>
-                            <span class="text-[9px] font-bold text-emerald-600" x-text="quizResults.length + ' Riwayat'"></span>
-                        </button>
+                        <div x-show="openMenus.myclass" x-collapse class="px-1 pt-1.5 pb-1 space-y-1">
+                            <button type="button" @click="openMyClassView('actived')"
+                                class="w-full text-left px-3 py-2 rounded-xl text-[11px] transition-all flex items-center justify-between font-bold cursor-pointer"
+                                :class="activeTab === 'myclass' && myclassView === 'actived' ? 'bg-violet-600 text-white shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:bg-violet-50 dark:hover:bg-violet-950/50 hover:text-violet-600'">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 rounded-full" :class="activeTab === 'myclass' && myclassView === 'actived' ? 'bg-white' : 'bg-violet-500'"></span>
+                                    <span>Actived Class</span>
+                                </span>
+                                <span class="text-[9px] px-1.5 py-0.5 rounded-md" :class="activeTab === 'myclass' && myclassView === 'actived' ? 'bg-white/20 text-white font-black' : 'bg-violet-100 dark:bg-violet-900/60 text-violet-700 dark:text-violet-300 font-bold'" x-text="myActivedClasses.length + ' Kelas'"></span>
+                            </button>
+                            <button type="button" @click="openMyClassView('quiz_result')"
+                                class="w-full text-left px-3 py-2 rounded-xl text-[11px] transition-all flex items-center justify-between font-bold cursor-pointer"
+                                :class="activeTab === 'myclass' && myclassView === 'quiz_result' ? 'bg-fuchsia-600 text-white shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:bg-fuchsia-50 dark:hover:bg-fuchsia-950/50 hover:text-fuchsia-600'">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 rounded-full" :class="activeTab === 'myclass' && myclassView === 'quiz_result' ? 'bg-white' : 'bg-fuchsia-500'"></span>
+                                    <span>Quiz Result</span>
+                                </span>
+                                <span class="text-[9px] px-1.5 py-0.5 rounded-md" :class="activeTab === 'myclass' && myclassView === 'quiz_result' ? 'bg-white/20 text-white font-black' : 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 font-bold'" x-text="quizResults.length + ' Skor'"></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -924,114 +940,284 @@
                 </div>
 
                 <!-- =========================================================================
-                     7. VIEW: MY CLASS (ACTIVED CLASS & QUIZ RESULT)
+                     7. VIEW: MY CLASS (ULTRA-PREMIUM PERSONAL LEARNING HUB)
                      ========================================================================= -->
                 <div x-show="activeTab === 'myclass'" x-cloak class="space-y-6">
                     
-                    <!-- Submenu Tabs Header -->
-                    <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
-                        <div>
-                            <h2 class="text-xl font-black text-slate-900 dark:text-white">Kelas &amp; Evaluasi Saya</h2>
-                            <p class="text-xs text-slate-500">Akses materi kelas yang sedang Anda ikuti dan tinjau riwayat skor pengerjaan kuis.</p>
-                        </div>
-                        <div class="flex items-center gap-2 p-1 rounded-2xl bg-slate-100 dark:bg-slate-800 text-xs font-bold">
-                            <button type="button" @click="myclassView = 'actived'"
-                                class="px-4 py-2 rounded-xl transition-all"
-                                :class="myclassView === 'actived' ? 'bg-white dark:bg-indigo-600 text-indigo-600 dark:text-white shadow-xs font-black' : 'text-slate-600 dark:text-slate-400'">
-                                Actived Class (<span x-text="myActivedClasses.length"></span>)
-                            </button>
-                            <button type="button" @click="myclassView = 'quiz_result'"
-                                class="px-4 py-2 rounded-xl transition-all"
-                                :class="myclassView === 'quiz_result' ? 'bg-white dark:bg-indigo-600 text-indigo-600 dark:text-white shadow-xs font-black' : 'text-slate-600 dark:text-slate-400'">
-                                Quiz Result (<span x-text="quizResults.length"></span>)
-                            </button>
+                    <!-- 🌟 1. MY CLASS HIGH-IMPACT HERO BANNER -->
+                    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-violet-950 via-purple-950 to-slate-950 border border-violet-500/30 p-6 sm:p-8 text-white shadow-2xl">
+                        <!-- Neon Glow Orbs in Background -->
+                        <div class="absolute -top-24 -right-24 w-80 h-80 bg-violet-600/30 rounded-full blur-3xl pointer-events-none"></div>
+                        <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-fuchsia-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                            <!-- Left: Personal Student Greeting & Target -->
+                            <div class="space-y-3 max-w-2xl">
+                                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/20 border border-violet-400/40 text-violet-300 text-[11px] font-black uppercase tracking-wider backdrop-blur-md">
+                                    <span class="w-2 h-2 rounded-full bg-fuchsia-400 animate-pulse"></span>
+                                    <span>Ruang Belajar Mandiri Siswa • NLS Pro Space</span>
+                                </div>
+
+                                <div class="flex items-center gap-3.5 pt-1">
+                                    <img :src="studentProfile.avatar || '/nls-logo-300.png'" alt="Avatar" class="w-14 h-14 rounded-2xl object-cover border-2 border-violet-400/80 shadow-lg shrink-0">
+                                    <div>
+                                        <h1 class="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight leading-tight">
+                                            Semangat Belajar, <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-300 via-fuchsia-300 to-pink-300" x-text="studentProfile.name.split(' ')[0] || 'Siswa'"></span>! ✨
+                                        </h1>
+                                        <p class="text-xs sm:text-sm text-slate-300 font-medium mt-0.5">
+                                            <span class="text-violet-300 font-bold" x-text="studentProfile.target || 'Target: FK UI / OSN Emas'"></span> • Pantau kemajuan modul &amp; raih skor sempurna di setiap evaluasi.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right: Quick Resume Learning Action -->
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+                                <button type="button" @click="resumeLatestClass()"
+                                    class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 text-white text-xs font-black shadow-lg shadow-fuchsia-500/30 active:scale-95 transition-all flex items-center justify-center gap-2.5 cursor-pointer">
+                                    <span>▶ Lanjut Belajar Bab Aktif</span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                </button>
+                                <button type="button" @click="myclassView = 'quiz_result'"
+                                    class="px-4 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-black backdrop-blur-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+                                    <span>📊 Cek Riwayat Kuis</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- 7.A: ACTIVED CLASS (KELAS YANG SEDANG DIIKUTI SISWA) -->
-                    <div x-show="myclassView === 'actived'" class="space-y-5">
+                    <!-- 📊 2. FOUR HOLOGRAPHIC QUICK-METRIC HUD CARDS -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                        
+                        <!-- Card 1: Kelas Aktif -->
+                        <div class="p-4 sm:p-5 rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200/80 dark:border-slate-800 shadow-xs relative overflow-hidden group hover:border-violet-500/50 transition-all">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Kelas Aktif</span>
+                                <span class="w-8 h-8 rounded-xl bg-violet-100 dark:bg-violet-950/80 text-violet-600 dark:text-violet-400 flex items-center justify-center font-black text-sm shadow-2xs">📚</span>
+                            </div>
+                            <div class="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="myActivedClasses.length"></div>
+                            <div class="mt-1 flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                                <span>Program Berjalan Aktif</span>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Modul / Bab Tuntas -->
+                        <div class="p-4 sm:p-5 rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200/80 dark:border-slate-800 shadow-xs relative overflow-hidden group hover:border-emerald-500/50 transition-all">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Modul Tuntas</span>
+                                <span class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-sm shadow-2xs">✅</span>
+                            </div>
+                            <div class="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="getTotalCompletedModules() + ' Bab'"></div>
+                            <div class="mt-1 text-[10px] text-slate-500 font-semibold truncate">
+                                Dari seluruh silabus kelas
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Rata-rata Skor Kuis -->
+                        <div class="p-4 sm:p-5 rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200/80 dark:border-slate-800 shadow-xs relative overflow-hidden group hover:border-amber-500/50 transition-all">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Rata-rata Skor</span>
+                                <span class="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center font-black text-sm shadow-2xs">🏆</span>
+                            </div>
+                            <div class="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="getAverageScore() + '%'"></div>
+                            <div class="mt-1 text-[10px] font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                                <span x-text="getScoreGrade(getAverageScore()).label"></span>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: Penguasaan Kurikulum -->
+                        <div class="p-4 sm:p-5 rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200/80 dark:border-slate-800 shadow-xs relative overflow-hidden group hover:border-fuchsia-500/50 transition-all">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Tingkat Ketuntasan</span>
+                                <span class="w-8 h-8 rounded-xl bg-fuchsia-100 dark:bg-fuchsia-950/80 text-fuchsia-600 dark:text-fuchsia-400 flex items-center justify-center font-black text-sm shadow-2xs">🎯</span>
+                            </div>
+                            <div class="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="getCurriculumMasteryPercentage() + '%'"></div>
+                            <div class="mt-1 text-[10px] text-fuchsia-600 dark:text-fuchsia-400 font-bold truncate">
+                                Progres Pembelajaran
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- 🔘 3. SLEEK SUBMENU TABS SWITCHER (ACTIVED CLASS VS QUIZ RESULT) -->
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-2 rounded-2xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 shadow-2xs">
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <!-- Button Tab 1: Actived Class -->
+                            <button type="button" @click="myclassView = 'actived'"
+                                class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer"
+                                :class="myclassView === 'actived' ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-600/20' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'">
+                                <span>📚 Kelas Aktif Saya</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-black"
+                                    :class="myclassView === 'actived' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'"
+                                    x-text="myActivedClasses.length"></span>
+                            </button>
+
+                            <!-- Button Tab 2: Quiz Result -->
+                            <button type="button" @click="myclassView = 'quiz_result'"
+                                class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer"
+                                :class="myclassView === 'quiz_result' ? 'bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white shadow-md shadow-fuchsia-600/20' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'">
+                                <span>📝 Riwayat Kuis &amp; Nilai</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-black"
+                                    :class="myclassView === 'quiz_result' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'"
+                                    x-text="quizResults.length"></span>
+                            </button>
+                        </div>
+
+                        <!-- Quick Filter / Action Info -->
+                        <div class="text-right hidden lg:block text-xs font-bold text-slate-400 pr-2">
+                            <span x-show="myclassView === 'actived'">Pilih kelas untuk melanjutkan materi, video, atau kuis bab.</span>
+                            <span x-show="myclassView === 'quiz_result'">Tinjau kunci jawaban dan pembahasan langkah demi langkah.</span>
+                        </div>
+                    </div>
+
+                    <!-- 📚 4.A: TAB 1 - ACTIVED CLASS CARDS GRID -->
+                    <div x-show="myclassView === 'actived'" class="space-y-6">
                         <template x-if="myActivedClasses.length === 0">
-                            <div class="p-12 text-center rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 space-y-3">
-                                <div class="w-16 h-16 mx-auto rounded-3xl bg-indigo-50 dark:bg-indigo-950 flex items-center justify-center text-2xl">📚</div>
-                                <h3 class="text-base font-black text-slate-900 dark:text-white">Belum Ada Kelas yang Diambil</h3>
-                                <p class="text-xs text-slate-400 max-w-md mx-auto">Silakan jelajahi katalog School, Olimpiade, TKA, atau College Preparation untuk mulai belajar.</p>
-                                <button type="button" @click="setActiveTab('school')" class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs">Jelajahi Katalog Kelas</button>
+                            <div class="p-12 text-center rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 space-y-4">
+                                <div class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-violet-600 to-fuchsia-600 text-white flex items-center justify-center text-3xl shadow-xl shadow-violet-600/20">📖</div>
+                                <div>
+                                    <h3 class="text-lg font-black text-slate-900 dark:text-white">Belum Ada Kelas yang Diambil</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mt-1">Jelajahi kurikulum School, Olimpiade OSN, Pemantapan TKA, atau Persiapan UTBK SNBT untuk mulai belajar.</p>
+                                </div>
+                                <button type="button" @click="setActiveTab('school')"
+                                    class="px-6 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-lg shadow-indigo-600/30 transition-all cursor-pointer">
+                                    Jelajahi Katalog Kelas Sekarang &rarr;
+                                </button>
                             </div>
                         </template>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                            <template x-for="course in myActivedClasses" :key="course.id">
-                                <div class="rounded-3xl bg-white dark:bg-[#131d38] border-2 border-indigo-300 dark:border-indigo-800 p-6 shadow-md flex flex-col justify-between space-y-4">
-                                    <div class="space-y-3">
-                                        <div class="flex items-center justify-between">
-                                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
-                                                x-text="course.category"></span>
-                                            <span class="text-[11px] font-black text-indigo-600 dark:text-indigo-400" x-text="course.progress + '% Selesai'"></span>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+                            <template x-for="(course, cIdx) in myActivedClasses" :key="course.id">
+                                <div class="rounded-3xl bg-white dark:bg-[#131d38] border-2 border-violet-100 dark:border-violet-900/60 p-6 shadow-md hover:shadow-2xl hover:border-violet-400 dark:hover:border-violet-600 transition-all flex flex-col justify-between space-y-5 group relative overflow-hidden">
+                                    
+                                    <!-- Subtle Top Gradient Highlight -->
+                                    <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-violet-600 via-indigo-600 to-fuchsia-500"></div>
+
+                                    <div class="space-y-4">
+                                        <!-- Top Badge & Progress Pill -->
+                                        <div class="flex items-center justify-between gap-2 pt-1">
+                                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-2xs"
+                                                :class="getCategoryBadgeClass(course.category)" x-text="course.category"></span>
+                                            
+                                            <span class="px-2.5 py-1 rounded-full text-[11px] font-black bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300 flex items-center gap-1">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-violet-500"></span>
+                                                <span x-text="course.progress + '% Selesai'"></span>
+                                            </span>
                                         </div>
 
-                                        <!-- Progress Bar -->
-                                        <div class="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                                            <div class="h-full bg-indigo-600 rounded-full transition-all" :style="'width: ' + course.progress + '%'"></div>
-                                        </div>
-
+                                        <!-- Title & Description -->
                                         <div>
-                                            <h4 class="text-base font-black text-slate-900 dark:text-white leading-snug" x-text="course.title"></h4>
-                                            <p class="text-xs text-slate-500 mt-1 line-clamp-2" x-text="course.description"></p>
+                                            <h3 class="text-base font-black text-slate-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors leading-snug" x-text="course.title"></h3>
+                                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 line-clamp-2 leading-relaxed" x-text="course.description"></p>
                                         </div>
 
-                                        <div class="pt-2 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-500 flex items-center justify-between">
-                                            <span>Mentor: <strong class="text-slate-800 dark:text-slate-200" x-text="course.mentor"></strong></span>
-                                            <span x-text="course.completedModules + '/' + course.totalModules + ' Bab'"></span>
+                                        <!-- Multi-Stage Progress Bar with Glowing Colors -->
+                                        <div class="space-y-1.5">
+                                            <div class="flex items-center justify-between text-[11px] font-bold">
+                                                <span class="text-slate-500">Kemajuan Belajar</span>
+                                                <span class="text-violet-600 dark:text-violet-400" x-text="(course.completedModules || 0) + ' dari ' + (course.totalModules || 4) + ' Bab Selesai'"></span>
+                                            </div>
+                                            <div class="w-full h-2.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden p-0.5">
+                                                <div class="h-full bg-gradient-to-r from-violet-600 via-indigo-600 to-fuchsia-500 rounded-full transition-all duration-500"
+                                                    :style="'width: ' + Math.max(course.progress, 15) + '%'"></div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Mentor Badge & Silabus Indicator -->
+                                        <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
+                                            <div class="flex items-center gap-2 min-w-0">
+                                                <div class="w-7 h-7 rounded-xl bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300 flex items-center justify-center font-black text-xs shrink-0">👨‍🏫</div>
+                                                <div class="truncate">
+                                                    <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider leading-none">Mentor NLS</span>
+                                                    <span class="font-extrabold text-slate-800 dark:text-slate-200 truncate" x-text="course.mentor"></span>
+                                                </div>
+                                            </div>
+                                            <span class="text-[10px] font-bold text-slate-400 shrink-0" x-text="course.level"></span>
                                         </div>
                                     </div>
 
+                                    <!-- Enter Study Room Action Button -->
                                     <button type="button" @click="enterStudyRoom(course)"
-                                        class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs transition-all shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2">
+                                        class="w-full py-3 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-black text-xs transition-all shadow-md shadow-violet-600/25 flex items-center justify-center gap-2 group-hover:scale-[1.02] active:scale-98 cursor-pointer">
                                         <span>Masuk Ruang Belajar</span>
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                                     </button>
+
                                 </div>
                             </template>
                         </div>
                     </div>
 
-                    <!-- 7.B: QUIZ RESULT (RIWAYAT NILAI KUIS & PEMBAHASAN) -->
-                    <div x-show="myclassView === 'quiz_result'" class="space-y-5">
+                    <!-- 📝 4.B: TAB 2 - QUIZ RESULT & PEMBAHASAN ANALYTICS -->
+                    <div x-show="myclassView === 'quiz_result'" class="space-y-6">
+                        
+                        <!-- Mini Analytics Header Card -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 p-5 rounded-3xl bg-gradient-to-r from-fuchsia-950/40 via-purple-950/40 to-slate-900 border border-fuchsia-500/20 shadow-xs">
+                            <div class="space-y-1">
+                                <span class="text-[11px] font-bold text-fuchsia-300 uppercase tracking-wider">Total Evaluasi Kuis</span>
+                                <div class="text-2xl font-black text-white" x-text="quizResults.length + ' Kali Pengerjaan'"></div>
+                                <p class="text-[10px] text-slate-400">Tercatat di riwayat akun siswa</p>
+                            </div>
+                            <div class="space-y-1 border-t sm:border-t-0 sm:border-l border-slate-700/50 sm:pl-5 pt-3 sm:pt-0">
+                                <span class="text-[11px] font-bold text-emerald-300 uppercase tracking-wider">Kuis Lulus / Tuntas</span>
+                                <div class="text-2xl font-black text-emerald-400" x-text="getPassedQuizCount() + ' Kuis'"></div>
+                                <p class="text-[10px] text-slate-400">Skor evaluasi di atas standar kelulusan (&ge;75%)</p>
+                            </div>
+                            <div class="space-y-1 border-t sm:border-t-0 sm:border-l border-slate-700/50 sm:pl-5 pt-3 sm:pt-0">
+                                <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">Skor Tertinggi Diraih</span>
+                                <div class="text-2xl font-black text-amber-400" x-text="getHighestQuizScore() + '/100'"></div>
+                                <p class="text-[10px] text-slate-400">Pencapaian evaluasi terbaik Anda</p>
+                            </div>
+                        </div>
+
+                        <!-- Results Table Card -->
                         <div class="rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
+                            <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-8 h-8 rounded-xl bg-fuchsia-100 dark:bg-fuchsia-950 text-fuchsia-600 dark:text-fuchsia-300 flex items-center justify-center font-bold">📋</span>
+                                    <div>
+                                        <h3 class="text-sm font-black text-slate-900 dark:text-white">Daftar Lengkap Riwayat Skor &amp; Pembahasan</h3>
+                                        <p class="text-[11px] text-slate-400">Klik tombol "Lihat Pembahasan" untuk melihat kunci &amp; solusi langkah demi langkah.</p>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left border-collapse">
                                     <thead>
                                         <tr class="bg-slate-50/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                                            <th class="py-3.5 px-4 sm:px-6">Nama Kuis / Evaluasi</th>
-                                            <th class="py-3.5 px-4">Mata Pelajaran</th>
-                                            <th class="py-3.5 px-4">Tanggal Pengerjaan</th>
-                                            <th class="py-3.5 px-4 text-center">Skor Akhir</th>
-                                            <th class="py-3.5 px-4">Status</th>
-                                            <th class="py-3.5 px-4 sm:px-6 text-right">Aksi</th>
+                                            <th class="py-4 px-4 sm:px-6">Nama Kuis / Evaluasi</th>
+                                            <th class="py-4 px-4">Mata Pelajaran</th>
+                                            <th class="py-4 px-4">Tanggal Pengerjaan</th>
+                                            <th class="py-4 px-4 text-center">Skor Akhir</th>
+                                            <th class="py-4 px-4">Status Kelulusan</th>
+                                            <th class="py-4 px-4 sm:px-6 text-right">Aksi Pembahasan</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80 text-xs font-semibold">
                                         <template x-for="q in quizResults" :key="q.id">
-                                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/40 transition-colors">
+                                            <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-900/50 transition-colors">
                                                 <td class="py-4 px-4 sm:px-6">
-                                                    <div class="font-black text-slate-900 dark:text-white" x-text="q.title"></div>
-                                                    <div class="text-[10px] text-slate-400" x-text="q.courseTitle"></div>
+                                                    <div class="font-black text-slate-900 dark:text-white text-sm" x-text="q.title"></div>
+                                                    <div class="text-[11px] text-violet-600 dark:text-violet-400 font-bold" x-text="q.courseTitle"></div>
                                                 </td>
-                                                <td class="py-4 px-4 text-slate-700 dark:text-slate-300" x-text="q.subject"></td>
-                                                <td class="py-4 px-4 text-slate-500" x-text="q.date"></td>
+                                                <td class="py-4 px-4 text-slate-700 dark:text-slate-300 font-semibold" x-text="q.subject"></td>
+                                                <td class="py-4 px-4 text-slate-500 font-medium" x-text="q.date"></td>
                                                 <td class="py-4 px-4 text-center">
-                                                    <span class="text-sm font-black" :class="q.score >= 80 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'"
+                                                    <span class="inline-block px-3 py-1 rounded-xl text-sm font-black shadow-2xs"
+                                                        :class="q.score >= 80 ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30'"
                                                         x-text="q.score + '/100'"></span>
                                                 </td>
                                                 <td class="py-4 px-4">
-                                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black"
+                                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-black"
                                                         :class="q.score >= 75 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'"
-                                                        x-text="q.score >= 75 ? 'Lulus / Tuntas' : 'Perlu Evaluasi'"></span>
+                                                        x-text="q.score >= 75 ? '✅ Lulus / Tuntas' : '⚡ Perlu Evaluasi'"></span>
                                                 </td>
                                                 <td class="py-4 px-4 sm:px-6 text-right">
                                                     <button type="button" @click="showQuizExplanation(q)"
-                                                        class="px-3.5 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950 dark:hover:bg-indigo-900 text-indigo-700 dark:text-indigo-300 text-xs font-black transition-all">
-                                                        Lihat Pembahasan
+                                                        class="px-4 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-xs font-black transition-all shadow-sm shadow-violet-600/20 cursor-pointer">
+                                                        Lihat Pembahasan &rarr;
                                                     </button>
                                                 </td>
                                             </tr>
@@ -1621,6 +1807,47 @@
                     if (this.quizResults.length === 0) return 0;
                     const total = this.quizResults.reduce((acc, q) => acc + q.score, 0);
                     return Math.round(total / this.quizResults.length);
+                },
+
+                getTotalCompletedModules() {
+                    let count = 0;
+                    this.myActivedClasses.forEach(c => {
+                        count += (c.completedModules || 0);
+                    });
+                    return count;
+                },
+
+                getHighestQuizScore() {
+                    if (this.quizResults.length === 0) return 0;
+                    return Math.max(...this.quizResults.map(q => q.score));
+                },
+
+                getPassedQuizCount() {
+                    return this.quizResults.filter(q => q.score >= 75).length;
+                },
+
+                getCurriculumMasteryPercentage() {
+                    if (this.myActivedClasses.length === 0) return 0;
+                    const totalProgress = this.myActivedClasses.reduce((acc, c) => acc + (c.progress || 0), 0);
+                    return Math.round(totalProgress / this.myActivedClasses.length);
+                },
+
+                getScoreGrade(score) {
+                    if (score >= 95) return { label: '🏆 Sempurna / A+', color: 'text-amber-400 dark:text-amber-300' };
+                    if (score >= 85) return { label: '✨ Sangat Memuaskan / A', color: 'text-emerald-500 dark:text-emerald-400' };
+                    if (score >= 75) return { label: '👍 Lulus Kompeten / B+', color: 'text-sky-500 dark:text-sky-400' };
+                    return { label: '⚡ Perlu Evaluasi / C', color: 'text-rose-500 dark:text-rose-400' };
+                },
+
+                resumeLatestClass() {
+                    if (this.myActivedClasses.length > 0) {
+                        this.enterStudyRoom(this.myActivedClasses[0]);
+                    } else if (this.courses.length > 0) {
+                        this.enrollCourse(this.courses[0]);
+                        this.enterStudyRoom(this.courses[0]);
+                    } else {
+                        this.setActiveTab('school');
+                    }
                 },
 
                 enterStudyRoom(course) {
