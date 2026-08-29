@@ -1239,145 +1239,202 @@
 
                 </div>
 
-            </div>
-        </main>
-    </div>
+                <!-- =========================================================================
+                     8. VIEW: RUANG BELAJAR INTERAKTIF (FULL-PAGE STUDY ROOM IN MAIN RIGHT AREA)
+                     ========================================================================= -->
+                <div x-show="activeTab === 'study_room'" x-cloak class="space-y-6">
+                    
+                    <!-- 🌟 1. Top Action & Navigation Banner -->
+                    <div class="rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-950 border border-indigo-500/20 p-5 sm:p-6 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-5">
+                        <div class="flex items-start sm:items-center gap-4">
+                            <button type="button" @click="closeStudyRoom()"
+                                class="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/10 text-white font-bold text-xs backdrop-blur-md transition-all flex items-center gap-2 shrink-0 cursor-pointer">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                                <span>Kembali</span>
+                            </button>
 
-    <!-- =========================================================================
-         MODAL 1: RUANG BELAJAR SISWA (STUDY ROOM PLAYER & KUIS BAB)
-         ========================================================================= -->
-    <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5"
-        x-show="studyRoom.isOpen"
-        x-transition:enter="transition ease-out duration-200"
-        x-transition:enter-start="opacity-0 scale-95"
-        x-transition:enter-end="opacity-100 scale-100"
-        x-transition:leave="transition ease-in duration-150"
-        x-transition:leave-start="opacity-100 scale-100"
-        x-transition:leave-end="opacity-0 scale-95"
-        x-cloak>
-        
-        <div class="bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col overflow-hidden"
-            @click.outside="closeStudyRoom()">
-            
-            <!-- Study Room Header -->
-            <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/50">
-                <div class="flex items-center gap-3">
-                    <span class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-lg shadow-sm">📖</span>
-                    <div>
-                        <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white" x-text="studyRoom.course ? studyRoom.course.title : 'Ruang Belajar'"></h3>
-                        <p class="text-xs text-slate-500" x-text="'Mentor: ' + (studyRoom.course ? studyRoom.course.mentor : 'Tim NLS')"></p>
-                    </div>
-                </div>
-                <button type="button" @click="closeStudyRoom()" class="p-2 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-            </div>
-
-            <!-- Study Room 2-Column Split: Material List Left, Video/Text/Quiz Right -->
-            <div class="flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-100 dark:divide-slate-800">
-                
-                <!-- Left: Module Syllabus List -->
-                <div class="p-4 space-y-2 bg-slate-50/60 dark:bg-slate-900/40 overflow-y-auto">
-                    <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 px-2 mb-2">Daftar Modul &amp; Bab</h4>
-                    <template x-for="(mod, mIdx) in studyRoom.modules" :key="mIdx">
-                        <button type="button" @click="studyRoom.activeModuleIndex = mIdx; studyRoom.isTakingQuiz = false"
-                            class="w-full text-left p-3 rounded-2xl text-xs transition-all space-y-1 flex items-start justify-between gap-2"
-                            :class="studyRoom.activeModuleIndex === mIdx ? 'bg-indigo-600 text-white font-bold shadow-sm' : 'bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-indigo-400'">
-                            <div>
-                                <div class="font-black" x-text="'Bab ' + (mIdx + 1) + ': ' + mod.title"></div>
-                                <div class="text-[10px] opacity-80" x-text="mod.duration + ' • ' + mod.type"></div>
-                            </div>
-                            <span class="text-xs" x-text="mod.completed ? '✅' : '⏳'"></span>
-                        </button>
-                    </template>
-                </div>
-
-                <!-- Right: Content Player (Video, Reading, & Interactive Quiz) -->
-                <div class="md:col-span-2 p-5 sm:p-7 overflow-y-auto space-y-5">
-                    <template x-if="!studyRoom.isTakingQuiz">
-                        <div class="space-y-5">
-                            <div>
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
-                                    x-text="'Bab ' + (studyRoom.activeModuleIndex + 1)"></span>
-                                <h3 class="text-lg font-black text-slate-900 dark:text-white mt-1" x-text="getActiveModule().title"></h3>
-                            </div>
-
-                            <!-- Video Player Simulation Box -->
-                            <div class="aspect-video rounded-3xl bg-slate-950 relative overflow-hidden flex items-center justify-center text-white shadow-lg">
-                                <div class="text-center p-6 space-y-3">
-                                    <div class="w-16 h-16 mx-auto rounded-full bg-indigo-600/90 text-white flex items-center justify-center text-2xl shadow-lg cursor-pointer hover:scale-110 transition-transform"
-                                        @click="showToast('Video materi siap diputar!')">
-                                        ▶
-                                    </div>
-                                    <p class="text-xs text-slate-300 font-bold" x-text="'Video Pembelajaran: ' + getActiveModule().title"></p>
-                                    <span class="text-[10px] text-slate-400" x-text="'Durasi: ' + getActiveModule().duration + ' (HD 1080p)'"></span>
+                            <div class="space-y-1 min-w-0">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-indigo-500/20 text-indigo-300 border border-indigo-400/30"
+                                        x-text="studyRoom.course ? studyRoom.course.category : 'Ruang Belajar'"></span>
+                                    <span class="text-[11px] text-slate-400 font-bold" x-text="studyRoom.course ? studyRoom.course.level : ''"></span>
                                 </div>
-                            </div>
-
-                            <!-- Material Summary Notes -->
-                            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs leading-relaxed space-y-2">
-                                <h4 class="font-black text-slate-900 dark:text-white">Rangkuman &amp; Poin Inti Bab:</h4>
-                                <p class="text-slate-600 dark:text-slate-300" x-text="getActiveModule().summary"></p>
-                            </div>
-
-                            <!-- Action Bottom Bar -->
-                            <div class="pt-3 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 dark:border-slate-800">
-                                <button type="button" @click="downloadModulePdf()"
-                                    class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition-all flex items-center gap-1.5">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                                    <span>Download Ringkasan PDF</span>
-                                </button>
-                                
-                                <button type="button" @click="startModuleQuiz()"
-                                    class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2">
-                                    <span>Kerjakan Kuis Bab Ini &rarr;</span>
-                                </button>
+                                <h1 class="text-lg sm:text-xl font-black text-white truncate" x-text="studyRoom.course ? studyRoom.course.title : 'Ruang Belajar Mandiri'"></h1>
+                                <p class="text-xs text-slate-300 flex items-center gap-1.5 font-medium">
+                                    <span>Mentor Pengampu:</span>
+                                    <strong class="text-indigo-200 font-bold" x-text="studyRoom.course ? studyRoom.course.mentor : 'Tim Ahli NLS'"></strong>
+                                </p>
                             </div>
                         </div>
-                    </template>
 
-                    <!-- Interactive Quiz Player Mode -->
-                    <template x-if="studyRoom.isTakingQuiz">
-                        <div class="space-y-6">
-                            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                                <div>
-                                    <span class="text-[10px] font-black uppercase text-indigo-600 dark:text-indigo-400">Kuis Latihan Topik</span>
-                                    <h3 class="text-base font-black text-slate-900 dark:text-white" x-text="'Evaluasi Bab: ' + getActiveModule().title"></h3>
-                                </div>
-                                <button type="button" @click="studyRoom.isTakingQuiz = false" class="text-xs text-slate-400 hover:underline">
-                                    Kembali ke Materi
-                                </button>
+                        <!-- Right Stats Pill & Action -->
+                        <div class="flex items-center gap-3 shrink-0 self-end md:self-auto">
+                            <div class="px-4 py-2 rounded-2xl bg-white/5 border border-white/10 text-right">
+                                <span class="block text-[10px] text-slate-400 uppercase font-black tracking-wider">Kemajuan Silabus</span>
+                                <span class="text-xs font-black text-emerald-400" x-text="(studyRoom.activeModuleIndex + 1) + ' dari ' + studyRoom.modules.length + ' Bab'"></span>
                             </div>
-
-                            <!-- Interactive Question List -->
-                            <div class="space-y-6 text-xs">
-                                <template x-for="(q, qIdx) in currentQuizQuestions" :key="qIdx">
-                                    <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3">
-                                        <div class="font-black text-slate-900 dark:text-white" x-text="(qIdx + 1) + '. ' + q.question"></div>
-                                        
-                                        <div class="space-y-2">
-                                            <template x-for="(opt, oIdx) in q.options" :key="oIdx">
-                                                <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#131d38] cursor-pointer hover:border-indigo-500 transition-all">
-                                                    <input type="radio" :name="'quiz_q_' + qIdx" :value="oIdx" x-model="userAnswers[qIdx]"
-                                                        class="text-indigo-600 focus:ring-indigo-500">
-                                                    <span class="font-medium text-slate-800 dark:text-slate-200" x-text="opt"></span>
-                                                </label>
-                                            </template>
-                                        </div>
-                                    </div>
-                                </template>
-                            </div>
-
-                            <button type="button" @click="submitQuiz()"
-                                class="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-lg shadow-emerald-600/30 active:scale-95 transition-all">
-                                Selesaikan &amp; Kirim Jawaban Kuis
+                            <button type="button" @click="downloadModulePdf()"
+                                class="px-4 py-2.5 rounded-2xl bg-indigo-600/80 hover:bg-indigo-600 text-white text-xs font-black transition-all flex items-center gap-2 cursor-pointer shadow-lg shadow-indigo-600/30">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                <span class="hidden sm:inline">Unduh PDF</span>
                             </button>
                         </div>
-                    </template>
+                    </div>
+
+                    <!-- 2. Main 2-Column Split Workspace (Silabus Kiri vs Player / Materi / Kuis Kanan) -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                        
+                        <!-- 📚 Left Column: Syllabus & Module List (4 cols) -->
+                        <div class="lg:col-span-4 rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-4">
+                            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-7 h-7 rounded-xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 flex items-center justify-center font-bold text-xs">📋</span>
+                                    <h3 class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-200">Silabus &amp; Daftar Bab</h3>
+                                </div>
+                                <span class="text-[11px] font-bold text-slate-400" x-text="studyRoom.modules.length + ' Modul'"></span>
+                            </div>
+
+                            <div class="space-y-2.5 max-h-[600px] overflow-y-auto pr-1">
+                                <template x-for="(mod, mIdx) in studyRoom.modules" :key="mIdx">
+                                    <button type="button" @click="studyRoom.activeModuleIndex = mIdx; studyRoom.isTakingQuiz = false; window.scrollTo({ top: 120, behavior: 'smooth' });"
+                                        class="w-full text-left p-3.5 rounded-2xl text-xs transition-all flex items-start justify-between gap-3 cursor-pointer group"
+                                        :class="studyRoom.activeModuleIndex === mIdx ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold shadow-md shadow-indigo-600/20' : 'bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 text-slate-700 dark:text-slate-300 hover:border-indigo-400 dark:hover:border-indigo-600'">
+                                        <div class="space-y-1 min-w-0">
+                                            <div class="flex items-center gap-1.5">
+                                                <span class="text-[10px] font-black uppercase tracking-wider"
+                                                    :class="studyRoom.activeModuleIndex === mIdx ? 'text-indigo-200' : 'text-slate-400'"
+                                                    x-text="'Bab ' + (mIdx + 1)"></span>
+                                                <span class="text-[10px]" :class="studyRoom.activeModuleIndex === mIdx ? 'text-indigo-200' : 'text-slate-400'">•</span>
+                                                <span class="text-[10px]" :class="studyRoom.activeModuleIndex === mIdx ? 'text-indigo-200' : 'text-slate-400'" x-text="mod.type"></span>
+                                            </div>
+                                            <div class="font-extrabold text-sm leading-snug line-clamp-2" x-text="mod.title"></div>
+                                            <div class="text-[10px] opacity-75 font-medium" x-text="'⏱️ ' + mod.duration"></div>
+                                        </div>
+                                        <span class="text-sm shrink-0 mt-1" x-text="mod.completed ? '✅' : (studyRoom.activeModuleIndex === mIdx ? '▶️' : '⏳')"></span>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- 🖥️ Right Column: Interactive Content Player (8 cols) -->
+                        <div class="lg:col-span-8 rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs space-y-6">
+                            
+                            <!-- MODE A: STUDY MATERIAL / VIDEO / SUMMARY VIEW -->
+                            <template x-if="!studyRoom.isTakingQuiz">
+                                <div class="space-y-6">
+                                    
+                                    <!-- Module Header -->
+                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
+                                        <div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
+                                                    x-text="'Bab ' + (studyRoom.activeModuleIndex + 1) + ' dari ' + studyRoom.modules.length"></span>
+                                                <span class="text-xs text-slate-400 font-bold" x-text="'• ' + getActiveModule().type"></span>
+                                            </div>
+                                            <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1.5" x-text="getActiveModule().title"></h2>
+                                        </div>
+
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs font-bold text-slate-500" x-text="'Durasi: ' + getActiveModule().duration"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Video Player Screen / Interactive Simulation Box -->
+                                    <div class="aspect-video rounded-3xl bg-gradient-to-tr from-slate-950 via-slate-900 to-indigo-950 relative overflow-hidden flex items-center justify-center text-white shadow-xl border border-slate-800 group">
+                                        <div class="absolute inset-0 bg-radial from-indigo-500/10 via-transparent to-transparent pointer-events-none"></div>
+
+                                        <div class="text-center p-6 space-y-3 relative z-10">
+                                            <button type="button" @click="showToast('▶ Memutar video pembelajaran Bab ' + (studyRoom.activeModuleIndex + 1) + '...')"
+                                                class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center text-3xl shadow-2xl shadow-indigo-600/40 hover:scale-110 active:scale-95 transition-all cursor-pointer">
+                                                ▶
+                                            </button>
+                                            <div>
+                                                <h4 class="text-sm sm:text-base font-black text-white" x-text="getActiveModule().title"></h4>
+                                                <p class="text-xs text-slate-400 mt-1" x-text="'Video Kuliah Interaktif • Format HD 1080p • ' + getActiveModule().duration"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Material Summary Notes & Concept Box -->
+                                    <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs leading-relaxed space-y-3">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-6 h-6 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-black">💡</span>
+                                            <h4 class="font-black text-slate-900 dark:text-white text-sm">Rangkuman Konsep &amp; Poin Inti Bab:</h4>
+                                        </div>
+                                        <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed" x-text="getActiveModule().summary"></p>
+                                    </div>
+
+                                    <!-- Action Bottom Bar -->
+                                    <div class="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t border-slate-100 dark:border-slate-800">
+                                        <div class="flex items-center gap-2">
+                                            <button type="button" @click="prevModule()" :disabled="studyRoom.activeModuleIndex === 0"
+                                                class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+                                                &larr; Bab Sebelumnya
+                                            </button>
+                                            <button type="button" @click="nextModule()" :disabled="studyRoom.activeModuleIndex >= studyRoom.modules.length - 1"
+                                                class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+                                                Bab Selanjutnya &rarr;
+                                            </button>
+                                        </div>
+                                        
+                                        <button type="button" @click="startModuleQuiz()"
+                                            class="px-6 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-black text-xs shadow-lg shadow-indigo-600/30 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                                            <span>Kerjakan Kuis Bab Ini &rarr;</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- MODE B: CBT INTERACTIVE QUIZ PLAYER -->
+                            <template x-if="studyRoom.isTakingQuiz">
+                                <div class="space-y-6">
+                                    <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                                        <div>
+                                            <span class="text-[10px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Evaluasi Pemahaman Siswa</span>
+                                            <h3 class="text-lg font-black text-slate-900 dark:text-white" x-text="'Kuis CBT: ' + getActiveModule().title"></h3>
+                                        </div>
+                                        <button type="button" @click="studyRoom.isTakingQuiz = false"
+                                            class="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold hover:bg-slate-200 transition-all cursor-pointer">
+                                            &larr; Kembali ke Materi
+                                        </button>
+                                    </div>
+
+                                    <!-- Interactive Questions List -->
+                                    <div class="space-y-6 text-xs">
+                                        <template x-for="(q, qIdx) in currentQuizQuestions" :key="qIdx">
+                                            <div class="p-5 sm:p-6 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
+                                                <div class="flex items-start gap-3">
+                                                    <span class="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-black text-xs shrink-0" x-text="qIdx + 1"></span>
+                                                    <div class="font-black text-slate-900 dark:text-white text-sm leading-relaxed" x-text="q.question"></div>
+                                                </div>
+                                                
+                                                <div class="space-y-2 pl-9">
+                                                    <template x-for="(opt, oIdx) in q.options" :key="oIdx">
+                                                        <label class="flex items-center gap-3 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-[#131d38] cursor-pointer hover:border-indigo-500 transition-all">
+                                                            <input type="radio" :name="'quiz_q_' + qIdx" :value="oIdx" x-model="userAnswers[qIdx]"
+                                                                class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                                                            <span class="font-semibold text-slate-800 dark:text-slate-200" x-text="opt"></span>
+                                                        </label>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                    <button type="button" @click="submitQuiz()"
+                                        class="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-sm shadow-xl shadow-emerald-600/30 active:scale-98 transition-all cursor-pointer">
+                                        Selesaikan &amp; Simpan Nilai Kuis
+                                    </button>
+                                </div>
+                            </template>
+
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
-        </div>
+        </main>
     </div>
 
     <!-- =========================================================================
@@ -1440,7 +1497,8 @@
                 isSidebarOpen: true,
                 isMobile: false,
                 searchQuery: '',
-                activeTab: 'dashboard', // 'dashboard', 'profil', 'school', 'olimpiade', 'tka', 'college', 'myclass'
+                activeTab: 'dashboard', // 'dashboard', 'profil', 'school', 'olimpiade', 'tka', 'college', 'myclass', 'study_room'
+                previousTab: 'myclass',
                 
                 // Submenu States
                 profilView: 'saya', // 'saya', 'edit'
@@ -1736,6 +1794,7 @@
                     if (this.activeTab === 'tka') return 'TKA / ' + this.tkaLevel.replace('_', ' ').toUpperCase();
                     if (this.activeTab === 'college') return 'Collage Preparation / ' + this.collegeType.toUpperCase();
                     if (this.activeTab === 'myclass') return 'My Class / ' + (this.myclassView === 'actived' ? 'Actived Class' : 'Quiz Result');
+                    if (this.activeTab === 'study_room') return 'Ruang Belajar / ' + (this.studyRoom.course ? this.studyRoom.course.title : 'Modul');
                     return this.activeTab;
                 },
 
@@ -1860,14 +1919,39 @@
                 },
 
                 enterStudyRoom(course) {
+                    this.previousTab = (this.activeTab === 'study_room') ? 'myclass' : this.activeTab;
+                    this.activeTab = 'study_room';
                     this.studyRoom.course = course;
+                    if (course && Array.isArray(course.modules) && course.modules.length > 0) {
+                        this.studyRoom.modules = course.modules;
+                    }
                     this.studyRoom.activeModuleIndex = 0;
                     this.studyRoom.isTakingQuiz = false;
                     this.studyRoom.isOpen = true;
+                    this.userAnswers = {};
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 },
 
                 closeStudyRoom() {
+                    this.activeTab = this.previousTab || 'myclass';
                     this.studyRoom.isOpen = false;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                },
+
+                prevModule() {
+                    if (this.studyRoom.activeModuleIndex > 0) {
+                        this.studyRoom.activeModuleIndex--;
+                        this.studyRoom.isTakingQuiz = false;
+                        window.scrollTo({ top: 120, behavior: 'smooth' });
+                    }
+                },
+
+                nextModule() {
+                    if (this.studyRoom.activeModuleIndex < this.studyRoom.modules.length - 1) {
+                        this.studyRoom.activeModuleIndex++;
+                        this.studyRoom.isTakingQuiz = false;
+                        window.scrollTo({ top: 120, behavior: 'smooth' });
+                    }
                 },
 
                 getActiveModule() {
