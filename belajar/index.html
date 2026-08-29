@@ -2147,6 +2147,7 @@
 
                     if (!rawRoute || rawRoute === 'dashboard') {
                         this.activeTab = 'dashboard';
+                        this.closeAllMenus();
                         if (window.location.hash) this.syncUrlRoute(false);
                         return;
                     }
@@ -2160,27 +2161,27 @@
                     if (section === 'profil') {
                         this.activeTab = 'profil';
                         this.profilView = (sub === 'edit') ? 'edit' : 'saya';
-                        this.openMenus.profil = true;
+                        this.setExclusiveOpenMenu('profil');
                     } else if (section === 'school') {
                         this.activeTab = 'school';
                         if (['sd', 'smp', 'sma'].includes(sub)) this.schoolLevel = sub;
-                        this.openMenus.school = true;
+                        this.setExclusiveOpenMenu('school');
                     } else if (section === 'olimpiade') {
                         this.activeTab = 'olimpiade';
                         if (['osn_sd', 'osn_smp', 'osn_sma', 'onmipa', 'internasional'].includes(sub)) this.olimpiadeType = sub;
-                        this.openMenus.olimpiade = true;
+                        this.setExclusiveOpenMenu('olimpiade');
                     } else if (section === 'tka') {
                         this.activeTab = 'tka';
                         if (['tka_sd', 'tka_smp', 'tka_sma'].includes(sub)) this.tkaLevel = sub;
-                        this.openMenus.tka = true;
+                        this.setExclusiveOpenMenu('tka');
                     } else if (section === 'college') {
                         this.activeTab = 'college';
                         if (['snbt', 'mandiri', 'kedinasan'].includes(sub)) this.collegeType = sub;
-                        this.openMenus.college = true;
+                        this.setExclusiveOpenMenu('college');
                     } else if (section === 'my-class' || section === 'myclass') {
                         this.activeTab = 'myclass';
                         this.myclassView = (sub === 'quiz-result' || sub === 'quiz_result') ? 'quiz_result' : 'actived';
-                        this.openMenus.myclass = true;
+                        this.setExclusiveOpenMenu('myclass');
                     } else if (section === 'course') {
                         const courseId = parts.slice(1).join('/');
                         const targetCourse = this.courses.find(c => String(c.id).toLowerCase() === courseId.toLowerCase() || (c.title && c.title.toLowerCase().includes(courseId.toLowerCase()))) || this.courses[0];
@@ -2188,9 +2189,11 @@
                             this.enterStudyRoom(targetCourse, false);
                         } else {
                             this.activeTab = 'dashboard';
+                            this.closeAllMenus();
                         }
                     } else {
                         this.activeTab = 'dashboard';
+                        this.closeAllMenus();
                     }
 
                     // Clean any old hash if present and sync clean path
@@ -2249,12 +2252,31 @@
                     }
                 },
 
+                closeAllMenus() {
+                    Object.keys(this.openMenus).forEach(key => {
+                        this.openMenus[key] = false;
+                    });
+                },
+
+                setExclusiveOpenMenu(menu) {
+                    Object.keys(this.openMenus).forEach(key => {
+                        this.openMenus[key] = (key === menu);
+                    });
+                },
+
                 toggleMenu(menu) {
-                    this.openMenus[menu] = !this.openMenus[menu];
+                    const isCurrentlyOpen = !!this.openMenus[menu];
+                    this.closeAllMenus();
+                    if (!isCurrentlyOpen) {
+                        this.openMenus[menu] = true;
+                    }
                 },
 
                 setActiveTab(tab) {
                     this.activeTab = tab;
+                    if (tab === 'dashboard') {
+                        this.closeAllMenus();
+                    }
                     if (this.isMobile) this.isSidebarOpen = false;
                     this.syncUrlRoute(true);
                     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2263,7 +2285,7 @@
                 openProfilView(view) {
                     this.activeTab = 'profil';
                     this.profilView = view;
-                    this.openMenus.profil = true;
+                    this.setExclusiveOpenMenu('profil');
                     if (this.isMobile) this.isSidebarOpen = false;
                     this.syncUrlRoute(true);
                 },
@@ -2271,7 +2293,7 @@
                 openSchoolView(level) {
                     this.activeTab = 'school';
                     this.schoolLevel = level;
-                    this.openMenus.school = true;
+                    this.setExclusiveOpenMenu('school');
                     if (this.isMobile) this.isSidebarOpen = false;
                     this.syncUrlRoute(true);
                 },
@@ -2279,7 +2301,7 @@
                 openOlimpiadeView(type) {
                     this.activeTab = 'olimpiade';
                     this.olimpiadeType = type;
-                    this.openMenus.olimpiade = true;
+                    this.setExclusiveOpenMenu('olimpiade');
                     if (this.isMobile) this.isSidebarOpen = false;
                     this.syncUrlRoute(true);
                 },
@@ -2287,7 +2309,7 @@
                 openTkaView(level) {
                     this.activeTab = 'tka';
                     this.tkaLevel = level;
-                    this.openMenus.tka = true;
+                    this.setExclusiveOpenMenu('tka');
                     if (this.isMobile) this.isSidebarOpen = false;
                     this.syncUrlRoute(true);
                 },
@@ -2295,7 +2317,7 @@
                 openCollegeView(type) {
                     this.activeTab = 'college';
                     this.collegeType = type;
-                    this.openMenus.college = true;
+                    this.setExclusiveOpenMenu('college');
                     if (this.isMobile) this.isSidebarOpen = false;
                     this.syncUrlRoute(true);
                 },
@@ -2303,7 +2325,7 @@
                 openMyClassView(view) {
                     this.activeTab = 'myclass';
                     this.myclassView = view;
-                    this.openMenus.myclass = true;
+                    this.setExclusiveOpenMenu('myclass');
                     if (this.isMobile) this.isSidebarOpen = false;
                     this.syncUrlRoute(true);
                 },
