@@ -211,7 +211,7 @@
                     try { cb(session, true); } catch(e) {}
                 });
             } else {
-                const hadSession = !!this.getLocalSession() || sessionStorage.getItem('nls_admin_auth') === 'true';
+                const hadSession = !!this.getLocalSession();
                 if (hadSession) {
                     this.clearLocalSession();
                     this.callbacks.forEach(cb => {

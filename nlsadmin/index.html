@@ -4943,7 +4943,13 @@
     <script>
         function superAdminApp() {
             return {
-                isAuthenticated: sessionStorage.getItem('nls_admin_auth') === 'true',
+                isAuthenticated: (function() {
+                    try {
+                        return localStorage.getItem('nls_admin_auth') === 'true' || sessionStorage.getItem('nls_admin_auth') === 'true';
+                    } catch(e) {
+                        return false;
+                    }
+                })(),
                 showPassword: false,
                 isSidebarOpen: window.innerWidth >= 1024,
                 isMobile: window.innerWidth < 1024,
@@ -5418,6 +5424,9 @@
                                 if (Array.isArray(parsed) && parsed.length > 0) this.teachers = parsed;
                             } catch (err) {}
                         }
+                        if (e.key === 'nls_admin_auth') {
+                            this.isAuthenticated = e.newValue === 'true';
+                        }
                     });
 
                     window.addEventListener('nls-teacher-application-added', (e) => {
@@ -5442,7 +5451,7 @@
                         channel.onmessage = (ev) => {
                             if (!ev.data) return;
                             if (ev.data.type === 'SYNC_ALL') {
-                                this.syncAllFromCloud(false);
+                                if (this.isAuthenticated) this.syncAllFromCloud(false);
                             }
                             if (ev.data.type === 'ARTICLES_UPDATED' && Array.isArray(ev.data.data)) {
                                 this.articles = ev.data.data;
@@ -5463,23 +5472,27 @@
                         };
                     } catch (e) {}
 
-                    // 1. Initial Cloud Sync on boot
-                    this.syncAllFromCloud(false);
+                    // 1. Initial Cloud Sync on boot (only if authenticated)
+                    if (this.isAuthenticated) {
+                        this.syncAllFromCloud(false);
+                    }
 
                     // 2. Instant Auto-Sync when tab or browser window becomes active/focused
                     document.addEventListener('visibilitychange', () => {
-                        if (!document.hidden) {
+                        if (!document.hidden && this.isAuthenticated) {
                             this.syncAllFromCloud(false);
                         }
                     });
                     window.addEventListener('focus', () => {
-                        this.syncAllFromCloud(false);
+                        if (this.isAuthenticated) {
+                            this.syncAllFromCloud(false);
+                        }
                     });
 
                     // 3. Continuous Real-time Background Polling (Every 5 seconds)
                     if (window._nlsAutoSyncInterval) clearInterval(window._nlsAutoSyncInterval);
                     window._nlsAutoSyncInterval = setInterval(() => {
-                        if (!document.hidden) {
+                        if (!document.hidden && this.isAuthenticated) {
                             this.syncAllFromCloud(false);
                         }
                     }, 5000);
@@ -5490,7 +5503,11 @@
                     if (this.loginForm.username === 'nlsindonesia' && this.loginForm.password === '@Maman123$') {
                         this.isAuthenticated = true;
                         this.loginError = false;
-                        sessionStorage.setItem('nls_admin_auth', 'true');
+                        try {
+                            localStorage.setItem('nls_admin_auth', 'true');
+                            sessionStorage.setItem('nls_admin_auth', 'true');
+                        } catch(e) {}
+                        this.syncAllFromCloud(false);
                         this.showToast('Selamat datang, Super Admin NLS!');
                     } else {
                         this.loginError = true;
@@ -5500,7 +5517,10 @@
 
                 logout() {
                     this.isAuthenticated = false;
-                    sessionStorage.removeItem('nls_admin_auth');
+                    try {
+                        localStorage.removeItem('nls_admin_auth');
+                        sessionStorage.removeItem('nls_admin_auth');
+                    } catch(e) {}
                     this.loginForm = { username: '', password: '' };
                 },
 
