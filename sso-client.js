@@ -19,6 +19,15 @@
             if (this._inited) return;
             this._inited = true;
 
+            // Purge any deprecated local user storage keys across all subdomains
+            try {
+                localStorage.removeItem('nls_registered_users_v1');
+                localStorage.removeItem('nls_users_v1');
+                localStorage.removeItem('nls_users_trash_v1');
+                localStorage.removeItem('nls_temp_users');
+                localStorage.removeItem('nls_mock_users');
+            } catch(e) {}
+
             // 1. Consume token/session passed in URL parameter (?nls_sso_data=...)
             try {
                 const urlParams = new URLSearchParams(window.location.search);

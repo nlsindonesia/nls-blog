@@ -449,6 +449,12 @@
 
                     // Prefill if already have saved profile
                     try {
+                        localStorage.removeItem('nls_registered_users_v1');
+                        localStorage.removeItem('nls_users_v1');
+                        localStorage.removeItem('nls_users_trash_v1');
+                        localStorage.removeItem('nls_temp_users');
+                        localStorage.removeItem('nls_mock_users');
+
                         const savedProfile = localStorage.getItem('nls_student_profile_v1');
                         if (savedProfile) {
                             const p = JSON.parse(savedProfile);
@@ -476,21 +482,19 @@
                     }
                 },
 
-                showToast(message, type = 'success') {
-                    this.toast.message = message;
-                    this.toast.type = type;
-                    this.toast.show = true;
+                showToast(msg, type = 'info') {
+                    this.toast = { show: true, message: msg, type: type };
                     setTimeout(() => {
                         this.toast.show = false;
-                    }, 3500);
+                    }, 4000);
                 },
 
                 async handleLogin() {
-                    const id = this.loginForm.identifier.trim();
-                    const pass = this.loginForm.password;
+                    const id = (this.loginForm.identifier || '').trim();
+                    const pass = this.loginForm.password || '';
 
                     if (!id || !pass) {
-                        this.showToast('Silakan lengkapi email/NISN dan password!', 'error');
+                        this.showToast('Mohon masukkan Email/NISN dan Password Anda!', 'error');
                         return;
                     }
 
@@ -511,30 +515,30 @@
 
                         if (!res.ok || !data.success) {
                             this.isLoading = false;
-                            this.showToast(data.message || 'Login gagal. Periksa kembali email dan kata sandi Anda.', 'error');
+                            this.showToast(data.message || 'Email / NISN atau password yang Anda masukkan salah.', 'error');
                             return;
                         }
 
-                        const studentData = data.user;
+                        const user = data.user;
 
                         // Save session
-                        localStorage.setItem('nls_student_auth_session', JSON.stringify(studentData));
-                        
+                        localStorage.setItem('nls_student_auth_session', JSON.stringify(user));
+
                         // Sync to LMS profile
                         localStorage.setItem('nls_student_profile_v1', JSON.stringify({
-                            name: studentData.name,
-                            nisn: (studentData.nisn || '').startsWith('NISN:') ? studentData.nisn : 'NISN: ' + (studentData.nisn || '0081293412'),
-                            school: studentData.school,
-                            email: studentData.email,
-                            phone: studentData.phone,
-                            grade: studentData.grade || `${studentData.level || 'SMA'} - Kelas Unggulan`,
-                            avatar: studentData.avatar,
-                            target: studentData.targetProgram
+                            name: user.name,
+                            nisn: (user.nisn || '').startsWith('NISN:') ? user.nisn : 'NISN: ' + (user.nisn || ''),
+                            school: user.school,
+                            email: user.email,
+                            phone: user.phone,
+                            grade: user.grade || `${user.level || 'SMA'} - Kelas Unggulan`,
+                            avatar: user.avatar,
+                            target: user.targetProgram
                         }));
 
-                        // Broadcast SSO to all other subdomains
+                        // Broadcast SSO to other subdomains
                         if (window.NlsSSO) {
-                            window.NlsSSO.broadcastLogin(studentData);
+                            window.NlsSSO.broadcastLogin(user);
                         }
 
                         this.isLoading = false;
@@ -544,44 +548,9 @@
                             window.location.href = this.getRedirectTarget();
                         }, 900);
                     } catch(err) {
-                        // Offline or Network Fallback
-                        console.warn('API login error, fallback to offline check:', err);
-                        
-                        let matchUser = null;
-                        try {
-                            const saved = localStorage.getItem('nls_registered_users_v1');
-                            if (saved) {
-                                const users = JSON.parse(saved);
-                                matchUser = users.find(u => (u.email === id || u.nisn === id || u.username === id) && u.password === pass);
-                            }
-                        } catch(e) {}
-
-                        if (matchUser || (id === 'faiz.student@gmail.com' && pass === '@Maman123$')) {
-                            const studentData = matchUser || {
-                                name: 'Muhammad Faiz Al-Fatih',
-                                email: 'faiz.student@gmail.com',
-                                phone: '081234567890',
-                                nisn: 'NISN: 0081293412',
-                                school: 'SMA Negeri 1 Bekasi',
-                                level: 'SMA',
-                                targetProgram: 'Persiapan OSN & SNBT',
-                                role: 'student',
-                                roleLabel: 'Siswa',
-                                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-                                loggedInAt: new Date().toISOString()
-                            };
-
-                            localStorage.setItem('nls_student_auth_session', JSON.stringify(studentData));
-                            localStorage.setItem('nls_student_profile_v1', JSON.stringify(studentData));
-                            if (window.NlsSSO) window.NlsSSO.broadcastLogin(studentData);
-
-                            this.isLoading = false;
-                            this.showToast('Login berhasil (Mode Offline)! Mengalihkan ke Portal Belajar...', 'success');
-                            setTimeout(() => { window.location.href = this.getRedirectTarget(); }, 900);
-                        } else {
-                            this.isLoading = false;
-                            this.showToast('Kredensial login tidak cocok atau jaringan terputus.', 'error');
-                        }
+                        console.warn('API login network error:', err);
+                        this.isLoading = false;
+                        this.showToast('Terjadi kendala koneksi ke server. Mohon periksa internet Anda dan coba lagi.', 'error');
                     }
                 },
 
@@ -647,14 +616,6 @@
 
                         const newStudent = data.user;
 
-                        // Save local registered cache
-                        try {
-                            const saved = localStorage.getItem('nls_registered_users_v1');
-                            const users = saved ? JSON.parse(saved) : [];
-                            users.push({ ...newStudent, password: f.password });
-                            localStorage.setItem('nls_registered_users_v1', JSON.stringify(users));
-                        } catch(e) {}
-
                         // Save active session
                         localStorage.setItem('nls_student_auth_session', JSON.stringify(newStudent));
 
@@ -682,47 +643,15 @@
                             window.location.href = this.getRedirectTarget();
                         }, 1000);
                     } catch(err) {
-                        console.warn('API register error, saving locally:', err);
-                        
-                        const newStudent = {
-                            id: `usr-${Date.now()}`,
-                            name: f.name.trim(),
-                            email: f.email.trim(),
-                            phone: f.phone.trim(),
-                            nisn: f.nisn.trim() ? f.nisn.trim() : 'NISN: ' + Math.floor(1000000000 + Math.random() * 9000000000),
-                            school: f.school.trim(),
-                            level: f.level,
-                            grade: `${f.level || 'SMA'} - Kelas Unggulan`,
-                            targetProgram: f.targetProgram,
-                            avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-                            role: 'student',
-                            roleLabel: 'Siswa',
-                            status: 'Active',
-                            password: f.password,
-                            loggedInAt: new Date().toISOString()
-                        };
-
-                        try {
-                            const saved = localStorage.getItem('nls_registered_users_v1');
-                            const users = saved ? JSON.parse(saved) : [];
-                            users.push(newStudent);
-                            localStorage.setItem('nls_registered_users_v1', JSON.stringify(users));
-                        } catch(e) {}
-
-                        localStorage.setItem('nls_student_auth_session', JSON.stringify(newStudent));
-                        localStorage.setItem('nls_student_profile_v1', JSON.stringify(newStudent));
-                        if (window.NlsSSO) window.NlsSSO.broadcastLogin(newStudent);
-
+                        console.error('API register error:', err);
                         this.isLoading = false;
-                        this.showToast('Pendaftaran Berhasil! Mengalihkan ke Portal Belajar...', 'success');
-                        setTimeout(() => { window.location.href = this.getRedirectTarget(); }, 1000);
+                        this.showToast('Terjadi kendala jaringan saat mendaftar. Silakan coba beberapa saat lagi.', 'error');
                     }
                 },
 
                 async handleGoogleLogin() {
                     this.isLoading = true;
                     try {
-                        const googleEmail = 'faiz.student@gmail.com';
                         const res = await fetch('/api/users', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
