@@ -129,8 +129,8 @@
              ========================================================================= -->
         <!-- Mobile Sidebar Overlay Backdrop -->
         <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-40 lg:hidden"
-            x-show="isMobileSidebarOpen"
-            @click="isMobileSidebarOpen = false"
+            x-show="isSidebarOpen && isMobile"
+            @click="isSidebarOpen = false"
             x-transition:enter="transition-opacity ease-linear duration-200"
             x-transition:enter-start="opacity-0"
             x-transition:enter-end="opacity-100"
@@ -139,18 +139,19 @@
             x-transition:leave-end="opacity-0"
             x-cloak></div>
 
-        <aside class="fixed lg:sticky top-0 left-0 h-screen z-40 w-72 shrink-0 bg-white dark:bg-[#0f172a] border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between transition-transform duration-300 ease-in-out lg:translate-x-0"
-            :class="isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'">
+        <aside :class="[
+                isSidebarOpen ? 'w-72 sm:w-80 translate-x-0' : 'w-0 -translate-x-full lg:w-0 lg:-translate-x-full border-r-0 overflow-hidden',
+                isMobile ? 'fixed inset-y-0 left-0 z-50 shadow-2xl' : 'sticky top-0 h-screen z-40 shrink-0'
+            ]"
+            class="bg-white dark:bg-[#0f172a] border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between transition-all duration-300 ease-in-out select-none">
 
-            <!-- Sidebar Top: Brand & Student Info -->
-            <div class="p-5 border-b border-slate-100 dark:border-slate-800/80">
-                <div class="flex items-center justify-between">
-                    <a href="/" class="flex items-center gap-3 group">
-                        <img src="/nls-logo-300.png" alt="NLS Logo" class="w-9 h-9 object-contain group-hover:scale-105 transition-transform">
-                        <div>
-                            <div class="flex items-center gap-1.5">
-                                <span class="font-extrabold text-base tracking-tight text-slate-900 dark:text-white leading-tight">Next Level Study</span>
-                            </div>
+            <!-- Sidebar Top: Brand & Student Info & Hide Button -->
+            <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800/80 shrink-0">
+                <div class="flex items-center justify-between gap-2">
+                    <a href="/" class="flex items-center gap-2.5 min-w-0 group">
+                        <img src="/nls-logo-300.png" alt="NLS Logo" class="w-9 h-9 object-contain group-hover:scale-105 transition-transform shrink-0">
+                        <div class="min-w-0">
+                            <div class="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white leading-tight truncate">Next Level Study</div>
                             <div class="flex items-center gap-1.5 mt-0.5">
                                 <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">LMS Siswa</span>
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -158,8 +159,12 @@
                             </div>
                         </div>
                     </a>
-                    <button @click="isMobileSidebarOpen = false" class="lg:hidden p-1.5 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+
+                    <!-- Hide Sidebar Button Inside Sidebar (Like Super Admin) -->
+                    <button type="button" @click="isSidebarOpen = false"
+                        class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white transition-all cursor-pointer shrink-0 shadow-2xs"
+                        title="Sembunyikan Menu Sidebar">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>
                     </button>
                 </div>
 
@@ -429,8 +434,12 @@
             <!-- Top Header Bar -->
             <header class="sticky top-0 z-30 bg-white/90 dark:bg-[#0f172a]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-5 py-3.5 flex items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
-                    <button type="button" @click="isMobileSidebarOpen = true" class="lg:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <!-- Toggle Sidebar Button (Works on Desktop & Mobile, like Super Admin) -->
+                    <button type="button" @click="toggleSidebar()"
+                        class="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 shadow-2xs transition-all cursor-pointer flex items-center gap-2 text-xs font-black"
+                        title="Tampilkan / Sembunyikan Menu Navigasi">
+                        <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                        <span x-show="!isSidebarOpen" class="hidden sm:inline">Menu Navigasi</span>
                     </button>
 
                     <!-- Breadcrumbs -->
@@ -1233,7 +1242,8 @@
         function studentLMSApp() {
             return {
                 isDarkMode: false,
-                isMobileSidebarOpen: false,
+                isSidebarOpen: true,
+                isMobile: false,
                 searchQuery: '',
                 activeTab: 'dashboard', // 'dashboard', 'profil', 'school', 'olimpiade', 'tka', 'college', 'myclass'
                 
@@ -1380,6 +1390,12 @@
                         document.documentElement.classList.remove('dark');
                     }
 
+                    // Screen size detection & responsive sidebar state
+                    this.checkScreenSize();
+                    window.addEventListener('resize', () => {
+                        this.checkScreenSize();
+                    });
+
                     // Load saved profile if any
                     try {
                         const savedProfile = localStorage.getItem('nls_student_profile_v1');
@@ -1419,6 +1435,25 @@
                     this.fetchCoursesFromCloud();
                 },
 
+                checkScreenSize() {
+                    this.isMobile = window.innerWidth < 1024;
+                    if (this.isMobile) {
+                        this.isSidebarOpen = false;
+                    } else {
+                        const saved = localStorage.getItem('nls_belajar_sidebar_open_v1');
+                        this.isSidebarOpen = saved !== '0';
+                    }
+                },
+
+                toggleSidebar() {
+                    this.isSidebarOpen = !this.isSidebarOpen;
+                    if (!this.isMobile) {
+                        try {
+                            localStorage.setItem('nls_belajar_sidebar_open_v1', this.isSidebarOpen ? '1' : '0');
+                        } catch(e) {}
+                    }
+                },
+
                 async fetchCoursesFromCloud() {
                     if (typeof fetch === 'undefined') return;
                     try {
@@ -1452,7 +1487,7 @@
 
                 setActiveTab(tab) {
                     this.activeTab = tab;
-                    if (this.isMobileSidebarOpen) this.isMobileSidebarOpen = false;
+                    if (this.isMobile) this.isSidebarOpen = false;
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 },
 
@@ -1460,42 +1495,42 @@
                     this.activeTab = 'profil';
                     this.profilView = view;
                     this.openMenus.profil = true;
-                    if (this.isMobileSidebarOpen) this.isMobileSidebarOpen = false;
+                    if (this.isMobile) this.isSidebarOpen = false;
                 },
 
                 openSchoolView(level) {
                     this.activeTab = 'school';
                     this.schoolLevel = level;
                     this.openMenus.school = true;
-                    if (this.isMobileSidebarOpen) this.isMobileSidebarOpen = false;
+                    if (this.isMobile) this.isSidebarOpen = false;
                 },
 
                 openOlimpiadeView(type) {
                     this.activeTab = 'olimpiade';
                     this.olimpiadeType = type;
                     this.openMenus.olimpiade = true;
-                    if (this.isMobileSidebarOpen) this.isMobileSidebarOpen = false;
+                    if (this.isMobile) this.isSidebarOpen = false;
                 },
 
                 openTkaView(level) {
                     this.activeTab = 'tka';
                     this.tkaLevel = level;
                     this.openMenus.tka = true;
-                    if (this.isMobileSidebarOpen) this.isMobileSidebarOpen = false;
+                    if (this.isMobile) this.isSidebarOpen = false;
                 },
 
                 openCollegeView(type) {
                     this.activeTab = 'college';
                     this.collegeType = type;
                     this.openMenus.college = true;
-                    if (this.isMobileSidebarOpen) this.isMobileSidebarOpen = false;
+                    if (this.isMobile) this.isSidebarOpen = false;
                 },
 
                 openMyClassView(view) {
                     this.activeTab = 'myclass';
                     this.myclassView = view;
                     this.openMenus.myclass = true;
-                    if (this.isMobileSidebarOpen) this.isMobileSidebarOpen = false;
+                    if (this.isMobile) this.isSidebarOpen = false;
                 },
 
                 getBreadcrumbTitle() {
