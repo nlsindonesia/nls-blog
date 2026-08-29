@@ -4112,11 +4112,18 @@
                                                         <svg x-show="user.status !== 'Aktif' && user.status !== 'Active'" class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                                     </button>
 
-                                                    <!-- Delete to Trash Button -->
+                                                    <!-- Move to Trash Button -->
                                                     <button type="button" @click="deleteUserToTrash(user.id)"
-                                                        class="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/60 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 transition-all cursor-pointer"
-                                                        title="Pindahkan ke Tempat Sampah">
+                                                        class="p-2 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/60 dark:hover:bg-amber-900/60 text-amber-600 dark:text-amber-400 transition-all cursor-pointer"
+                                                        title="Pindahkan Pengguna ke Tempat Sampah (Trash)">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                    </button>
+
+                                                    <!-- Direct Delete Permanently Button -->
+                                                    <button type="button" @click="deleteUserDirectly(user.id)"
+                                                        class="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/60 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 transition-all cursor-pointer"
+                                                        title="Hapus Pengguna Secara Permanen dari Cloud Database">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11v6m4-6v6"></path></svg>
                                                     </button>
                                                 </div>
                                             </td>
@@ -5001,96 +5008,13 @@
                 userFilter: { search: '', role: 'all', status: 'all' },
 
                 users: (function() {
-                    try {
-                        const stored = localStorage.getItem("nls_users_v1");
-                        if (stored) {
-                            const parsed = JSON.parse(stored);
-                            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-                        }
-                    } catch (e) {}
                     if (typeof window.UsersDatabase !== "undefined" && window.UsersDatabase.getAll) {
                         try {
                             const list = window.UsersDatabase.getAll();
                             if (Array.isArray(list) && list.length > 0) return list;
                         } catch (e) {}
                     }
-                    return [
-                        {
-                            id: 'usr-1',
-                            name: 'Handaka Lumu',
-                            username: 'handaka.superadmin',
-                            email: 'handaka@next-level-study.com',
-                            phone: '085163070002',
-                            role: 'Super Admin',
-                            role_id: 'super_admin',
-                            status: 'Aktif',
-                            department: 'Direksi & Eksekutif',
-                            avatar: '/nls-logo-300.png',
-                            notes: 'Penanggung Jawab Utama Sistem Next Level Study',
-                            last_login: '2026-08-28 10:30 WIB',
-                            created_at: '2026-01-01T00:00:00.000Z'
-                        },
-                        {
-                            id: 'usr-2',
-                            name: 'Kak Raditya Pratama, M.Sc.',
-                            username: 'raditya.akademik',
-                            email: 'raditya@next-level-study.com',
-                            phone: '081286096600',
-                            role: 'Admin Akademik',
-                            role_id: 'admin_akademik',
-                            status: 'Aktif',
-                            department: 'Divisi Kurikulum & Olimpiade',
-                            avatar: '/images/pengajar/mentor-1-math.jpg',
-                            notes: 'Koordinator Kalender Pembinaan OSN dan Simulasi UTBK',
-                            last_login: '2026-08-28 09:15 WIB',
-                            created_at: '2026-02-15T00:00:00.000Z'
-                        },
-                        {
-                            id: 'usr-3',
-                            name: 'Kak Dimas (Koordinator Pengajar)',
-                            username: 'dimas.tutor',
-                            email: 'dimas@next-level-study.com',
-                            phone: '08170100788',
-                            role: 'Koordinator Pengajar',
-                            role_id: 'koordinator_pengajar',
-                            status: 'Aktif',
-                            department: 'Divisi Pengajar & Mutu Pendidik',
-                            avatar: '/images/pengajar/mentor-6-senior-math.jpg',
-                            notes: 'Verifikator Seleksi Berkas dan Microteaching Guru',
-                            last_login: '2026-08-27 16:45 WIB',
-                            created_at: '2026-03-10T00:00:00.000Z'
-                        },
-                        {
-                            id: 'usr-4',
-                            name: 'Tim EduTech & Penulis CMS',
-                            username: 'edutech.editor',
-                            email: 'edutech@next-level-study.com',
-                            phone: '085810464960',
-                            role: 'Content Editor',
-                            role_id: 'content_editor',
-                            status: 'Aktif',
-                            department: 'Divisi Media & Konten Edukasi',
-                            avatar: '/images/stitch/pillar-study.jpg',
-                            notes: 'Penyusun Artikel Berita, Silabus, dan Panduan Belajar',
-                            last_login: '2026-08-28 08:20 WIB',
-                            created_at: '2026-04-01T00:00:00.000Z'
-                        },
-                        {
-                            id: 'usr-5',
-                            name: 'Admin Pusat Layanan NLS',
-                            username: 'cs.pusat',
-                            email: 'cs@next-level-study.com',
-                            phone: '085163070002',
-                            role: 'Customer Service',
-                            role_id: 'customer_service',
-                            status: 'Aktif',
-                            department: 'Layanan & Pendaftaran Siswa',
-                            avatar: '/nls-logo-300.png',
-                            notes: 'Pusat Informasi Hotline WhatsApp dan Konsultasi Bimbel',
-                            last_login: '2026-08-28 10:10 WIB',
-                            created_at: '2026-05-01T00:00:00.000Z'
-                        }
-                    ];
+                    return [];
                 })(),
 
                 trashUsers: (function() {
@@ -6850,7 +6774,7 @@
                     const target = this.users.find(u => u.id === id);
                     if (!target) return;
 
-                    if (target.role_id === 'super_admin' && this.countUsersByRole('super_admin') <= 1) {
+                    if ((target.role === 'super_admin' || target.role_id === 'super_admin') && this.countUsersByRole('super_admin') <= 1) {
                         alert('Tidak dapat menghapus Super Admin utama terakhir sistem!');
                         return;
                     }
@@ -6874,6 +6798,30 @@
                         }
 
                         this.showToast(`Akun "${target.name}" dipindahkan ke Trash!`);
+                    }
+                },
+
+                deleteUserDirectly(id) {
+                    const target = this.users.find(u => u.id === id);
+                    if (!target) return;
+
+                    if ((target.role === 'super_admin' || target.role_id === 'super_admin') && this.countUsersByRole('super_admin') <= 1) {
+                        alert('Tidak dapat menghapus Super Admin utama terakhir sistem!');
+                        return;
+                    }
+
+                    if (confirm(`PERINGATAN HAPUS PERMANEN:\n\nApakah Anda yakin ingin menghapus akun "${target.name}" (@${target.username || 'user'}) secara PERMANEN dari Cloud Database?\n\nData akun dan hak akses akan dihapus secara permanen dan tidak dapat dipulihkan.`)) {
+                        this.users = this.users.filter(u => u.id !== id);
+                        this.saveUsersToStorage();
+
+                        // Sync to Cloud API
+                        if (typeof fetch !== 'undefined') {
+                            fetch('/api/users?id=' + encodeURIComponent(id), {
+                                method: 'DELETE'
+                            }).catch(e => {});
+                        }
+
+                        this.showToast(`Akun pengguna "${target.name}" telah dihapus secara permanen dari server cloud!`);
                     }
                 },
 
