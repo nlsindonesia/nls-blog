@@ -6,11 +6,11 @@
 import https from 'https';
 
 const CLOUD_BINS = {
-    users: 'https://extendsclass.com/api/json-storage/bin/abbafde',
-    events: 'https://extendsclass.com/api/json-storage/bin/ccdddbe',
-    articles: 'https://extendsclass.com/api/json-storage/bin/cebeccc',
-    teachers: 'https://extendsclass.com/api/json-storage/bin/abdfecf',
-    courses: 'https://extendsclass.com/api/json-storage/bin/cecafbb'
+    users: 'https://extendsclass.com/api/json-storage/bin/eaedfeb',
+    events: 'https://extendsclass.com/api/json-storage/bin/dedebcc',
+    articles: 'https://extendsclass.com/api/json-storage/bin/ebcaeab',
+    teachers: 'https://extendsclass.com/api/json-storage/bin/dadcdeb',
+    courses: 'https://extendsclass.com/api/json-storage/bin/ceeacca'
 };
 
 let localMemoryCache = {
@@ -30,6 +30,7 @@ let localMemoryCache = {
 function httpsRequest(url, method, data = null, headers = {}) {
     return new Promise((resolve, reject) => {
         const u = new URL(url);
+        const payload = data ? (typeof data === 'string' ? data : JSON.stringify(data)) : null;
         const options = {
             hostname: u.hostname,
             port: u.port || 443,
@@ -37,6 +38,7 @@ function httpsRequest(url, method, data = null, headers = {}) {
             method: method,
             headers: {
                 'Content-Type': 'application/json',
+                ...(payload ? { 'Content-Length': Buffer.byteLength(payload) } : {}),
                 ...headers
             }
         };
@@ -55,8 +57,8 @@ function httpsRequest(url, method, data = null, headers = {}) {
         });
 
         req.on('error', err => reject(err));
-        if (data) {
-            req.write(typeof data === 'string' ? data : JSON.stringify(data));
+        if (payload) {
+            req.write(payload);
         }
         req.end();
     });
@@ -75,27 +77,36 @@ export async function getCloudStore() {
             httpsRequest(CLOUD_BINS.courses, 'GET')
         ]);
 
-        // 1. Users
+        // 1. Users (Bidirectional merge)
         if (results[0].status === 'fulfilled' && results[0].value.status === 200) {
             const d = results[0].value.data;
             if (d && Array.isArray(d.items)) {
-                localMemoryCache.users = d.items;
+                const map = new Map();
+                d.items.forEach(u => u && u.id && map.set(u.id, u));
+                (localMemoryCache.users || []).forEach(u => u && u.id && !map.has(u.id) && map.set(u.id, u));
+                localMemoryCache.users = Array.from(map.values());
             }
         }
 
-        // 2. Events
+        // 2. Events (Bidirectional merge)
         if (results[1].status === 'fulfilled' && results[1].value.status === 200) {
             const d = results[1].value.data;
             if (d && Array.isArray(d.items)) {
-                localMemoryCache.events = d.items;
+                const map = new Map();
+                d.items.forEach(e => e && e.id && map.set(e.id, e));
+                (localMemoryCache.events || []).forEach(e => e && e.id && !map.has(e.id) && map.set(e.id, e));
+                localMemoryCache.events = Array.from(map.values());
             }
         }
 
-        // 3. Articles
+        // 3. Articles (Bidirectional merge)
         if (results[2].status === 'fulfilled' && results[2].value.status === 200) {
             const d = results[2].value.data;
             if (d && Array.isArray(d.items)) {
-                localMemoryCache.articles = d.items;
+                const map = new Map();
+                d.items.forEach(a => a && a.id && map.set(a.id, a));
+                (localMemoryCache.articles || []).forEach(a => a && a.id && !map.has(a.id) && map.set(a.id, a));
+                localMemoryCache.articles = Array.from(map.values());
             }
         }
 
@@ -103,8 +114,18 @@ export async function getCloudStore() {
         if (results[3].status === 'fulfilled' && results[3].value.status === 200) {
             const d = results[3].value.data;
             if (d) {
-                if (Array.isArray(d.teachers)) localMemoryCache.teachers = d.teachers;
-                if (Array.isArray(d.teacherApplications)) localMemoryCache.teacherApplications = d.teacherApplications;
+                if (Array.isArray(d.teachers)) {
+                    const map = new Map();
+                    d.teachers.forEach(t => t && t.id && map.set(t.id, t));
+                    (localMemoryCache.teachers || []).forEach(t => t && t.id && !map.has(t.id) && map.set(t.id, t));
+                    localMemoryCache.teachers = Array.from(map.values());
+                }
+                if (Array.isArray(d.teacherApplications)) {
+                    const map = new Map();
+                    d.teacherApplications.forEach(a => a && a.id && map.set(a.id, a));
+                    (localMemoryCache.teacherApplications || []).forEach(a => a && a.id && !map.has(a.id) && map.set(a.id, a));
+                    localMemoryCache.teacherApplications = Array.from(map.values());
+                }
             }
         }
 
@@ -112,8 +133,18 @@ export async function getCloudStore() {
         if (results[4].status === 'fulfilled' && results[4].value.status === 200) {
             const d = results[4].value.data;
             if (d) {
-                if (Array.isArray(d.courses)) localMemoryCache.courses = d.courses;
-                if (Array.isArray(d.quizSubmissions)) localMemoryCache.quizSubmissions = d.quizSubmissions;
+                if (Array.isArray(d.courses)) {
+                    const map = new Map();
+                    d.courses.forEach(c => c && c.id && map.set(c.id, c));
+                    (localMemoryCache.courses || []).forEach(c => c && c.id && !map.has(c.id) && map.set(c.id, c));
+                    localMemoryCache.courses = Array.from(map.values());
+                }
+                if (Array.isArray(d.quizSubmissions)) {
+                    const map = new Map();
+                    d.quizSubmissions.forEach(q => q && q.id && map.set(q.id, q));
+                    (localMemoryCache.quizSubmissions || []).forEach(q => q && q.id && !map.has(q.id) && map.set(q.id, q));
+                    localMemoryCache.quizSubmissions = Array.from(map.values());
+                }
             }
         }
 
