@@ -17,6 +17,11 @@
                 window.location.replace('/nlsadmin');
             }
         }
+        if (window.location.hostname.includes('belajar') || window.location.hostname.includes('nls-lms') || window.location.hostname.includes('lms')) {
+            if (!window.location.pathname.startsWith('/belajar')) {
+                window.location.replace('/belajar');
+            }
+        }
         if (location.hash === '#') {
             history.replaceState(null, '', location.pathname + location.search);
         }
