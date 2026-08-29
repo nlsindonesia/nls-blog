@@ -5520,50 +5520,58 @@
                 },
 
                 // ==========================================
-                // SIDEBAR ACCORDION & DROPDOWN TOGGLES
+                // SIDEBAR ACCORDION & DROPDOWN TOGGLES (AUTO-COLLAPSE OTHER SUBMENUS)
+                closeAllSubmenus(except = '') {
+                    if (except !== 'kalender') this.isKalenderDropdownOpen = false;
+                    if (except !== 'berita') this.isBeritaDropdownOpen = false;
+                    if (except !== 'pengajar') this.isPengajarDropdownOpen = false;
+                    if (except !== 'users') this.isUserDropdownOpen = false;
+                    if (except !== 'school') this.isSchoolDropdownOpen = false;
+                    if (except !== 'olimpiade') this.isOlimpiadeDropdownOpen = false;
+                    if (except !== 'tka') this.isTkaDropdownOpen = false;
+                    if (except !== 'college') this.isCollegeDropdownOpen = false;
+                },
+
                 toggleKalenderDropdown() {
-                    this.isKalenderDropdownOpen = !this.isKalenderDropdownOpen;
+                    const nextState = !this.isKalenderDropdownOpen;
+                    this.closeAllSubmenus(nextState ? 'kalender' : '');
+                    this.isKalenderDropdownOpen = nextState;
                     if (this.isKalenderDropdownOpen) {
                         this.activeTab = 'kalender';
-                        this.isBeritaDropdownOpen = false;
-                        this.isPengajarDropdownOpen = false;
-                        this.isUserDropdownOpen = false;
                     }
                 },
 
                 toggleBeritaDropdown() {
-                    this.isBeritaDropdownOpen = !this.isBeritaDropdownOpen;
+                    const nextState = !this.isBeritaDropdownOpen;
+                    this.closeAllSubmenus(nextState ? 'berita' : '');
+                    this.isBeritaDropdownOpen = nextState;
                     if (this.isBeritaDropdownOpen) {
                         this.activeTab = 'berita';
-                        this.isKalenderDropdownOpen = false;
-                        this.isPengajarDropdownOpen = false;
-                        this.isUserDropdownOpen = false;
                     }
                 },
 
                 togglePengajarDropdown() {
-                    this.isPengajarDropdownOpen = !this.isPengajarDropdownOpen;
+                    const nextState = !this.isPengajarDropdownOpen;
+                    this.closeAllSubmenus(nextState ? 'pengajar' : '');
+                    this.isPengajarDropdownOpen = nextState;
                     if (this.isPengajarDropdownOpen) {
                         this.activeTab = 'pengajar';
-                        this.isKalenderDropdownOpen = false;
-                        this.isBeritaDropdownOpen = false;
-                        this.isUserDropdownOpen = false;
                     }
                 },
 
                 toggleUserDropdown() {
-                    this.isUserDropdownOpen = !this.isUserDropdownOpen;
+                    const nextState = !this.isUserDropdownOpen;
+                    this.closeAllSubmenus(nextState ? 'users' : '');
+                    this.isUserDropdownOpen = nextState;
                     if (this.isUserDropdownOpen) {
                         this.activeTab = 'users';
-                        this.isKalenderDropdownOpen = false;
-                        this.isBeritaDropdownOpen = false;
-                        this.isPengajarDropdownOpen = false;
                     }
                 },
 
                 openCreateEventView() {
                     this.activeTab = 'kalender';
                     this.kalenderView = 'create';
+                    this.closeAllSubmenus('kalender');
                     this.isKalenderDropdownOpen = true;
                     this.eventForm = {
                         id: 'evt-' + Date.now(),
@@ -5585,6 +5593,7 @@
                 openPresentEventView() {
                     this.activeTab = 'kalender';
                     this.kalenderView = 'present';
+                    this.closeAllSubmenus('kalender');
                     this.isKalenderDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
                 },
@@ -5592,6 +5601,7 @@
                 openTrashEventView() {
                     this.activeTab = 'kalender';
                     this.kalenderView = 'trash';
+                    this.closeAllSubmenus('kalender');
                     this.isKalenderDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
                 },
@@ -6087,15 +6097,11 @@
                     inst.on('selectionChange', syncHandler);
                     inst.on('blur', syncHandler);
                 },
-                // BERITA DROPDOWN METHODS
-                toggleBeritaDropdown() {
-                    this.activeTab = 'berita';
-                    this.isBeritaDropdownOpen = !this.isBeritaDropdownOpen;
-                },
-
+                // BERITA DROPDOWN & CMS METHODS
                 openCreateNewsView() {
                     this.activeTab = 'berita';
                     this.beritaView = 'create';
+                    this.closeAllSubmenus('berita');
                     this.isBeritaDropdownOpen = true;
                     this.articleEditor.isEdit = false;
                     this.articleEditor.form = {
@@ -6125,7 +6131,8 @@
                 openPresentNewsView() {
                     this.activeTab = 'berita';
                     this.beritaView = 'present';
-                    this.articleEditor.isOpen = false; this.beritaView = 'present';
+                    this.articleEditor.isOpen = false;
+                    this.closeAllSubmenus('berita');
                     this.isBeritaDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
                 },
@@ -6134,14 +6141,9 @@
                     this.activeTab = 'berita';
                     this.beritaView = 'trash';
                     this.articleEditor.isOpen = false;
+                    this.closeAllSubmenus('berita');
                     this.isBeritaDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
-                },
-
-                // PENGAJAR DROPDOWN METHODS
-                togglePengajarDropdown() {
-                    this.activeTab = 'pengajar';
-                    this.isPengajarDropdownOpen = !this.isPengajarDropdownOpen;
                 },
 
                 isTeacherPhotoUploading: false,
@@ -6207,6 +6209,7 @@
                 openAddTeacherView() {
                     this.activeTab = 'pengajar';
                     this.pengajarView = 'add';
+                    this.closeAllSubmenus('pengajar');
                     this.isPengajarDropdownOpen = true;
                     this.teacherForm = {
                         id: 't-' + Date.now(),
@@ -6233,6 +6236,7 @@
                 openPresentTeacherView() {
                     this.activeTab = 'pengajar';
                     this.pengajarView = 'present';
+                    this.closeAllSubmenus('pengajar');
                     this.isPengajarDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
                 },
@@ -6240,6 +6244,7 @@
                 openTeacherVerificationView() {
                     this.activeTab = 'pengajar';
                     this.pengajarView = 'verification';
+                    this.closeAllSubmenus('pengajar');
                     this.isPengajarDropdownOpen = true;
                     this.refreshTeacherApplications(false);
                     if (this.isMobile) this.isSidebarOpen = false;
@@ -6367,27 +6372,17 @@
                 openTrashTeacherView() {
                     this.activeTab = 'pengajar';
                     this.pengajarView = 'trash';
+                    this.closeAllSubmenus('pengajar');
                     this.isPengajarDropdownOpen = true;
                     this.refreshTeacherApplications(false);
                     if (this.isMobile) this.isSidebarOpen = false;
                 },
 
-
-
                 // USER MANAGEMENT DROPDOWN & CRUD METHODS
-                toggleUserDropdown() {
-                    if (this.activeTab !== 'users') {
-                        this.activeTab = 'users';
-                        this.userView = 'present';
-                        this.isUserDropdownOpen = true;
-                    } else {
-                        this.isUserDropdownOpen = !this.isUserDropdownOpen;
-                    }
-                },
-
                 openAddUserView() {
                     this.activeTab = 'users';
                     this.userView = 'add';
+                    this.closeAllSubmenus('users');
                     this.isUserDropdownOpen = true;
                     this.userForm = {
                         id: '',
@@ -6411,6 +6406,7 @@
                 openPresentUserView() {
                     this.activeTab = 'users';
                     this.userView = 'present';
+                    this.closeAllSubmenus('users');
                     this.isUserDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
                 },
@@ -6418,6 +6414,7 @@
                 openTrashUserView() {
                     this.activeTab = 'users';
                     this.userView = 'trash';
+                    this.closeAllSubmenus('users');
                     this.isUserDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
                 },
@@ -7913,26 +7910,61 @@
                 // LMS COURSES & CONTENT BUILDER METHODS (SCHOOL, OLIMPIADE, TKA, COLLEGE)
                 // =========================================================================
                 toggleSchoolDropdown() {
-                    this.isSchoolDropdownOpen = !this.isSchoolDropdownOpen;
+                    const nextState = !this.isSchoolDropdownOpen;
+                    this.closeAllSubmenus(nextState ? 'school' : '');
+                    this.isSchoolDropdownOpen = nextState;
+                    if (this.isSchoolDropdownOpen) {
+                        this.activeTab = 'lms_courses';
+                        this.lmsCategory = 'School';
+                        if (!this.lmsLevel) this.lmsLevel = 'SD';
+                    }
                 },
                 toggleOlimpiadeDropdown() {
-                    this.isOlimpiadeDropdownOpen = !this.isOlimpiadeDropdownOpen;
+                    const nextState = !this.isOlimpiadeDropdownOpen;
+                    this.closeAllSubmenus(nextState ? 'olimpiade' : '');
+                    this.isOlimpiadeDropdownOpen = nextState;
+                    if (this.isOlimpiadeDropdownOpen) {
+                        this.activeTab = 'lms_courses';
+                        this.lmsCategory = 'Olimpiade';
+                        if (!this.lmsLevel) this.lmsLevel = 'OSN SD';
+                    }
                 },
                 toggleTkaDropdown() {
-                    this.isTkaDropdownOpen = !this.isTkaDropdownOpen;
+                    const nextState = !this.isTkaDropdownOpen;
+                    this.closeAllSubmenus(nextState ? 'tka' : '');
+                    this.isTkaDropdownOpen = nextState;
+                    if (this.isTkaDropdownOpen) {
+                        this.activeTab = 'lms_courses';
+                        this.lmsCategory = 'TKA';
+                        if (!this.lmsLevel) this.lmsLevel = 'TKA SD';
+                    }
                 },
                 toggleCollegeDropdown() {
-                    this.isCollegeDropdownOpen = !this.isCollegeDropdownOpen;
+                    const nextState = !this.isCollegeDropdownOpen;
+                    this.closeAllSubmenus(nextState ? 'college' : '');
+                    this.isCollegeDropdownOpen = nextState;
+                    if (this.isCollegeDropdownOpen) {
+                        this.activeTab = 'lms_courses';
+                        this.lmsCategory = 'Collage Preparation';
+                        if (!this.lmsLevel) this.lmsLevel = 'SNBT';
+                    }
                 },
 
                 openLmsCategory(category, level) {
                     this.activeTab = 'lms_courses';
                     this.lmsCategory = category;
                     this.lmsLevel = level;
+                    let menuKey = '';
+                    if (category === 'School') menuKey = 'school';
+                    else if (category === 'Olimpiade') menuKey = 'olimpiade';
+                    else if (category === 'TKA') menuKey = 'tka';
+                    else if (category === 'Collage Preparation') menuKey = 'college';
+                    this.closeAllSubmenus(menuKey);
                     if (category === 'School') this.isSchoolDropdownOpen = true;
                     if (category === 'Olimpiade') this.isOlimpiadeDropdownOpen = true;
                     if (category === 'TKA') this.isTkaDropdownOpen = true;
                     if (category === 'Collage Preparation') this.isCollegeDropdownOpen = true;
+                    if (this.isMobile) this.isSidebarOpen = false;
                 },
 
                 countCoursesByCategory(category) {
