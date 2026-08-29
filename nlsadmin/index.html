@@ -3211,10 +3211,17 @@
                                                 title="Duplikasi Pengajar">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                                             </button>
+                                            <!-- Move to Trash Button -->
                                             <button type="button" @click="deleteTeacher(teacher.id)"
-                                                class="p-2 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-950 dark:text-rose-300 transition-all cursor-pointer"
-                                                title="Hapus Pengajar">
+                                                class="p-2 rounded-xl bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-950/60 dark:text-amber-400 transition-all cursor-pointer"
+                                                title="Pindahkan Pengajar ke Tempat Sampah (Trash)">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                            </button>
+                                            <!-- Permanent Delete Button -->
+                                            <button type="button" @click="permanentDeleteTeacherDirectly(teacher.id)"
+                                                class="p-2 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-950 dark:text-rose-300 transition-all cursor-pointer"
+                                                title="Hapus Pengajar Secara Permanen dari Cloud Database">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11v6m4-6v6"></path></svg>
                                             </button>
                                         </div>
                                     </div>
@@ -7687,11 +7694,16 @@
                     this.showToast('Data pengajar berhasil diduplikasi!');
                 },
 
-                deleteTeacher(id) {
+                async deleteTeacher(id) {
                     const target = this.teachers.find(t => t.id === id);
                     if (!target) return;
-                    if (confirm(`Apakah Anda yakin ingin memindahkan pengajar "${target.name}" ke Trash?`)) {
+                    if (confirm(`Apakah Anda yakin ingin memindahkan pengajar "${target.name}" ke Tempat Sampah (Trash)?`)) {
                         this.teachers = this.teachers.filter(t => t.id !== id);
+                        
+                        // Also remove from active applications queue if present
+                        this.teacherApplications = this.teacherApplications.filter(a => a.id !== id);
+                        this.saveTeacherApplicationsToStorage();
+
                         const trashed = JSON.parse(JSON.stringify(target));
                         trashed.deletedAt = new Date().toISOString();
                         trashed.status = 'trashed';
@@ -7701,14 +7713,56 @@
 
                         // Sync to Cloud API
                         if (typeof fetch !== 'undefined') {
-                            fetch('/api/teachers', {
-                                method: 'PUT',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ id: id, status: 'trashed', deletedAt: trashed.deletedAt })
-                            }).catch(e => {});
+                            try {
+                                await fetch('/api/teachers', {
+                                    method: 'PUT',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ id: id, status: 'trashed', deletedAt: trashed.deletedAt })
+                                });
+                                fetch('/api/teacher-applications', {
+                                    method: 'PUT',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ id: id, status: 'trashed', deletedAt: trashed.deletedAt })
+                                }).catch(e => {});
+                            } catch(e) {}
                         }
 
-                        this.showToast('Pengajar berhasil dipindahkan ke Trash Pengajar!');
+                        this.showToast(`Pengajar "${target.name}" berhasil dipindahkan ke Trash Pengajar!`);
+                    }
+                },
+
+                async permanentDeleteTeacherDirectly(id) {
+                    const target = this.teachers.find(t => t.id === id);
+                    const name = target ? (target.name || target.nama) : 'Pengajar';
+                    if (confirm(`PERINGATAN HAPUS PERMANEN:\n\nApakah Anda yakin ingin menghapus data pengajar "${name}" secara PERMANEN dari Cloud Database?\n\nData profil, foto, dan informasi mentor akan dihapus secara permanen dan tidak dapat dipulihkan.`)) {
+                        this.teachers = this.teachers.filter(t => t.id !== id);
+                        this.saveTeachersToStorage();
+
+                        // Also remove from active applications queue if present
+                        this.teacherApplications = this.teacherApplications.filter(a => a.id !== id);
+                        this.saveTeacherApplicationsToStorage();
+
+                        // Add to deleted blacklist permanently
+                        try {
+                            const deleted = JSON.parse(localStorage.getItem('nls_deleted_teacher_applications_v1') || '[]');
+                            if (!deleted.includes(id)) {
+                                deleted.push(id);
+                                localStorage.setItem('nls_deleted_teacher_applications_v1', JSON.stringify(deleted));
+                            }
+                        } catch(e) {}
+
+                        if (typeof fetch !== 'undefined') {
+                            try {
+                                await fetch('/api/teachers?id=' + encodeURIComponent(id), {
+                                    method: 'DELETE'
+                                });
+                                fetch('/api/teacher-applications?id=' + encodeURIComponent(id), {
+                                    method: 'DELETE'
+                                }).catch(e => {});
+                            } catch(e) {}
+                        }
+
+                        this.showToast(`Data pengajar "${name}" telah dihapus secara permanen dari server cloud!`);
                     }
                 },
 
@@ -7830,15 +7884,13 @@
                         let cloudTrashedTeachers = [];
                         if (tchRes.status === 'fulfilled' && tchRes.value.ok) {
                             const json = await tchRes.value.json();
-                            if (json && Array.isArray(json.data) && json.data.length > 0) {
+                            if (json && Array.isArray(json.data)) {
                                 cloudTeachers = json.data.filter(t => t && t.status !== 'trashed');
                                 cloudTrashedTeachers = json.data.filter(t => t && t.status === 'trashed');
+                                
+                                this.teachers = cloudTeachers;
+                                this.saveTeachersToStorage();
                             }
-                        }
-
-                        if (cloudTeachers.length > 0) {
-                            this.teachers = cloudTeachers;
-                            this.saveTeachersToStorage();
                         }
 
                         // Sync applications

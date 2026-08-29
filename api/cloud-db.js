@@ -77,36 +77,27 @@ export async function getCloudStore() {
             httpsRequest(CLOUD_BINS.courses, 'GET')
         ]);
 
-        // 1. Users (Bidirectional merge)
+        // 1. Users
         if (results[0].status === 'fulfilled' && results[0].value.status === 200) {
             const d = results[0].value.data;
             if (d && Array.isArray(d.items)) {
-                const map = new Map();
-                d.items.forEach(u => u && u.id && map.set(u.id, u));
-                (localMemoryCache.users || []).forEach(u => u && u.id && !map.has(u.id) && map.set(u.id, u));
-                localMemoryCache.users = Array.from(map.values());
+                localMemoryCache.users = d.items;
             }
         }
 
-        // 2. Events (Bidirectional merge)
+        // 2. Events
         if (results[1].status === 'fulfilled' && results[1].value.status === 200) {
             const d = results[1].value.data;
             if (d && Array.isArray(d.items)) {
-                const map = new Map();
-                d.items.forEach(e => e && e.id && map.set(e.id, e));
-                (localMemoryCache.events || []).forEach(e => e && e.id && !map.has(e.id) && map.set(e.id, e));
-                localMemoryCache.events = Array.from(map.values());
+                localMemoryCache.events = d.items;
             }
         }
 
-        // 3. Articles (Bidirectional merge)
+        // 3. Articles
         if (results[2].status === 'fulfilled' && results[2].value.status === 200) {
             const d = results[2].value.data;
             if (d && Array.isArray(d.items)) {
-                const map = new Map();
-                d.items.forEach(a => a && a.id && map.set(a.id, a));
-                (localMemoryCache.articles || []).forEach(a => a && a.id && !map.has(a.id) && map.set(a.id, a));
-                localMemoryCache.articles = Array.from(map.values());
+                localMemoryCache.articles = d.items;
             }
         }
 
@@ -115,16 +106,10 @@ export async function getCloudStore() {
             const d = results[3].value.data;
             if (d) {
                 if (Array.isArray(d.teachers)) {
-                    const map = new Map();
-                    d.teachers.forEach(t => t && t.id && map.set(t.id, t));
-                    (localMemoryCache.teachers || []).forEach(t => t && t.id && !map.has(t.id) && map.set(t.id, t));
-                    localMemoryCache.teachers = Array.from(map.values());
+                    localMemoryCache.teachers = d.teachers;
                 }
                 if (Array.isArray(d.teacherApplications)) {
-                    const map = new Map();
-                    d.teacherApplications.forEach(a => a && a.id && map.set(a.id, a));
-                    (localMemoryCache.teacherApplications || []).forEach(a => a && a.id && !map.has(a.id) && map.set(a.id, a));
-                    localMemoryCache.teacherApplications = Array.from(map.values());
+                    localMemoryCache.teacherApplications = d.teacherApplications;
                 }
             }
         }
@@ -134,16 +119,10 @@ export async function getCloudStore() {
             const d = results[4].value.data;
             if (d) {
                 if (Array.isArray(d.courses)) {
-                    const map = new Map();
-                    d.courses.forEach(c => c && c.id && map.set(c.id, c));
-                    (localMemoryCache.courses || []).forEach(c => c && c.id && !map.has(c.id) && map.set(c.id, c));
-                    localMemoryCache.courses = Array.from(map.values());
+                    localMemoryCache.courses = d.courses;
                 }
                 if (Array.isArray(d.quizSubmissions)) {
-                    const map = new Map();
-                    d.quizSubmissions.forEach(q => q && q.id && map.set(q.id, q));
-                    (localMemoryCache.quizSubmissions || []).forEach(q => q && q.id && !map.has(q.id) && map.set(q.id, q));
-                    localMemoryCache.quizSubmissions = Array.from(map.values());
+                    localMemoryCache.quizSubmissions = d.quizSubmissions;
                 }
             }
         }
