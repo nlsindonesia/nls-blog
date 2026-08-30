@@ -2985,18 +2985,7 @@
                 },
 
                 enterStudyRoom(course, pushUrl = true) {
-                    this.previousTab = (this.activeTab === 'study_room') ? 'myclass' : this.activeTab;
-                    this.activeTab = 'study_room';
-                    this.studyRoom.course = course;
-                    if (course && Array.isArray(course.modules) && course.modules.length > 0) {
-                        this.studyRoom.modules = course.modules;
-                    }
-                    this.studyRoom.activeModuleIndex = 0;
-                    this.studyRoom.isTakingQuiz = false;
-                    this.studyRoom.isOpen = true;
-                    this.userAnswers = {};
-                    if (pushUrl) this.syncUrlRoute(true);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    window.location.href = `lms-player.html?course=${course.id || 'demo'}`;
                 },
 
                 closeStudyRoom() {
