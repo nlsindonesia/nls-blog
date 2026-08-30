@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -767,7 +767,7 @@
             border: none !important;
         }
         /* =====================================================================
-           UI POLISH OVERRIDE (inline Ã¢â‚¬â€ dimuat bersama HTML, anti cache terpisah)
+           UI POLISH OVERRIDE (inline â€” dimuat bersama HTML, anti cache terpisah)
            ===================================================================== */
 
         /* Kartu event ber-warna tebal (2.5px) -> 1.5px halus */
@@ -1020,7 +1020,7 @@
                         <span class="login-input-icon-left absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                         </span>
-                        <input :type="showPassword ? 'text' : 'password'" x-model="loginForm.password" required placeholder="Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢"
+                        <input :type="showPassword ? 'text' : 'password'" x-model="loginForm.password" required placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                             class="login-input-field w-full pl-11 pr-11 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/80 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500 dark:text-white transition-all">
                         <button type="button" @click="showPassword = !showPassword"
                             class="login-toggle-password absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
@@ -1443,6 +1443,7 @@
                                     x-text="countCoursesByLevel('School', 'SMA')"></span>
                             </button>
                         
+
                             <!-- Submenu: Trash School -->
                             <button type="button" @click="openLmsCategory('School', 'trash')"
                                 :class="activeTab === 'lms_courses' && lmsCategory === 'School' && lmsLevel === 'trash' ? 'submenu-btn-active text-rose-700 dark:text-rose-300' : 'submenu-btn-inactive'"
@@ -1459,6 +1460,7 @@
                                     :class="getTrashedCoursesByCategory('School').length > 0 ? 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-800' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'"
                                     x-text="getTrashedCoursesByCategory('School').length"></span>
                             </button>
+        
 </div>
                     </div>
 
@@ -1549,6 +1551,7 @@
                                     x-text="countCoursesByLevel('Olimpiade', 'Internasional')"></span>
                             </button>
                         
+
                             <!-- Submenu: Trash Olimpiade -->
                             <button type="button" @click="openLmsCategory('Olimpiade', 'trash')"
                                 :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' && lmsLevel === 'trash' ? 'submenu-btn-active text-rose-700 dark:text-rose-300' : 'submenu-btn-inactive'"
@@ -1565,6 +1568,7 @@
                                     :class="getTrashedCoursesByCategory('Olimpiade').length > 0 ? 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-800' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'"
                                     x-text="getTrashedCoursesByCategory('Olimpiade').length"></span>
                             </button>
+        
 </div>
                     </div>
 
@@ -1629,6 +1633,7 @@
                                     x-text="countCoursesByLevel('TKA', 'TKA SMA')"></span>
                             </button>
                         
+
                             <!-- Submenu: Trash TKA -->
                             <button type="button" @click="openLmsCategory('TKA', 'trash')"
                                 :class="activeTab === 'lms_courses' && lmsCategory === 'TKA' && lmsLevel === 'trash' ? 'submenu-btn-active text-rose-700 dark:text-rose-300' : 'submenu-btn-inactive'"
@@ -1645,6 +1650,7 @@
                                     :class="getTrashedCoursesByCategory('TKA').length > 0 ? 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-800' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'"
                                     x-text="getTrashedCoursesByCategory('TKA').length"></span>
                             </button>
+        
 </div>
                     </div>
 
@@ -1709,6 +1715,7 @@
                                     x-text="countCoursesByLevel('Collage Preparation', 'Kedinasan')"></span>
                             </button>
                         
+
                             <!-- Submenu: Trash Collage Preparation -->
                             <button type="button" @click="openLmsCategory('Collage Preparation', 'trash')"
                                 :class="activeTab === 'lms_courses' && lmsCategory === 'Collage Preparation' && lmsLevel === 'trash' ? 'submenu-btn-active text-rose-700 dark:text-rose-300' : 'submenu-btn-inactive'"
@@ -1725,6 +1732,7 @@
                                     :class="getTrashedCoursesByCategory('Collage Preparation').length > 0 ? 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-800' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'"
                                     x-text="getTrashedCoursesByCategory('Collage Preparation').length"></span>
                             </button>
+        
 </div>
                     </div>
 
@@ -2031,7 +2039,7 @@
                                             <div class="pt-2 space-y-1 text-[11px] text-slate-700 dark:text-slate-300">
                                                 <template x-for="(hl, hlIdx) in getPreviewHighlights()" :key="hlIdx">
                                                     <div class="flex items-center gap-1.5">
-                                                        <span class="text-emerald-500 font-bold">Ã¢Å“â€œ</span>
+                                                        <span class="text-emerald-500 font-bold">âœ“</span>
                                                         <span x-text="hl"></span>
                                                     </div>
                                                 </template>
@@ -2649,7 +2657,7 @@
                                     <div class="google-snippet-box">
                                         <div class="google-url flex items-center gap-1.5">
                                             <img src="/nls-logo-300.png" class="w-3.5 h-3.5 rounded-full" alt="Icon">
-                                            <span>https://next-level-study.com Ã¢â‚¬Âº blog Ã¢â‚¬Âº <span x-text="articleEditor.form.slug || 'judul-berita'"></span></span>
+                                            <span>https://next-level-study.com â€º blog â€º <span x-text="articleEditor.form.slug || 'judul-berita'"></span></span>
                                         </div>
                                         <div class="google-title font-bold text-sm sm:text-base mt-1" x-text="articleEditor.form.metaTitle || articleEditor.form.title || 'Judul Artikel Next Level Study'"></div>
                                         <div class="google-desc text-xs mt-1" x-text="articleEditor.form.metaDescription || 'Deskripsi ringkasan artikel akan tampil di sini pada hasil pencarian mesin telusur Google.'"></div>
@@ -2701,16 +2709,16 @@
                                         <p class="text-[11px] font-black uppercase text-slate-500">Pemeriksaan SEO Otomatis:</p>
                                         <div class="space-y-1.5 text-xs font-medium">
                                             <div class="flex items-center gap-2" :class="checkKeywordInTitle() ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'">
-                                                <span>Ã¢â‚¬Â¢ Kata kunci terdapat di Judul</span>
+                                                <span>â€¢ Kata kunci terdapat di Judul</span>
                                             </div>
                                             <div class="flex items-center gap-2" :class="checkKeywordInDesc() ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'">
-                                                <span>Ã¢â‚¬Â¢ Kata kunci terdapat di Meta Description</span>
+                                                <span>â€¢ Kata kunci terdapat di Meta Description</span>
                                             </div>
                                             <div class="flex items-center gap-2" :class="checkTitleLength() ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'">
-                                                <span>Ã¢â‚¬Â¢ Panjang judul ideal (40-65 karakter)</span>
+                                                <span>â€¢ Panjang judul ideal (40-65 karakter)</span>
                                             </div>
                                             <div class="flex items-center gap-2" :class="checkDescLength() ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'">
-                                                <span>Ã¢â‚¬Â¢ Panjang deskripsi ideal (110-160 karakter)</span>
+                                                <span>â€¢ Panjang deskripsi ideal (110-160 karakter)</span>
                                             </div>
                                         </div>
                                     </div>
@@ -2968,23 +2976,23 @@
                                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                                                 <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500 transition-all">
                                                     <input type="checkbox" value="OSN" x-model="teacherForm.categories" class="rounded text-indigo-600 focus:ring-indigo-500">
-                                                    <span class="font-bold">Ã°Å¸Ââ€  Spesialis OSN (Olimpiade Sains)</span>
+                                                    <span class="font-bold">ðŸ† Spesialis OSN (Olimpiade Sains)</span>
                                                 </label>
                                                 <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500 transition-all">
                                                     <input type="checkbox" value="SNBT" x-model="teacherForm.categories" class="rounded text-indigo-600 focus:ring-indigo-500">
-                                                    <span class="font-bold">Ã°Å¸Å½Â¯ Spesialis UTBK SNBT &amp; TPS</span>
+                                                    <span class="font-bold">ðŸŽ¯ Spesialis UTBK SNBT &amp; TPS</span>
                                                 </label>
                                                 <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500 transition-all">
                                                     <input type="checkbox" value="TKA" x-model="teacherForm.categories" class="rounded text-indigo-600 focus:ring-indigo-500">
-                                                    <span class="font-bold">Ã°Å¸â€œÅ¡ Spesialis TKA &amp; Ujian Mandiri</span>
+                                                    <span class="font-bold">ðŸ“š Spesialis TKA &amp; Ujian Mandiri</span>
                                                 </label>
                                                 <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500 transition-all">
                                                     <input type="checkbox" value="Kurikulum Nasional" x-model="teacherForm.categories" class="rounded text-indigo-600 focus:ring-indigo-500">
-                                                    <span class="font-bold">Ã°Å¸â€¡Â®Ã°Å¸â€¡Â© Kurikulum Nasional (Merdeka/K13)</span>
+                                                    <span class="font-bold">ðŸ‡®ðŸ‡© Kurikulum Nasional (Merdeka/K13)</span>
                                                 </label>
                                                 <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500 transition-all sm:col-span-2">
                                                     <input type="checkbox" value="Kurikulum Internasional" x-model="teacherForm.categories" class="rounded text-indigo-600 focus:ring-indigo-500">
-                                                    <span class="font-bold">Ã°Å¸Å’Â Kurikulum Internasional (Cambridge / IB)</span>
+                                                    <span class="font-bold">ðŸŒ Kurikulum Internasional (Cambridge / IB)</span>
                                                 </label>
                                             </div>
                                         </div>
@@ -2997,19 +3005,19 @@
                                             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                                                 <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500">
                                                     <input type="checkbox" value="SD" x-model="teacherForm.jenjang" class="rounded text-indigo-600">
-                                                    <span class="font-bold">Ã°Å¸Å½â€™ SD / MI</span>
+                                                    <span class="font-bold">ðŸŽ’ SD / MI</span>
                                                 </label>
                                                 <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500">
                                                     <input type="checkbox" value="SMP" x-model="teacherForm.jenjang" class="rounded text-indigo-600">
-                                                    <span class="font-bold">Ã°Å¸â€œËœ SMP / MTs</span>
+                                                    <span class="font-bold">ðŸ“˜ SMP / MTs</span>
                                                 </label>
                                                 <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500">
                                                     <input type="checkbox" value="SMA" x-model="teacherForm.jenjang" class="rounded text-indigo-600">
-                                                    <span class="font-bold">Ã°Å¸Å½â€œ SMA / SMK</span>
+                                                    <span class="font-bold">ðŸŽ“ SMA / SMK</span>
                                                 </label>
                                                 <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500">
                                                     <input type="checkbox" value="Guru / Instansi" x-model="teacherForm.jenjang" class="rounded text-indigo-600">
-                                                    <span class="font-bold">Ã°Å¸Ââ€ºÃ¯Â¸Â Guru / Instansi</span>
+                                                    <span class="font-bold">ðŸ›ï¸ Guru / Instansi</span>
                                                 </label>
                                             </div>
                                         </div>
@@ -3380,9 +3388,9 @@
                             <div class="flex items-center gap-2">
                                 <select x-model="teacherAppStatusFilter" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold">
                                     <option value="all">Semua Status Pendaftaran</option>
-                                    <option value="pending">ÃƒÂ¢Ã‚ÂÃ‚Â³ Menunggu Review (Pending)</option>
-                                    <option value="accepted">ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“ Telah Diterima (Accepted)</option>
-                                    <option value="rejected">ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¢ Ditolak (Rejected)</option>
+                                    <option value="pending">Ã¢ÂÂ³ Menunggu Review (Pending)</option>
+                                    <option value="accepted">Ã¢Å“â€œ Telah Diterima (Accepted)</option>
+                                    <option value="rejected">Ã¢Å“â€¢ Ditolak (Rejected)</option>
                                 </select>
 
                                 <select x-model="teacherAppCategoryFilter" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold">
@@ -4357,7 +4365,7 @@
                     <div class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-1.5">
                         <div class="flex items-center justify-between text-slate-400">
                             <span class="text-[11px] font-bold uppercase tracking-wider">Total Kelas</span>
-                            <span class="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-600">Ã°Å¸â€œÅ¡</span>
+                            <span class="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-600">ðŸ“š</span>
                         </div>
                         <div class="text-2xl font-black text-slate-900 dark:text-white" x-text="getFilteredLmsCourses().length"></div>
                         <p class="text-[10px] text-slate-400">Di kategori &amp; jenjang ini</p>
@@ -4366,7 +4374,7 @@
                     <div class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-1.5">
                         <div class="flex items-center justify-between text-slate-400">
                             <span class="text-[11px] font-bold uppercase tracking-wider">Total Modul / Bab</span>
-                            <span class="p-1.5 rounded-lg bg-sky-50 dark:bg-sky-950 text-sky-600">Ã°Å¸â€œâ€˜</span>
+                            <span class="p-1.5 rounded-lg bg-sky-50 dark:bg-sky-950 text-sky-600">ðŸ“‘</span>
                         </div>
                         <div class="text-2xl font-black text-slate-900 dark:text-white" x-text="getTotalModulesCount()"></div>
                         <p class="text-[10px] text-slate-400">Kurikulum aktif</p>
@@ -4375,7 +4383,7 @@
                     <div class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-1.5">
                         <div class="flex items-center justify-between text-slate-400">
                             <span class="text-[11px] font-bold uppercase tracking-wider">Kuis &amp; Video</span>
-                            <span class="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950 text-emerald-600">Ã°Å¸Å½Â¥</span>
+                            <span class="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950 text-emerald-600">ðŸŽ¥</span>
                         </div>
                         <div class="text-2xl font-black text-slate-900 dark:text-white" x-text="getTotalQuizzesAndVideosCount()"></div>
                         <p class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">Interaktif &amp; Siap Diuji</p>
@@ -4384,7 +4392,7 @@
                     <div class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-1.5">
                         <div class="flex items-center justify-between text-slate-400">
                             <span class="text-[11px] font-bold uppercase tracking-wider">Status Sync Cloud</span>
-                            <span class="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950 text-emerald-600">Ã¢Å¡Â¡</span>
+                            <span class="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950 text-emerald-600">âš¡</span>
                         </div>
                         <div class="text-sm font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 pt-1">
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -4425,7 +4433,7 @@
                     <div x-show="lmsLevel !== 'trash'" class="space-y-6">
                     <template x-if="getFilteredLmsCourses().length === 0">
                         <div class="p-12 text-center text-slate-400 space-y-3">
-                            <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-2xl">Ã°Å¸â€œÅ¡</div>
+                            <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-2xl">ðŸ“š</div>
                             <h4 class="text-sm font-bold text-slate-700 dark:text-slate-300">Belum Ada Course di Jenjang Ini</h4>
                             <p class="text-xs text-slate-400 max-w-sm mx-auto">Klik tombol "+ Buat Kelas / Course Baru" di atas untuk menambahkan kurikulum kelas.</p>
                         </div>
@@ -4497,7 +4505,7 @@
                 <div class="bg-white dark:bg-[#131D38] rounded-3xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-xs space-y-5">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
                         <div class="flex items-center gap-3">
-                            <span class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-base">Ã°Å¸â€œÅ </span>
+                            <span class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-base">ðŸ“Š</span>
                             <div>
                                 <h3 class="text-sm font-black text-slate-900 dark:text-white">Laporan Hasil Kuis &amp; Tryout Siswa (Live Real-Time)</h3>
                                 <p class="text-[11px] text-slate-400">Sinkron otomatis saat siswa submit kuis di nls-belajar</p>
@@ -4519,7 +4527,7 @@
                             <!-- Refresh button -->
                             <button type="button" @click="syncQuizSubmissionsFromCloud(true)" 
                                 class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-extrabold flex items-center gap-1.5 cursor-pointer">
-                                <span>Ã°Å¸â€â€ž Refresh</span>
+                                <span>ðŸ”„ Refresh</span>
                             </button>
                         </div>
                     </div>
@@ -4563,7 +4571,7 @@
                                         <td class="py-3 px-3 text-center">
                                             <span class="px-2 py-0.5 rounded-full text-[10px] font-black"
                                                 :class="sub.passed ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'"
-                                                x-text="sub.passed ? 'Lulus Ã¢Å“â€¦' : 'Remedial Ã¢Å¡Â¡'"></span>
+                                                x-text="sub.passed ? 'Lulus âœ…' : 'Remedial âš¡'"></span>
                                         </td>
                                         <td class="py-3 px-3 text-[11px] text-slate-400" x-text="new Date(sub.submittedAt).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' })"></td>
                                         <td class="py-3 px-3 text-right">
@@ -4589,10 +4597,10 @@
                     
                     <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
                         <div class="flex items-center gap-3">
-                            <span class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl">Ã°Å¸â€œÅ¡</span>
+                            <span class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl">ðŸ“š</span>
                             <div>
                                 <h3 class="text-base sm:text-lg font-black text-slate-900 dark:text-white" x-text="courseModal.isEdit ? 'Revisi Info Course' : 'Buat Course / Kelas Baru'"></h3>
-                                <p class="text-xs text-slate-500" x-text="'Kategori: ' + courseModal.form.category + ' Ã¢â‚¬Â¢ ' + courseModal.form.level"></p>
+                                <p class="text-xs text-slate-500" x-text="'Kategori: ' + courseModal.form.category + ' â€¢ ' + courseModal.form.level"></p>
                             </div>
                         </div>
                         <button type="button" @click="courseModal.isOpen = false" class="p-2 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
@@ -4674,7 +4682,7 @@
                     <!-- Header -->
                     <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/60 dark:bg-slate-900/60">
                         <div class="flex items-center gap-3">
-                            <span class="w-11 h-11 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl shadow-md">Ã°Å¸â€ºÂ Ã¯Â¸Â</span>
+                            <span class="w-11 h-11 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl shadow-md">ðŸ› ï¸</span>
                             <div>
                                 <h3 class="text-base sm:text-lg font-black text-slate-900 dark:text-white">Penyusun Konten &amp; Modul Pembelajaran</h3>
                                 <p class="text-xs text-indigo-600 dark:text-indigo-400 font-bold" x-text="moduleModal.course ? moduleModal.course.title : ''"></p>
@@ -4690,19 +4698,19 @@
                         <button type="button" @click="moduleModal.activeType = 'materi'"
                             class="px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center gap-2 shrink-0 cursor-pointer"
                             :class="moduleModal.activeType === 'materi' ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'">
-                            <span>Ã°Å¸â€œâ€ž Buat Materi (Teks &amp; PDF)</span>
+                            <span>ðŸ“„ Buat Materi (Teks &amp; PDF)</span>
                         </button>
 
                         <button type="button" @click="moduleModal.activeType = 'kuis'"
                             class="px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center gap-2 shrink-0 cursor-pointer"
                             :class="moduleModal.activeType === 'kuis' ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'">
-                            <span>Ã°Å¸â€œÂ Buat Kuis Interaktif</span>
+                            <span>ðŸ“ Buat Kuis Interaktif</span>
                         </button>
 
                         <button type="button" @click="moduleModal.activeType = 'video'"
                             class="px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center gap-2 shrink-0 cursor-pointer"
                             :class="moduleModal.activeType === 'video' ? 'bg-amber-500 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'">
-                            <span>Ã°Å¸Å½Â¥ Buat Video Pembelajaran</span>
+                            <span>ðŸŽ¥ Buat Video Pembelajaran</span>
                         </button>
                     </div>
 
@@ -5425,14 +5433,14 @@
 
                 // 4. ARTICLE CMS EDITOR WITH MULTI-CATEGORY SUPPORT
                 availableArticleCategories: [
-                    { name: 'OSN & Sains', icon: 'Ã°Å¸Ââ€ ' },
-                    { name: 'SNBT & UTBK', icon: 'Ã°Å¸Å½Â¯' },
-                    { name: 'TKA & Akademik', icon: 'Ã°Å¸â€œÅ ' },
-                    { name: 'Tips Belajar & Prestasi', icon: 'Ã°Å¸â€™Â¡' },
-                    { name: 'Berita Sekolah & Diknas', icon: 'Ã°Å¸Ââ€ºÃ¯Â¸Â' },
-                    { name: 'Informasi NLS', icon: 'Ã°Å¸â€œÂ¢' },
-                    { name: 'Panduan Beasiswa', icon: 'Ã°Å¸Å½â€œ' },
-                    { name: 'Bimbel NexGen', icon: 'Ã°Å¸Å¡â‚¬' }
+                    { name: 'OSN & Sains', icon: 'ðŸ†' },
+                    { name: 'SNBT & UTBK', icon: 'ðŸŽ¯' },
+                    { name: 'TKA & Akademik', icon: 'ðŸ“Š' },
+                    { name: 'Tips Belajar & Prestasi', icon: 'ðŸ’¡' },
+                    { name: 'Berita Sekolah & Diknas', icon: 'ðŸ›ï¸' },
+                    { name: 'Informasi NLS', icon: 'ðŸ“¢' },
+                    { name: 'Panduan Beasiswa', icon: 'ðŸŽ“' },
+                    { name: 'Bimbel NexGen', icon: 'ðŸš€' }
                 ],
                 ckEditorInstance: null,
                 isHtmlView: false,
@@ -8629,8 +8637,4 @@
     </script>
 </body>
 </html>
-
-
-
-
 
