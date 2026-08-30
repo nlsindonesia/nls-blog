@@ -171,6 +171,17 @@
                             <label class="block text-[10px] font-black uppercase text-slate-500">Link Google Drive (File PDF, pastikan akses Publik)</label>
                             <input type="url" x-model="activeNode.pdfUrl" class="w-full p-3.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-slate-50" placeholder="https://drive.google.com/file/d/xxxxxx/view">
                             <p class="text-[10px] text-slate-400">Sistem otomatis mengubah link <code>/view</code> menjadi <code>/preview</code> untuk di-embed tanpa border.</p>
+                            
+                            <!-- PDF Preview -->
+                            <template x-if="formatGdrivePreview(activeNode.pdfUrl)">
+                                <div class="mt-4 border border-slate-200 rounded-xl overflow-hidden bg-slate-100 max-w-2xl h-[500px] shadow-inner relative">
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 pointer-events-none z-0">
+                                        <svg class="w-10 h-10 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                        <span class="text-sm font-bold opacity-50">Memuat Pratinjau Dokumen...</span>
+                                    </div>
+                                    <iframe :src="formatGdrivePreview(activeNode.pdfUrl)" class="relative z-10 w-full h-full" frameborder="0" allow="autoplay" allowfullscreen></iframe>
+                                </div>
+                            </template>
                         </div>
 
                         <div x-show="activeNode.materiFormat === 'ckeditor'" class="space-y-2">
@@ -666,6 +677,17 @@
                     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
                     const match = url.match(regExp);
                     return (match && match[2].length === 11) ? match[2] : null;
+                },
+
+                formatGdrivePreview(url) {
+                    if (!url) return null;
+                    if (url.includes('drive.google.com/file/d/')) {
+                        const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+                        if (match && match[1]) {
+                            return `https://drive.google.com/file/d/${match[1]}/preview`;
+                        }
+                    }
+                    return null;
                 },
 
                 initYoutubePlayer(iframeEl, node) {
