@@ -33,12 +33,15 @@ export default async function handler(request, response) {
 
         // --- 2. LOGIN USER ---
         if (action === 'login') {
-            const { username, password, isAdmin } = request.body;
-            if (!username || !password) return response.status(400).json({ success: false, error: 'Username and password are required.' });
+            const { identifier, username, password, isAdmin } = request.body;
+            const loginId = identifier || username;
+            
+            if (!loginId || !password) return response.status(400).json({ success: false, error: 'Username/Email and password are required.' });
 
+            // Allow login by email or username
             const { rows } = await sql`
                 SELECT id, username, email, password_hash, role, name, phone, school, level, grade 
-                FROM users WHERE username = ${username}
+                FROM users WHERE username = ${loginId} OR email = ${loginId}
             `;
             if (rows.length === 0) return response.status(401).json({ success: false, error: 'Invalid username or password.' });
             
@@ -52,10 +55,14 @@ export default async function handler(request, response) {
 
         // --- 3. REGISTER USER ---
         if (action === 'register') {
-            const { name, username, email, password, phone, school, level, grade, role } = request.body;
-            if (!username || !email || !password) return response.status(400).json({ success: false, error: 'Username, email, and password are required.' });
+            const { name, username, email, password, phone, school, level, targetProgram, grade, role, nisn } = request.body;
+            // Frontend might not send username, so default to email prefix
+            const finalUsername = username || email.split('@')[0];
+            const finalGrade = grade || targetProgram; // Frontend sends targetProgram
 
-            const checkUser = await sql`SELECT id FROM users WHERE username = ${username} OR email = ${email} LIMIT 1`;
+            if (!email || !password) return response.status(400).json({ success: false, error: 'Email and password are required.' });
+
+            const checkUser = await sql`SELECT id FROM users WHERE username = ${finalUsername} OR email = ${email} LIMIT 1`;
             if (checkUser.rows.length > 0) return response.status(409).json({ success: false, error: 'Username or email already exists.' });
 
             const password_hash = password;
@@ -63,7 +70,7 @@ export default async function handler(request, response) {
 
             const result = await sql`
                 INSERT INTO users (username, email, password_hash, role, name, phone, school, level, grade)
-                VALUES (${username}, ${email}, ${password_hash}, ${userRole}, ${name || ''}, ${phone || ''}, ${school || ''}, ${level || ''}, ${grade || ''})
+                VALUES (${finalUsername}, ${email}, ${password_hash}, ${userRole}, ${name || ''}, ${phone || ''}, ${school || ''}, ${level || ''}, ${finalGrade || ''})
                 RETURNING id, username, email, role, name;
             `;
             

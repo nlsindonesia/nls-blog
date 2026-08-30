@@ -542,7 +542,7 @@
                     this.isLoading = true;
 
                     try {
-                        const res = await fetch('/api/users', {
+                        const res = await fetch('/api/pg-auth', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
@@ -632,7 +632,7 @@
                     this.isLoading = true;
 
                     try {
-                        const res = await fetch('/api/users', {
+                        const res = await fetch('/api/pg-auth', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
