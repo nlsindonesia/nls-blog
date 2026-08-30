@@ -3135,7 +3135,10 @@
                 },
 
                 enterStudyRoom(course, pushUrl = true) {
-                    window.location.href = `lms-player.html?course=${course.id || 'demo'}`;
+                    this.studyRoom.course = course;
+                    this.previousTab = this.activeTab;
+                    this.setActiveTab('study_room');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 },
 
                 closeStudyRoom() {
