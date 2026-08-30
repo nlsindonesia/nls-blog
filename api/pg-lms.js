@@ -846,14 +846,37 @@ export default async function handler(request, response) {
         }
 
         // --- 10. ADMIN: DELETE COURSE ---
-        if (action === 'admin_delete_course' || request.method === 'DELETE') {
+        if (action === 'admin_delete_course' || (request.method === 'DELETE' && !action)) {
             const courseId = request.query.id || request.body.id;
-            if (!courseId && action !== 'admin_empty_trash') return response.status(400).json({ success: false, message: 'Missing course id.' });
+            if (!courseId) return response.status(400).json({ success: false, message: 'Missing course id.' });
+            
+            // Soft delete by updating content_json status to 'trashed'
+            await sql`UPDATE lms_courses SET content_json = jsonb_set(content_json, '{status}', '"trashed"') WHERE id = ${courseId}`;
+            return response.status(200).json({ success: true, message: 'Course moved to trash.' });
+        }
 
-            if (courseId) {
-                await sql`DELETE FROM lms_courses WHERE id = ${courseId}`;
-            }
-            return response.status(200).json({ success: true, message: 'Course deleted successfully.' });
+        // --- 10a. ADMIN: PERMANENT DELETE COURSE ---
+        if (action === 'admin_permanent_delete_course') {
+            const courseId = request.query.id || request.body.id;
+            if (!courseId) return response.status(400).json({ success: false, message: 'Missing course id.' });
+            await sql`DELETE FROM lms_courses WHERE id = ${courseId}`;
+            return response.status(200).json({ success: true, message: 'Course permanently deleted.' });
+        }
+
+        // --- 10b. ADMIN: EMPTY TRASH ---
+        if (action === 'admin_empty_trash') {
+            // Delete all courses where status is trashed
+            await sql`DELETE FROM lms_courses WHERE content_json->>'status' = 'trashed'`;
+            return response.status(200).json({ success: true, message: 'Trash emptied successfully.' });
+        }
+
+        // --- 10c. ADMIN: RESTORE COURSE ---
+        if (action === 'admin_restore_course') {
+            const courseId = request.query.id || request.body.id;
+            if (!courseId) return response.status(400).json({ success: false, message: 'Missing course id.' });
+            // Restore by updating content_json status back to 'published' (or draft)
+            await sql`UPDATE lms_courses SET content_json = jsonb_set(content_json, '{status}', '"published"') WHERE id = ${courseId}`;
+            return response.status(200).json({ success: true, message: 'Course restored.' });
         }
 
         // --- 11. ADMIN: GET QUIZ RESULTS ---
