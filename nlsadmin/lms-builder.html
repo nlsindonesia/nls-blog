@@ -6,12 +6,21 @@
     <title>LMS Builder - Penyusun Konten & Modul</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <!-- CKEditor 5 -->
-    <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
+    <!-- CKEditor 4 Full Suite -->
+    <script src="https://cdn.ckeditor.com/4.22.1/full-all/ckeditor.js"></script>
     <style>
         [x-cloak] { display: none !important; }
         .builder-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
         .builder-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        /* Suppress CKEditor 4 Security / Version Warning Nag Banner Completely */
+        .cke_notifications_area { display: none !important; }
+        .cke_notification { display: none !important; }
+        .cke_button__about { display: none !important; }
+        /* Editor wrapper border styling */
+        .cke_chrome { border-radius: 0.75rem !important; border: 1px solid #e2e8f0 !important; overflow: hidden; box-shadow: none !important; }
+        .cke_top { background: #f8fafc !important; border-bottom: 1px solid #e2e8f0 !important; }
+        .cke_bottom { background: #f8fafc !important; border-top: 1px solid #e2e8f0 !important; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased h-screen overflow-hidden flex flex-col" x-data="lmsBuilder()">
@@ -169,7 +178,7 @@
                                 <label class="block text-[10px] font-black uppercase text-slate-500">Konten Teks</label>
                                 <span class="text-[9px] px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-bold">Rich Text Editor Active</span>
                             </div>
-                            <textarea id="editor" class="w-full" x-init="$nextTick(() => { initCKEditor($el, activeNode) })"></textarea>
+                            <textarea id="lmsEditorArea" class="w-full" x-init="$nextTick(() => { initCKEditor() })"></textarea>
                         </div>
 
                         <div x-show="activeNode.materiFormat === 'html'" class="space-y-2">
@@ -456,10 +465,16 @@
                 },
 
                 selectNode(node) {
-                    if (this.activeNode && this.activeNode.materiFormat === 'ckeditor' && this.editorInstance) {
+                    if (this.activeNode && this.editorInstance) {
                         this.activeNode.rawHtml = this.editorInstance.getData(); 
                     }
                     this.activeNode = node;
+                    
+                    if (this.activeNode && this.editorInstance) {
+                        setTimeout(() => {
+                            this.editorInstance.setData(this.activeNode.rawHtml || '<p>Ketik materi di sini...</p>');
+                        }, 50);
+                    }
                 },
 
                 addBab() {
@@ -624,19 +639,46 @@
                     this.saveAll();
                 },
 
-                initCKEditor(el, node) {
-                    // Minimal mockup of CKEditor initialization inside Alpine
-                    // In a real app, bind the data two-way
-                    ClassicEditor
-                        .create(el, { toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ] })
-                        .then(editor => {
-                            this.editorInstance = editor;
-                            editor.setData(node.rawHtml || '<p>Ketik materi di sini...</p>');
-                            editor.model.document.on('change:data', () => {
-                                node.rawHtml = editor.getData();
-                            });
-                        })
-                        .catch(error => { console.error(error); });
+                initCKEditor() {
+                    if (typeof CKEDITOR === 'undefined') return;
+
+                    const textarea = document.getElementById('lmsEditorArea');
+                    if (!textarea) return;
+
+                    this.editorInstance = CKEDITOR.replace('lmsEditorArea', {
+                        height: 350,
+                        uiColor: '#ffffff',
+                        versionCheck: false,
+                        extraPlugins: 'font,colorbutton,justify,table,tabletools,tableresize,autolink',
+                        fontSize_sizes: '8/8px;9/9px;10/10px;11/11px;12/12px;14/14px;16/16px;18/18px;20/20px;22/22px;24/24px;28/28px;32/32px;36/36px;48/48px;72/72px;',
+                        font_names: 'Inter/Inter, sans-serif;Arial/Arial, Helvetica, sans-serif;Comic Sans MS/Comic Sans MS, cursive;Courier New/Courier New, Courier, monospace;Georgia/Georgia, serif;Lucida Sans Unicode/Lucida Sans Unicode, Lucida Grande, sans-serif;Tahoma/Tahoma, Geneva, sans-serif;Times New Roman/Times New Roman, Times, serif;Trebuchet MS/Trebuchet MS, Helvetica, sans-serif;Verdana/Verdana, Geneva, sans-serif;',
+                        toolbar: [
+                            { name: 'document', items: [ 'Source', '-', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates' ] },
+                            { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
+                            { name: 'editing', items: [ 'Find', 'Replace', '-', 'SelectAll', '-', 'Scayt' ] },
+                            { name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe' ] },
+                            '/',
+                            { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat' ] },
+                            { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl' ] },
+                            { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
+                            '/',
+                            { name: 'styles', items: [ 'Styles', 'Format', 'Font', 'FontSize' ] },
+                            { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+                            { name: 'tools', items: [ 'Maximize', 'ShowBlocks' ] }
+                        ]
+                    });
+
+                    this.editorInstance.on('instanceReady', () => {
+                        if (this.activeNode) {
+                            this.editorInstance.setData(this.activeNode.rawHtml || '<p>Ketik materi di sini...</p>');
+                        }
+                    });
+
+                    this.editorInstance.on('change', () => {
+                        if (this.activeNode) {
+                            this.activeNode.rawHtml = this.editorInstance.getData();
+                        }
+                    });
                 }
             }));
         });
