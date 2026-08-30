@@ -241,6 +241,22 @@
                 }, null, 2);
             },
 
+            async syncFromCloud() {
+                if (typeof fetch === 'undefined') return state.items;
+                try {
+                    const res = await fetch('/api/events?_t=' + Date.now());
+                    if (res.ok) {
+                        const json = await res.json();
+                        if (json && Array.isArray(json.data)) {
+                            state.items = json.data.filter(e => e && e.status !== 'trashed');
+                            state.trash = json.data.filter(e => e && e.status === 'trashed');
+                            persist();
+                        }
+                    }
+                } catch(e) {}
+                return state.items;
+            },
+
             importJSON(jsonString) {
                 const parsed = typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString;
                 const itemsToImport = Array.isArray(parsed) ? parsed : (parsed.data || []);

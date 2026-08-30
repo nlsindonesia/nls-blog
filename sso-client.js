@@ -19,13 +19,21 @@
             if (this._inited) return;
             this._inited = true;
 
-            // Purge any deprecated local user storage keys across all subdomains
+            // Auto-Purge deprecated / mismatched local cache and sync authoritative Cloud data
             try {
-                localStorage.removeItem('nls_registered_users_v1');
-                localStorage.removeItem('nls_users_v1');
-                localStorage.removeItem('nls_users_trash_v1');
-                localStorage.removeItem('nls_temp_users');
-                localStorage.removeItem('nls_mock_users');
+                const CACHE_SCHEMA_VERSION = 'v3_cloud_sync_2026_08_30';
+                const currentSchema = localStorage.getItem('nls_cache_schema_ver');
+                if (currentSchema !== CACHE_SCHEMA_VERSION) {
+                    localStorage.removeItem('nls_registered_users_v1');
+                    localStorage.removeItem('nls_users_v1');
+                    localStorage.removeItem('nls_users_trash_v1');
+                    localStorage.removeItem('nls_temp_users');
+                    localStorage.removeItem('nls_mock_users');
+                    localStorage.removeItem('nls_berita_articles_trash_v1');
+                    localStorage.removeItem('nls_kalender_events_trash_v1');
+                    localStorage.removeItem('nls_pengajar_teachers_trash_v1');
+                    localStorage.setItem('nls_cache_schema_ver', CACHE_SCHEMA_VERSION);
+                }
             } catch(e) {}
 
             // 1. Consume token/session passed in URL parameter (?nls_sso_data=...)
@@ -232,8 +240,6 @@
                     });
                 }
             }
-            // If remote session is null or empty from a passive check, DO NOT clear the local session!
-            // Local session remains authoritative and persistent until an explicit LOGOUT event.
         },
 
         onRemoteSessionCleared() {
@@ -256,10 +262,120 @@
         }
     };
 
-    window.NlsSSO = NlsSSO;
+    // ==============================================================================
+    // Next Level Study (NLS) - Universal Persistent Cloud Database Synchronization Engine
+    // Automatically synchronizes Articles, Events, and Teachers live from Cloud API
+    // ==============================================================================
+    const NlsCloudSync = {
+        inited: false,
+        init() {
+            if (this.inited) return;
+            this.inited = true;
 
-    // Automatically initialize NlsSSO on script load
+            // 1. Cross-tab real-time listener via BroadcastChannel
+            try {
+                const channel = new BroadcastChannel('nls_sync_channel');
+                channel.onmessage = (ev) => {
+                    if (!ev.data) return;
+                    if (ev.data.type === 'ARTICLES_UPDATED' && Array.isArray(ev.data.data)) {
+                        this.applyArticles(ev.data.data);
+                    } else if (ev.data.type === 'EVENTS_UPDATED' && Array.isArray(ev.data.data)) {
+                        this.applyEvents(ev.data.data);
+                    } else if (ev.data.type === 'TEACHERS_UPDATED' && Array.isArray(ev.data.data)) {
+                        this.applyTeachers(ev.data.data);
+                    } else if (ev.data.type === 'SYNC_ALL') {
+                        this.syncAllFromCloud();
+                    }
+                };
+            } catch(e) {}
+
+            // 2. Fetch authoritative live data from Cloud Serverless APIs
+            this.syncAllFromCloud();
+
+            // 3. Periodic liveness sync (every 60 seconds on public tabs)
+            if (typeof setInterval !== 'undefined') {
+                setInterval(() => {
+                    if (document.visibilityState === 'visible') {
+                        this.syncAllFromCloud();
+                    }
+                }, 60000);
+            }
+        },
+
+        async syncAllFromCloud() {
+            if (typeof fetch === 'undefined') return;
+            try {
+                const [artRes, evtRes, tchRes] = await Promise.allSettled([
+                    fetch('/api/articles?_t=' + Date.now()),
+                    fetch('/api/events?_t=' + Date.now()),
+                    fetch('/api/teachers?_t=' + Date.now())
+                ]);
+
+                if (artRes.status === 'fulfilled' && artRes.value.ok) {
+                    const json = await artRes.value.json();
+                    if (json && Array.isArray(json.data)) {
+                        const active = json.data.filter(a => a && a.status !== 'trashed');
+                        this.applyArticles(active);
+                    }
+                }
+
+                if (evtRes.status === 'fulfilled' && evtRes.value.ok) {
+                    const json = await evtRes.value.json();
+                    if (json && Array.isArray(json.data)) {
+                        const active = json.data.filter(e => e && e.status !== 'trashed');
+                        this.applyEvents(active);
+                    }
+                }
+
+                if (tchRes.status === 'fulfilled' && tchRes.value.ok) {
+                    const json = await tchRes.value.json();
+                    if (json && Array.isArray(json.data)) {
+                        const active = json.data.filter(t => t && t.status !== 'trashed');
+                        this.applyTeachers(active);
+                    }
+                }
+            } catch (err) {
+                console.warn('[NLS Cloud Sync] Background sync notice:', err);
+            }
+        },
+
+        applyArticles(articles) {
+            try {
+                localStorage.setItem('nls_berita_articles_v1', JSON.stringify(articles));
+                if (typeof window !== 'undefined') {
+                    window.NLS_DEFAULT_ARTICLES = articles;
+                    window.dispatchEvent(new CustomEvent('nls-articles-updated', { detail: articles }));
+                }
+            } catch(e) {}
+        },
+
+        applyEvents(events) {
+            try {
+                localStorage.setItem('nls_kalender_events_v1', JSON.stringify(events));
+                if (typeof window !== 'undefined') {
+                    window.NLS_DEFAULT_EVENTS = events;
+                    window.dispatchEvent(new CustomEvent('nls-events-updated', { detail: events }));
+                }
+            } catch(e) {}
+        },
+
+        applyTeachers(teachers) {
+            try {
+                localStorage.setItem('nls_pengajar_teachers_v1', JSON.stringify(teachers));
+                if (typeof window !== 'undefined') {
+                    window.NLS_DEFAULT_TEACHERS = teachers;
+                    window.dispatchEvent(new CustomEvent('nls-teachers-updated', { detail: teachers }));
+                }
+            } catch(e) {}
+        }
+    };
+
+    window.NlsSSO = NlsSSO;
+    window.NlsCloudSync = NlsCloudSync;
+
+    // Automatically initialize NlsSSO and NlsCloudSync on script load
     if (typeof document !== 'undefined') {
         NlsSSO.init();
+        NlsCloudSync.init();
     }
 })(typeof window !== 'undefined' ? window : this);

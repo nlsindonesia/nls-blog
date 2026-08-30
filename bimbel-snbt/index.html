@@ -1901,26 +1901,37 @@
                     });
                 },
 
-                loadEvents() {
+                async loadEvents() {
                     try {
                         const stored = localStorage.getItem('nls_kalender_events_v1');
                         if (stored) {
                             const parsed = JSON.parse(stored);
                             if (Array.isArray(parsed) && parsed.length > 0) {
-                                this.events = parsed;
-                                return;
+                                this.events = parsed.filter(e => e && e.status !== 'trashed');
                             }
                         }
                     } catch (e) {}
 
-                    if (typeof window.NLS_DEFAULT_EVENTS !== 'undefined' && Array.isArray(window.NLS_DEFAULT_EVENTS)) {
-                        this.events = JSON.parse(JSON.stringify(window.NLS_DEFAULT_EVENTS));
-                        try {
-                            localStorage.setItem('nls_kalender_events_v1', JSON.stringify(this.events));
-                        } catch (e) {}
-                    } else {
-                        this.events = [];
+                    if (this.events.length === 0 && typeof window.NLS_DEFAULT_EVENTS !== 'undefined' && Array.isArray(window.NLS_DEFAULT_EVENTS)) {
+                        this.events = window.NLS_DEFAULT_EVENTS.filter(e => e && e.status !== 'trashed');
                     }
+
+                    try {
+                        if (typeof fetch !== 'undefined') {
+                            const res = await fetch('/api/events?_t=' + Date.now());
+                            if (res.ok) {
+                                const json = await res.json();
+                                if (json && Array.isArray(json.data)) {
+                                    const liveEvents = json.data.filter(e => e && e.status !== 'trashed');
+                                    this.events = liveEvents;
+                                    try {
+                                        localStorage.setItem('nls_kalender_events_v1', JSON.stringify(liveEvents));
+                                    } catch(e) {}
+                                    this.$nextTick(() => this.updateCardHeight());
+                                }
+                            }
+                        }
+                    } catch (netErr) {}
                 },
 
                 updateCardHeight() {
@@ -2227,26 +2238,36 @@
                     });
                 },
 
-                loadArticles() {
+                async loadArticles() {
                     try {
                         const stored = localStorage.getItem('nls_berita_articles_v1');
                         if (stored) {
                             const parsed = JSON.parse(stored);
                             if (Array.isArray(parsed) && parsed.length > 0) {
-                                this.articles = parsed;
-                                return;
+                                this.articles = parsed.filter(a => a && a.status !== 'trashed');
                             }
                         }
                     } catch (e) {}
 
-                    if (typeof window.NLS_DEFAULT_ARTICLES !== 'undefined' && Array.isArray(window.NLS_DEFAULT_ARTICLES)) {
-                        this.articles = JSON.parse(JSON.stringify(window.NLS_DEFAULT_ARTICLES));
-                        try {
-                            localStorage.setItem('nls_berita_articles_v1', JSON.stringify(this.articles));
-                        } catch (e) {}
-                    } else {
-                        this.articles = [];
+                    if (this.articles.length === 0 && typeof window.NLS_DEFAULT_ARTICLES !== 'undefined' && Array.isArray(window.NLS_DEFAULT_ARTICLES)) {
+                        this.articles = window.NLS_DEFAULT_ARTICLES.filter(a => a && a.status !== 'trashed');
                     }
+
+                    try {
+                        if (typeof fetch !== 'undefined') {
+                            const res = await fetch('/api/articles?_t=' + Date.now());
+                            if (res.ok) {
+                                const json = await res.json();
+                                if (json && Array.isArray(json.data)) {
+                                    const liveArticles = json.data.filter(a => a && a.status !== 'trashed');
+                                    this.articles = liveArticles;
+                                    try {
+                                        localStorage.setItem('nls_berita_articles_v1', JSON.stringify(liveArticles));
+                                    } catch(e) {}
+                                }
+                            }
+                        }
+                    } catch (netErr) {}
                 },
 
                 filteredArticles() {

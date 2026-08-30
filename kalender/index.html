@@ -1872,19 +1872,7 @@ html.dark .admin-card-dinas {
                     'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
                 ],
                 
-                // Dynamic Events Dataset (Synced with /kalender-admin & localStorage)
-                events: (function() {
-                    try {
-                        const stored = localStorage.getItem("nls_kalender_events_v1");
-                        if (stored) {
-                            const parsed = JSON.parse(stored);
-                            if (Array.isArray(parsed) && parsed.length > 0) {
-                                return parsed;
-                            }
-                        }
-                    } catch (e) {}
-                    return (typeof window.NLS_DEFAULT_EVENTS !== "undefined") ? window.NLS_DEFAULT_EVENTS : [];
-                })(),
+                events: [],
 
                 updateCardHeight() {
                     if (window.innerWidth >= 1024) {
@@ -1906,32 +1894,35 @@ html.dark .admin-card-dinas {
                         this.currentMonth = 7;
                     }
 
-                    // Sync from localStorage if present
-                    try {
-                        const stored = localStorage.getItem("nls_kalender_events_v1");
-                        if (stored) {
-                            const parsed = JSON.parse(stored);
-                            if (Array.isArray(parsed) && parsed.length > 0) {
-                                this.events = parsed;
-                            }
-                        } else if (typeof window.NLS_DEFAULT_EVENTS !== "undefined") {
-                            localStorage.setItem("nls_kalender_events_v1", JSON.stringify(window.NLS_DEFAULT_EVENTS));
-                        }
-                    } catch (e) {}
+                    this.loadEvents();
 
                     // Listen for cross-tab or admin storage updates
                     window.addEventListener("storage", (e) => {
                         if (e.key === "nls_kalender_events_v1" && e.newValue) {
                             try {
-                                this.events = JSON.parse(e.newValue);
+                                const parsed = JSON.parse(e.newValue);
+                                if (Array.isArray(parsed) && parsed.length > 0) {
+                                    this.events = parsed.filter(ev => ev && ev.status !== 'trashed');
+                                    this.$nextTick(() => this.updateCardHeight());
+                                }
                             } catch (err) {}
                         }
                     });
 
+                    // BroadcastChannel sync
+                    try {
+                        const channel = new BroadcastChannel('nls_sync_channel');
+                        channel.onmessage = (msg) => {
+                            if (msg.data && (msg.data.type === 'EVENTS_UPDATED' || msg.data.type === 'SYNC_ALL')) {
+                                this.loadEvents();
+                            }
+                        };
+                    } catch (e) {}
+
                     // Listen for in-window custom events
                     window.addEventListener("nls-events-updated", (e) => {
                         if (e.detail && Array.isArray(e.detail)) {
-                            this.events = e.detail;
+                            this.events = e.detail.filter(ev => ev && ev.status !== 'trashed');
                             this.$nextTick(() => this.updateCardHeight());
                         }
                     });
@@ -1943,6 +1934,42 @@ html.dark .admin-card-dinas {
                     window.addEventListener("resize", () => {
                         this.updateCardHeight();
                     });
+                },
+
+                async loadEvents() {
+                    try {
+                        const stored = localStorage.getItem("nls_kalender_events_v1");
+                        if (stored) {
+                            const parsed = JSON.parse(stored);
+                            if (Array.isArray(parsed) && parsed.length > 0) {
+                                this.events = parsed.filter(e => e && e.status !== 'trashed');
+                            }
+                        }
+                    } catch (e) {}
+
+                    if (this.events.length === 0 && typeof window.NLS_DEFAULT_EVENTS !== "undefined" && Array.isArray(window.NLS_DEFAULT_EVENTS)) {
+                        this.events = window.NLS_DEFAULT_EVENTS.filter(e => e && e.status !== 'trashed');
+                    }
+
+                    // Authoritative live sync from Serverless Cloud API
+                    try {
+                        if (typeof fetch !== 'undefined') {
+                            const res = await fetch('/api/events?_t=' + Date.now());
+                            if (res.ok) {
+                                const json = await res.json();
+                                if (json && Array.isArray(json.data)) {
+                                    const liveEvents = json.data.filter(e => e && e.status !== 'trashed');
+                                    this.events = liveEvents;
+                                    try {
+                                        localStorage.setItem("nls_kalender_events_v1", JSON.stringify(liveEvents));
+                                    } catch(e) {}
+                                    this.$nextTick(() => this.updateCardHeight());
+                                }
+                            }
+                        }
+                    } catch (netErr) {
+                        console.warn('[NLS Events] Cloud fetch notice:', netErr);
+                    }
                 },
 
                 get monthLabel() {

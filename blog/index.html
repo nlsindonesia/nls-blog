@@ -1580,43 +1580,7 @@
                     'Bimbel NexGen'
                 ],
 
-                articles: (function() {
-                    try {
-                        const stored = localStorage.getItem("nls_berita_articles_v1");
-                        let list = [];
-                        if (stored) {
-                            const parsed = JSON.parse(stored);
-                            if (Array.isArray(parsed) && parsed.length > 0) {
-                                list = parsed;
-                            }
-                        }
-                        if (typeof window.NLS_DEFAULT_ARTICLES !== "undefined" && Array.isArray(window.NLS_DEFAULT_ARTICLES)) {
-                            if (list.length === 0) {
-                                list = JSON.parse(JSON.stringify(window.NLS_DEFAULT_ARTICLES));
-                            } else {
-                                let changed = false;
-                                window.NLS_DEFAULT_ARTICLES.forEach(defArt => {
-                                    const idx = list.findIndex(a => a.id === defArt.id);
-                                    if (idx === -1) {
-                                        list.push(JSON.parse(JSON.stringify(defArt)));
-                                        changed = true;
-                                    } else {
-                                        if (defArt.coverImage && (!list[idx].coverImage || list[idx].coverImage.includes('nls-logo-300.png') || list[idx].coverImage.includes('article-placeholder'))) {
-                                            list[idx].coverImage = defArt.coverImage;
-                                            changed = true;
-                                        }
-                                    }
-                                });
-                                if (changed) {
-                                    localStorage.setItem("nls_berita_articles_v1", JSON.stringify(list));
-                                }
-                            }
-                        }
-                        return list;
-                    } catch (e) {
-                        return (typeof window.NLS_DEFAULT_ARTICLES !== "undefined") ? window.NLS_DEFAULT_ARTICLES : [];
-                    }
-                })(),
+                articles: [],
 
                 init() {
                     this.loadArticles();
@@ -1634,7 +1598,7 @@
                             try {
                                 const parsed = JSON.parse(e.newValue);
                                 if (Array.isArray(parsed) && parsed.length > 0) {
-                                    this.articles = parsed;
+                                    this.articles = parsed.filter(a => a && a.status !== 'trashed');
                                 }
                             } catch (err) {}
                         }
@@ -1645,7 +1609,7 @@
                         const channel = new BroadcastChannel('nls_sync_channel');
                         channel.onmessage = (ev) => {
                             if (ev.data && ev.data.type === 'ARTICLES_UPDATED' && Array.isArray(ev.data.data)) {
-                                this.articles = ev.data.data;
+                                this.articles = ev.data.data.filter(a => a && a.status !== 'trashed');
                             }
                         };
                     } catch (e) {}
@@ -1653,32 +1617,44 @@
                     // 3. Same-tab Custom Event Listener
                     window.addEventListener('nls-articles-updated', (e) => {
                         if (e.detail && Array.isArray(e.detail)) {
-                            this.articles = e.detail;
+                            this.articles = e.detail.filter(a => a && a.status !== 'trashed');
                         }
                     });
                 },
 
-                                loadArticles() {
+                async loadArticles() {
+                    // 1. Instant optimistic paint from valid cached storage or clean baseline
                     try {
                         const stored = localStorage.getItem("nls_berita_articles_v1");
                         if (stored) {
                             const parsed = JSON.parse(stored);
                             if (Array.isArray(parsed) && parsed.length > 0) {
-                                if (typeof window.NLS_DEFAULT_ARTICLES !== "undefined" && Array.isArray(window.NLS_DEFAULT_ARTICLES)) {
-                                    window.NLS_DEFAULT_ARTICLES.forEach(defArt => {
-                                        if (!parsed.some(a => a.id === defArt.id)) {
-                                            parsed.unshift(defArt);
-                                        }
-                                    });
-                                }
-                                this.articles = parsed;
-                                localStorage.setItem("nls_berita_articles_v1", JSON.stringify(this.articles));
-                                return;
+                                this.articles = parsed.filter(a => a && a.status !== 'trashed');
                             }
                         }
                     } catch (e) {}
-                    if (typeof window.NLS_DEFAULT_ARTICLES !== "undefined" && Array.isArray(window.NLS_DEFAULT_ARTICLES)) {
-                        this.articles = window.NLS_DEFAULT_ARTICLES;
+
+                    if (this.articles.length === 0 && typeof window.NLS_DEFAULT_ARTICLES !== "undefined" && Array.isArray(window.NLS_DEFAULT_ARTICLES)) {
+                        this.articles = window.NLS_DEFAULT_ARTICLES.filter(a => a && a.status !== 'trashed');
+                    }
+
+                    // 2. Authoritative live sync from Serverless Cloud API
+                    try {
+                        if (typeof fetch !== 'undefined') {
+                            const res = await fetch('/api/articles?_t=' + Date.now());
+                            if (res.ok) {
+                                const json = await res.json();
+                                if (json && Array.isArray(json.data)) {
+                                    const liveArticles = json.data.filter(a => a && a.status !== 'trashed');
+                                    this.articles = liveArticles;
+                                    try {
+                                        localStorage.setItem("nls_berita_articles_v1", JSON.stringify(liveArticles));
+                                    } catch(e) {}
+                                }
+                            }
+                        }
+                    } catch (netErr) {
+                        console.warn('[NLS Articles] Cloud fetch notice:', netErr);
                     }
                 },
 
