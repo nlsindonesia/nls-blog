@@ -70,18 +70,23 @@
                 }
             });
 
-            // 4. Multi-device / tab synchronization on window focus
+            // 4. Same-device multi-tab synchronization on window focus
             window.addEventListener('focus', () => {
-                this.syncFromHubOrApi();
+                this.syncFromHub();
             });
             document.addEventListener('visibilitychange', () => {
                 if (!document.hidden) {
-                    this.syncFromHubOrApi();
+                    this.syncFromHub();
                 }
             });
 
-            // 5. Initial fetch from API
-            this.syncFromHubOrApi();
+            // 5. Initial notification of local session
+            const current = this.getLocalSession();
+            if (current) {
+                this.callbacks.forEach(cb => {
+                    try { cb(current, true); } catch(e) {}
+                });
+            }
         },
 
         setupIframe() {
@@ -99,74 +104,47 @@
                 iframe.src = this.hubUrl;
                 iframe.onload = () => {
                     this.ready = true;
-                    this.syncFromHubOrApi();
+                    this.syncFromHub();
                 };
                 document.body.appendChild(iframe);
                 this.iframe = iframe;
             } catch(e) {}
         },
 
-        syncFromHubOrApi() {
-            // Ping Hub iframe
+        syncFromHub() {
+            // Ping Hub iframe (isolated to this browser/device)
             if (this.iframe && this.iframe.contentWindow) {
                 try {
                     this.iframe.contentWindow.postMessage({ type: 'NLS_SSO_GET' }, '*');
                 } catch(e) {}
             }
-
-            // Also check API directly (only apply if a valid session exists in API)
-            this.fetchSessionFromApi().then(session => {
-                if (session && typeof session === 'object' && (session.name || session.email || session.username || session.role || session.id)) {
-                    this.onRemoteSessionReceived(session);
-                }
-            });
-        },
-
-        async fetchSessionFromApi() {
-            try {
-                const res = await fetch('/api/auth-session?_t=' + Date.now());
-                if (res.ok) {
-                    const data = await res.json();
-                    return data && data.success && data.session ? data.session : null;
-                }
-            } catch(e) {}
-            return null;
         },
 
         async broadcastLogin(sessionData) {
             this.setLocalSession(sessionData);
 
-            // Message Hub iframe
+            // Message Hub iframe on this device
             if (this.iframe && this.iframe.contentWindow) {
                 try {
                     this.iframe.contentWindow.postMessage({ type: 'NLS_SSO_SET', session: sessionData }, '*');
                 } catch(e) {}
             }
 
-            // Sync to API
-            try {
-                await fetch('/api/auth-session', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(sessionData)
-                });
-            } catch(e) {}
+            // Trigger local callbacks
+            this.callbacks.forEach(cb => {
+                try { cb(sessionData, true); } catch(e) {}
+            });
         },
 
         async broadcastLogout() {
             this.clearLocalSession();
 
-            // Message Hub iframe
+            // Message Hub iframe on this device
             if (this.iframe && this.iframe.contentWindow) {
                 try {
                     this.iframe.contentWindow.postMessage({ type: 'NLS_SSO_CLEAR' }, '*');
                 } catch(e) {}
             }
-
-            // Call API
-            try {
-                await fetch('/api/auth-session', { method: 'DELETE' });
-            } catch(e) {}
 
             // Trigger local callbacks
             this.callbacks.forEach(cb => {

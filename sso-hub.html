@@ -32,28 +32,8 @@
                 } catch(e) {}
             }
 
-            // Sync with Serverless Cloud Session API
-            async function syncWithCloudAPI() {
-                try {
-                    const res = await fetch('/api/auth-session');
-                    if (res.ok) {
-                        const json = await res.json();
-                        if (json && json.success) {
-                            if (json.session) {
-                                setMasterSession(json.session);
-                            } else {
-                                setMasterSession(null);
-                            }
-                        }
-                    }
-                } catch(e) {}
-            }
-
-            // Initial Cloud Sync
-            syncWithCloudAPI();
-
-            // Listen for cross-window / cross-iframe messages
-            window.addEventListener('message', async function(event) {
+            // Listen for cross-window / cross-iframe messages (device-isolated)
+            window.addEventListener('message', function(event) {
                 // Ensure message is an object
                 const data = event.data;
                 if (!data || typeof data !== 'object') return;
@@ -62,20 +42,7 @@
 
                 // Handle GET request
                 if (data.type === 'NLS_SSO_GET') {
-                    let session = getMasterSession();
-                    if (!session) {
-                        // Attempt fallback to API
-                        try {
-                            const res = await fetch('/api/auth-session');
-                            if (res.ok) {
-                                const json = await res.json();
-                                if (json && json.session) {
-                                    session = json.session;
-                                    setMasterSession(session);
-                                }
-                            }
-                        } catch(e) {}
-                    }
+                    const session = getMasterSession();
 
                     event.source && event.source.postMessage({
                         type: 'NLS_SSO_SESSION',
@@ -88,14 +55,6 @@
                 // Handle SET request (Login)
                 if (data.type === 'NLS_SSO_SET') {
                     setMasterSession(data.session);
-                    // Sync to Cloud API
-                    try {
-                        await fetch('/api/auth-session', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(data.session)
-                        });
-                    } catch(e) {}
 
                     event.source && event.source.postMessage({
                         type: 'NLS_SSO_UPDATED',
@@ -108,10 +67,6 @@
                 // Handle CLEAR request (Logout)
                 if (data.type === 'NLS_SSO_CLEAR') {
                     setMasterSession(null);
-                    // Sync to Cloud API
-                    try {
-                        await fetch('/api/auth-session', { method: 'DELETE' });
-                    } catch(e) {}
 
                     event.source && event.source.postMessage({
                         type: 'NLS_SSO_CLEARED',

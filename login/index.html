@@ -558,9 +558,10 @@
                     const params = new URLSearchParams(window.location.search);
                     const courseId = params.get('course');
                     const returnUrl = params.get('returnUrl') || params.get('redirect');
-                    let target = 'https://nls-belajar.vercel.app';
+                    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                    let target = isLocal ? '/belajar' : 'https://nls-belajar.vercel.app';
                     if (courseId) {
-                        target = `https://nls-belajar.vercel.app/course/${courseId}`;
+                        target = isLocal ? `/belajar/course/${courseId}` : `https://nls-belajar.vercel.app/course/${courseId}`;
                     } else if (returnUrl && !returnUrl.startsWith('/login') && returnUrl !== '/') {
                         target = returnUrl;
                     }

@@ -1014,7 +1014,7 @@
                             <!-- Profile ID Card -->
                             <div class="rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 p-6 sm:p-7 shadow-xs space-y-5 text-center">
                                 <div class="relative w-28 h-28 mx-auto">
-                                    <img :src="studentProfile.avatar || '/nls-logo-300.png'" alt="Avatar" class="w-full h-full rounded-3xl object-cover border-4 border-indigo-500 shadow-md">
+                                    <img :src="studentProfile.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'" alt="Avatar" class="w-full h-full rounded-3xl object-cover border-4 border-indigo-500 shadow-md">
                                     <span class="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900 flex items-center justify-center text-[10px] text-white font-black">✓</span>
                                 </div>
 
@@ -1094,7 +1094,7 @@
                             <div class="space-y-2">
                                 <label class="block font-bold text-slate-700 dark:text-slate-300">Foto Profil Siswa</label>
                                 <div class="flex items-center gap-4">
-                                    <img :src="studentProfile.avatar || '/nls-logo-300.png'" alt="Avatar Preview" class="w-16 h-16 rounded-2xl object-cover border-2 border-indigo-500 shadow-sm">
+                                    <img :src="studentProfile.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'" alt="Avatar Preview" class="w-16 h-16 rounded-2xl object-cover border-2 border-indigo-500 shadow-sm">
                                     <div class="space-y-1.5">
                                         <label class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs cursor-pointer transition-all">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
@@ -2947,6 +2947,111 @@
                             if (d.success) console.log('Profile synced to cloud database:', d.user);
                         }).catch(err => console.warn('Cloud sync error:', err));
                     } catch(err) {}
+                },
+
+                initAuthSession() {
+                    const DEFAULT_AVATAR = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80';
+
+                    const updateStateFromSession = (s) => {
+                        if (s && typeof s === 'object' && (s.name || s.email || s.username || s.id)) {
+                            this.isLoggedIn = true;
+                            this.studentProfile = {
+                                id: s.id || '',
+                                name: s.name || 'Siswa NLS',
+                                nisn: s.nisn || 'NISN: Terdaftar',
+                                school: s.school || 'Sekolah NLS',
+                                level: s.level || 'SMA',
+                                grade: s.grade || `${s.level || 'SMA'} - Kelas Unggulan`,
+                                email: s.email || '',
+                                phone: s.phone || '',
+                                parentPhone: s.parentPhone || '-',
+                                target: s.targetProgram || s.target || 'Program Unggulan NLS',
+                                role: s.role || 'student',
+                                roleLabel: s.roleLabel || (s.role === 'teacher' ? 'Guru / Pengajar' : (s.role === 'super_admin' ? 'Super Admin' : 'Siswa')),
+                                avatar: s.avatar && !s.avatar.includes('article-placeholder') && !s.avatar.includes('nls-logo-300') ? s.avatar : DEFAULT_AVATAR
+                            };
+                        } else {
+                            this.isLoggedIn = false;
+                            this.studentProfile = null;
+                        }
+                    };
+
+                    // 1. Initial read from local session
+                    try {
+                        const raw = localStorage.getItem('nls_auth_session') || localStorage.getItem('nls_student_auth_session');
+                        if (raw) {
+                            updateStateFromSession(JSON.parse(raw));
+                        }
+                    } catch(e) {}
+
+                    // 2. Listen to SSO Session updates
+                    if (window.NlsSSO && typeof window.NlsSSO.onSessionChange === 'function') {
+                        window.NlsSSO.onSessionChange((sess, loggedIn) => {
+                            if (loggedIn && sess) {
+                                updateStateFromSession(sess);
+                            } else {
+                                this.isLoggedIn = false;
+                                this.studentProfile = null;
+                            }
+                        });
+                    }
+
+                    // 3. If logged in with an email/id, refresh latest student details from Cloud Database
+                    if (this.isLoggedIn && this.studentProfile && (this.studentProfile.email || this.studentProfile.id)) {
+                        this.refreshStudentProfileFromCloud();
+                    }
+                },
+
+                async refreshStudentProfileFromCloud() {
+                    if (!this.studentProfile || typeof fetch === 'undefined') return;
+                    try {
+                        const searchParam = encodeURIComponent(this.studentProfile.email || this.studentProfile.id);
+                        const res = await fetch(`/api/users?search=${searchParam}&_t=${Date.now()}`);
+                        if (res.ok) {
+                            const json = await res.json();
+                            if (json && Array.isArray(json.data) && json.data.length > 0) {
+                                const found = json.data.find(u => u.id === this.studentProfile.id || (u.email && u.email.toLowerCase() === (this.studentProfile.email || '').toLowerCase()));
+                                if (found) {
+                                    const DEFAULT_AVATAR = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80';
+                                    this.studentProfile.name = found.name || this.studentProfile.name;
+                                    this.studentProfile.school = found.school || this.studentProfile.school;
+                                    this.studentProfile.nisn = found.nisn || this.studentProfile.nisn;
+                                    this.studentProfile.grade = found.grade || this.studentProfile.grade;
+                                    this.studentProfile.level = found.level || this.studentProfile.level;
+                                    this.studentProfile.phone = found.phone || this.studentProfile.phone;
+                                    this.studentProfile.parentPhone = found.parentPhone || this.studentProfile.parentPhone;
+                                    this.studentProfile.target = found.targetProgram || this.studentProfile.target;
+                                    if (found.avatar && !found.avatar.includes('article-placeholder') && !found.avatar.includes('nls-logo-300')) {
+                                        this.studentProfile.avatar = found.avatar;
+                                    } else {
+                                        this.studentProfile.avatar = DEFAULT_AVATAR;
+                                    }
+                                    // Save back to local storage
+                                    localStorage.setItem('nls_student_profile_v1', JSON.stringify(this.studentProfile));
+                                }
+                            }
+                        }
+                    } catch(e) {}
+                },
+
+                async logoutStudent() {
+                    if (window.NlsSSO && typeof window.NlsSSO.broadcastLogout === 'function') {
+                        await window.NlsSSO.broadcastLogout();
+                    } else {
+                        try {
+                            localStorage.removeItem('nls_auth_session');
+                            localStorage.removeItem('nls_student_auth_session');
+                            localStorage.removeItem('nls_admin_auth');
+                            sessionStorage.removeItem('nls_admin_auth');
+                        } catch(e) {}
+                    }
+                    this.isLoggedIn = false;
+                    this.studentProfile = null;
+                    this.userDropdownOpen = false;
+                    this.showToast('Anda telah berhasil keluar dari akun siswa.', 'info');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
                 },
 
                 showToast(msg, type = 'success') {

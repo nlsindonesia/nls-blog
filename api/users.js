@@ -249,7 +249,7 @@ export default async function handler(req, res) {
         }
 
         // =========================================================================
-        // 3. ACTION: UPDATE STUDENT PROFILE (From LMS Belajar)
+        // 3. ACTION: UPDATE STUDENT PROFILE (From LMS Belajar / Profil)
         // =========================================================================
         if (action === 'update_profile') {
             const id = body.id;
@@ -267,11 +267,15 @@ export default async function handler(req, res) {
             if (body.name) user.name = body.name.trim();
             if (body.school) user.school = body.school.trim();
             if (body.grade) user.grade = body.grade.trim();
+            if (body.level) user.level = body.level.trim();
             if (body.phone) user.phone = body.phone.trim();
             if (body.parentPhone) user.parentPhone = body.parentPhone.trim();
             if (body.targetProgram || body.target) user.targetProgram = (body.targetProgram || body.target).trim();
             if (body.avatar) user.avatar = body.avatar;
             if (body.nisn) user.nisn = body.nisn.trim();
+            if (body.newPassword && body.newPassword.length >= 6) {
+                user.password = body.newPassword;
+            }
             user.updatedAt = nowIso;
 
             await saveCloudStore({ users: usersCache });

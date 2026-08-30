@@ -6,7 +6,7 @@
 import https from 'https';
 
 const CLOUD_BINS = {
-    users: 'https://extendsclass.com/api/json-storage/bin/ffffcfd',
+    users: 'https://extendsclass.com/api/json-storage/bin/adacace',
     events: 'https://extendsclass.com/api/json-storage/bin/dedebcc',
     articles: 'https://extendsclass.com/api/json-storage/bin/ebcaeab',
     teachers: 'https://extendsclass.com/api/json-storage/bin/dadcdeb',
@@ -67,37 +67,55 @@ function httpsRequest(url, method, data = null, headers = {}) {
 /**
  * Fetch all collections concurrently from dedicated Cloud DB Bins
  */
+function extractItems(d) {
+    if (!d) return null;
+    if (typeof d === 'string') {
+        try { d = JSON.parse(d); } catch(e) { return null; }
+    }
+    if (d && typeof d.data === 'string') {
+        try {
+            const inner = JSON.parse(d.data);
+            if (inner && Array.isArray(inner.items)) return inner.items;
+        } catch(e) {}
+    }
+    if (d && Array.isArray(d.items)) return d.items;
+    if (Array.isArray(d)) return d;
+    return null;
+}
+
 export async function getCloudStore() {
     try {
+        const t = Date.now();
+        const noCacheHeader = { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' };
         const results = await Promise.allSettled([
-            httpsRequest(CLOUD_BINS.users, 'GET'),
-            httpsRequest(CLOUD_BINS.events, 'GET'),
-            httpsRequest(CLOUD_BINS.articles, 'GET'),
-            httpsRequest(CLOUD_BINS.teachers, 'GET'),
-            httpsRequest(CLOUD_BINS.courses, 'GET')
+            httpsRequest(`${CLOUD_BINS.users}?_t=${t}`, 'GET', null, noCacheHeader),
+            httpsRequest(`${CLOUD_BINS.events}?_t=${t}`, 'GET', null, noCacheHeader),
+            httpsRequest(`${CLOUD_BINS.articles}?_t=${t}`, 'GET', null, noCacheHeader),
+            httpsRequest(`${CLOUD_BINS.teachers}?_t=${t}`, 'GET', null, noCacheHeader),
+            httpsRequest(`${CLOUD_BINS.courses}?_t=${t}`, 'GET', null, noCacheHeader)
         ]);
 
         // 1. Users
         if (results[0].status === 'fulfilled' && results[0].value.status === 200) {
-            const d = results[0].value.data;
-            if (d && Array.isArray(d.items)) {
-                localMemoryCache.users = d.items;
+            const items = extractItems(results[0].value.data);
+            if (Array.isArray(items) && items.length > 0) {
+                localMemoryCache.users = items;
             }
         }
 
         // 2. Events
         if (results[1].status === 'fulfilled' && results[1].value.status === 200) {
-            const d = results[1].value.data;
-            if (d && Array.isArray(d.items)) {
-                localMemoryCache.events = d.items;
+            const items = extractItems(results[1].value.data);
+            if (Array.isArray(items) && items.length > 0) {
+                localMemoryCache.events = items;
             }
         }
 
         // 3. Articles
         if (results[2].status === 'fulfilled' && results[2].value.status === 200) {
-            const d = results[2].value.data;
-            if (d && Array.isArray(d.items)) {
-                localMemoryCache.articles = d.items;
+            const items = extractItems(results[2].value.data);
+            if (Array.isArray(items) && items.length > 0) {
+                localMemoryCache.articles = items;
             }
         }
 
