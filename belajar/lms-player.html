@@ -69,9 +69,9 @@
                                     :class="activeNode && activeNode.id === node.id ? 'bg-indigo-100/80 border-indigo-500 text-indigo-900 shadow-sm' : 'border-transparent hover:bg-slate-50/80'"
                                     class="w-[calc(100%-16px)] mx-auto flex items-start gap-3 p-3 text-left transition-all border-l-4 rounded-xl mt-1 mb-1">
                                     <div class="mt-0.5 shrink-0">
-                                        <span x-show="node.type === 'materi'" class="text-blue-500 text-base">??</span>
-                                        <span x-show="node.type === 'kuis'" class="text-amber-500 text-base">??</span>
-                                        <span x-show="node.type === 'video'" class="text-red-500 text-base">??</span>
+                                        <svg x-show="node.type === 'materi'" class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                        <svg x-show="node.type === 'kuis'" class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                                        <svg x-show="node.type === 'video'" class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <h4 class="text-xs font-bold truncate transition-colors" :class="activeNode && activeNode.id === node.id ? 'text-indigo-700' : 'text-slate-700'" x-text="node.title"></h4>
