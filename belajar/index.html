@@ -2927,10 +2927,10 @@
                         
                         // Save to Cloud DB
                         try {
-                            await fetch('/api/users', {
+                            await fetch('/api/pg-lms', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ action: 'enroll_course', userId: this.studentProfile.id, courseId: course.id })
+                                body: JSON.stringify({ action: 'enroll', userId: this.studentProfile.id, courseId: course.id })
                             });
                         } catch(e) {}
                     }
