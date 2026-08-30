@@ -402,22 +402,37 @@
             </div>
             <div class="p-6 overflow-y-auto flex-1 bg-slate-50/50">
                 
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                        <span class="text-[10px] font-black uppercase text-indigo-500 mb-1 block">Format: PG Sederhana</span>
-                        <pre class="text-[11px] text-slate-600 font-mono leading-relaxed bg-slate-50 p-2 rounded-lg">::Soal 1:: Siapa penemu lampu?
+                <div class="grid grid-cols-1 gap-4 mb-4">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-black uppercase text-indigo-600 block">Panduan Format CBT NLS</span>
+                            <button type="button" @click="copyAiPrompt()" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-black border border-emerald-200 transition-colors flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                Generate via AI (ChatGPT)
+                            </button>
+                        </div>
+                        <p class="text-[11px] text-slate-500 mb-2 leading-relaxed">
+                            Gunakan format berikut. Tipe soal otomatis terdeteksi (opsional <code># TIPE: pg_kompleks</code>). Pembahasan gunakan <code>#### Pembahasan:</code>. Skor opsional: <code># SKOR: 4</code> dan <code># PENALTI: -1</code>. Gambar opsional: <code>[img:URL_GAMBAR]</code>.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <pre class="text-[10px] text-slate-600 font-mono leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100"># SKOR: 4
+# PENALTI: -1
+::Soal 1:: Ibukota RI?
+[img:https://web.com/gambar.jpg]
 {
-= Thomas Edison
-~ Albert Einstein
-~ Isaac Newton
-}</pre>
-                    </div>
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                        <span class="text-[10px] font-black uppercase text-emerald-500 mb-1 block">Format: Isian Singkat</span>
-                        <pre class="text-[11px] text-slate-600 font-mono leading-relaxed bg-slate-50 p-2 rounded-lg">::Isian 1:: Ibukota Indonesia adalah?
+= Jakarta
+~ Bandung
+}
+#### Pembahasan: Jakarta secara historis.</pre>
+                            <pre class="text-[10px] text-slate-600 font-mono leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100"># TIPE: pg_kompleks
+# SKOR: 5
+::Soal 2:: Termasuk buah?
 {
-# jakarta, dki jakarta, kota jakarta
+= Apel
+~ Bayam
+= Jeruk
 }</pre>
+                        </div>
                     </div>
                 </div>
 
@@ -618,26 +633,95 @@
                     this.showBulkModal = true;
                 },
 
+                copyAiPrompt() {
+                    const prompt = `Saya ingin membuat bank soal. Tolong buatkan soal dengan format persis seperti ini:
+
+Setiap soal diawali dengan konfigurasi opsional (gunakan huruf kapital untuk kata kuncinya):
+# TIPE: pg | pg_kompleks | isian
+# SKOR: 4
+# PENALTI: -1
+
+::Soal 1:: Teks soal di sini
+[img:URL_GAMBAR_JIKA_ADA]
+{
+= Jawaban Benar
+~ Jawaban Salah 1
+~ Jawaban Salah 2
+}
+#### Pembahasan: Teks penjelasan lengkap
+
+Aturan:
+1. Pilihan Ganda (PG Sederhana): 1 jawaban benar (=), sisanya salah (~).
+2. PG Kompleks: Lebih dari 1 jawaban benar (=).
+3. Isian Singkat: Hanya sertakan jawaban benar yang diawali (=).
+4. Selalu letakkan "#### Pembahasan:" di luar dan setelah kurung kurawal penutup.
+5. Jika ada soal bergambar, berikan placeholder [img:https://link-gambar.com/pic.jpg]
+
+Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
+                    
+                    navigator.clipboard.writeText(prompt).then(() => {
+                        this.showToast('Prompt AI berhasil disalin! Silakan paste di ChatGPT atau Claude.');
+                    });
+                },
+
                 processBulkImport() {
                     if (!this.bulkText.trim()) return;
-                    // Simple Regex Parser for the GIFT-like format
-                    const blocks = this.bulkText.split(/\n\s*\n/);
+                    
+                    const blocks = this.bulkText.split(/\n\s*\n/).filter(b => b.trim());
                     let imported = 0;
                     
                     blocks.forEach(block => {
                         block = block.trim();
                         if (!block) return;
                         
-                        const headerMatch = block.match(/^::(.*)::\s*(.*)/);
-                        const questionText = headerMatch ? headerMatch[2].trim() : block.split('{')[0].trim();
-                        const optsMatch = block.match(/\{([\s\S]*)\}/);
+                        let type = 'pg'; // default
+                        let points = 10; // default
+                        let penalty = 0;
+                        let imageUrl = '';
+                        let explanation = '';
+                        
+                        // Extract configurations safely
+                        const lines = block.split('\n');
+                        lines.forEach(line => {
+                            let l = line.trim().toLowerCase();
+                            if (l.startsWith('# tipe:')) type = l.split(':')[1].trim();
+                            if (l.startsWith('# skor:')) points = parseFloat(l.split(':')[1].trim());
+                            if (l.startsWith('# penalti:')) penalty = parseFloat(l.split(':')[1].trim());
+                        });
+
+                        // Extract image and explanation
+                        const imgMatch = block.match(/\[img:(.*?)\]/i);
+                        if (imgMatch) imageUrl = imgMatch[1].trim();
+
+                        const expMatch = block.match(/####\s*Pembahasan:\s*([\s\S]*)$/i);
+                        if (expMatch) explanation = expMatch[1].trim();
+
+                        // Remove configurations, image, and explanation from block before parsing GIFT part
+                        let cleanBlock = block.replace(/^#.*$/gm, '')
+                                            .replace(/\[img:.*?\]/gi, '')
+                                            .replace(/####\s*Pembahasan:[\s\S]*$/i, '')
+                                            .trim();
+                        
+                        // Default if no header
+                        let questionText = cleanBlock.split('{')[0].trim();
+                        
+                        // Parse GIFT header if exists ::Title:: Text
+                        const headerMatch = cleanBlock.match(/^::(.*)::\s*([\s\S]*?)(?=\{)/);
+                        if (headerMatch) {
+                            questionText = headerMatch[2].trim();
+                        }
+                        
+                        const optsMatch = cleanBlock.match(/\{([\s\S]*)\}/);
                         if (!optsMatch) return;
                         
                         const optionsRaw = optsMatch[1].trim().split('\n');
                         const q = {
                             id: 'q_' + Math.random().toString(36).substr(2, 9),
-                            type: 'pg',
-                            points: 10,
+                            type: type,
+                            points: points,
+                            penalty: penalty,
+                            image: imageUrl,
+                            explanation: explanation,
                             text: questionText,
                             options: [],
                             correctAnswers: 0,
@@ -647,19 +731,26 @@
                             pairs: []
                         };
 
-                        if (optionsRaw[0] && optionsRaw[0].trim().startsWith('#')) {
+                        if (q.type === 'isian' || (optionsRaw[0] && optionsRaw[0].trim().startsWith('#'))) {
                             q.type = 'isian';
-                            q.shortAnswerKeys = optionsRaw[0].replace('#', '').trim();
+                            if (optionsRaw[0].trim().startsWith('#')) {
+                                q.shortAnswerKeys = optionsRaw[0].replace('#', '').trim();
+                            } else {
+                                q.shortAnswerKeys = optionsRaw.filter(l => l.trim().startsWith('=')).map(l => l.trim().substring(1).trim()).join(', ');
+                            }
                         } else {
                             optionsRaw.forEach(line => {
                                 line = line.trim();
                                 if (line.startsWith('=')) {
-                                    q.correctAnswers = q.options.length;
+                                    q.correctAnswers++;
                                     q.options.push(line.substring(1).trim());
                                 } else if (line.startsWith('~')) {
                                     q.options.push(line.substring(1).trim());
                                 }
                             });
+                            if (q.correctAnswers > 1 && q.type === 'pg') {
+                                q.type = 'pg_kompleks';
+                            }
                         }
 
                         if (q.options.length > 0 || q.type === 'isian') {
