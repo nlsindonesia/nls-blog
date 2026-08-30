@@ -1,0 +1,79 @@
+import { sql } from '@vercel/postgres';
+
+export default async function handler(request, response) {
+    if (request.method !== 'POST') {
+        return response.status(405).json({ success: false, error: 'Method not allowed. Use POST.' });
+    }
+
+    try {
+        const { action } = request.body;
+
+        // --- 1. SETUP DATABASE SCHEMA ---
+        if (action === 'setup') {
+            const usersTable = await sql`
+                CREATE TABLE IF NOT EXISTS users (
+                    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+                    username VARCHAR(50) UNIQUE NOT NULL,
+                    email VARCHAR(255) UNIQUE NOT NULL,
+                    password_hash VARCHAR(255) NOT NULL,
+                    role VARCHAR(20) DEFAULT 'siswa',
+                    name VARCHAR(100),
+                    phone VARCHAR(20),
+                    school VARCHAR(150),
+                    level VARCHAR(20),
+                    grade VARCHAR(20),
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+                );
+            `;
+            return response.status(200).json({ 
+                success: true, 
+                message: "Database schema successfully created/verified."
+            });
+        }
+
+        // --- 2. LOGIN USER ---
+        if (action === 'login') {
+            const { username, password, isAdmin } = request.body;
+            if (!username || !password) return response.status(400).json({ success: false, error: 'Username and password are required.' });
+
+            const { rows } = await sql`
+                SELECT id, username, email, password_hash, role, name, phone, school, level, grade 
+                FROM users WHERE username = ${username}
+            `;
+            if (rows.length === 0) return response.status(401).json({ success: false, error: 'Invalid username or password.' });
+            
+            const user = rows[0];
+            if (password !== user.password_hash) return response.status(401).json({ success: false, error: 'Invalid username or password.' });
+            if (isAdmin && user.role === 'siswa') return response.status(403).json({ success: false, error: 'Access Denied: Admin privileges required.' });
+
+            const { password_hash: _, ...safeUser } = user;
+            return response.status(200).json({ success: true, message: 'Login successful.', user: safeUser });
+        }
+
+        // --- 3. REGISTER USER ---
+        if (action === 'register') {
+            const { name, username, email, password, phone, school, level, grade, role } = request.body;
+            if (!username || !email || !password) return response.status(400).json({ success: false, error: 'Username, email, and password are required.' });
+
+            const checkUser = await sql`SELECT id FROM users WHERE username = ${username} OR email = ${email} LIMIT 1`;
+            if (checkUser.rows.length > 0) return response.status(409).json({ success: false, error: 'Username or email already exists.' });
+
+            const password_hash = password;
+            const userRole = role || 'siswa';
+
+            const result = await sql`
+                INSERT INTO users (username, email, password_hash, role, name, phone, school, level, grade)
+                VALUES (${username}, ${email}, ${password_hash}, ${userRole}, ${name || ''}, ${phone || ''}, ${school || ''}, ${level || ''}, ${grade || ''})
+                RETURNING id, username, email, role, name;
+            `;
+            
+            return response.status(201).json({ success: true, message: 'User registered successfully.', user: result.rows[0] });
+        }
+
+        return response.status(400).json({ success: false, error: 'Invalid action specified.' });
+
+    } catch (error) {
+        console.error('Error in pg-auth:', error);
+        return response.status(500).json({ success: false, error: error.message });
+    }
+}
