@@ -1354,7 +1354,7 @@
                 <!-- =========================================================================
                      3, 4, 5, 6. VIEW: CATALOG COURSES (SCHOOL, OLIMPIADE, TKA, COLLEGE)
                      ========================================================================= -->
-                <div x-show="['school', 'olimpiade', 'tka', 'college'].includes(activeTab)" x-cloak class="space-y-6 flex-1 flex flex-col">
+                <div x-show="['school', 'olimpiade', 'tka', 'college'].includes(activeTab)" x-cloak class="flex-1 flex flex-col">
                     
                     <!-- Dynamic Hero Header for Each Category -->
                     <div class="relative overflow-hidden rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-indigo-950/20"
@@ -1388,7 +1388,7 @@
                     </div>
 
                     <!-- In-Page Sub-level Filter Tabs (Pill Switcher) -->
-                    <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar text-xs font-bold select-none">
+                    <div class="flex items-center gap-2 overflow-x-auto pb-1 pt-6 no-scrollbar text-xs font-bold select-none">
                         <!-- School Tabs -->
                         <template x-if="activeTab === 'school'">
                             <div class="flex items-center gap-2">
@@ -1488,7 +1488,7 @@
                     </div>
 
                     <!-- Course Cards Grid -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
                         <template x-for="course in getFilteredCoursesByCategory()" :key="course.id">
                             <div class="rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs flex flex-col justify-between hover:border-indigo-500 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 group">
                                 <div class="p-5 sm:p-6 space-y-3.5">
@@ -1551,18 +1551,20 @@
                     </div>
 
                     <!-- Bottom Consultation & Custom Curriculum Banner -->
-                    <div class="p-6 sm:p-7 mt-auto rounded-3xl bg-gradient-to-r from-slate-100 via-indigo-50/50 to-purple-50/50 dark:from-[#131d38] dark:via-[#1e1b4b] dark:to-[#131d38] border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div class="space-y-1">
-                            <div class="flex items-center gap-2">
-                                <span class="text-lg">💡</span>
-                                <h4 class="text-sm font-black text-slate-900 dark:text-white">Butuh Bimbingan Privat 1-on-1 atau Mata Pelajaran Kustom?</h4>
+                    <div class="mt-auto pt-8">
+                        <div class="p-6 sm:p-7 rounded-3xl bg-gradient-to-r from-slate-100 via-indigo-50/50 to-purple-50/50 dark:from-[#131d38] dark:via-[#1e1b4b] dark:to-[#131d38] border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-lg">💡</span>
+                                    <h4 class="text-sm font-black text-slate-900 dark:text-white">Butuh Bimbingan Privat 1-on-1 atau Mata Pelajaran Kustom?</h4>
+                                </div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Tim Kurikulum NLS menyediakan layanan bimbingan intensif privat, kurikulum olimpiade kustom, dan bedah soal mandiri.</p>
                             </div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400">Tim Kurikulum NLS menyediakan layanan bimbingan intensif privat, kurikulum olimpiade kustom, dan bedah soal mandiri.</p>
+                            <a href="https://wa.me/6281234567890?text=Halo%20Admin%20NLS,%20saya%20ingin%20konsultasi%20program%20bimbingan%20belajar" target="_blank"
+                                class="px-5 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shrink-0 transition-all shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2">
+                                <span>💬 Konsultasi Kurikulum</span>
+                            </a>
                         </div>
-                        <a href="https://wa.me/6281234567890?text=Halo%20Admin%20NLS,%20saya%20ingin%20konsultasi%20program%20bimbingan%20belajar" target="_blank"
-                            class="px-5 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shrink-0 transition-all shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2">
-                            <span>💬 Konsultasi Kurikulum</span>
-                        </a>
                     </div>
 
                 </div>
@@ -3300,5 +3302,6 @@
     </script>
 </body>
 </html>
+
 
 
