@@ -2933,8 +2933,17 @@
                                 body: JSON.stringify({ action: 'enroll', userId: this.studentProfile.id, courseId: course.id })
                             });
                         } catch(e) {}
+                        
+                        // Arahkan ke My Class agar terlihat terdata di UI
+                        this.setActiveTab('myclass');
+                        this.myclassView = 'actived';
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else {
+                        this.showToast(`Anda sudah terdaftar di kelas "${course.title}".`);
+                        this.setActiveTab('myclass');
+                        this.myclassView = 'actived';
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
                     }
-                    this.enterStudyRoom(course);
                 },
 
                 getAverageScore() {
