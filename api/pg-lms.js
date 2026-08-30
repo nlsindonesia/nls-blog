@@ -865,9 +865,13 @@ export default async function handler(request, response) {
 
         // --- 10b. ADMIN: EMPTY TRASH ---
         if (action === 'admin_empty_trash') {
-            // Delete all courses where status is trashed
-            await sql`DELETE FROM lms_courses WHERE content_json->>'status' = 'trashed'`;
-            return response.status(200).json({ success: true, message: 'Trash emptied successfully.' });
+            const cat = request.query.category || request.body?.category;
+            if (cat) {
+                await sql`DELETE FROM lms_courses WHERE content_json->>'status' = 'trashed' AND content_json->>'category' = ${cat}`;
+            } else {
+                await sql`DELETE FROM lms_courses WHERE content_json->>'status' = 'trashed'`;
+            }
+            return response.status(200).json({ success: true, message: 'Trash emptied.' });
         }
 
         // --- 10c. ADMIN: RESTORE COURSE ---

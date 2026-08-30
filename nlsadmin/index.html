@@ -8550,7 +8550,12 @@
                 openLmsCategory(category, level) {
                     this.activeTab = 'lms_courses';
                     this.lmsCategory = category;
-                    this.lmsLevel = level;
+                    if (level === 'trash') {
+                        this.showTrashCourses = true;
+                    } else {
+                        this.showTrashCourses = false;
+                        this.lmsLevel = level;
+                    }
                     let menuKey = '';
                     if (category === 'School') menuKey = 'school';
                     else if (category === 'Olimpiade') menuKey = 'olimpiade';
@@ -8747,16 +8752,17 @@
                 },
 
                 emptyTrashCourses() {
-                    if (confirm('Apakah Anda yakin ingin mengosongkan semua course di Tempat Sampah? Tindakan ini tidak dapat dibatalkan.')) {
-                        this.trashCourses = [];
+                    if (confirm(`Apakah Anda yakin ingin mengosongkan semua course di Tempat Sampah (${this.lmsCategory})? Tindakan ini tidak dapat dibatalkan.`)) {
+                        const toDeleteIds = this.getFilteredTrashCourses().map(c => c.id);
+                        this.trashCourses = this.trashCourses.filter(c => !toDeleteIds.includes(c.id));
                         this.saveCoursesToStorage();
 
                         if (typeof fetch !== 'undefined') {
-                            fetch('/api/pg-lms?action=admin_empty_trash', {
+                            fetch(`/api/pg-lms?action=admin_empty_trash&category=${encodeURIComponent(this.lmsCategory)}`, {
                                 method: 'DELETE'
                             }).catch(e => {});
                         }
-                        this.showToast('Trash Course telah dikosongkan secara permanen!');
+                        this.showToast(`Trash ${this.lmsCategory} telah dikosongkan secara permanen!`);
                     }
                 },
 
