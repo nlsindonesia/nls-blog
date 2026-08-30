@@ -20,19 +20,28 @@ export default async function handler(request, response) {
                     name VARCHAR(100),
                     phone VARCHAR(20),
                     school VARCHAR(150),
-                    level VARCHAR(20),
+                    level VARCHAR(100),
                     grade VARCHAR(100),
                     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
                 );
             `;
             
             // Alter existing table just in case it was created with VARCHAR(20)
-            await sql`ALTER TABLE users ALTER COLUMN grade TYPE VARCHAR(100);`;
+            await sql`ALTER TABLE users ALTER COLUMN grade TYPE VARCHAR(255);`;
+            await sql`ALTER TABLE users ALTER COLUMN level TYPE VARCHAR(100);`;
+            await sql`ALTER TABLE users ALTER COLUMN role TYPE VARCHAR(100);`;
+            await sql`ALTER TABLE users ALTER COLUMN phone TYPE VARCHAR(50);`;
             
             return response.status(200).json({ 
                 success: true, 
                 message: "Database schema successfully created/verified."
             });
+        }
+
+        // --- 1.5 DEBUG SCHEMA ---
+        if (action === 'debug_schema') {
+            const res = await sql`SELECT column_name, character_maximum_length FROM information_schema.columns WHERE table_name = 'users';`;
+            return response.status(200).json({ success: true, schema: res.rows });
         }
 
         // --- 2. LOGIN USER ---
