@@ -2264,16 +2264,10 @@
                 ],
 
                 // Active Student Enrolled Classes
-                enrolledIds: ['c-sch-3', 'c-oly-3', 'c-tka-2', 'c-clg-1'],
+                enrolledIds: [],
 
                 // Quiz Results History
-                quizResults: [
-                    { id: 'qr-1', title: 'Kuis Bab 3: TPS Penalaran Matematika', courseTitle: 'UTBK SNBT 2026', subject: 'Penalaran Matematika', date: '28 Agu 2026', score: 95 },
-                    { id: 'qr-2', title: 'Evaluasi Topik: Kinematika & Dinamika Rotasi', courseTitle: 'Masterclass OSN Fisika', subject: 'Fisika Olimpiade', date: '26 Agu 2026', score: 92 },
-                    { id: 'qr-3', title: 'Kuis Bab 2: ASPD Matematika Aljabar', courseTitle: 'Persiapan Masuk SMA Favorit', subject: 'Matematika SMP', date: '24 Agu 2026', score: 85 },
-                    { id: 'qr-4', title: 'Simulasi Tryout SNBT TPS Kuantitatif #1', courseTitle: 'UTBK SNBT 2026', subject: 'Pengetahuan Kuantitatif', date: '20 Agu 2026', score: 88 },
-                    { id: 'qr-5', title: 'Kuis Bab 1: Limit & Turunan Fungsi', courseTitle: 'Matematika Lanjut SMA', subject: 'Matematika', date: '15 Agu 2026', score: 82 }
-                ],
+                quizResults: [],
 
                 // Study Room State
                 studyRoom: {
@@ -2728,6 +2722,8 @@
                         } else {
                             this.isLoggedIn = false;
                             this.studentProfile = null;
+                            this.enrolledIds = [];
+                            this.quizResults = [];
                         }
                     };
 
@@ -2748,7 +2744,40 @@
                     if (window.NlsSSO) {
                         window.NlsSSO.onSessionChange((session, isLoggedIn) => {
                             applySession(session);
+                            if (isLoggedIn && session && session.id) {
+                                this.fetchMyLMSData(session.id);
+                            }
                         });
+                    }
+
+                    // Initial fetch if already logged in
+                    if (this.isLoggedIn && this.studentProfile && this.studentProfile.id) {
+                        this.fetchMyLMSData(this.studentProfile.id);
+                    }
+                },
+
+                async fetchMyLMSData(userId) {
+                    try {
+                        const res = await fetch('/api/users', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ action: 'get_lms_data', userId: userId })
+                        });
+                        const data = await res.json();
+                        if (data.success && data.lmsData) {
+                            this.enrolledIds = data.lmsData.enrolledIds || [];
+                            this.quizResults = data.lmsData.quizResults || [];
+                            // Update local cache for quiz results
+                            try {
+                                localStorage.setItem('nls_lms_quiz_results_' + userId, JSON.stringify(this.quizResults));
+                            } catch(e) {}
+                        }
+                    } catch(e) {
+                        // Fallback to local cache if network fails
+                        try {
+                            const cachedQuiz = localStorage.getItem('nls_lms_quiz_results_' + userId);
+                            if (cachedQuiz) this.quizResults = JSON.parse(cachedQuiz);
+                        } catch(err) {}
                     }
                 },
 
@@ -2790,13 +2819,22 @@
                     return this.enrolledIds.includes(courseId);
                 },
 
-                enrollCourse(course) {
+                async enrollCourse(course) {
                     if (!this.requireAuth(course, 'Silakan masuk ke akun siswa Anda untuk mendaftar kelas ini dan mengakses seluruh modul pembelajarannya.')) {
                         return;
                     }
                     if (!this.enrolledIds.includes(course.id)) {
                         this.enrolledIds.push(course.id);
                         this.showToast(`Berhasil mendaftar kelas "${course.title}"!`);
+                        
+                        // Save to Cloud DB
+                        try {
+                            await fetch('/api/users', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ action: 'enroll_course', userId: this.studentProfile.id, courseId: course.id })
+                            });
+                        } catch(e) {}
                     }
                     this.enterStudyRoom(course);
                 },
@@ -2928,7 +2966,7 @@
 
                     // Save locally
                     try {
-                        localStorage.setItem('nls_lms_quiz_results_v1', JSON.stringify(this.quizResults));
+                        localStorage.setItem('nls_lms_quiz_results_' + this.studentProfile.id, JSON.stringify(this.quizResults));
                     } catch(e) {}
 
                     // Mark module completed
@@ -2953,6 +2991,13 @@
                                 correctCount: correct,
                                 answers: this.userAnswers
                             })
+                        }).catch(e => {});
+
+                        // Save to User's Cloud DB LMS Data
+                        fetch('/api/users', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ action: 'submit_quiz', userId: this.studentProfile.id, quizData: newAttempt })
                         }).catch(e => {});
                     }
 

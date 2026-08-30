@@ -288,7 +288,59 @@ export default async function handler(req, res) {
         }
 
         // =========================================================================
-        // 4. ACTION: DEFAULT CREATE USER (From Super Admin)
+        // 4. ACTION: GET / UPDATE LMS DATA (User-Centric LMS)
+        // =========================================================================
+        if (action === 'get_lms_data' || action === 'enroll_course' || action === 'submit_quiz') {
+            const id = body.userId || body.id;
+            const user = usersCache.find(u => u.id === id);
+            
+            if (!user) {
+                return res.status(404).json({ success: false, message: 'Pengguna tidak ditemukan.' });
+            }
+
+            if (!user.lmsData) {
+                user.lmsData = { enrolledIds: [], quizResults: [] };
+            }
+
+            const nowIso = new Date().toISOString();
+            
+            if (action === 'get_lms_data') {
+                return res.status(200).json({
+                    success: true,
+                    lmsData: user.lmsData
+                });
+            }
+
+            if (action === 'enroll_course') {
+                const courseId = body.courseId;
+                if (!user.lmsData.enrolledIds.includes(courseId)) {
+                    user.lmsData.enrolledIds.push(courseId);
+                    user.updatedAt = nowIso;
+                    await saveCloudStore({ users: usersCache });
+                }
+                return res.status(200).json({
+                    success: true,
+                    message: 'Berhasil mendaftar kelas.',
+                    lmsData: user.lmsData
+                });
+            }
+
+            if (action === 'submit_quiz') {
+                const quizData = body.quizData;
+                user.lmsData.quizResults.unshift(quizData); // Add to beginning
+                user.updatedAt = nowIso;
+                await saveCloudStore({ users: usersCache });
+                
+                return res.status(200).json({
+                    success: true,
+                    message: 'Kuis berhasil disubmit.',
+                    lmsData: user.lmsData
+                });
+            }
+        }
+
+        // =========================================================================
+        // 5. ACTION: DEFAULT CREATE USER (From Super Admin)
         // =========================================================================
         if (!body.name || (!body.username && !body.email)) {
             return res.status(400).json({ success: false, message: 'Nama dan Username / Email wajib diisi.' });
