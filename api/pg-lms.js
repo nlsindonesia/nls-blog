@@ -637,7 +637,7 @@ const defaultCourses = [
 
 
 export default async function handler(request, response) {
-    if (request.method !== 'POST' && request.method !== 'GET') {
+    if (request.method !== 'POST' && request.method !== 'GET' && request.method !== 'DELETE') {
         return response.status(405).json({ success: false, message: 'Method not allowed.' });
     }
 
