@@ -668,18 +668,6 @@
                     this.quizState.score = totalGradable > 0 ? Math.round((correct / totalGradable) * 100) : 100;
                     this.quizState.submitted = true;
                     this.markAsCompleted(this.activeNode.id);
-                } else if (q.type === 'isian') {
-                            const keys = q.shortAnswerKeys.toLowerCase().split(',').map(k => k.trim());
-                            if (ans && keys.includes(ans.toLowerCase().trim())) correct++;
-                        }
-                        // Other types logic goes here for future implementation
-                    });
-
-                    this.quizState.total = total;
-                    this.quizState.correct = correct;
-                    this.quizState.score = total > 0 ? Math.round((correct / total) * 100) : 0;
-                    this.quizState.submitted = true;
-                    this.markAsCompleted(this.activeNode.id);
                 }
             }
         }
