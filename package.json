@@ -16,6 +16,7 @@
     "author": "Next Level Study",
     "license": "MIT",
     "dependencies": {
-        "@vercel/postgres": "^0.10.0"
+        "@vercel/postgres": "^0.10.0",
+        "pg": "^8.23.0"
     }
 }

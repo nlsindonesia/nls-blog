@@ -646,6 +646,13 @@ export default async function handler(request, response) {
 
         // --- 1. SETUP LMS TABLES ---
         if (action === 'setup_lms') {
+            try {
+                await sql`ALTER TABLE IF EXISTS lms_enrollments DROP CONSTRAINT IF EXISTS lms_enrollments_user_id_fkey;`;
+                await sql`ALTER TABLE IF EXISTS lms_quiz_results DROP CONSTRAINT IF EXISTS lms_quiz_results_user_id_fkey;`;
+                await sql`ALTER TABLE IF EXISTS lms_enrollments ALTER COLUMN user_id TYPE VARCHAR(255) USING user_id::VARCHAR;`;
+                await sql`ALTER TABLE IF EXISTS lms_quiz_results ALTER COLUMN user_id TYPE VARCHAR(255) USING user_id::VARCHAR;`;
+            } catch(e) {}
+
             await sql`
                 CREATE TABLE IF NOT EXISTS lms_courses (
                     id VARCHAR(100) PRIMARY KEY,
@@ -661,7 +668,7 @@ export default async function handler(request, response) {
             await sql`
                 CREATE TABLE IF NOT EXISTS lms_enrollments (
                     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-                    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+                    user_id VARCHAR(255),
                     course_id VARCHAR(100) REFERENCES lms_courses(id) ON DELETE CASCADE,
                     progress INTEGER DEFAULT 0,
                     completed_modules JSONB DEFAULT '[]'::jsonb,
@@ -674,7 +681,7 @@ export default async function handler(request, response) {
             await sql`
                 CREATE TABLE IF NOT EXISTS lms_quiz_results (
                     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-                    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+                    user_id VARCHAR(255),
                     course_id VARCHAR(100) REFERENCES lms_courses(id) ON DELETE CASCADE,
                     module_index INTEGER,
                     score INTEGER,

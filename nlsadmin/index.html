@@ -8606,7 +8606,7 @@
                         fetch('/api/pg-lms', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(newCourse)
+                            body: JSON.stringify({ action: 'admin_save_course', course: newCourse })
                         }).catch(e => {});
                     }
                 },
@@ -8696,9 +8696,9 @@
                     // Cloud sync
                     if (typeof fetch !== 'undefined') {
                         fetch('/api/pg-lms', {
-                            method: 'PUT',
+                            method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ id: course.id, modules: course.modules })
+                            body: JSON.stringify({ action: 'admin_save_course', course: course })
                         }).catch(e => {});
                     }
                 },

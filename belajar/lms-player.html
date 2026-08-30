@@ -373,18 +373,26 @@
                     answeredQs: []
                 },
                 
-                init() {
+                async init() {
                     const urlParams = new URLSearchParams(window.location.search);
                     const courseId = urlParams.get('course');
                     
                     if (courseId) {
                         try {
-                            const savedCourses = JSON.parse(localStorage.getItem('nls_lms_courses_v1')) || [];
-                            const course = savedCourses.find(c => c.id === courseId);
-                            if (course) {
-                                this.courseData = course;
-                                // Admin saves content to 'babs', but the new JSON structure uses 'content_json' or 'content' in some places. Check both.
-                                this.babs = course.babs || course.content || [];
+                            const res = await fetch('/api/pg-lms', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ action: 'get_courses' })
+                            });
+                            const data = await res.json();
+                            if (data.success && data.data) {
+                                const course = data.data.find(c => c.id === courseId);
+                                if (course) {
+                                    this.courseData = course;
+                                    this.babs = course.modules || course.babs || course.content || [];
+                                } else {
+                                    this.tryLoadDraft();
+                                }
                             } else {
                                 this.tryLoadDraft();
                             }
@@ -421,11 +429,30 @@
                     }
                 },
 
-                loadProgress() {
-                    // Di sini seharusnya fetch /api/pg-lms untuk mendapatkan completed_modules
-                    // Untuk sementara dibiarkan empty
+                async loadProgress() {
+                    try {
+                        const sessionRaw = localStorage.getItem('nls_student_auth_session') || localStorage.getItem('nls_auth_session');
+                        if (sessionRaw && this.courseData) {
+                            const session = JSON.parse(sessionRaw);
+                            if (session.id) {
+                                const res = await fetch('/api/pg-lms', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ action: 'get_lms_data', userId: session.id })
+                                });
+                                const data = await res.json();
+                                if (data.success && data.lmsData && data.lmsData.progressMap) {
+                                    const courseProgress = data.lmsData.progressMap[this.courseData.id];
+                                    if (courseProgress && courseProgress.completedModules) {
+                                        this.completedNodes = courseProgress.completedModules;
+                                    }
+                                }
+                            }
+                        }
+                    } catch(e) {
+                        console.log('Failed to load progress', e);
+                    }
                 },
-
 
                 initYoutubePlayer() {
                     if (this.ytPlayer) {
@@ -547,6 +574,27 @@
                 markAsCompleted(id) {
                     if (!this.completedNodes.includes(id)) {
                         this.completedNodes.push(id);
+                        
+                        // Sync to database
+                        try {
+                            const sessionRaw = localStorage.getItem('nls_student_auth_session') || localStorage.getItem('nls_auth_session');
+                            if (sessionRaw && this.courseData) {
+                                const session = JSON.parse(sessionRaw);
+                                if (session.id) {
+                                    fetch('/api/pg-lms', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            action: 'update_progress',
+                                            userId: session.id,
+                                            courseId: this.courseData.id,
+                                            progress: this.getProgress(),
+                                            completedModules: this.completedNodes
+                                        })
+                                    }).catch(e => {});
+                                }
+                            }
+                        } catch(e) {}
                     }
                 },
 
