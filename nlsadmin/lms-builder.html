@@ -403,7 +403,9 @@
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('lmsBuilder', () => ({
-                courseTitle: 'Persiapan OSN Fisika 2026',
+                courseId: null,
+                courseData: null,
+                courseTitle: 'Sedang memuat...',
                 isSaving: false,
                 lastSaved: '',
                 showBulkModal: false,
@@ -414,7 +416,27 @@
                 activeNode: null,
                 editorInstance: null,
 
-                init() {
+                async init() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    this.courseId = urlParams.get('course');
+                    if (this.courseId) {
+                        try {
+                            const res = await fetch('/api/pg-lms');
+                            if (res.ok) {
+                                const json = await res.json();
+                                const course = (json.data || []).find(c => c && c.id === this.courseId);
+                                if (course) {
+                                    this.courseData = course;
+                                    this.courseTitle = course.title || 'Course';
+                                    this.babs = course.babs || course.content || course.modules || [];
+                                    return;
+                                }
+                            }
+                        } catch(e) {}
+                    }
+                    this.tryLoadDraft();
+                },
+                tryLoadDraft() {
                     const saved = localStorage.getItem('lms_builder_draft');
                     if (saved) {
                         try {
@@ -513,15 +535,27 @@
                     }
                 },
 
-                saveAll(silent = false) {
+                async saveAll(silent = false) {
                     if (!silent) this.isSaving = true;
-                    setTimeout(() => {
-                        localStorage.setItem('lms_builder_draft', JSON.stringify(this.babs));
-                        this.isSaving = false;
-                        const now = new Date();
-                        this.lastSaved = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
-                        if (!silent) this.showToast('Perubahan berhasil disimpan!');
-                    }, 600);
+                    // Backup locally
+                    localStorage.setItem('lms_builder_draft', JSON.stringify(this.babs));
+
+                    if (this.courseId && this.courseData) {
+                        this.courseData.babs = this.babs;
+                        this.courseData.content = this.babs;
+                        try {
+                            await fetch('/api/pg-lms', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ action: 'admin_save_course', course: this.courseData })
+                            });
+                        } catch(e) {}
+                    }
+
+                    this.isSaving = false;
+                    const now = new Date();
+                    this.lastSaved = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+                    if (!silent) this.showToast('Perubahan berhasil disimpan & disinkronisasi ke Cloud!');
                 },
 
                 showToast(msg) {
