@@ -33,7 +33,7 @@ const newNavTag = `<nav x-data="{
                         nisn: session.nisn || 'NISN: Terdaftar',
                         school: session.school || '',
                         targetProgram: session.targetProgram || 'Program NLS',
-                        avatar: session.avatar || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E",
+                        avatar: session.avatar || `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E`,
                         role: session.role || 'student',
                         roleLabel: (session.role === 'teacher' || (session.roleLabel && session.roleLabel.includes('Guru'))) ? 'Guru Aktif' : ((session.role === 'super_admin') ? 'Super Admin' : 'Siswa Aktif')
                     };
@@ -81,7 +81,7 @@ const desktopActionsReplacement = `            <!-- Authenticated Student Avatar
                 <div class="relative" @click.outside="profileDropdownOpen = false">
                     <button type="button" @click.stop="profileDropdownOpen = !profileDropdownOpen"
                         class="flex items-center gap-2.5 px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 transition-all cursor-pointer shadow-xs">
-                        <img :src="studentSession.avatar || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E"" 
+                        <img :src="studentSession.avatar || `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E`" 
                             alt="Avatar Siswa" class="w-8 h-8 rounded-full object-cover border border-slate-200 dark:border-slate-600">
                         <div class="flex flex-col text-left">
                             <span class="text-xs font-black text-slate-900 dark:text-white leading-tight" x-text="studentSession.name ? studentSession.name.split(' ')[0] : 'Siswa'"></span>
@@ -102,7 +102,7 @@ const desktopActionsReplacement = `            <!-- Authenticated Student Avatar
                         
                         <!-- Student Info Card Header -->
                         <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-100 dark:border-slate-700/60 flex items-center gap-3">
-                            <img :src="studentSession.avatar || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E"" 
+                            <img :src="studentSession.avatar || `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E`" 
                                 alt="Avatar Siswa" class="w-10 h-10 rounded-full object-cover border-2 border-primary/20">
                             <div class="flex flex-col min-w-0">
                                 <span class="text-xs font-black text-slate-900 dark:text-white truncate" x-text="studentSession.name"></span>
@@ -155,7 +155,7 @@ const mobileActionsReplacement = `        <div class="flex flex-col gap-3 pt-2">
             <template x-if="studentSession">
                 <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 space-y-3">
                     <div class="flex items-center gap-3">
-                        <img :src="studentSession.avatar || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E"" 
+                        <img :src="studentSession.avatar || `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E`" 
                             alt="Avatar Siswa" class="w-10 h-10 rounded-full object-cover border border-primary/20">
                         <div class="flex flex-col min-w-0">
                             <span class="text-xs font-black text-slate-900 dark:text-white truncate" x-text="studentSession.name"></span>
