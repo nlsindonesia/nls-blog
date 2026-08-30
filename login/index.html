@@ -42,6 +42,41 @@
         }
     </script>
 
+    <!-- Immediate SSO Probe & Auto-Redirect Handler -->
+    <script>
+        (function() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const redirectParam = params.get('redirect') || params.get('returnUrl');
+                const isProbe = params.get('sso_probe') === '1';
+                const isForce = params.get('force') === '1' || params.get('logout') === '1';
+
+                if (redirectParam && !isForce) {
+                    const raw = localStorage.getItem('nls_student_auth_session') || localStorage.getItem('nls_auth_session');
+                    if (raw) {
+                        let userObj = null;
+                        try { userObj = JSON.parse(raw); } catch(e) {}
+                        if (userObj && (userObj.name || userObj.email || userObj.id)) {
+                            const u = new URL(redirectParam, window.location.href);
+                            const sessionStr = JSON.stringify(userObj);
+                            u.searchParams.set('nls_sso_data', sessionStr);
+                            try {
+                                u.searchParams.set('sso_b64', btoa(unescape(encodeURIComponent(sessionStr))));
+                            } catch(e) {}
+                            window.location.replace(u.toString());
+                            return;
+                        }
+                    } else if (isProbe) {
+                        const u = new URL(redirectParam, window.location.href);
+                        u.searchParams.set('sso_guest', '1');
+                        window.location.replace(u.toString());
+                        return;
+                    }
+                }
+            } catch(e) {}
+        })();
+    </script>
+
     <!-- NLS Universal Cross-Subdomain SSO Client -->
     <script src="/sso-client.js"></script>
 

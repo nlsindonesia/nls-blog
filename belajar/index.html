@@ -74,7 +74,22 @@
                     params.delete('session');
                 }
 
-                // 2. Clean URL to root "/" or clean slug path if accessed with /belajar prefix on nls-belajar subdomain
+                if (params.has('sso_guest')) {
+                    sessionStorage.setItem('nls_sso_probed', '1');
+                    params.delete('sso_guest');
+                }
+
+                // 2. One-Time Seamless Background SSO Probe (Auto-syncs if already logged in on nls-blog-plum)
+                const hasLocalSession = !!(localStorage.getItem('nls_student_auth_session') || localStorage.getItem('nls_auth_session'));
+                const isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                if (!hasLocalSession && !isLocalHost && !sessionStorage.getItem('nls_sso_probed') && !params.has('sso_guest') && !params.has('nls_sso_data') && !params.has('sso_b64')) {
+                    sessionStorage.setItem('nls_sso_probed', '1');
+                    const probeUrl = 'https://nls-blog-plum.vercel.app/login?sso_probe=1&redirect=' + encodeURIComponent(window.location.href);
+                    window.location.replace(probeUrl);
+                    return;
+                }
+
+                // 3. Clean URL to root "/" or clean slug path if accessed with /belajar prefix on nls-belajar subdomain
                 const newSearch = params.toString() ? ('?' + params.toString()) : '';
                 if (window.location.hostname.includes('belajar') || window.location.hostname.includes('lms')) {
                     if (window.location.pathname === '/belajar' || window.location.pathname === '/belajar/') {
