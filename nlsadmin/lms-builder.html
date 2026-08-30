@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -42,32 +42,58 @@
         
         <!-- Sidebar: Module & Lesson Tree -->
         <aside class="w-72 bg-white border-r border-slate-200 flex flex-col shrink-0">
-            <div class="p-4 border-b border-slate-100 flex justify-between items-center">
-                <h3 class="font-bold text-sm text-slate-800">Daftar Materi & Kuis</h3>
-                <button @click="addNode()" class="text-indigo-600 hover:text-indigo-800" title="Tambah Modul/Kuis">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        <div class="p-4 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="font-bold text-sm text-slate-800">Daftar Bab & Materi</h3>
+                <button @click="addBab()" class="text-indigo-600 hover:text-indigo-800 flex items-center gap-1 text-[10px] font-black uppercase tracking-wider bg-indigo-50 px-2 py-1 rounded-lg" title="Tambah Bab">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg> BAB
                 </button>
             </div>
-            <div class="flex-1 overflow-y-auto builder-scroll p-3 space-y-2">
-                <template x-for="(node, idx) in nodes" :key="node.id">
-                    <div @click="selectNode(node)" 
-                         :class="activeNode && activeNode.id === node.id ? 'bg-indigo-50 border-indigo-200 shadow-xs' : 'bg-white border-slate-100 hover:border-slate-300 hover:bg-slate-50'"
-                         class="p-3 border rounded-xl cursor-pointer transition-all flex justify-between items-center group">
-                        <div class="flex items-center gap-2 min-w-0">
-                            <!-- Icon depending on type -->
-                            <span x-show="node.type === 'materi'" class="text-blue-500 text-lg">📄</span>
-                            <span x-show="node.type === 'kuis'" class="text-amber-500 text-lg">✍️</span>
-                            <span x-show="node.type === 'video'" class="text-red-500 text-lg">▶️</span>
-                            
-                            <span class="font-bold text-xs truncate text-slate-700" x-text="node.title"></span>
+            <div class="flex-1 overflow-y-auto builder-scroll p-3 space-y-3">
+                <template x-for="(bab, bIdx) in babs" :key="bab.id">
+                    <div class="border border-slate-200 rounded-xl bg-white overflow-hidden shadow-xs">
+                        <!-- Bab Header -->
+                        <div class="bg-slate-50 p-2.5 border-b border-slate-200 flex justify-between items-center group cursor-pointer" @click="bab.expanded = !bab.expanded">
+                            <div class="flex items-center gap-2 flex-1 min-w-0" @click.stop>
+                                <button @click="bab.expanded = !bab.expanded" class="text-slate-400 hover:text-indigo-600 shrink-0">
+                                    <svg class="w-4 h-4 transition-transform" :class="bab.expanded ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </button>
+                                <input type="text" x-model="bab.title" class="flex-1 bg-transparent border-none p-0 text-xs font-black text-slate-800 focus:ring-0 truncate" placeholder="Judul Bab...">
+                            </div>
+                            <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button @click.stop="addSubBab(bab)" class="text-indigo-600 hover:bg-indigo-100 p-1 rounded-md" title="Tambah Materi/Kuis">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                                </button>
+                                <button @click.stop="removeBab(bIdx)" class="text-rose-500 hover:bg-rose-100 p-1 rounded-md" title="Hapus Bab">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
+                            </div>
                         </div>
-                        <button @click.stop="removeNode(idx)" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                        </button>
+                        
+                        <!-- Sub Babs -->
+                        <div x-show="bab.expanded" class="p-2 space-y-1.5 bg-white">
+                            <template x-for="(node, idx) in bab.subBabs" :key="node.id">
+                                <div @click="selectNode(node)" 
+                                     :class="activeNode && activeNode.id === node.id ? 'bg-indigo-50 border-indigo-200 shadow-sm' : 'bg-white border-slate-100 hover:border-slate-300 hover:bg-slate-50'"
+                                     class="p-2.5 border rounded-lg cursor-pointer transition-all flex justify-between items-center group ml-2">
+                                    <div class="flex items-center gap-2 min-w-0">
+                                        <span x-show="node.type === 'materi'" class="text-blue-500 text-base">📄</span>
+                                        <span x-show="node.type === 'kuis'" class="text-amber-500 text-base">✍️</span>
+                                        <span x-show="node.type === 'video'" class="text-red-500 text-base">▶️</span>
+                                        <span class="font-bold text-[11px] truncate text-slate-700" x-text="node.title || 'Tanpa Judul'"></span>
+                                    </div>
+                                    <button @click.stop="removeSubBab(bab, idx)" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                    </button>
+                                </div>
+                            </template>
+                            <div x-show="bab.subBabs.length === 0" class="text-center py-3 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                                Belum ada isi bab
+                            </div>
+                        </div>
                     </div>
                 </template>
-                <div x-show="nodes.length === 0" class="text-center p-5 text-xs text-slate-400">
-                    Belum ada materi/kuis. Klik tombol + di atas.
+                <div x-show="babs.length === 0" class="text-center p-5 text-xs text-slate-400">
+                    Belum ada Bab. Klik tombol <strong>+ BAB</strong> di atas.
                 </div>
             </div>
         </aside>
@@ -100,7 +126,7 @@
                                     <div class="w-2 h-2 rounded-full bg-blue-500 scale-0 transition-transform" :class="activeNode.type === 'materi' ? 'scale-100' : ''"></div>
                                 </div>
                                 <input type="radio" x-model="activeNode.type" value="materi" class="hidden">
-                                <span class="font-bold text-slate-600 group-hover:text-slate-900" :class="activeNode.type === 'materi' ? 'text-blue-600' : ''">📄 Materi (Teks/PDF)</span>
+                                <span class="font-bold text-slate-600 group-hover:text-slate-900" :class="activeNode.type === 'materi' ? 'text-blue-600' : ''">ðŸ“„ Materi (Teks/PDF)</span>
                             </label>
 
                             <label class="flex items-center gap-2 text-sm cursor-pointer group">
@@ -108,7 +134,7 @@
                                     <div class="w-2 h-2 rounded-full bg-amber-500 scale-0 transition-transform" :class="activeNode.type === 'kuis' ? 'scale-100' : ''"></div>
                                 </div>
                                 <input type="radio" x-model="activeNode.type" value="kuis" class="hidden">
-                                <span class="font-bold text-slate-600 group-hover:text-slate-900" :class="activeNode.type === 'kuis' ? 'text-amber-600' : ''">✍️ Kuis & Latihan</span>
+                                <span class="font-bold text-slate-600 group-hover:text-slate-900" :class="activeNode.type === 'kuis' ? 'text-amber-600' : ''">âœï¸ Kuis & Latihan</span>
                             </label>
 
                             <label class="flex items-center gap-2 text-sm cursor-pointer group">
@@ -116,7 +142,7 @@
                                     <div class="w-2 h-2 rounded-full bg-red-500 scale-0 transition-transform" :class="activeNode.type === 'video' ? 'scale-100' : ''"></div>
                                 </div>
                                 <input type="radio" x-model="activeNode.type" value="video" class="hidden">
-                                <span class="font-bold text-slate-600 group-hover:text-slate-900" :class="activeNode.type === 'video' ? 'text-red-600' : ''">▶️ Video Interaktif</span>
+                                <span class="font-bold text-slate-600 group-hover:text-slate-900" :class="activeNode.type === 'video' ? 'text-red-600' : ''">â–¶ï¸ Video Interaktif</span>
                             </label>
                         </div>
                     </div>
@@ -176,7 +202,7 @@
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
                             <div>
                                 <h3 class="font-black text-slate-800 flex items-center gap-2">
-                                    <span class="text-xl">📝</span> Daftar Soal Kuis
+                                    <span class="text-xl">ðŸ“</span> Daftar Soal Kuis
                                 </h3>
                                 <p class="text-[10px] text-slate-500 font-bold" x-text="activeNode.questions.length + ' Soal Tersedia'"></p>
                             </div>
@@ -205,12 +231,12 @@
                                     <div class="space-y-1">
                                         <label class="block text-[10px] font-black uppercase text-slate-500">Tipe Soal (Sistem Penilaian)</label>
                                         <select x-model="q.type" class="w-full p-2.5 rounded-xl border border-slate-200 text-sm font-bold text-indigo-700 bg-indigo-50/50 focus:ring-2 focus:ring-indigo-500 focus:bg-white">
-                                            <option value="pg">◉ Pilihan Ganda Sederhana (1 Jawaban)</option>
-                                            <option value="pg_kompleks">☑ Pilihan Ganda Kompleks (>1 Jawaban)</option>
-                                            <option value="pg_majemuk">≣ PG Majemuk (Matriks B/S Dinamis)</option>
-                                            <option value="jodoh">↹ Menjodohkan (Matching)</option>
-                                            <option value="isian">✎ Isian Singkat (Kata Kunci)</option>
-                                            <option value="essai">📄 Essai Bebas / Upload Dokumen</option>
+                                            <option value="pg">â—‰ Pilihan Ganda Sederhana (1 Jawaban)</option>
+                                            <option value="pg_kompleks">â˜‘ Pilihan Ganda Kompleks (>1 Jawaban)</option>
+                                            <option value="pg_majemuk">â‰£ PG Majemuk (Matriks B/S Dinamis)</option>
+                                            <option value="jodoh">â†¹ Menjodohkan (Matching)</option>
+                                            <option value="isian">âœŽ Isian Singkat (Kata Kunci)</option>
+                                            <option value="essai">ðŸ“„ Essai Bebas / Upload Dokumen</option>
                                         </select>
                                     </div>
                                     <div class="flex gap-4">
@@ -287,7 +313,7 @@
                                     <template x-for="(pair, pIdx) in q.pairs" :key="pIdx">
                                         <div class="flex items-center gap-3">
                                             <input type="text" x-model="pair.left" class="flex-1 p-2.5 rounded-lg border border-slate-300 text-sm shadow-sm" placeholder="Premis (Sisi Kiri)">
-                                            <span class="text-slate-400 font-bold">➔</span>
+                                            <span class="text-slate-400 font-bold">âž”</span>
                                             <input type="text" x-model="pair.right" class="flex-1 p-2.5 rounded-lg border border-emerald-300 bg-emerald-50/30 text-sm shadow-sm" placeholder="Jawaban (Sisi Kanan)">
                                             <button @click="q.pairs.splice(pIdx, 1)" class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
                                         </div>
@@ -307,7 +333,7 @@
                             </div>
                         </template>
                         <div x-show="activeNode.questions.length === 0" class="text-center p-8 border-2 border-dashed border-slate-300 rounded-2xl bg-slate-50 text-slate-500 flex flex-col items-center gap-3">
-                            <span class="text-3xl">📭</span>
+                            <span class="text-3xl">ðŸ“­</span>
                             <div>
                                 <h4 class="font-bold">Belum ada soal kuis</h4>
                                 <p class="text-xs mt-1">Tambahkan secara manual atau gunakan fitur Bulk Import Markdown</p>
@@ -325,7 +351,7 @@
         <div class="bg-white w-full max-w-3xl rounded-3xl shadow-2xl border border-slate-200 flex flex-col max-h-[90vh]" @click.outside="showBulkModal = false">
             <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 rounded-t-3xl">
                 <div>
-                    <h3 class="font-black text-xl text-slate-800 flex items-center gap-2">⚡ Bulk Import Soal</h3>
+                    <h3 class="font-black text-xl text-slate-800 flex items-center gap-2">âš¡ Bulk Import Soal</h3>
                     <p class="text-xs text-slate-500 mt-1 font-medium">Salin-tempel (copy-paste) soal dari dokumen Word menggunakan format NLS.</p>
                 </div>
                 <button @click="showBulkModal = false" class="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-200 rounded-xl transition-colors">
@@ -370,7 +396,7 @@
 
     <!-- Alert Toast (Simulated) -->
     <div x-show="toast.show" x-transition class="fixed bottom-6 right-6 px-6 py-3 bg-slate-900 text-white font-bold text-sm rounded-2xl shadow-2xl z-50 flex items-center gap-3" x-cloak>
-        <span class="text-emerald-400">✓</span>
+        <span class="text-emerald-400">âœ“</span>
         <span x-text="toast.message"></span>
     </div>
 
@@ -383,42 +409,56 @@
                 showBulkModal: false,
                 bulkText: '',
                 toast: { show: false, message: '' },
-                nodes: [],
+                                nodes: [], // fallback variable not used directly in tree anymore
+                babs: [],
                 activeNode: null,
                 editorInstance: null,
 
                 init() {
-                    // Try to load from localStorage for demo purposes
                     const saved = localStorage.getItem('lms_builder_draft');
                     if (saved) {
                         try {
-                            this.nodes = JSON.parse(saved);
+                            const parsed = JSON.parse(saved);
+                            if (parsed.length > 0 && parsed[0].subBabs !== undefined) {
+                                this.babs = parsed;
+                            } else {
+                                // migrate old data
+                                this.babs = [{ id: 'b1', title: 'Bab 1', expanded: true, subBabs: parsed }];
+                            }
                         } catch(e) {}
                     }
-                    if (this.nodes.length === 0) {
-                        this.nodes = [
-                            { id: '1', title: 'Bab 1: Kinematika Dasar', type: 'materi', materiFormat: 'ckeditor', pdfUrl: '', rawHtml: '', videoUrl: '', questions: [] },
-                            { id: '2', title: 'Kuis Evaluasi Bab 1', type: 'kuis', questions: [
-                                { id: 'q1', type: 'pg', points: 10, text: 'Benda jatuh bebas memiliki percepatan...', options: ['Tetap', 'Bertambah', 'Berkurang'], correctAnswers: 0, correctAnswersArray: [], shortAnswerKeys: '', statements: [], pairs: [] }
-                            ] }
-                        ];
+                    if (this.babs.length === 0) {
+                        this.babs = [{
+                            id: 'b1', title: 'Bab 1: Kinematika Dasar', expanded: true, subBabs: [
+                                { id: 's1', title: 'Materi Pengantar', type: 'materi', materiFormat: 'ckeditor', pdfUrl: '', rawHtml: '', videoUrl: '', questions: [] },
+                                { id: 's2', title: 'Kuis Evaluasi', type: 'kuis', questions: [] }
+                            ]
+                        }];
                     }
-                    this.saveAll(true); // Silent initial save
+                    this.saveAll(true);
                 },
 
                 selectNode(node) {
-                    // Save CKEditor data before switching if applicable
                     if (this.activeNode && this.activeNode.materiFormat === 'ckeditor' && this.editorInstance) {
                         this.activeNode.rawHtml = this.editorInstance.getData(); 
-                        // Wait, I should store CKEditor content separately or in rawHtml. We'll use rawHtml for both.
                     }
                     this.activeNode = node;
                 },
 
-                addNode() {
+                addBab() {
+                    this.babs.push({
+                        id: 'bab_' + Date.now(),
+                        title: 'Bab Baru',
+                        expanded: true,
+                        subBabs: []
+                    });
+                    this.saveAll();
+                },
+
+                addSubBab(bab) {
                     const newNode = {
-                        id: 'node_' + Date.now(),
-                        title: 'Modul Baru',
+                        id: 'sub_' + Date.now(),
+                        title: 'Sub Bab Baru',
                         type: 'materi',
                         materiFormat: 'ckeditor',
                         pdfUrl: '',
@@ -426,16 +466,30 @@
                         videoUrl: '',
                         questions: []
                     };
-                    this.nodes.push(newNode);
+                    bab.subBabs.push(newNode);
+                    bab.expanded = true;
                     this.activeNode = newNode;
+                    this.saveAll();
                 },
 
-                removeNode(idx) {
-                    if (confirm('Hapus Modul/Kuis ini secara permanen?')) {
-                        if (this.activeNode && this.activeNode.id === this.nodes[idx].id) {
+                removeBab(idx) {
+                    if (confirm('Hapus Bab ini beserta seluruh isinya?')) {
+                        // clear active if inside
+                        const bab = this.babs[idx];
+                        if (this.activeNode && bab.subBabs.find(s => s.id === this.activeNode.id)) {
                             this.activeNode = null;
                         }
-                        this.nodes.splice(idx, 1);
+                        this.babs.splice(idx, 1);
+                        this.saveAll();
+                    }
+                },
+
+                removeSubBab(bab, idx) {
+                    if (confirm('Hapus Sub Bab ini?')) {
+                        if (this.activeNode && this.activeNode.id === bab.subBabs[idx].id) {
+                            this.activeNode = null;
+                        }
+                        bab.subBabs.splice(idx, 1);
                         this.saveAll();
                     }
                 },
@@ -467,7 +521,7 @@
                 saveAll(silent = false) {
                     if (!silent) this.isSaving = true;
                     setTimeout(() => {
-                        localStorage.setItem('lms_builder_draft', JSON.stringify(this.nodes));
+                        localStorage.setItem('lms_builder_draft', JSON.stringify(this.babs));
                         this.isSaving = false;
                         const now = new Date();
                         this.lastSaved = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
@@ -560,3 +614,4 @@
     </script>
 </body>
 </html>
+
