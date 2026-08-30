@@ -20,13 +20,19 @@
     
     <!-- Header -->
     <header class="bg-white/70 backdrop-blur-xl border-b border-indigo-100/60 h-16 flex items-center justify-between px-4 sm:px-6 shrink-0 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] z-20 relative">
-        <div class="flex items-center gap-3">
-            <a href="index.html" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors">
+        <div class="flex items-center gap-3 sm:gap-4 overflow-hidden">
+            <a href="index.html" class="p-2.5 rounded-xl bg-slate-100/80 hover:bg-slate-200 text-slate-600 transition-colors shrink-0">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
             </a>
-            <div>
-                <h1 class="font-black text-sm sm:text-base text-slate-900 leading-tight" x-text="courseData ? courseData.title : 'Program Belajar NLS'"></h1>
-                <p class="text-[10px] sm:text-xs text-slate-500 font-medium">Progress: <span class="text-indigo-600 font-bold" x-text="getProgress() + '%'"></span></p>
+            
+            <div class="flex items-center gap-2.5 pr-3 sm:pr-4 border-r border-indigo-100/60 shrink-0">
+                <img src="/nls-logo-300.png" alt="NLS Logo" class="w-7 h-7 sm:w-8 sm:h-8 object-contain shrink-0">
+                <div class="hidden sm:block font-black text-sm tracking-tight text-slate-900 leading-tight">Next Level Study</div>
+            </div>
+
+            <div class="min-w-0">
+                <h1 class="font-black text-sm sm:text-base text-slate-900 leading-tight truncate" x-text="courseData ? courseData.title : 'Program Belajar NLS'"></h1>
+                <p class="text-[10px] sm:text-xs text-slate-500 font-medium truncate">Progress: <span class="text-indigo-600 font-bold" x-text="getProgress() + '%'"></span></p>
             </div>
         </div>
         <div class="flex items-center gap-2">
