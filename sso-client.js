@@ -14,6 +14,21 @@
         iframe: null,
         ready: false,
         callbacks: [],
+        _inited: false,
+        _syncing: false,
+
+        getDeviceId() {
+            try {
+                let id = localStorage.getItem('nls_device_id');
+                if (!id) {
+                    id = 'dev-' + Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 9);
+                    localStorage.setItem('nls_device_id', id);
+                }
+                return id;
+            } catch(e) {
+                return 'dev-local';
+            }
+        },
 
         init() {
             if (this._inited) return;
@@ -21,7 +36,7 @@
 
             // Auto-Purge deprecated / mismatched local cache and sync authoritative Cloud data
             try {
-                const CACHE_SCHEMA_VERSION = 'v4_authoritative_session_2026_08_30';
+                const CACHE_SCHEMA_VERSION = 'v5_authoritative_session_2026_08_30';
                 const currentSchema = localStorage.getItem('nls_cache_schema_ver');
                 if (currentSchema !== CACHE_SCHEMA_VERSION) {
                     localStorage.removeItem('nls_registered_users_v1');
@@ -29,7 +44,7 @@
                     localStorage.removeItem('nls_users_trash_v1');
                     localStorage.removeItem('nls_temp_users');
                     localStorage.removeItem('nls_mock_users');
-                    localStorage.removeItem('nls_student_profile_v1'); // Purge stale profile cache so it resyncs from active auth session
+                    localStorage.removeItem('nls_student_profile_v1');
                     localStorage.removeItem('nls_berita_articles_trash_v1');
                     localStorage.removeItem('nls_kalender_events_trash_v1');
                     localStorage.removeItem('nls_pengajar_teachers_trash_v1');
@@ -37,13 +52,20 @@
                 }
             } catch(e) {}
 
-            // 1. Consume token/session passed in URL parameter (?nls_sso_data=... or ?sso_b64=... or ?auth_token=...)
+            // 1. Consume token/session passed in URL parameter (?nls_sso_data=... or ?sso_b64=... or ?auth_token=... or ?deviceId=...)
             try {
                 const urlParams = new URLSearchParams(window.location.search);
                 const ssoData = urlParams.get('nls_sso_data') || urlParams.get('auth_token') || urlParams.get('session');
                 const ssoB64 = urlParams.get('sso_b64');
-                let parsed = null;
+                const urlDeviceId = urlParams.get('deviceId') || urlParams.get('devId');
 
+                if (urlDeviceId) {
+                    try { localStorage.setItem('nls_device_id', urlDeviceId); } catch(e) {}
+                    urlParams.delete('deviceId');
+                    urlParams.delete('devId');
+                }
+
+                let parsed = null;
                 if (ssoB64) {
                     try {
                         parsed = JSON.parse(decodeURIComponent(escape(atob(ssoB64))));
@@ -68,6 +90,15 @@
 
                 if (parsed && typeof parsed === 'object' && (parsed.id || parsed.name || parsed.email || parsed.username || parsed.role)) {
                     this.setLocalSession(parsed);
+                    // Also notify device session API
+                    try {
+                        fetch('/api/auth-session', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ deviceId: this.getDeviceId(), session: parsed })
+                        }).catch(() => {});
+                    } catch(e) {}
+
                     // Clean URL without reloading
                     urlParams.delete('nls_sso_data');
                     urlParams.delete('sso_b64');
@@ -80,14 +111,34 @@
                 }
             } catch(e) {}
 
-            // 2. Setup SSO Hub iframe
+            // 2. Setup Same-Origin BroadcastChannel Listener
+            try {
+                const channel = new BroadcastChannel('nls_sso_device_channel');
+                channel.onmessage = (ev) => {
+                    const data = ev.data;
+                    if (!data) return;
+                    if (data.type === 'LOGIN' && data.session) {
+                        this.setLocalSession(data.session);
+                        this.callbacks.forEach(cb => {
+                            try { cb(data.session, true); } catch(e) {}
+                        });
+                    } else if (data.type === 'LOGOUT') {
+                        this.clearLocalSession();
+                        this.callbacks.forEach(cb => {
+                            try { cb(null, false); } catch(e) {}
+                        });
+                    }
+                };
+            } catch(e) {}
+
+            // 3. Setup SSO Hub iframe
             if (document.body) {
                 this.setupIframe();
             } else {
                 window.addEventListener('DOMContentLoaded', () => this.setupIframe());
             }
 
-            // 3. Listen for postMessage from Hub
+            // 4. Listen for postMessage from Hub
             window.addEventListener('message', (event) => {
                 const data = event.data;
                 if (!data || typeof data !== 'object') return;
@@ -98,23 +149,35 @@
                 }
             });
 
-            // 4. Same-device multi-tab synchronization on window focus
+            // 5. Cross-subdomain real-time sync on window focus & visibility
             window.addEventListener('focus', () => {
+                this.syncDeviceSession();
                 this.syncFromHub();
             });
             document.addEventListener('visibilitychange', () => {
                 if (!document.hidden) {
+                    this.syncDeviceSession();
                     this.syncFromHub();
                 }
             });
 
-            // 5. Initial notification of local session
+            // 6. Periodic liveness sync (every 3.5s when tab is focused)
+            setInterval(() => {
+                if (document.visibilityState === 'visible') {
+                    this.syncDeviceSession();
+                }
+            }, 3500);
+
+            // 7. Initial notification of local session
             const current = this.getLocalSession();
             if (current) {
                 this.callbacks.forEach(cb => {
                     try { cb(current, true); } catch(e) {}
                 });
             }
+
+            // Initial device sync
+            this.syncDeviceSession();
         },
 
         setupIframe() {
@@ -140,7 +203,6 @@
         },
 
         syncFromHub() {
-            // Ping Hub iframe (isolated to this browser/device)
             if (this.iframe && this.iframe.contentWindow) {
                 try {
                     this.iframe.contentWindow.postMessage({ type: 'NLS_SSO_GET' }, '*');
@@ -148,8 +210,51 @@
             }
         },
 
+        async syncDeviceSession() {
+            if (this._syncing) return;
+            this._syncing = true;
+            try {
+                const deviceId = this.getDeviceId();
+                const res = await fetch(`/api/auth-session?deviceId=${encodeURIComponent(deviceId)}&_t=${Date.now()}`);
+                if (res.ok) {
+                    const json = await res.json();
+                    if (json.isLoggedIn && json.session) {
+                        const local = this.getLocalSession();
+                        const isDifferent = !local || local.id !== json.session.id || local.email !== json.session.email || local.name !== json.session.name;
+                        if (isDifferent) {
+                            this.setLocalSession(json.session);
+                            this.callbacks.forEach(cb => {
+                                try { cb(json.session, true); } catch(e) {}
+                            });
+                        }
+                    } else if (json.isLoggedIn === false) {
+                        const local = this.getLocalSession();
+                        if (local) {
+                            this.clearLocalSession();
+                            this.callbacks.forEach(cb => {
+                                try { cb(null, false); } catch(e) {}
+                            });
+                        }
+                    }
+                }
+            } catch(e) {
+            } finally {
+                this._syncing = false;
+            }
+        },
+
         async broadcastLogin(sessionData) {
             this.setLocalSession(sessionData);
+            const deviceId = this.getDeviceId();
+
+            // Push to Device Auth Session API
+            try {
+                fetch('/api/auth-session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ deviceId: deviceId, session: sessionData })
+                }).catch(() => {});
+            } catch(e) {}
 
             // Message Hub iframe on this device
             if (this.iframe && this.iframe.contentWindow) {
@@ -157,6 +262,12 @@
                     this.iframe.contentWindow.postMessage({ type: 'NLS_SSO_SET', session: sessionData }, '*');
                 } catch(e) {}
             }
+
+            // Same-origin cross-tab broadcast
+            try {
+                const channel = new BroadcastChannel('nls_sso_device_channel');
+                channel.postMessage({ type: 'LOGIN', session: sessionData, deviceId: deviceId });
+            } catch(e) {}
 
             // Trigger local callbacks
             this.callbacks.forEach(cb => {
@@ -166,6 +277,14 @@
 
         async broadcastLogout() {
             this.clearLocalSession();
+            const deviceId = this.getDeviceId();
+
+            // Clear from Device Auth Session API
+            try {
+                fetch(`/api/auth-session?deviceId=${encodeURIComponent(deviceId)}`, {
+                    method: 'DELETE'
+                }).catch(() => {});
+            } catch(e) {}
 
             // Message Hub iframe on this device
             if (this.iframe && this.iframe.contentWindow) {
@@ -173,6 +292,12 @@
                     this.iframe.contentWindow.postMessage({ type: 'NLS_SSO_CLEAR' }, '*');
                 } catch(e) {}
             }
+
+            // Same-origin cross-tab broadcast
+            try {
+                const channel = new BroadcastChannel('nls_sso_device_channel');
+                channel.postMessage({ type: 'LOGOUT', deviceId: deviceId });
+            } catch(e) {}
 
             // Trigger local callbacks
             this.callbacks.forEach(cb => {
@@ -231,6 +356,7 @@
             try {
                 localStorage.removeItem('nls_auth_session');
                 localStorage.removeItem('nls_student_auth_session');
+                localStorage.removeItem('nls_student_profile_v1');
                 localStorage.removeItem('nls_admin_auth');
                 sessionStorage.removeItem('nls_admin_auth');
             } catch(e) {}
@@ -274,6 +400,7 @@
                 const u = new URL(targetUrl, window.location.href);
                 const sessionStr = JSON.stringify(session);
                 u.searchParams.set('nls_sso_data', sessionStr);
+                u.searchParams.set('deviceId', this.getDeviceId());
                 try {
                     u.searchParams.set('sso_b64', btoa(unescape(encodeURIComponent(sessionStr))));
                 } catch(e) {}
