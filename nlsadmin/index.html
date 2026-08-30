@@ -5488,6 +5488,10 @@
                         path = `/pengajar/${this.pengajarView || 'present'}`;
                     } else if (this.activeTab === 'users') {
                         path = `/users/${this.userView || 'present'}`;
+                    } else if (this.activeTab === 'lms_courses') {
+                        const cCat = encodeURIComponent(this.lmsCategory || '');
+                        const cLvl = encodeURIComponent(this.lmsLevel || '');
+                        path = `/lms/${cCat}/${cLvl}`;
                     } else {
                         path = `/${this.activeTab}`;
                     }
@@ -5545,6 +5549,22 @@
                         if (['add', 'present', 'trash'].includes(sub)) this.userView = sub;
                         this.closeAllSubmenus('users');
                         this.isUserDropdownOpen = true;
+                    } else if (section === 'lms') {
+                        this.activeTab = 'lms_courses';
+                        this.lmsCategory = decodeURIComponent(sub || 'School');
+                        this.lmsLevel = decodeURIComponent(parts[2] || '');
+                        
+                        let menuKey = '';
+                        if (this.lmsCategory === 'School') menuKey = 'school';
+                        else if (this.lmsCategory === 'Olimpiade') menuKey = 'olimpiade';
+                        else if (this.lmsCategory === 'TKA') menuKey = 'tka';
+                        else if (this.lmsCategory === 'Collage Preparation') menuKey = 'college';
+                        
+                        this.closeAllSubmenus(menuKey);
+                        if (menuKey === 'school') this.isSchoolDropdownOpen = true;
+                        if (menuKey === 'olimpiade') this.isOlimpiadeDropdownOpen = true;
+                        if (menuKey === 'tka') this.isTkaDropdownOpen = true;
+                        if (menuKey === 'college') this.isCollegeDropdownOpen = true;
                     } else {
                         this.activeTab = section;
                     }
@@ -8415,6 +8435,7 @@
                         this.lmsCategory = 'School';
                         if (!this.lmsLevel) this.lmsLevel = 'SD';
                     }
+                    this.syncUrlRoute(true);
                 },
                 toggleOlimpiadeDropdown() {
                     const nextState = !this.isOlimpiadeDropdownOpen;
@@ -8425,6 +8446,7 @@
                         this.lmsCategory = 'Olimpiade';
                         if (!this.lmsLevel) this.lmsLevel = 'OSN SD';
                     }
+                    this.syncUrlRoute(true);
                 },
                 toggleTkaDropdown() {
                     const nextState = !this.isTkaDropdownOpen;
@@ -8435,6 +8457,7 @@
                         this.lmsCategory = 'TKA';
                         if (!this.lmsLevel) this.lmsLevel = 'TKA SD';
                     }
+                    this.syncUrlRoute(true);
                 },
                 toggleCollegeDropdown() {
                     const nextState = !this.isCollegeDropdownOpen;
@@ -8445,6 +8468,7 @@
                         this.lmsCategory = 'Collage Preparation';
                         if (!this.lmsLevel) this.lmsLevel = 'SNBT';
                     }
+                    this.syncUrlRoute(true);
                 },
 
                 openLmsCategory(category, level) {
@@ -8462,6 +8486,7 @@
                     if (category === 'TKA') this.isTkaDropdownOpen = true;
                     if (category === 'Collage Preparation') this.isCollegeDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
+                    this.syncUrlRoute(true);
                 },
 
                 countCoursesByCategory(category) {
