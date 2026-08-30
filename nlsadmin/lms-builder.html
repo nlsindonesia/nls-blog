@@ -151,7 +151,7 @@
                                     <div class="w-2 h-2 rounded-full bg-red-500 scale-0 transition-transform" :class="activeNode.type === 'video' ? 'scale-100' : ''"></div>
                                 </div>
                                 <input type="radio" x-model="activeNode.type" value="video" class="hidden">
-                                <span class="font-bold text-slate-600 group-hover:text-slate-900" :class="activeNode.type === 'video' ? 'text-red-600' : ''">â–¶ï¸ Video Interaktif</span>
+                                <span class="font-bold text-slate-600 group-hover:text-slate-900" :class="activeNode.type === 'video' ? 'text-red-600' : ''">▶️ Video Interaktif</span>
                             </label>
                         </div>
                     </div>
@@ -273,10 +273,10 @@
                                     <div class="space-y-1">
                                         <label class="block text-[10px] font-black uppercase text-slate-500">Tipe Soal (Sistem Penilaian)</label>
                                         <select x-model="q.type" class="w-full p-2.5 rounded-xl border border-slate-200 text-sm font-bold text-indigo-700 bg-indigo-50/50 focus:ring-2 focus:ring-indigo-500 focus:bg-white">
-                                            <option value="pg">â—‰ Pilihan Ganda Sederhana (1 Jawaban)</option>
-                                            <option value="pg_kompleks">â˜‘ Pilihan Ganda Kompleks (>1 Jawaban)</option>
-                                            <option value="pg_majemuk">â‰£ PG Majemuk (Matriks B/S Dinamis)</option>
-                                            <option value="jodoh">â†¹ Menjodohkan (Matching)</option>
+                                            <option value="pg">◉ Pilihan Ganda Sederhana (1 Jawaban)</option>
+                                            <option value="pg_kompleks">☑ Pilihan Ganda Kompleks (>1 Jawaban)</option>
+                                            <option value="pg_majemuk">≡ PG Majemuk (Matriks B/S Dinamis)</option>
+                                            <option value="jodoh">⇄ Menjodohkan (Matching)</option>
                                             <option value="isian">✎ Isian Singkat (Kata Kunci)</option>
                                             <option value="essai">📄 Essai Bebas / Upload Dokumen</option>
                                         </select>
@@ -355,7 +355,7 @@
                                     <template x-for="(pair, pIdx) in q.pairs" :key="pIdx">
                                         <div class="flex items-center gap-3">
                                             <input type="text" x-model="pair.left" class="flex-1 p-2.5 rounded-lg border border-slate-300 text-sm shadow-sm" placeholder="Premis (Sisi Kiri)">
-                                            <span class="text-slate-400 font-bold">âž”</span>
+                                            <span class="text-slate-400 font-bold">➔</span>
                                             <input type="text" x-model="pair.right" class="flex-1 p-2.5 rounded-lg border border-emerald-300 bg-emerald-50/30 text-sm shadow-sm" placeholder="Jawaban (Sisi Kanan)">
                                             <button @click="q.pairs.splice(pIdx, 1)" class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
                                         </div>
