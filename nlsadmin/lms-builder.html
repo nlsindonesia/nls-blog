@@ -201,6 +201,28 @@
                                     Video ini akan diputar menggunakan YouTube Iframe API. <br>
                                     Untuk membuat kuis pop-up di tengah video (Interactive Video), silakan tambahkan soal kuis di bawah ini dan isi kolom <strong>Video Timestamp (Detik)</strong>. Video akan otomatis berhenti dan memunculkan soal tersebut.
                                 </p>
+                                
+                                <!-- Video Preview & Duration -->
+                                <template x-if="getYoutubeId(activeNode.videoUrl)">
+                                    <div class="mt-4 border border-slate-200 rounded-xl overflow-hidden bg-white max-w-lg">
+                                        <div class="aspect-video bg-black relative">
+                                            <iframe :src="'https://www.youtube.com/embed/' + getYoutubeId(activeNode.videoUrl) + '?enablejsapi=1'" 
+                                                    class="absolute top-0 left-0 w-full h-full" 
+                                                    frameborder="0" 
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                                    allowfullscreen
+                                                    @load="initYoutubePlayer($event.target, activeNode)">
+                                            </iframe>
+                                        </div>
+                                        <div class="p-3 bg-slate-50 flex items-center justify-between border-t border-slate-200">
+                                            <div class="flex items-center gap-2">
+                                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                <span class="text-xs font-bold text-slate-600">Durasi Video:</span>
+                                            </div>
+                                            <span class="text-sm font-black text-slate-800" x-text="activeNode.videoDurationFormatted || 'Menghitung...'"></span>
+                                        </div>
+                                    </div>
+                                </template>
                             </div>
                         </div>
                     </div>
@@ -637,6 +659,56 @@
                     this.showBulkModal = false;
                     this.showToast(`Berhasil import ${imported} soal!`);
                     this.saveAll();
+                },
+
+                getYoutubeId(url) {
+                    if (!url) return null;
+                    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                    const match = url.match(regExp);
+                    return (match && match[2].length === 11) ? match[2] : null;
+                },
+
+                initYoutubePlayer(iframeEl, node) {
+                    if (!window.YT || !window.YT.Player) {
+                        if (!document.getElementById('yt-api-script')) {
+                            const tag = document.createElement('script');
+                            tag.id = 'yt-api-script';
+                            tag.src = "https://www.youtube.com/iframe_api";
+                            const firstScriptTag = document.getElementsByTagName('script')[0];
+                            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                            
+                            window.onYouTubeIframeAPIReady = () => {
+                                this.createYtPlayer(iframeEl, node);
+                            };
+                        } else {
+                            setTimeout(() => this.initYoutubePlayer(iframeEl, node), 500);
+                        }
+                        return;
+                    }
+                    this.createYtPlayer(iframeEl, node);
+                },
+
+                createYtPlayer(iframeEl, node) {
+                    node.videoDurationFormatted = 'Menghitung...';
+                    new YT.Player(iframeEl, {
+                        events: {
+                            'onReady': (event) => {
+                                const duration = event.target.getDuration();
+                                node.videoDuration = duration;
+                                
+                                const h = Math.floor(duration / 3600);
+                                const m = Math.floor((duration % 3600) / 60);
+                                const s = Math.floor(duration % 60);
+                                
+                                let formatted = '';
+                                if (h > 0) formatted += h + ' jam ';
+                                if (m > 0) formatted += m + ' menit ';
+                                formatted += s + ' detik';
+                                
+                                node.videoDurationFormatted = formatted;
+                            }
+                        }
+                    });
                 },
 
                 initCKEditor() {
