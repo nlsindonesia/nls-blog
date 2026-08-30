@@ -695,7 +695,7 @@
             </header>
 
             <!-- Main Page Dynamic Viewport -->
-            <div class="p-5 sm:p-7 max-w-7xl w-full mx-auto space-y-7 flex-1">
+            <div class="p-5 sm:p-7 max-w-7xl w-full mx-auto flex-1 flex flex-col">
 
                 <!-- =========================================================================
                      1. VIEW: DASHBOARD UTAMA (OVERVIEW & SUMMARY)
@@ -1354,7 +1354,7 @@
                 <!-- =========================================================================
                      3, 4, 5, 6. VIEW: CATALOG COURSES (SCHOOL, OLIMPIADE, TKA, COLLEGE)
                      ========================================================================= -->
-                <div x-show="['school', 'olimpiade', 'tka', 'college'].includes(activeTab)" x-cloak class="space-y-6">
+                <div x-show="['school', 'olimpiade', 'tka', 'college'].includes(activeTab)" x-cloak class="space-y-6 flex-1 flex flex-col">
                     
                     <!-- Dynamic Hero Header for Each Category -->
                     <div class="relative overflow-hidden rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-indigo-950/20"
@@ -1551,7 +1551,7 @@
                     </div>
 
                     <!-- Bottom Consultation & Custom Curriculum Banner -->
-                    <div class="p-6 sm:p-7 rounded-3xl bg-gradient-to-r from-slate-100 via-indigo-50/50 to-purple-50/50 dark:from-[#131d38] dark:via-[#1e1b4b] dark:to-[#131d38] border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="p-6 sm:p-7 mt-auto rounded-3xl bg-gradient-to-r from-slate-100 via-indigo-50/50 to-purple-50/50 dark:from-[#131d38] dark:via-[#1e1b4b] dark:to-[#131d38] border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div class="space-y-1">
                             <div class="flex items-center gap-2">
                                 <span class="text-lg">💡</span>
@@ -3300,3 +3300,5 @@
     </script>
 </body>
 </html>
+
+
