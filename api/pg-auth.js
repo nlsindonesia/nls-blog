@@ -21,10 +21,14 @@ export default async function handler(request, response) {
                     phone VARCHAR(20),
                     school VARCHAR(150),
                     level VARCHAR(20),
-                    grade VARCHAR(20),
+                    grade VARCHAR(100),
                     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
                 );
             `;
+            
+            // Alter existing table just in case it was created with VARCHAR(20)
+            await sql`ALTER TABLE users ALTER COLUMN grade TYPE VARCHAR(100);`;
+            
             return response.status(200).json({ 
                 success: true, 
                 message: "Database schema successfully created/verified."
