@@ -8366,26 +8366,8 @@
                 },
 
                 openModuleBuilder(course) {
-                    this.moduleModal.course = course;
-                    this.moduleModal.activeType = 'materi';
-                    this.moduleForm = {
-                        id: 'm-' + Date.now(),
-                        title: '',
-                        type: 'materi',
-                        duration: '30 Menit',
-                        summary: '',
-                        pdfUrl: '',
-                        videoUrl: ''
-                    };
-                    this.quizQuestionList = [
-                        {
-                            question: '',
-                            options: ['', '', '', ''],
-                            correctAnswer: '',
-                            explanation: ''
-                        }
-                    ];
-                    this.moduleModal.isOpen = true;
+                    // Navigate to the advanced LMS Builder page
+                    window.location.href = `/nlsadmin/lms-builder.html?course=${course.id}`;
                 },
 
                 addQuizQuestionItem() {
