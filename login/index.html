@@ -53,6 +53,9 @@
 
                 if (redirectParam && !isForce) {
                     const raw = localStorage.getItem('nls_student_auth_session') || localStorage.getItem('nls_auth_session');
+                    const devId = localStorage.getItem('nls_device_id') || ('dev-' + Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 9));
+                    localStorage.setItem('nls_device_id', devId);
+
                     if (raw) {
                         let userObj = null;
                         try { userObj = JSON.parse(raw); } catch(e) {}
@@ -60,6 +63,7 @@
                             const u = new URL(redirectParam, window.location.href);
                             const sessionStr = JSON.stringify(userObj);
                             u.searchParams.set('nls_sso_data', sessionStr);
+                            u.searchParams.set('deviceId', devId);
                             try {
                                 u.searchParams.set('sso_b64', btoa(unescape(encodeURIComponent(sessionStr))));
                             } catch(e) {}
@@ -68,6 +72,7 @@
                         }
                     } else if (isProbe) {
                         const u = new URL(redirectParam, window.location.href);
+                        u.searchParams.set('deviceId', devId);
                         u.searchParams.set('sso_guest', '1');
                         window.location.replace(u.toString());
                         return;
@@ -574,7 +579,7 @@
 
                         // Broadcast SSO to other subdomains
                         if (window.NlsSSO) {
-                            window.NlsSSO.broadcastLogin(user);
+                            await window.NlsSSO.broadcastLogin(user);
                         }
 
                         this.isLoading = false;
@@ -670,7 +675,7 @@
 
                         // Broadcast SSO to all other subdomains
                         if (window.NlsSSO) {
-                            window.NlsSSO.broadcastLogin(newStudent);
+                            await window.NlsSSO.broadcastLogin(newStudent);
                         }
 
                         this.isLoading = false;
@@ -719,7 +724,7 @@
                         localStorage.setItem('nls_student_profile_v1', JSON.stringify(studentData));
 
                         if (window.NlsSSO) {
-                            window.NlsSSO.broadcastLogin(studentData);
+                            await window.NlsSSO.broadcastLogin(studentData);
                         }
 
                         this.isLoading = false;

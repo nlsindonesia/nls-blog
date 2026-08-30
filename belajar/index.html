@@ -18,6 +18,14 @@
                 const params = new URLSearchParams(window.location.search);
                 const ssoData = params.get('nls_sso_data') || params.get('auth_token') || params.get('session');
                 const ssoB64 = params.get('sso_b64');
+                const devId = params.get('deviceId') || params.get('devId');
+                
+                if (devId) {
+                    try { localStorage.setItem('nls_device_id', devId); } catch(e) {}
+                    params.delete('deviceId');
+                    params.delete('devId');
+                }
+
                 let parsed = null;
 
                 if (ssoB64) {
@@ -3003,7 +3011,7 @@
                             const sess = JSON.parse(savedSession);
                             const updatedSess = { ...sess, ...this.studentProfile, targetProgram: this.studentProfile.target };
                             localStorage.setItem('nls_student_auth_session', JSON.stringify(updatedSess));
-                            if (window.NlsSSO) window.NlsSSO.broadcastLogin(updatedSess);
+                            if (window.NlsSSO) await window.NlsSSO.broadcastLogin(updatedSess);
                         }
                     } catch(e) {}
 

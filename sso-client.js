@@ -249,10 +249,11 @@
 
             // Push to Device Auth Session API
             try {
-                fetch('/api/auth-session', {
+                await fetch('/api/auth-session', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ deviceId: deviceId, session: sessionData })
+                    body: JSON.stringify({ deviceId: deviceId, session: sessionData }),
+                    keepalive: true
                 }).catch(() => {});
             } catch(e) {}
 
@@ -281,8 +282,9 @@
 
             // Clear from Device Auth Session API
             try {
-                fetch(`/api/auth-session?deviceId=${encodeURIComponent(deviceId)}`, {
-                    method: 'DELETE'
+                await fetch(`/api/auth-session?deviceId=${encodeURIComponent(deviceId)}`, {
+                    method: 'DELETE',
+                    keepalive: true
                 }).catch(() => {});
             } catch(e) {}
 

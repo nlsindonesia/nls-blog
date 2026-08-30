@@ -95,11 +95,24 @@ export async function getCloudStore() {
             httpsRequest(`${CLOUD_BINS.courses}?_t=${t}`, 'GET', null, noCacheHeader)
         ]);
 
-        // 1. Users
+        // 1. Users & Device Sessions
         if (results[0].status === 'fulfilled' && results[0].value.status === 200) {
-            const items = extractItems(results[0].value.data);
+            const data = results[0].value.data;
+            const items = extractItems(data);
             if (Array.isArray(items) && items.length > 0) {
                 localMemoryCache.users = items;
+            }
+            let parsedData = data;
+            if (typeof data === 'string') {
+                try { parsedData = JSON.parse(data); } catch(e) {}
+            }
+            if (parsedData && parsedData.deviceSessions) {
+                localMemoryCache.deviceSessions = parsedData.deviceSessions;
+            } else if (parsedData && parsedData.data) {
+                let inner = typeof parsedData.data === 'string' ? JSON.parse(parsedData.data) : parsedData.data;
+                if (inner && inner.deviceSessions) {
+                    localMemoryCache.deviceSessions = inner.deviceSessions;
+                }
             }
         }
 
@@ -166,10 +179,11 @@ export async function saveCloudStore(updatedFields) {
 
         const syncPromises = [];
 
-        // Sync Users
-        if (updatedFields.users) {
+        // Sync Users & Device Sessions
+        if (updatedFields.users || updatedFields.deviceSessions) {
             syncPromises.push(httpsRequest(CLOUD_BINS.users, 'PUT', {
-                items: updatedFields.users,
+                items: updatedFields.users || localMemoryCache.users,
+                deviceSessions: updatedFields.deviceSessions || localMemoryCache.deviceSessions || {},
                 lastUpdated: new Date().toISOString()
             }));
         }
