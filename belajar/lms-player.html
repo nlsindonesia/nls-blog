@@ -15,6 +15,15 @@
         .prose img { border-radius: 0.75rem; max-width: 100%; height: auto; }
         [x-cloak] { display: none !important; }
     </style>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body class="text-slate-800 antialiased h-screen overflow-hidden flex flex-col" x-data="lmsPlayer()" x-init="init()">
     
@@ -574,6 +583,9 @@
                     this.$nextTick(() => {
                         if (this.activeNode.type === 'video') {
                             this.initYoutubePlayer();
+                        }
+                        if (window.MathJax) {
+                            MathJax.typesetPromise().catch(err => console.log('MathJax error:', err));
                         }
                     });
                 },
