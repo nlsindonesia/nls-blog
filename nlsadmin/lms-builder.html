@@ -681,12 +681,38 @@
 
                 formatGdrivePreview(url) {
                     if (!url) return null;
+                    
+                    // Format File PDF: /file/d/ID/view -> /file/d/ID/preview
                     if (url.includes('drive.google.com/file/d/')) {
                         const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
                         if (match && match[1]) {
                             return `https://drive.google.com/file/d/${match[1]}/preview`;
                         }
                     }
+                    
+                    // Format Folder: /drive/folders/ID -> /embeddedfolderview?id=ID
+                    if (url.includes('drive.google.com/drive/folders/')) {
+                        const match = url.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+                        if (match && match[1]) {
+                            let resourceKey = '';
+                            if (url.includes('resourcekey=')) {
+                                const rkMatch = url.match(/resourcekey=([^&]+)/);
+                                if (rkMatch && rkMatch[1]) {
+                                    resourceKey = `&resourcekey=${rkMatch[1]}`;
+                                }
+                            }
+                            return `https://drive.google.com/embeddedfolderview?id=${match[1]}${resourceKey}#list`;
+                        }
+                    }
+                    
+                    // Coba perbaiki link open?id=ID jika user copas tipe link lama
+                    if (url.includes('drive.google.com/open?id=')) {
+                        const match = url.match(/id=([a-zA-Z0-9_-]+)/);
+                        if (match && match[1]) {
+                            return `https://drive.google.com/file/d/${match[1]}/preview`;
+                        }
+                    }
+
                     return null;
                 },
 
