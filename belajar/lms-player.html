@@ -389,7 +389,12 @@
                                 const course = data.data.find(c => c.id === courseId);
                                 if (course) {
                                     this.courseData = course;
-                                    this.babs = course.modules || course.babs || course.content || [];
+                                    let rawBabs = course.modules || course.babs || course.content || [];
+                                    if (rawBabs.length > 0 && rawBabs[0].subBabs === undefined) {
+                                        this.babs = [{ id: 'b1', title: 'Bab 1 (Semua Modul)', expanded: true, subBabs: rawBabs }];
+                                    } else {
+                                        this.babs = rawBabs;
+                                    }
                                 } else {
                                     this.tryLoadDraft();
                                 }
