@@ -3081,10 +3081,8 @@
                 },
 
                 enterStudyRoom(course, pushUrl = true) {
-                    this.studyRoom.course = course;
-                    this.previousTab = this.activeTab;
-                    this.setActiveTab('study_room');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    // Redirect to the real LMS Player instead of the mockup study room
+                    window.location.href = `/belajar/lms-player.html?course=${course.id}`;
                 },
 
                 closeStudyRoom() {
