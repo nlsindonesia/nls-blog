@@ -5097,7 +5097,8 @@
                 showPassword: false,
                 isSidebarOpen: window.innerWidth >= 1024,
                 isMobile: window.innerWidth < 1024,
-                activeTab: 'kalender', // 'kalender', 'berita', 'pengajar'
+                _isRoutingPopState: false,
+                activeTab: 'dashboard', // 'dashboard', 'kalender', 'berita', 'pengajar', 'users'
                 kalenderView: 'present', // 'present' or 'create'
                 isKalenderDropdownOpen: true,
 
@@ -5474,7 +5475,100 @@
                     }
                 },
 
+                syncUrlRoute(push = true) {
+                    if (this._isRoutingPopState) return;
+                    let path = '/';
+                    if (this.activeTab === 'dashboard') {
+                        path = '/';
+                    } else if (this.activeTab === 'kalender') {
+                        path = `/kalender/${this.kalenderView || 'present'}`;
+                    } else if (this.activeTab === 'berita') {
+                        path = `/berita/${this.beritaView || 'present'}`;
+                    } else if (this.activeTab === 'pengajar') {
+                        path = `/pengajar/${this.pengajarView || 'present'}`;
+                    } else if (this.activeTab === 'users') {
+                        path = `/users/${this.userView || 'present'}`;
+                    } else {
+                        path = `/${this.activeTab}`;
+                    }
+
+                    const currentPath = window.location.pathname.replace(/^\/nlsadmin/, '') || '/';
+                    if (currentPath !== path || window.location.hash) {
+                        try {
+                            if (push) {
+                                history.pushState({ tab: this.activeTab, path: path }, '', path);
+                            } else {
+                                history.replaceState({ tab: this.activeTab, path: path }, '', path);
+                            }
+                        } catch(e) {}
+                    }
+                },
+
+                handleUrlRoute() {
+                    let rawRoute = '';
+                    if (window.location.hash && window.location.hash.length > 1) {
+                        rawRoute = window.location.hash.replace(/^#\/?/, '').toLowerCase().trim();
+                    } else {
+                        rawRoute = window.location.pathname.replace(/^\/nlsadmin/, '').replace(/^\//, '').toLowerCase().trim();
+                    }
+
+                    if (!rawRoute || rawRoute === 'dashboard') {
+                        this.activeTab = 'dashboard';
+                        this.closeAllSubmenus();
+                        if (window.location.hash) this.syncUrlRoute(false);
+                        return;
+                    }
+
+                    const parts = rawRoute.split('/');
+                    const section = parts[0];
+                    const sub = parts[1] || '';
+
+                    this._isRoutingPopState = true;
+
+                    if (section === 'kalender') {
+                        this.activeTab = 'kalender';
+                        if (['create', 'present', 'trash'].includes(sub)) this.kalenderView = sub;
+                        this.closeAllSubmenus('kalender');
+                        this.isKalenderDropdownOpen = true;
+                    } else if (section === 'berita') {
+                        this.activeTab = 'berita';
+                        if (['create', 'present', 'trash'].includes(sub)) this.beritaView = sub;
+                        this.closeAllSubmenus('berita');
+                        this.isBeritaDropdownOpen = true;
+                    } else if (section === 'pengajar') {
+                        this.activeTab = 'pengajar';
+                        if (['add', 'present', 'verification', 'trash'].includes(sub)) this.pengajarView = sub;
+                        this.closeAllSubmenus('pengajar');
+                        this.isPengajarDropdownOpen = true;
+                    } else if (section === 'users') {
+                        this.activeTab = 'users';
+                        if (['add', 'present', 'trash'].includes(sub)) this.userView = sub;
+                        this.closeAllSubmenus('users');
+                        this.isUserDropdownOpen = true;
+                    } else {
+                        this.activeTab = section;
+                    }
+
+                    // Clean any old hash if present and sync clean path
+                    if (window.location.hash) {
+                        this.syncUrlRoute(false);
+                    }
+
+                    setTimeout(() => {
+                        this._isRoutingPopState = false;
+                    }, 80);
+                },
+
                 init() {
+                    this.handleUrlRoute();
+
+                    window.addEventListener('hashchange', () => {
+                        this.handleUrlRoute();
+                    });
+                    window.addEventListener('popstate', () => {
+                        this.handleUrlRoute();
+                    });
+
                     // Sync & initialize users
                     if (!localStorage.getItem("nls_users_v1")) {
                         this.saveUsersToStorage();
@@ -5848,6 +5942,7 @@
                         highlightsRaw: 'Sistem Penilaian IRT Standar Nasional\nWebinar Live Pembahasan Soal & Bedah Trik\nE-Sertifikat Resmi & Analisis Rapor Nilai'
                     };
                     if (this.isMobile) this.isSidebarOpen = false;
+                    this.syncUrlRoute(true);
                 },
 
                 openPresentEventView() {
@@ -5856,6 +5951,7 @@
                     this.closeAllSubmenus('kalender');
                     this.isKalenderDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
+                    this.syncUrlRoute(true);
                 },
 
                 openTrashEventView() {
@@ -5864,6 +5960,7 @@
                     this.closeAllSubmenus('kalender');
                     this.isKalenderDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
+                    this.syncUrlRoute(true);
                 },
 
                 getPreviewHighlights() {
@@ -6386,6 +6483,7 @@
                         this.initCKEditor();
                     });
                     if (this.isMobile) this.isSidebarOpen = false;
+                    this.syncUrlRoute(true);
                 },
 
                 openPresentNewsView() {
@@ -6395,6 +6493,7 @@
                     this.closeAllSubmenus('berita');
                     this.isBeritaDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
+                    this.syncUrlRoute(true);
                 },
 
                 openTrashNewsView() {
@@ -6404,6 +6503,7 @@
                     this.closeAllSubmenus('berita');
                     this.isBeritaDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
+                    this.syncUrlRoute(true);
                 },
 
                 isTeacherPhotoUploading: false,
@@ -6491,6 +6591,7 @@
                         portfolio: ''
                     };
                     if (this.isMobile) this.isSidebarOpen = false;
+                    this.syncUrlRoute(true);
                 },
 
                 openPresentTeacherView() {
@@ -6499,6 +6600,7 @@
                     this.closeAllSubmenus('pengajar');
                     this.isPengajarDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
+                    this.syncUrlRoute(true);
                 },
 
                 openTeacherVerificationView() {
@@ -6508,6 +6610,7 @@
                     this.isPengajarDropdownOpen = true;
                     this.refreshTeacherApplications(false);
                     if (this.isMobile) this.isSidebarOpen = false;
+                    this.syncUrlRoute(true);
                 },
 
                 async refreshTeacherApplications(showNotice = true) {
@@ -6636,6 +6739,7 @@
                     this.isPengajarDropdownOpen = true;
                     this.refreshTeacherApplications(false);
                     if (this.isMobile) this.isSidebarOpen = false;
+                    this.syncUrlRoute(true);
                 },
 
                 // USER MANAGEMENT DROPDOWN & CRUD METHODS
@@ -6666,6 +6770,7 @@
                     };
                     this.showUserPassword = false;
                     if (this.isMobile) this.isSidebarOpen = false;
+                    this.syncUrlRoute(true);
                 },
 
                 openPresentUserView() {
@@ -6674,6 +6779,7 @@
                     this.closeAllSubmenus('users');
                     this.isUserDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
+                    this.syncUrlRoute(true);
                 },
 
                 openTrashUserView() {
@@ -6682,6 +6788,7 @@
                     this.closeAllSubmenus('users');
                     this.isUserDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
+                    this.syncUrlRoute(true);
                 },
 
                 setUserRole(role_id, roleName) {
