@@ -2148,7 +2148,7 @@
                 // Student Profile State (Loaded when logged in)
                 studentProfile: (function() {
                     try {
-                        const raw = localStorage.getItem('nls_student_profile_v1') || localStorage.getItem('nls_auth_session') || localStorage.getItem('nls_student_auth_session');
+                        const raw = localStorage.getItem('nls_student_auth_session') || localStorage.getItem('nls_auth_session') || localStorage.getItem('nls_student_profile_v1');
                         if (!raw) return null;
                         const s = JSON.parse(raw);
                         if (!s || typeof s !== 'object') return null;
@@ -3049,11 +3049,17 @@
                         }
                     };
 
-                    // 1. Initial read from local session
+                    // 1. Initial read from local session (active auth session is strict source of truth)
                     try {
-                        const raw = localStorage.getItem('nls_student_profile_v1') || localStorage.getItem('nls_auth_session') || localStorage.getItem('nls_student_auth_session');
-                        if (raw) {
-                            updateStateFromSession(JSON.parse(raw));
+                        const authRaw = localStorage.getItem('nls_student_auth_session') || localStorage.getItem('nls_auth_session');
+                        if (authRaw) {
+                            const sess = JSON.parse(authRaw);
+                            updateStateFromSession(sess);
+                            localStorage.setItem('nls_student_profile_v1', JSON.stringify(this.studentProfile));
+                        } else {
+                            this.isLoggedIn = false;
+                            this.studentProfile = null;
+                            localStorage.removeItem('nls_student_profile_v1');
                         }
                     } catch(e) {}
 
@@ -3062,9 +3068,11 @@
                         window.NlsSSO.onSessionChange((sess, loggedIn) => {
                             if (loggedIn && sess) {
                                 updateStateFromSession(sess);
+                                localStorage.setItem('nls_student_profile_v1', JSON.stringify(this.studentProfile));
                             } else {
                                 this.isLoggedIn = false;
                                 this.studentProfile = null;
+                                localStorage.removeItem('nls_student_profile_v1');
                             }
                         });
                     }
@@ -3101,6 +3109,7 @@
                                     }
                                     // Save back to local storage
                                     localStorage.setItem('nls_student_profile_v1', JSON.stringify(this.studentProfile));
+                                    localStorage.setItem('nls_student_auth_session', JSON.stringify({ ...found, ...this.studentProfile }));
                                 }
                             }
                         }
@@ -3108,16 +3117,18 @@
                 },
 
                 async logoutStudent() {
+                    try {
+                        localStorage.removeItem('nls_auth_session');
+                        localStorage.removeItem('nls_student_auth_session');
+                        localStorage.removeItem('nls_student_profile_v1');
+                        localStorage.removeItem('nls_admin_auth');
+                        sessionStorage.clear();
+                    } catch(e) {}
+
                     if (window.NlsSSO && typeof window.NlsSSO.broadcastLogout === 'function') {
                         await window.NlsSSO.broadcastLogout();
-                    } else {
-                        try {
-                            localStorage.removeItem('nls_auth_session');
-                            localStorage.removeItem('nls_student_auth_session');
-                            localStorage.removeItem('nls_admin_auth');
-                            sessionStorage.removeItem('nls_admin_auth');
-                        } catch(e) {}
                     }
+
                     this.isLoggedIn = false;
                     this.studentProfile = null;
                     this.userDropdownOpen = false;

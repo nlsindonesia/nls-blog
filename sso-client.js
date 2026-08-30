@@ -21,7 +21,7 @@
 
             // Auto-Purge deprecated / mismatched local cache and sync authoritative Cloud data
             try {
-                const CACHE_SCHEMA_VERSION = 'v3_cloud_sync_2026_08_30';
+                const CACHE_SCHEMA_VERSION = 'v4_authoritative_session_2026_08_30';
                 const currentSchema = localStorage.getItem('nls_cache_schema_ver');
                 if (currentSchema !== CACHE_SCHEMA_VERSION) {
                     localStorage.removeItem('nls_registered_users_v1');
@@ -29,6 +29,7 @@
                     localStorage.removeItem('nls_users_trash_v1');
                     localStorage.removeItem('nls_temp_users');
                     localStorage.removeItem('nls_mock_users');
+                    localStorage.removeItem('nls_student_profile_v1'); // Purge stale profile cache so it resyncs from active auth session
                     localStorage.removeItem('nls_berita_articles_trash_v1');
                     localStorage.removeItem('nls_kalender_events_trash_v1');
                     localStorage.removeItem('nls_pengajar_teachers_trash_v1');
