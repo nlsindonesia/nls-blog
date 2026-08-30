@@ -1,12 +1,12 @@
 import { sql } from '@vercel/postgres';
 
 export default async function handler(request, response) {
-    if (request.method !== 'POST') {
-        return response.status(405).json({ success: false, error: 'Method not allowed. Use POST.' });
+    if (request.method !== 'POST' && request.method !== 'GET') {
+        return response.status(405).json({ success: false, error: 'Method not allowed.' });
     }
 
     try {
-        const { action } = request.body;
+        const action = request.body?.action || request.query?.action;
 
         // --- 1. SETUP DATABASE SCHEMA ---
         if (action === 'setup') {
