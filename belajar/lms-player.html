@@ -25,7 +25,7 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
             </a>
             <div>
-                <h1 class="font-black text-sm sm:text-base text-slate-900 leading-tight">Masterclass Fisika</h1>
+                <h1 class="font-black text-sm sm:text-base text-slate-900 leading-tight" x-text="courseData ? courseData.title : 'Program Belajar NLS'"></h1>
                 <p class="text-[10px] sm:text-xs text-slate-500 font-medium">Progress: <span class="text-indigo-600 font-bold" x-text="getProgress() + '%'"></span></p>
             </div>
         </div>
@@ -356,6 +356,7 @@
         function lmsPlayer() {
             return {
                 sidebarOpen: false,
+                courseData: null,
                 babs: [],
                 activeNode: null,
                 completedNodes: [],
@@ -373,13 +374,30 @@
                 },
                 
                 init() {
-                    const saved = localStorage.getItem('lms_builder_draft');
-                    if (saved) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const courseId = urlParams.get('course');
+                    
+                    if (courseId) {
                         try {
-                            this.babs = JSON.parse(saved);
-                        } catch(e) { console.error('Gagal meload data', e); }
+                            const savedCourses = JSON.parse(localStorage.getItem('nls_lms_courses_v1')) || [];
+                            const course = savedCourses.find(c => c.id === courseId);
+                            if (course) {
+                                this.courseData = course;
+                                // Admin saves content to 'babs', but the new JSON structure uses 'content_json' or 'content' in some places. Check both.
+                                this.babs = course.babs || course.content || [];
+                            } else {
+                                this.tryLoadDraft();
+                            }
+                        } catch(e) {
+                            this.tryLoadDraft();
+                        }
+                    } else {
+                        this.tryLoadDraft();
                     }
                     
+                    // Fetch completed modules from server if available (mocked for now since it needs user data)
+                    this.loadProgress();
+
                     // Load YT Iframe API
                     if (!window.YT) {
                         const tag = document.createElement('script');
@@ -393,6 +411,21 @@
                         this.openNode(this.babs[0].subBabs[0]);
                     }
                 },
+
+                tryLoadDraft() {
+                    const saved = localStorage.getItem('lms_builder_draft');
+                    if (saved) {
+                        try {
+                            this.babs = JSON.parse(saved);
+                        } catch(e) { console.error('Gagal meload data', e); }
+                    }
+                },
+
+                loadProgress() {
+                    // Di sini seharusnya fetch /api/pg-lms untuk mendapatkan completed_modules
+                    // Untuk sementara dibiarkan empty
+                },
+
 
                 initYoutubePlayer() {
                     if (this.ytPlayer) {
