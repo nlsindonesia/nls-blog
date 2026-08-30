@@ -2618,7 +2618,7 @@
                 async fetchCoursesFromCloud() {
                     if (typeof fetch === 'undefined') return;
                     try {
-                        const res = await fetch('/api/courses');
+                        const res = await fetch('/api/pg-lms?action=get_courses');
                         if (res.ok) {
                             const json = await res.json();
                             if (json && Array.isArray(json.data) && json.data.length > 0) {
@@ -2856,7 +2856,7 @@
 
                 async fetchMyLMSData(userId) {
                     try {
-                        const res = await fetch('/api/users', {
+                        const res = await fetch('/api/pg-lms', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ action: 'get_lms_data', userId: userId })
@@ -3059,33 +3059,20 @@
                     // Mark module completed
                     this.getActiveModule().completed = true;
 
-                    // Send live submission to Super Admin Cloud API
+                    // Send live submission to Postgres Unified Schema
                     if (typeof fetch !== 'undefined') {
-                        fetch('/api/quiz-results', {
+                        fetch('/api/pg-lms', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                studentName: this.studentProfile.name || 'Siswa NLS',
-                                studentEmail: this.studentProfile.email || '',
-                                nisn: this.studentProfile.nisn || '',
-                                school: this.studentProfile.school || '',
+                            body: JSON.stringify({ 
+                                action: 'submit_quiz',
+                                userId: this.studentProfile.id,
                                 courseId: this.studyRoom.course ? this.studyRoom.course.id : '',
-                                courseTitle: this.studyRoom.course ? this.studyRoom.course.title : 'Program NLS',
-                                moduleTitle: this.getActiveModule().title,
-                                category: this.studyRoom.course ? this.studyRoom.course.category : 'School',
+                                moduleIndex: this.activeModuleIndex,
                                 score: score,
-                                totalQuestions: totalQ,
-                                correctCount: correct,
                                 answers: this.userAnswers
                             })
-                        }).catch(e => {});
-
-                        // Save to User's Cloud DB LMS Data
-                        fetch('/api/users', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ action: 'submit_quiz', userId: this.studentProfile.id, quizData: newAttempt })
-                        }).catch(e => {});
+                        }).catch(e => console.error(e));
                     }
 
                     this.showToast(`Kuis Selesai! Skor Anda: ${score}/100. Riwayat telah tersimpan.`);
