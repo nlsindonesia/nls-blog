@@ -392,6 +392,64 @@
         }
     };
 
+    // ==============================================================================
+    // Universal Cross-Domain SSO Link Decorator
+    // Automatically attaches active session token (?nls_sso_data=...) to all cross-domain
+    // links (e.g. nls-blog-plum <-> nls-belajar <-> nls-superadmin) upon click/hover.
+    // ==============================================================================
+    function decorateCrossDomainLink(link) {
+        if (!link) return;
+        const rawHref = link.getAttribute('href');
+        if (!rawHref || rawHref.startsWith('javascript:') || rawHref.startsWith('#')) return;
+
+        const session = NlsSSO.getLocalSession();
+        if (!session) return;
+
+        try {
+            let isCrossDomainTarget = false;
+            let targetUrl = link.href;
+
+            if (rawHref === '/cbt' || rawHref === '/cbt/' || rawHref.startsWith('/belajar')) {
+                const subPath = rawHref.startsWith('/belajar') ? rawHref.replace(/^\/belajar/, '') : '';
+                targetUrl = 'https://nls-belajar.vercel.app' + (subPath || '/');
+                isCrossDomainTarget = true;
+            } else if (link.hostname && (link.hostname.includes('belajar') || link.hostname.includes('lms') || link.hostname.includes('superadmin') || link.hostname.includes('blog-plum'))) {
+                if (link.hostname !== window.location.hostname) {
+                    isCrossDomainTarget = true;
+                }
+            }
+
+            if (isCrossDomainTarget) {
+                const u = new URL(targetUrl, window.location.href);
+                if (!u.searchParams.has('nls_sso_data') && !u.searchParams.has('sso_b64')) {
+                    link.href = NlsSSO.createCrossDomainUrl(targetUrl, session);
+                }
+            }
+        } catch(err) {}
+    }
+
+    if (typeof document !== 'undefined') {
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('a');
+            if (link) decorateCrossDomainLink(link);
+        }, true);
+
+        document.addEventListener('auxclick', function(e) {
+            const link = e.target.closest('a');
+            if (link) decorateCrossDomainLink(link);
+        }, true);
+
+        document.addEventListener('mouseover', function(e) {
+            const link = e.target.closest('a');
+            if (link) decorateCrossDomainLink(link);
+        }, true);
+
+        document.addEventListener('touchstart', function(e) {
+            const link = e.target.closest('a');
+            if (link) decorateCrossDomainLink(link);
+        }, { capture: true, passive: true });
+    }
+
     window.NlsSSO = NlsSSO;
     window.NlsCloudSync = NlsCloudSync;
 
@@ -401,3 +459,4 @@
         NlsCloudSync.init();
     }
 })(typeof window !== 'undefined' ? window : this);
+
