@@ -51,8 +51,8 @@
                 }
 
                 if (parsed && typeof parsed === 'object' && (parsed.id || parsed.name || parsed.email || parsed.username || parsed.role)) {
-                    const DEFAULT_AVATAR = 'https://ui-avatars.com/api/?name=Siswa&background=e2e8f0&color=475569&size=150';
-                    const avatar = parsed.avatar && !parsed.avatar.includes('article-placeholder') && !parsed.avatar.includes('nls-logo-300') ? parsed.avatar : DEFAULT_AVATAR;
+                    const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
+                    const avatar = parsed.avatar && !parsed.avatar.includes('article-placeholder') && !parsed.avatar.includes('nls-logo-300') && !parsed.avatar.includes('unsplash.com') ? parsed.avatar : DEFAULT_AVATAR;
                     const nisn = (parsed.nisn || '').startsWith('NISN:') ? parsed.nisn : ('NISN: ' + (parsed.nisn || 'Terdaftar'));
                     const studentObj = {
                         id: parsed.id || 'usr-' + Date.now(),
@@ -299,7 +299,7 @@
                 <template x-if="isLoggedIn && studentProfile">
                     <div class="mt-4 p-3 rounded-2xl bg-gradient-to-r from-indigo-50/80 to-purple-50/80 dark:from-[#131d38] dark:to-[#1e1b4b] border border-indigo-100/80 dark:border-indigo-900/50 flex items-center gap-3">
                         <div class="relative shrink-0">
-                            <img :src="studentProfile.avatar || 'https://ui-avatars.com/api/?name=Siswa&background=e2e8f0&color=475569&size=150'" alt="Student Avatar" class="w-10 h-10 rounded-2xl object-cover border-2 border-white dark:border-indigo-500 shadow-xs">
+                            <img :src="studentProfile.avatar || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E"" alt="Student Avatar" class="w-10 h-10 rounded-2xl object-cover border-2 border-white dark:border-indigo-500 shadow-xs">
                             <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full"></span>
                         </div>
                         <div class="min-w-0 flex-1">
@@ -647,7 +647,7 @@
                         <div class="relative" @click.outside="userDropdownOpen = false">
                             <button type="button" @click.stop="userDropdownOpen = !userDropdownOpen"
                                 class="flex items-center gap-2 p-1 pr-3 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all cursor-pointer shadow-2xs">
-                                <img :src="studentProfile.avatar || 'https://ui-avatars.com/api/?name=Siswa&background=e2e8f0&color=475569&size=150'" alt="Avatar" class="w-7 h-7 rounded-full object-cover border border-indigo-400">
+                                <img :src="studentProfile.avatar || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E"" alt="Avatar" class="w-7 h-7 rounded-full object-cover border border-indigo-400">
                                 <span class="hidden md:inline-block text-xs font-black text-slate-800 dark:text-slate-200" x-text="studentProfile.name.split(' ')[0]"></span>
                                 <svg class="w-3.5 h-3.5 text-slate-400 transition-transform" :class="userDropdownOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </button>
@@ -663,7 +663,7 @@
                                 class="absolute right-0 top-full mt-2 w-64 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-2xl p-3 z-50 space-y-2 text-xs">
                                 
                                 <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center gap-2.5">
-                                    <img :src="studentProfile.avatar || 'https://ui-avatars.com/api/?name=Siswa&background=e2e8f0&color=475569&size=150'" alt="Avatar" class="w-9 h-9 rounded-full object-cover border border-primary/20">
+                                    <img :src="studentProfile.avatar || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E"" alt="Avatar" class="w-9 h-9 rounded-full object-cover border border-primary/20">
                                     <div class="min-w-0">
                                         <div class="text-xs font-black text-slate-900 dark:text-white truncate" x-text="studentProfile.name"></div>
                                         <div class="text-[10px] text-slate-400 truncate" x-text="studentProfile.nisn || studentProfile.school"></div>
@@ -1109,7 +1109,7 @@
                                 <div class="relative p-6 sm:p-7 pt-16 mt-4 text-center">
                                     <div class="relative w-32 h-32 mx-auto mb-4 group-hover:scale-105 transition-transform duration-500">
                                         <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-3xl blur-md opacity-40"></div>
-                                        <img :src="studentProfile.avatar || 'https://ui-avatars.com/api/?name=Siswa&background=e2e8f0&color=475569&size=150'" alt="Avatar" class="relative w-full h-full rounded-3xl object-cover border-4 border-white dark:border-[#0f172a] shadow-xl z-10">
+                                        <img :src="studentProfile.avatar || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E"" alt="Avatar" class="relative w-full h-full rounded-3xl object-cover border-4 border-white dark:border-[#0f172a] shadow-xl z-10">
                                         <span class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 border-2 border-white dark:border-[#0f172a] flex items-center justify-center text-sm text-white font-black shadow-lg z-20" title="Akun Terverifikasi">✓</span>
                                     </div>
 
@@ -1259,7 +1259,7 @@
                             <div class="space-y-2">
                                 <label class="block font-bold text-slate-700 dark:text-slate-300">Foto Profil Siswa</label>
                                 <div class="flex items-center gap-4">
-                                    <img :src="studentProfile.avatar || 'https://ui-avatars.com/api/?name=Siswa&background=e2e8f0&color=475569&size=150'" alt="Avatar Preview" class="w-16 h-16 rounded-2xl object-cover border-2 border-indigo-500 shadow-sm">
+                                    <img :src="studentProfile.avatar || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E"" alt="Avatar Preview" class="w-16 h-16 rounded-2xl object-cover border-2 border-indigo-500 shadow-sm">
                                     <div class="space-y-1.5">
                                         <label class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs cursor-pointer transition-all">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
@@ -2269,8 +2269,8 @@
                         if (!raw) return null;
                         const s = JSON.parse(raw);
                         if (!s || typeof s !== 'object') return null;
-                        const DEFAULT_AVATAR = 'https://ui-avatars.com/api/?name=Siswa&background=e2e8f0&color=475569&size=150';
-                        const avatar = s.avatar && !s.avatar.includes('article-placeholder') && !s.avatar.includes('nls-logo-300') ? s.avatar : DEFAULT_AVATAR;
+                        const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
+                        const avatar = s.avatar && !s.avatar.includes('article-placeholder') && !s.avatar.includes('nls-logo-300') && !s.avatar.includes('unsplash.com') ? s.avatar : DEFAULT_AVATAR;
                         const nisn = (s.nisn || '').startsWith('NISN:') ? s.nisn : ('NISN: ' + (s.nisn || 'Terdaftar'));
                         return {
                             id: s.id || '',
@@ -2811,7 +2811,7 @@
                                 target: session.targetProgram || session.target || 'Program Unggulan NLS',
                                 role: session.role || 'student',
                                 roleLabel: session.roleLabel || (session.role === 'teacher' ? 'Guru / Pengajar' : 'Siswa'),
-                                avatar: session.avatar || 'https://ui-avatars.com/api/?name=Siswa&background=e2e8f0&color=475569&size=150'
+                                avatar: session.avatar || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E"
                             };
                         } else {
                             this.isLoggedIn = false;
@@ -3182,12 +3182,12 @@
                 },
 
                 initAuthSession() {
-                    const DEFAULT_AVATAR = 'https://ui-avatars.com/api/?name=Siswa&background=e2e8f0&color=475569&size=150';
+                    const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
 
                     const updateStateFromSession = (s) => {
                         if (s && typeof s === 'object' && (s.name || s.email || s.username || s.id)) {
                             this.isLoggedIn = true;
-                            const avatar = s.avatar && !s.avatar.includes('article-placeholder') && !s.avatar.includes('nls-logo-300') ? s.avatar : DEFAULT_AVATAR;
+                            const avatar = s.avatar && !s.avatar.includes('article-placeholder') && !s.avatar.includes('nls-logo-300') && !s.avatar.includes('unsplash.com') ? s.avatar : DEFAULT_AVATAR;
                             const nisn = (s.nisn || '').startsWith('NISN:') ? s.nisn : ('NISN: ' + (s.nisn || 'Terdaftar'));
                             this.studentProfile = {
                                 id: s.id || '',
@@ -3255,7 +3255,7 @@
                             if (json && Array.isArray(json.data) && json.data.length > 0) {
                                 const found = json.data.find(u => u.id === this.studentProfile.id || (u.email && u.email.toLowerCase() === (this.studentProfile.email || '').toLowerCase()));
                                 if (found) {
-                                    const DEFAULT_AVATAR = 'https://ui-avatars.com/api/?name=Siswa&background=e2e8f0&color=475569&size=150';
+                                    const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
                                     this.studentProfile.name = found.name || this.studentProfile.name;
                                     this.studentProfile.school = found.school || this.studentProfile.school;
                                     this.studentProfile.nisn = found.nisn || this.studentProfile.nisn;
@@ -3264,7 +3264,7 @@
                                     this.studentProfile.phone = found.phone || this.studentProfile.phone;
                                     this.studentProfile.parentPhone = found.parentPhone || this.studentProfile.parentPhone;
                                     this.studentProfile.target = found.targetProgram || this.studentProfile.target;
-                                    if (found.avatar && !found.avatar.includes('article-placeholder') && !found.avatar.includes('nls-logo-300')) {
+                                    if (found.avatar && !found.avatar.includes('article-placeholder') && !found.avatar.includes('nls-logo-300') && !found.avatar.includes('unsplash.com')) {
                                         this.studentProfile.avatar = found.avatar;
                                     } else {
                                         this.studentProfile.avatar = DEFAULT_AVATAR;
