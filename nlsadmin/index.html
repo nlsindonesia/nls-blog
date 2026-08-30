@@ -4600,7 +4600,7 @@
                             <span class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl">📚</span>
                             <div>
                                 <h3 class="text-base sm:text-lg font-black text-slate-900 dark:text-white" x-text="courseModal.isEdit ? 'Revisi Info Course' : 'Buat Course / Kelas Baru'"></h3>
-                                <p class="text-xs text-slate-500" x-text="'Kategori: ' + courseModal.form.category + ' â€¢ ' + courseModal.form.level"></p>
+                                <p class="text-xs text-slate-500" x-text="'Kategori: ' + courseModal.form.category + ' &bull; ' + courseModal.form.level"></p>
                             </div>
                         </div>
                         <button type="button" @click="courseModal.isOpen = false" class="p-2 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
@@ -8637,4 +8637,5 @@
     </script>
 </body>
 </html>
+
 
