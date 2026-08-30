@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -428,12 +428,7 @@
                         } catch(e) {}
                     }
                     if (this.babs.length === 0) {
-                        this.babs = [{
-                            id: 'b1', title: 'Bab 1: Kinematika Dasar', expanded: true, subBabs: [
-                                { id: 's1', title: 'Materi Pengantar', type: 'materi', materiFormat: 'ckeditor', pdfUrl: '', rawHtml: '', videoUrl: '', questions: [] },
-                                { id: 's2', title: 'Kuis Evaluasi', type: 'kuis', questions: [] }
-                            ]
-                        }];
+                        this.babs = [];
                     }
                     this.saveAll(true);
                 },
