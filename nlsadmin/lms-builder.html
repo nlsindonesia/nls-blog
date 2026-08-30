@@ -470,7 +470,8 @@
                                 if (course) {
                                     this.courseData = course;
                                     this.courseTitle = course.title || 'Course';
-                                    this.babs = course.babs || course.content || course.modules || [];
+                                    this.babs = (course.babs && course.babs.length > 0) ? course.babs : 
+                                                ((course.content && course.content.length > 0) ? course.content : (course.modules || []));
                                     return;
                                 }
                             }
