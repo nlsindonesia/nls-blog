@@ -36,19 +36,46 @@
                 }
             } catch(e) {}
 
-            // 1. Consume token/session passed in URL parameter (?nls_sso_data=...)
+            // 1. Consume token/session passed in URL parameter (?nls_sso_data=... or ?sso_b64=... or ?auth_token=...)
             try {
                 const urlParams = new URLSearchParams(window.location.search);
-                const ssoData = urlParams.get('nls_sso_data');
-                if (ssoData) {
-                    const parsed = JSON.parse(decodeURIComponent(ssoData));
-                    if (parsed && typeof parsed === 'object') {
-                        this.setLocalSession(parsed);
-                        // Clean URL without reloading
-                        urlParams.delete('nls_sso_data');
-                        const newSearch = urlParams.toString() ? '?' + urlParams.toString() : '';
-                        history.replaceState(null, '', window.location.pathname + newSearch + window.location.hash);
+                const ssoData = urlParams.get('nls_sso_data') || urlParams.get('auth_token') || urlParams.get('session');
+                const ssoB64 = urlParams.get('sso_b64');
+                let parsed = null;
+
+                if (ssoB64) {
+                    try {
+                        parsed = JSON.parse(decodeURIComponent(escape(atob(ssoB64))));
+                    } catch(e) {
+                        try { parsed = JSON.parse(atob(ssoB64)); } catch(e2) {}
                     }
+                }
+
+                if (!parsed && ssoData) {
+                    try {
+                        parsed = JSON.parse(ssoData);
+                    } catch(e) {
+                        try {
+                            parsed = JSON.parse(decodeURIComponent(ssoData));
+                        } catch(e2) {
+                            try {
+                                parsed = JSON.parse(atob(ssoData));
+                            } catch(e3) {}
+                        }
+                    }
+                }
+
+                if (parsed && typeof parsed === 'object' && (parsed.id || parsed.name || parsed.email || parsed.username || parsed.role)) {
+                    this.setLocalSession(parsed);
+                    // Clean URL without reloading
+                    urlParams.delete('nls_sso_data');
+                    urlParams.delete('sso_b64');
+                    urlParams.delete('auth_token');
+                    urlParams.delete('session');
+                    const newSearch = urlParams.toString() ? '?' + urlParams.toString() : '';
+                    try {
+                        history.replaceState(null, '', window.location.pathname + newSearch + window.location.hash);
+                    } catch(e) {}
                 }
             } catch(e) {}
 
@@ -167,23 +194,35 @@
                 return;
             }
             try {
-                localStorage.setItem('nls_auth_session', JSON.stringify(session));
-                localStorage.setItem('nls_student_auth_session', JSON.stringify(session));
+                const DEFAULT_AVATAR = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80';
+                const avatar = session.avatar && !session.avatar.includes('article-placeholder') && !session.avatar.includes('nls-logo-300') ? session.avatar : DEFAULT_AVATAR;
+                const nisn = (session.nisn || '').startsWith('NISN:') ? session.nisn : ('NISN: ' + (session.nisn || 'Terdaftar'));
+                const studentObj = {
+                    id: session.id || '',
+                    name: session.name || 'Siswa NLS',
+                    nisn: nisn,
+                    school: session.school || 'Sekolah NLS',
+                    level: session.level || 'SMA',
+                    grade: session.grade || `${session.level || 'SMA'} - Kelas Unggulan`,
+                    email: session.email || '',
+                    phone: session.phone || '',
+                    parentPhone: session.parentPhone || '-',
+                    avatar: avatar,
+                    target: session.targetProgram || session.target || 'Program Unggulan NLS',
+                    targetProgram: session.targetProgram || session.target || 'Program Unggulan NLS',
+                    role: session.role || 'student',
+                    roleLabel: session.roleLabel || (session.role === 'teacher' ? 'Guru / Pengajar' : (session.role === 'super_admin' ? 'Super Admin' : 'Siswa'))
+                };
+
+                const merged = { ...session, ...studentObj };
+                localStorage.setItem('nls_auth_session', JSON.stringify(merged));
+                localStorage.setItem('nls_student_auth_session', JSON.stringify(merged));
+                localStorage.setItem('nls_student_profile_v1', JSON.stringify(studentObj));
+
                 if (session.role === 'super_admin') {
                     localStorage.setItem('nls_admin_auth', 'true');
                     sessionStorage.setItem('nls_admin_auth', 'true');
                 }
-                localStorage.setItem('nls_student_profile_v1', JSON.stringify({
-                    name: session.name || 'Siswa NLS',
-                    nisn: session.nisn || 'NISN: Terdaftar',
-                    school: session.school || 'Sekolah NLS',
-                    email: session.email || '',
-                    phone: session.phone || '',
-                    avatar: session.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-                    target: session.targetProgram || 'Program Unggulan NLS',
-                    role: session.role || 'student',
-                    roleLabel: session.roleLabel || 'Siswa'
-                }));
             } catch(e) {}
         },
 
@@ -227,12 +266,16 @@
             });
         },
 
-        createCrossDomainUrl(targetUrl) {
-            const session = this.getLocalSession();
+        createCrossDomainUrl(targetUrl, sessionOverride = null) {
+            const session = sessionOverride || this.getLocalSession();
             if (!session) return targetUrl;
             try {
                 const u = new URL(targetUrl, window.location.href);
-                u.searchParams.set('nls_sso_data', encodeURIComponent(JSON.stringify(session)));
+                const sessionStr = JSON.stringify(session);
+                u.searchParams.set('nls_sso_data', sessionStr);
+                try {
+                    u.searchParams.set('sso_b64', btoa(unescape(encodeURIComponent(sessionStr))));
+                } catch(e) {}
                 return u.toString();
             } catch(e) {
                 return targetUrl;

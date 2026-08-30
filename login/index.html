@@ -467,7 +467,8 @@
                     this.activeTab = tab;
                     try {
                         const newUrl = tab === 'register' ? '/register' : '/login';
-                        history.replaceState(null, '', newUrl);
+                        const search = window.location.search || '';
+                        history.replaceState(null, '', newUrl + search + window.location.hash);
                     } catch(e) {}
                 },
 
@@ -545,8 +546,8 @@
                         this.showToast('Login berhasil! Mengalihkan ke Portal Belajar...', 'success');
 
                         setTimeout(() => {
-                            window.location.href = this.getRedirectTarget();
-                        }, 900);
+                            window.location.href = this.getRedirectTarget(user);
+                        }, 800);
                     } catch(err) {
                         console.warn('API login network error:', err);
                         this.isLoading = false;
@@ -554,7 +555,7 @@
                     }
                 },
 
-                getRedirectTarget() {
+                getRedirectTarget(userOverride = null) {
                     const params = new URLSearchParams(window.location.search);
                     const courseId = params.get('course');
                     const returnUrl = params.get('returnUrl') || params.get('redirect');
@@ -566,7 +567,7 @@
                         target = returnUrl;
                     }
                     if (window.NlsSSO && typeof window.NlsSSO.createCrossDomainUrl === 'function') {
-                        return window.NlsSSO.createCrossDomainUrl(target);
+                        return window.NlsSSO.createCrossDomainUrl(target, userOverride);
                     }
                     return target;
                 },
@@ -641,8 +642,8 @@
                         this.showToast('Pendaftaran Berhasil! Mengalihkan ke Portal Belajar...', 'success');
 
                         setTimeout(() => {
-                            window.location.href = this.getRedirectTarget();
-                        }, 1000);
+                            window.location.href = this.getRedirectTarget(newStudent);
+                        }, 800);
                     } catch(err) {
                         console.error('API register error:', err);
                         this.isLoading = false;
