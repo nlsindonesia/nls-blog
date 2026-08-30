@@ -767,7 +767,7 @@
             border: none !important;
         }
         /* =====================================================================
-           UI POLISH OVERRIDE (inline √¢‚Ç¨‚Äù dimuat bersama HTML, anti cache terpisah)
+           UI POLISH OVERRIDE (inline +ÛGÈºG«• dimuat bersama HTML, anti cache terpisah)
            ===================================================================== */
 
         /* Kartu event ber-warna tebal (2.5px) -> 1.5px halus */
@@ -1020,7 +1020,7 @@
                         <span class="login-input-icon-left absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                         </span>
-                        <input :type="showPassword ? 'text' : 'password'" x-model="loginForm.password" required placeholder="‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢"
+                        <input :type="showPassword ? 'text' : 'password'" x-model="loginForm.password" required placeholder="+ÛGÈº-Û+ÛGÈº-Û+ÛGÈº-Û+ÛGÈº-Û+ÛGÈº-Û+ÛGÈº-Û+ÛGÈº-Û+ÛGÈº-Û"
                             class="login-input-field w-full pl-11 pr-11 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/80 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500 dark:text-white transition-all">
                         <button type="button" @click="showPassword = !showPassword"
                             class="login-toggle-password absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
@@ -1442,26 +1442,7 @@
                                     :class="activeTab === 'lms_courses' && lmsCategory === 'School' && lmsLevel === 'SMA' ? 'bg-sky-600 text-white shadow-2xs' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
                                     x-text="countCoursesByLevel('School', 'SMA')"></span>
                             </button>
-                        
-
-                            <!-- Submenu: Trash School -->
-                            <button type="button" @click="openLmsCategory('School', 'trash')"
-                                :class="activeTab === 'lms_courses' && lmsCategory === 'School' && lmsLevel === 'trash' ? 'submenu-btn-active text-rose-700 dark:text-rose-300' : 'submenu-btn-inactive'"
-                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left group mt-1 border-t border-slate-100 dark:border-slate-800/60 pt-2">
-                                <div class="flex items-center gap-2.5 min-w-0">
-                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
-                                        :class="activeTab === 'lms_courses' && lmsCategory === 'School' && lmsLevel === 'trash' ? 'bg-rose-600 ring-4 ring-rose-200 dark:ring-rose-900/80 scale-110' : 'bg-rose-300 dark:bg-rose-700'"></span>
-                                    <span class="truncate flex items-center gap-1">
-                                        <span>Trash</span>
-                                        <svg class="w-3.5 h-3.5 text-rose-500 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                    </span>
-                                </div>
-                                <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
-                                    :class="getTrashedCoursesByCategory('School').length > 0 ? 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-800' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'"
-                                    x-text="getTrashedCoursesByCategory('School').length"></span>
-                            </button>
-        
-</div>
+                        </div>
                     </div>
 
                     <!-- Menu 6: Olimpiade (OSN SD, OSN SMP, OSN SMA, ONMIPA, Internasional) -->
@@ -1550,26 +1531,7 @@
                                     :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' && lmsLevel === 'Internasional' ? 'bg-amber-500 text-white shadow-2xs' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
                                     x-text="countCoursesByLevel('Olimpiade', 'Internasional')"></span>
                             </button>
-                        
-
-                            <!-- Submenu: Trash Olimpiade -->
-                            <button type="button" @click="openLmsCategory('Olimpiade', 'trash')"
-                                :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' && lmsLevel === 'trash' ? 'submenu-btn-active text-rose-700 dark:text-rose-300' : 'submenu-btn-inactive'"
-                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left group mt-1 border-t border-slate-100 dark:border-slate-800/60 pt-2">
-                                <div class="flex items-center gap-2.5 min-w-0">
-                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
-                                        :class="activeTab === 'lms_courses' && lmsCategory === 'Olimpiade' && lmsLevel === 'trash' ? 'bg-rose-600 ring-4 ring-rose-200 dark:ring-rose-900/80 scale-110' : 'bg-rose-300 dark:bg-rose-700'"></span>
-                                    <span class="truncate flex items-center gap-1">
-                                        <span>Trash</span>
-                                        <svg class="w-3.5 h-3.5 text-rose-500 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                    </span>
-                                </div>
-                                <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
-                                    :class="getTrashedCoursesByCategory('Olimpiade').length > 0 ? 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-800' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'"
-                                    x-text="getTrashedCoursesByCategory('Olimpiade').length"></span>
-                            </button>
-        
-</div>
+                        </div>
                     </div>
 
                     <!-- Menu 7: TKA (TKA SD, TKA SMP, TKA SMA) -->
@@ -1632,26 +1594,7 @@
                                     :class="activeTab === 'lms_courses' && lmsCategory === 'TKA' && lmsLevel === 'TKA SMA' ? 'bg-emerald-600 text-white shadow-2xs' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
                                     x-text="countCoursesByLevel('TKA', 'TKA SMA')"></span>
                             </button>
-                        
-
-                            <!-- Submenu: Trash TKA -->
-                            <button type="button" @click="openLmsCategory('TKA', 'trash')"
-                                :class="activeTab === 'lms_courses' && lmsCategory === 'TKA' && lmsLevel === 'trash' ? 'submenu-btn-active text-rose-700 dark:text-rose-300' : 'submenu-btn-inactive'"
-                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left group mt-1 border-t border-slate-100 dark:border-slate-800/60 pt-2">
-                                <div class="flex items-center gap-2.5 min-w-0">
-                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
-                                        :class="activeTab === 'lms_courses' && lmsCategory === 'TKA' && lmsLevel === 'trash' ? 'bg-rose-600 ring-4 ring-rose-200 dark:ring-rose-900/80 scale-110' : 'bg-rose-300 dark:bg-rose-700'"></span>
-                                    <span class="truncate flex items-center gap-1">
-                                        <span>Trash</span>
-                                        <svg class="w-3.5 h-3.5 text-rose-500 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                    </span>
-                                </div>
-                                <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
-                                    :class="getTrashedCoursesByCategory('TKA').length > 0 ? 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-800' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'"
-                                    x-text="getTrashedCoursesByCategory('TKA').length"></span>
-                            </button>
-        
-</div>
+                        </div>
                     </div>
 
                     <!-- Menu 8: Collage Preparation (SNBT, Mandiri, Kedinasan) -->
@@ -1714,26 +1657,7 @@
                                     :class="activeTab === 'lms_courses' && lmsCategory === 'Collage Preparation' && lmsLevel === 'Kedinasan' ? 'bg-rose-600 text-white shadow-2xs' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
                                     x-text="countCoursesByLevel('Collage Preparation', 'Kedinasan')"></span>
                             </button>
-                        
-
-                            <!-- Submenu: Trash Collage Preparation -->
-                            <button type="button" @click="openLmsCategory('Collage Preparation', 'trash')"
-                                :class="activeTab === 'lms_courses' && lmsCategory === 'Collage Preparation' && lmsLevel === 'trash' ? 'submenu-btn-active text-rose-700 dark:text-rose-300' : 'submenu-btn-inactive'"
-                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left group mt-1 border-t border-slate-100 dark:border-slate-800/60 pt-2">
-                                <div class="flex items-center gap-2.5 min-w-0">
-                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
-                                        :class="activeTab === 'lms_courses' && lmsCategory === 'Collage Preparation' && lmsLevel === 'trash' ? 'bg-rose-600 ring-4 ring-rose-200 dark:ring-rose-900/80 scale-110' : 'bg-rose-300 dark:bg-rose-700'"></span>
-                                    <span class="truncate flex items-center gap-1">
-                                        <span>Trash</span>
-                                        <svg class="w-3.5 h-3.5 text-rose-500 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                    </span>
-                                </div>
-                                <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
-                                    :class="getTrashedCoursesByCategory('Collage Preparation').length > 0 ? 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-800' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'"
-                                    x-text="getTrashedCoursesByCategory('Collage Preparation').length"></span>
-                            </button>
-        
-</div>
+                        </div>
                     </div>
 
                 </nav>
@@ -2039,7 +1963,7 @@
                                             <div class="pt-2 space-y-1 text-[11px] text-slate-700 dark:text-slate-300">
                                                 <template x-for="(hl, hlIdx) in getPreviewHighlights()" :key="hlIdx">
                                                     <div class="flex items-center gap-1.5">
-                                                        <span class="text-emerald-500 font-bold">‚úì</span>
+                                                        <span class="text-emerald-500 font-bold">+Û+ÙG«£</span>
                                                         <span x-text="hl"></span>
                                                     </div>
                                                 </template>
@@ -2657,7 +2581,7 @@
                                     <div class="google-snippet-box">
                                         <div class="google-url flex items-center gap-1.5">
                                             <img src="/nls-logo-300.png" class="w-3.5 h-3.5 rounded-full" alt="Icon">
-                                            <span>https://next-level-study.com √¢‚Ç¨¬∫ blog √¢‚Ç¨¬∫ <span x-text="articleEditor.form.slug || 'judul-berita'"></span></span>
+                                            <span>https://next-level-study.com +ÛGÈº-¶ blog +ÛGÈº-¶ <span x-text="articleEditor.form.slug || 'judul-berita'"></span></span>
                                         </div>
                                         <div class="google-title font-bold text-sm sm:text-base mt-1" x-text="articleEditor.form.metaTitle || articleEditor.form.title || 'Judul Artikel Next Level Study'"></div>
                                         <div class="google-desc text-xs mt-1" x-text="articleEditor.form.metaDescription || 'Deskripsi ringkasan artikel akan tampil di sini pada hasil pencarian mesin telusur Google.'"></div>
@@ -2709,16 +2633,16 @@
                                         <p class="text-[11px] font-black uppercase text-slate-500">Pemeriksaan SEO Otomatis:</p>
                                         <div class="space-y-1.5 text-xs font-medium">
                                             <div class="flex items-center gap-2" :class="checkKeywordInTitle() ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'">
-                                                <span>√¢‚Ç¨¬¢ Kata kunci terdapat di Judul</span>
+                                                <span>+ÛGÈº-Û Kata kunci terdapat di Judul</span>
                                             </div>
                                             <div class="flex items-center gap-2" :class="checkKeywordInDesc() ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'">
-                                                <span>√¢‚Ç¨¬¢ Kata kunci terdapat di Meta Description</span>
+                                                <span>+ÛGÈº-Û Kata kunci terdapat di Meta Description</span>
                                             </div>
                                             <div class="flex items-center gap-2" :class="checkTitleLength() ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'">
-                                                <span>√¢‚Ç¨¬¢ Panjang judul ideal (40-65 karakter)</span>
+                                                <span>+ÛGÈº-Û Panjang judul ideal (40-65 karakter)</span>
                                             </div>
                                             <div class="flex items-center gap-2" :class="checkDescLength() ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'">
-                                                <span>√¢‚Ç¨¬¢ Panjang deskripsi ideal (110-160 karakter)</span>
+                                                <span>+ÛGÈº-Û Panjang deskripsi ideal (110-160 karakter)</span>
                                             </div>
                                         </div>
                                     </div>
@@ -2976,23 +2900,23 @@
                                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                                                 <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500 transition-all">
                                                     <input type="checkbox" value="OSN" x-model="teacherForm.categories" class="rounded text-indigo-600 focus:ring-indigo-500">
-                                                    <span class="font-bold">üèÜ Spesialis OSN (Olimpiade Sains)</span>
+                                                    <span class="font-bold">+¶++-≈G«· Spesialis OSN (Olimpiade Sains)</span>
                                                 </label>
                                                 <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500 transition-all">
                                                     <input type="checkbox" value="SNBT" x-model="teacherForm.categories" class="rounded text-indigo-600 focus:ring-indigo-500">
-                                                    <span class="font-bold">üéØ Spesialis UTBK SNBT &amp; TPS</span>
+                                                    <span class="font-bold">+¶++++-ª Spesialis UTBK SNBT &amp; TPS</span>
                                                 </label>
                                                 <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500 transition-all">
                                                     <input type="checkbox" value="TKA" x-model="teacherForm.categories" class="rounded text-indigo-600 focus:ring-indigo-500">
-                                                    <span class="font-bold">üìö Spesialis TKA &amp; Ujian Mandiri</span>
+                                                    <span class="font-bold">+¶++G«£+Ì Spesialis TKA &amp; Ujian Mandiri</span>
                                                 </label>
                                                 <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500 transition-all">
                                                     <input type="checkbox" value="Kurikulum Nasional" x-model="teacherForm.categories" class="rounded text-indigo-600 focus:ring-indigo-500">
-                                                    <span class="font-bold">üáÆüá© Kurikulum Nasional (Merdeka/K13)</span>
+                                                    <span class="font-bold">+¶++G«Ì-´+¶++G«Ì-¨ Kurikulum Nasional (Merdeka/K13)</span>
                                                 </label>
                                                 <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500 transition-all sm:col-span-2">
                                                     <input type="checkbox" value="Kurikulum Internasional" x-model="teacherForm.categories" class="rounded text-indigo-600 focus:ring-indigo-500">
-                                                    <span class="font-bold">üåç Kurikulum Internasional (Cambridge / IB)</span>
+                                                    <span class="font-bold">+¶+++∆-Ï Kurikulum Internasional (Cambridge / IB)</span>
                                                 </label>
                                             </div>
                                         </div>
@@ -3005,19 +2929,19 @@
                                             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                                                 <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500">
                                                     <input type="checkbox" value="SD" x-model="teacherForm.jenjang" class="rounded text-indigo-600">
-                                                    <span class="font-bold">üéí SD / MI</span>
+                                                    <span class="font-bold">+¶++++G«÷ SD / MI</span>
                                                 </label>
                                                 <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500">
                                                     <input type="checkbox" value="SMP" x-model="teacherForm.jenjang" class="rounded text-indigo-600">
-                                                    <span class="font-bold">üìò SMP / MTs</span>
+                                                    <span class="font-bold">+¶++G«£-£ SMP / MTs</span>
                                                 </label>
                                                 <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500">
                                                     <input type="checkbox" value="SMA" x-model="teacherForm.jenjang" class="rounded text-indigo-600">
-                                                    <span class="font-bold">üéì SMA / SMK</span>
+                                                    <span class="font-bold">+¶++++G«£ SMA / SMK</span>
                                                 </label>
                                                 <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0f172a] cursor-pointer hover:border-indigo-500">
                                                     <input type="checkbox" value="Guru / Instansi" x-model="teacherForm.jenjang" class="rounded text-indigo-600">
-                                                    <span class="font-bold">üèõÔ∏è Guru / Instansi</span>
+                                                    <span class="font-bold">+¶++-≈G«¶+ª-+-≈ Guru / Instansi</span>
                                                 </label>
                                             </div>
                                         </div>
@@ -3388,9 +3312,9 @@
                             <div class="flex items-center gap-2">
                                 <select x-model="teacherAppStatusFilter" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold">
                                     <option value="all">Semua Status Pendaftaran</option>
-                                    <option value="pending">√É¬¢√Ç¬è√Ç¬≥ Menunggu Review (Pending)</option>
-                                    <option value="accepted">√¢≈ì‚Äú Telah Diterima (Accepted)</option>
-                                    <option value="rejected">√¢≈ì‚Ä¢ Ditolak (Rejected)</option>
+                                    <option value="pending">+‚-Û+È-≈+È-¶ Menunggu Review (Pending)</option>
+                                    <option value="accepted">+‚-Û+‡G«£+ÛGÈº+Ù Telah Diterima (Accepted)</option>
+                                    <option value="rejected">+‚-Û+‡G«£+ÛGÈº-Û Ditolak (Rejected)</option>
                                 </select>
 
                                 <select x-model="teacherAppCategoryFilter" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold">
@@ -4365,7 +4289,7 @@
                     <div class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-1.5">
                         <div class="flex items-center justify-between text-slate-400">
                             <span class="text-[11px] font-bold uppercase tracking-wider">Total Kelas</span>
-                            <span class="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-600">üìö</span>
+                            <span class="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-600">+¶++G«£+Ì</span>
                         </div>
                         <div class="text-2xl font-black text-slate-900 dark:text-white" x-text="getFilteredLmsCourses().length"></div>
                         <p class="text-[10px] text-slate-400">Di kategori &amp; jenjang ini</p>
@@ -4374,7 +4298,7 @@
                     <div class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-1.5">
                         <div class="flex items-center justify-between text-slate-400">
                             <span class="text-[11px] font-bold uppercase tracking-wider">Total Modul / Bab</span>
-                            <span class="p-1.5 rounded-lg bg-sky-50 dark:bg-sky-950 text-sky-600">üìë</span>
+                            <span class="p-1.5 rounded-lg bg-sky-50 dark:bg-sky-950 text-sky-600">+¶++G«£G«ˇ</span>
                         </div>
                         <div class="text-2xl font-black text-slate-900 dark:text-white" x-text="getTotalModulesCount()"></div>
                         <p class="text-[10px] text-slate-400">Kurikulum aktif</p>
@@ -4383,7 +4307,7 @@
                     <div class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-1.5">
                         <div class="flex items-center justify-between text-slate-400">
                             <span class="text-[11px] font-bold uppercase tracking-wider">Kuis &amp; Video</span>
-                            <span class="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950 text-emerald-600">üé•</span>
+                            <span class="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950 text-emerald-600">+¶++++-—</span>
                         </div>
                         <div class="text-2xl font-black text-slate-900 dark:text-white" x-text="getTotalQuizzesAndVideosCount()"></div>
                         <p class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">Interaktif &amp; Siap Diuji</p>
@@ -4392,7 +4316,7 @@
                     <div class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-1.5">
                         <div class="flex items-center justify-between text-slate-400">
                             <span class="text-[11px] font-bold uppercase tracking-wider">Status Sync Cloud</span>
-                            <span class="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950 text-emerald-600">‚ö°</span>
+                            <span class="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950 text-emerald-600">+Û+Ì-Ì</span>
                         </div>
                         <div class="text-sm font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 pt-1">
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -4430,10 +4354,9 @@
                     </div>
 
                     <!-- Course Cards Grid -->
-                    <div x-show="lmsLevel !== 'trash'" class="space-y-6">
                     <template x-if="getFilteredLmsCourses().length === 0">
                         <div class="p-12 text-center text-slate-400 space-y-3">
-                            <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-2xl">üìö</div>
+                            <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-2xl">+¶++G«£+Ì</div>
                             <h4 class="text-sm font-bold text-slate-700 dark:text-slate-300">Belum Ada Course di Jenjang Ini</h4>
                             <p class="text-xs text-slate-400 max-w-sm mx-auto">Klik tombol "+ Buat Kelas / Course Baru" di atas untuk menambahkan kurikulum kelas.</p>
                         </div>
@@ -4505,7 +4428,7 @@
                 <div class="bg-white dark:bg-[#131D38] rounded-3xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-xs space-y-5">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
                         <div class="flex items-center gap-3">
-                            <span class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-base">üìä</span>
+                            <span class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-base">+¶++G«£+·</span>
                             <div>
                                 <h3 class="text-sm font-black text-slate-900 dark:text-white">Laporan Hasil Kuis &amp; Tryout Siswa (Live Real-Time)</h3>
                                 <p class="text-[11px] text-slate-400">Sinkron otomatis saat siswa submit kuis di nls-belajar</p>
@@ -4527,7 +4450,7 @@
                             <!-- Refresh button -->
                             <button type="button" @click="syncQuizSubmissionsFromCloud(true)" 
                                 class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-extrabold flex items-center gap-1.5 cursor-pointer">
-                                <span>üîÑ Refresh</span>
+                                <span>+¶++G«•G«P Refresh</span>
                             </button>
                         </div>
                     </div>
@@ -4571,7 +4494,7 @@
                                         <td class="py-3 px-3 text-center">
                                             <span class="px-2 py-0.5 rounded-full text-[10px] font-black"
                                                 :class="sub.passed ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'"
-                                                x-text="sub.passed ? 'Lulus ‚úÖ' : 'Remedial ‚ö°'"></span>
+                                                x-text="sub.passed ? 'Lulus +Û+ÙG«™' : 'Remedial +Û+Ì-Ì'"></span>
                                         </td>
                                         <td class="py-3 px-3 text-[11px] text-slate-400" x-text="new Date(sub.submittedAt).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' })"></td>
                                         <td class="py-3 px-3 text-right">
@@ -4597,10 +4520,10 @@
                     
                     <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
                         <div class="flex items-center gap-3">
-                            <span class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl">üìö</span>
+                            <span class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl">+¶++G«£+Ì</span>
                             <div>
                                 <h3 class="text-base sm:text-lg font-black text-slate-900 dark:text-white" x-text="courseModal.isEdit ? 'Revisi Info Course' : 'Buat Course / Kelas Baru'"></h3>
-                                <p class="text-xs text-slate-500" x-text="'Kategori: ' + courseModal.form.category + ' &bull; ' + courseModal.form.level + (courseModal.form.category === 'School' && courseModal.form.grade ? ' &bull; ' + courseModal.form.grade : '')"></p>
+                                <p class="text-xs text-slate-500" x-text="'Kategori: ' + courseModal.form.category + ' +ÛGÈº-Û ' + courseModal.form.level"></p>
                             </div>
                         </div>
                         <button type="button" @click="courseModal.isOpen = false" class="p-2 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
@@ -4615,34 +4538,23 @@
                                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
                         </div>
 
-                                                <div class="grid gap-4" :class="courseModal.form.category === 'School' ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-3'">
+                                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <div>
                                 <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Kategori *</label>
-                                <select x-model="courseModal.form.category" @change="courseModal.form.level = Object.keys(lmsSubjectsData[courseModal.form.category] || {})[0]; courseModal.form.subject = (lmsSubjectsData[courseModal.form.category][courseModal.form.level] || [])[0]; courseModal.form.grade = ''" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                                <select x-model="courseModal.form.category" @change="courseModal.form.level = Object.keys(lmsSubjectsData[courseModal.form.category] || {})[0]; courseModal.form.subject = (lmsSubjectsData[courseModal.form.category][courseModal.form.level] || [])[0]" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
                                     <template x-for="cat in Object.keys(lmsSubjectsData)" :key="cat">
                                         <option :value="cat" x-text="cat"></option>
                                     </template>
                                 </select>
                             </div>
                             <div>
-                                <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Jenjang *</label>
-                                <select x-model="courseModal.form.level" @change="courseModal.form.subject = (lmsSubjectsData[courseModal.form.category][courseModal.form.level] || [])[0]; courseModal.form.grade = ''" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                                <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Jenjang / Sub-Level *</label>
+                                <select x-model="courseModal.form.level" @change="courseModal.form.subject = (lmsSubjectsData[courseModal.form.category][courseModal.form.level] || [])[0]" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
                                     <template x-for="lvl in Object.keys(lmsSubjectsData[courseModal.form.category] || {})" :key="lvl">
                                         <option :value="lvl" x-text="lvl"></option>
                                     </template>
                                 </select>
                             </div>
-                            <template x-if="courseModal.form.category === 'School'">
-                                <div>
-                                    <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Pilih Kelas *</label>
-                                    <select x-model="courseModal.form.grade" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
-                                        <option value="">-- Pilih Kelas --</option>
-                                        <template x-for="g in (lmsSchoolGrades[courseModal.form.level] || [])" :key="g">
-                                            <option :value="g" x-text="g"></option>
-                                        </template>
-                                    </select>
-                                </div>
-                            </template>
                             <div>
                                 <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Mata Pelajaran *</label>
                                 <select x-model="courseModal.form.subject" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
@@ -4693,7 +4605,7 @@
                     <!-- Header -->
                     <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/60 dark:bg-slate-900/60">
                         <div class="flex items-center gap-3">
-                            <span class="w-11 h-11 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl shadow-md">ÔøΩ¬†√Ø¬∏¬è</span>
+                            <span class="w-11 h-11 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl shadow-md">+¶++G«¶-·+ª-+-≈</span>
                             <div>
                                 <h3 class="text-base sm:text-lg font-black text-slate-900 dark:text-white">Penyusun Konten &amp; Modul Pembelajaran</h3>
                                 <p class="text-xs text-indigo-600 dark:text-indigo-400 font-bold" x-text="moduleModal.course ? moduleModal.course.title : ''"></p>
@@ -4709,19 +4621,19 @@
                         <button type="button" @click="moduleModal.activeType = 'materi'"
                             class="px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center gap-2 shrink-0 cursor-pointer"
                             :class="moduleModal.activeType === 'materi' ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'">
-                            <span>üìÑ Buat Materi (Teks &amp; PDF)</span>
+                            <span>+¶++G«£G«P Buat Materi (Teks &amp; PDF)</span>
                         </button>
 
                         <button type="button" @click="moduleModal.activeType = 'kuis'"
                             class="px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center gap-2 shrink-0 cursor-pointer"
                             :class="moduleModal.activeType === 'kuis' ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'">
-                            <span>üìù Buat Kuis Interaktif</span>
+                            <span>+¶++G«£-• Buat Kuis Interaktif</span>
                         </button>
 
                         <button type="button" @click="moduleModal.activeType = 'video'"
                             class="px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center gap-2 shrink-0 cursor-pointer"
                             :class="moduleModal.activeType === 'video' ? 'bg-amber-500 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'">
-                            <span>üé• Buat Video Pembelajaran</span>
+                            <span>+¶++++-— Buat Video Pembelajaran</span>
                         </button>
                     </div>
 
@@ -5097,8 +5009,7 @@
                 showPassword: false,
                 isSidebarOpen: window.innerWidth >= 1024,
                 isMobile: window.innerWidth < 1024,
-                _isRoutingPopState: false,
-                activeTab: 'dashboard', // 'dashboard', 'kalender', 'berita', 'pengajar', 'users'
+                activeTab: 'kalender', // 'kalender', 'berita', 'pengajar'
                 kalenderView: 'present', // 'present' or 'create'
                 isKalenderDropdownOpen: true,
 
@@ -5205,7 +5116,7 @@
                     return [];
                 })(),
 
-                lmsSubjectsData: {
+                                lmsSubjectsData: {
                     "School": {
                         "SD": ["Matematika", "IPAS", "Bahasa Indonesia", "Bahasa Inggris", "Pendidikan Pancasila"],
                         "SMP": ["Matematika", "Fisika", "Biologi", "IPS Terpadu", "Bahasa Indonesia", "Bahasa Inggris"],
@@ -5230,12 +5141,6 @@
                     }
                 },
 
-                lmsSchoolGrades: {
-                    "SD": ["Kelas 1", "Kelas 2", "Kelas 3", "Kelas 4", "Kelas 5", "Kelas 6"],
-                    "SMP": ["Kelas 7", "Kelas 8", "Kelas 9"],
-                    "SMA": ["Kelas 10", "Kelas 11", "Kelas 12"]
-                },
-
                 courseModal: {
                     isOpen: false,
                     isEdit: false,
@@ -5243,7 +5148,6 @@
                         id: '',
                         category: 'School',
                         level: 'SMA',
-                        grade: '',
                         subject: 'Matematika Wajib',
                         title: '',
                         description: '',
@@ -5452,14 +5356,14 @@
 
                 // 4. ARTICLE CMS EDITOR WITH MULTI-CATEGORY SUPPORT
                 availableArticleCategories: [
-                    { name: 'OSN & Sains', icon: 'üèÜ' },
-                    { name: 'SNBT & UTBK', icon: 'üéØ' },
-                    { name: 'TKA & Akademik', icon: 'üìä' },
-                    { name: 'Tips Belajar & Prestasi', icon: 'üí°' },
-                    { name: 'Berita Sekolah & Diknas', icon: 'üèõÔ∏è' },
-                    { name: 'Informasi NLS', icon: 'üì¢' },
-                    { name: 'Panduan Beasiswa', icon: 'üéì' },
-                    { name: 'Bimbel NexGen', icon: 'üöÄ' }
+                    { name: 'OSN & Sains', icon: '+¶++-≈G«·' },
+                    { name: 'SNBT & UTBK', icon: '+¶++++-ª' },
+                    { name: 'TKA & Akademik', icon: '+¶++G«£+·' },
+                    { name: 'Tips Belajar & Prestasi', icon: '+¶++G«÷-Ì' },
+                    { name: 'Berita Sekolah & Diknas', icon: '+¶++-≈G«¶+ª-+-≈' },
+                    { name: 'Informasi NLS', icon: '+¶++G«£-Û' },
+                    { name: 'Panduan Beasiswa', icon: '+¶++++G«£' },
+                    { name: 'Bimbel NexGen', icon: '+¶+++ÌGÈº' }
                 ],
                 ckEditorInstance: null,
                 isHtmlView: false,
@@ -5475,120 +5379,7 @@
                     }
                 },
 
-                syncUrlRoute(push = true) {
-                    if (this._isRoutingPopState) return;
-                    let path = '/';
-                    if (this.activeTab === 'dashboard') {
-                        path = '/';
-                    } else if (this.activeTab === 'kalender') {
-                        path = `/kalender/${this.kalenderView || 'present'}`;
-                    } else if (this.activeTab === 'berita') {
-                        path = `/berita/${this.beritaView || 'present'}`;
-                    } else if (this.activeTab === 'pengajar') {
-                        path = `/pengajar/${this.pengajarView || 'present'}`;
-                    } else if (this.activeTab === 'users') {
-                        path = `/users/${this.userView || 'present'}`;
-                    } else if (this.activeTab === 'lms_courses') {
-                        const cCat = encodeURIComponent(this.lmsCategory || '');
-                        const cLvl = encodeURIComponent(this.lmsLevel || '');
-                        path = `/lms/${cCat}/${cLvl}`;
-                    } else {
-                        path = `/${this.activeTab}`;
-                    }
-
-                    const currentPath = window.location.pathname.replace(/^\/nlsadmin/, '') || '/';
-                    if (currentPath !== path || window.location.hash) {
-                        try {
-                            if (push) {
-                                history.pushState({ tab: this.activeTab, path: path }, '', path);
-                            } else {
-                                history.replaceState({ tab: this.activeTab, path: path }, '', path);
-                            }
-                        } catch(e) {}
-                    }
-                },
-
-                handleUrlRoute() {
-                    let rawRoute = '';
-                    if (window.location.hash && window.location.hash.length > 1) {
-                        rawRoute = window.location.hash.replace(/^#\/?/, '').toLowerCase().trim();
-                    } else {
-                        rawRoute = window.location.pathname.replace(/^\/nlsadmin/, '').replace(/^\//, '').toLowerCase().trim();
-                    }
-
-                    if (!rawRoute || rawRoute === 'dashboard') {
-                        this.activeTab = 'dashboard';
-                        this.closeAllSubmenus();
-                        if (window.location.hash) this.syncUrlRoute(false);
-                        return;
-                    }
-
-                    const parts = rawRoute.split('/');
-                    const section = parts[0];
-                    const sub = parts[1] || '';
-
-                    this._isRoutingPopState = true;
-
-                    if (section === 'kalender') {
-                        this.activeTab = 'kalender';
-                        if (['create', 'present', 'trash'].includes(sub)) this.kalenderView = sub;
-                        this.closeAllSubmenus('kalender');
-                        this.isKalenderDropdownOpen = true;
-                    } else if (section === 'berita') {
-                        this.activeTab = 'berita';
-                        if (['create', 'present', 'trash'].includes(sub)) this.beritaView = sub;
-                        this.closeAllSubmenus('berita');
-                        this.isBeritaDropdownOpen = true;
-                    } else if (section === 'pengajar') {
-                        this.activeTab = 'pengajar';
-                        if (['add', 'present', 'verification', 'trash'].includes(sub)) this.pengajarView = sub;
-                        this.closeAllSubmenus('pengajar');
-                        this.isPengajarDropdownOpen = true;
-                    } else if (section === 'users') {
-                        this.activeTab = 'users';
-                        if (['add', 'present', 'trash'].includes(sub)) this.userView = sub;
-                        this.closeAllSubmenus('users');
-                        this.isUserDropdownOpen = true;
-                    } else if (section === 'lms') {
-                        this.activeTab = 'lms_courses';
-                        this.lmsCategory = decodeURIComponent(sub || 'School');
-                        this.lmsLevel = decodeURIComponent(parts[2] || '');
-                        
-                        let menuKey = '';
-                        if (this.lmsCategory === 'School') menuKey = 'school';
-                        else if (this.lmsCategory === 'Olimpiade') menuKey = 'olimpiade';
-                        else if (this.lmsCategory === 'TKA') menuKey = 'tka';
-                        else if (this.lmsCategory === 'Collage Preparation') menuKey = 'college';
-                        
-                        this.closeAllSubmenus(menuKey);
-                        if (menuKey === 'school') this.isSchoolDropdownOpen = true;
-                        if (menuKey === 'olimpiade') this.isOlimpiadeDropdownOpen = true;
-                        if (menuKey === 'tka') this.isTkaDropdownOpen = true;
-                        if (menuKey === 'college') this.isCollegeDropdownOpen = true;
-                    } else {
-                        this.activeTab = section;
-                    }
-
-                    // Clean any old hash if present and sync clean path
-                    if (window.location.hash) {
-                        this.syncUrlRoute(false);
-                    }
-
-                    setTimeout(() => {
-                        this._isRoutingPopState = false;
-                    }, 80);
-                },
-
                 init() {
-                    this.handleUrlRoute();
-
-                    window.addEventListener('hashchange', () => {
-                        this.handleUrlRoute();
-                    });
-                    window.addEventListener('popstate', () => {
-                        this.handleUrlRoute();
-                    });
-
                     // Sync & initialize users
                     if (!localStorage.getItem("nls_users_v1")) {
                         this.saveUsersToStorage();
@@ -5962,7 +5753,6 @@
                         highlightsRaw: 'Sistem Penilaian IRT Standar Nasional\nWebinar Live Pembahasan Soal & Bedah Trik\nE-Sertifikat Resmi & Analisis Rapor Nilai'
                     };
                     if (this.isMobile) this.isSidebarOpen = false;
-                    this.syncUrlRoute(true);
                 },
 
                 openPresentEventView() {
@@ -5971,7 +5761,6 @@
                     this.closeAllSubmenus('kalender');
                     this.isKalenderDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
-                    this.syncUrlRoute(true);
                 },
 
                 openTrashEventView() {
@@ -5980,7 +5769,6 @@
                     this.closeAllSubmenus('kalender');
                     this.isKalenderDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
-                    this.syncUrlRoute(true);
                 },
 
                 getPreviewHighlights() {
@@ -6503,7 +6291,6 @@
                         this.initCKEditor();
                     });
                     if (this.isMobile) this.isSidebarOpen = false;
-                    this.syncUrlRoute(true);
                 },
 
                 openPresentNewsView() {
@@ -6513,7 +6300,6 @@
                     this.closeAllSubmenus('berita');
                     this.isBeritaDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
-                    this.syncUrlRoute(true);
                 },
 
                 openTrashNewsView() {
@@ -6523,7 +6309,6 @@
                     this.closeAllSubmenus('berita');
                     this.isBeritaDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
-                    this.syncUrlRoute(true);
                 },
 
                 isTeacherPhotoUploading: false,
@@ -6611,7 +6396,6 @@
                         portfolio: ''
                     };
                     if (this.isMobile) this.isSidebarOpen = false;
-                    this.syncUrlRoute(true);
                 },
 
                 openPresentTeacherView() {
@@ -6620,7 +6404,6 @@
                     this.closeAllSubmenus('pengajar');
                     this.isPengajarDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
-                    this.syncUrlRoute(true);
                 },
 
                 openTeacherVerificationView() {
@@ -6630,7 +6413,6 @@
                     this.isPengajarDropdownOpen = true;
                     this.refreshTeacherApplications(false);
                     if (this.isMobile) this.isSidebarOpen = false;
-                    this.syncUrlRoute(true);
                 },
 
                 async refreshTeacherApplications(showNotice = true) {
@@ -6759,7 +6541,6 @@
                     this.isPengajarDropdownOpen = true;
                     this.refreshTeacherApplications(false);
                     if (this.isMobile) this.isSidebarOpen = false;
-                    this.syncUrlRoute(true);
                 },
 
                 // USER MANAGEMENT DROPDOWN & CRUD METHODS
@@ -6790,7 +6571,6 @@
                     };
                     this.showUserPassword = false;
                     if (this.isMobile) this.isSidebarOpen = false;
-                    this.syncUrlRoute(true);
                 },
 
                 openPresentUserView() {
@@ -6799,7 +6579,6 @@
                     this.closeAllSubmenus('users');
                     this.isUserDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
-                    this.syncUrlRoute(true);
                 },
 
                 openTrashUserView() {
@@ -6808,7 +6587,6 @@
                     this.closeAllSubmenus('users');
                     this.isUserDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
-                    this.syncUrlRoute(true);
                 },
 
                 setUserRole(role_id, roleName) {
@@ -8435,7 +8213,6 @@
                         this.lmsCategory = 'School';
                         if (!this.lmsLevel) this.lmsLevel = 'SD';
                     }
-                    this.syncUrlRoute(true);
                 },
                 toggleOlimpiadeDropdown() {
                     const nextState = !this.isOlimpiadeDropdownOpen;
@@ -8446,7 +8223,6 @@
                         this.lmsCategory = 'Olimpiade';
                         if (!this.lmsLevel) this.lmsLevel = 'OSN SD';
                     }
-                    this.syncUrlRoute(true);
                 },
                 toggleTkaDropdown() {
                     const nextState = !this.isTkaDropdownOpen;
@@ -8457,7 +8233,6 @@
                         this.lmsCategory = 'TKA';
                         if (!this.lmsLevel) this.lmsLevel = 'TKA SD';
                     }
-                    this.syncUrlRoute(true);
                 },
                 toggleCollegeDropdown() {
                     const nextState = !this.isCollegeDropdownOpen;
@@ -8468,7 +8243,6 @@
                         this.lmsCategory = 'Collage Preparation';
                         if (!this.lmsLevel) this.lmsLevel = 'SNBT';
                     }
-                    this.syncUrlRoute(true);
                 },
 
                 openLmsCategory(category, level) {
@@ -8486,7 +8260,6 @@
                     if (category === 'TKA') this.isTkaDropdownOpen = true;
                     if (category === 'Collage Preparation') this.isCollegeDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
-                    this.syncUrlRoute(true);
                 },
 
                 countCoursesByCategory(category) {
@@ -8559,8 +8332,8 @@
                         subject: defSubj,
                         title: '',
                         description: '',
-                        mentor: 'Tim Akademik NLS',
-                        mentor_id: 't-1',
+                        mentor: (this.teachers && this.teachers[0]) ? this.teachers[0].name : 'Tim Akademik NLS',
+                        mentor_id: (this.teachers && this.teachers[0]) ? this.teachers[0].id : 't-1',
                         coverImage: '/images/stitch/pillar-study.jpg',
                         status: 'published',
                         modules: []
@@ -8623,8 +8396,10 @@
                             this.showToast('Course berhasil dipindahkan ke Tempat Sampah.');
 
                             if (typeof fetch !== 'undefined') {
-                                fetch('/api/pg-lms?action=admin_delete_course&id=' + encodeURIComponent(id), {
-                                    method: 'DELETE'
+                                fetch('/api/pg-lms', {
+                                    method: 'PUT',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ id: id, status: 'trashed', deletedAt: deleted.deletedAt })
                                 }).catch(e => {});
                             }
                         }
@@ -8785,8 +8560,4 @@
     </script>
 </body>
 </html>
-
-
-
-
 

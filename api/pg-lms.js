@@ -810,6 +810,76 @@ export default async function handler(request, response) {
             return response.status(200).json({ success: true, message: 'Quiz submitted.', id: result.rows[0].id });
         }
 
+        // --- 8. ADMIN: GET ALL COURSES ---
+        if (action === 'admin_get_courses' || (!action && request.method === 'GET' && request.url.includes('/api/pg-lms'))) { // fallback
+            const res = await sql`SELECT content_json FROM lms_courses ORDER BY created_at DESC`;
+            const courses = res.rows.map(r => r.content_json);
+            return response.status(200).json({ success: true, data: courses });
+        }
+
+        // --- 9. ADMIN: SAVE COURSE ---
+        if (action === 'admin_save_course' || request.method === 'PUT') {
+            let course = request.body.course || request.body;
+            if (!course || !course.id) return response.status(400).json({ success: false, message: 'Invalid course data.' });
+
+            const existing = await sql`SELECT id FROM lms_courses WHERE id = ${course.id}`;
+            if (existing.rows.length === 0) {
+                await sql`
+                    INSERT INTO lms_courses (id, category, level, title, description, content_json)
+                    VALUES (${course.id}, ${course.category || ''}, ${course.level || ''}, ${course.title || ''}, ${course.description || ''}, ${JSON.stringify(course)})
+                `;
+            } else {
+                await sql`
+                    UPDATE lms_courses 
+                    SET category = ${course.category || ''}, level = ${course.level || ''}, title = ${course.title || ''}, description = ${course.description || ''}, content_json = ${JSON.stringify(course)}
+                    WHERE id = ${course.id}
+                `;
+            }
+            return response.status(200).json({ success: true, message: 'Course saved successfully.' });
+        }
+
+        // --- 10. ADMIN: DELETE COURSE ---
+        if (action === 'admin_delete_course' || request.method === 'DELETE') {
+            const courseId = request.query.id || request.body.id;
+            if (!courseId && action !== 'admin_empty_trash') return response.status(400).json({ success: false, message: 'Missing course id.' });
+
+            if (courseId) {
+                await sql`DELETE FROM lms_courses WHERE id = ${courseId}`;
+            }
+            return response.status(200).json({ success: true, message: 'Course deleted successfully.' });
+        }
+
+        // --- 11. ADMIN: GET QUIZ RESULTS ---
+        if (action === 'admin_get_quiz_results') {
+            const res = await sql`
+                SELECT 
+                    q.id, q.course_id, q.module_index, q.score, q.answers_json, q.submitted_at as date,
+                    u.name as studentName, u.email as studentEmail, u.nisn, u.school,
+                    c.title as courseTitle, c.category
+                FROM lms_quiz_results q
+                LEFT JOIN users u ON q.user_id = u.id
+                LEFT JOIN lms_courses c ON q.course_id = c.id
+                ORDER BY q.submitted_at DESC
+            `;
+            
+            const results = res.rows.map(r => ({
+                id: r.id,
+                studentName: r.studentname || 'Siswa NLS',
+                studentEmail: r.studentemail || '',
+                nisn: r.nisn || '',
+                school: r.school || '',
+                courseId: r.course_id,
+                courseTitle: r.coursetitle || 'Program NLS',
+                moduleTitle: `Modul Ke-${r.module_index + 1}`,
+                category: r.category || 'School',
+                score: r.score,
+                answers: r.answers_json || {},
+                date: r.date
+            }));
+            
+            return response.status(200).json({ success: true, data: results });
+        }
+
         return response.status(400).json({ success: false, message: 'Invalid action specified.' });
 
     } catch (error) {
