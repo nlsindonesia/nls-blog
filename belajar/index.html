@@ -1762,7 +1762,7 @@
                                             
                                             <span class="px-2.5 py-1 rounded-full text-[11px] font-black bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300 flex items-center gap-1">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-violet-500"></span>
-                                                <span x-text="course.progress + '% Selesai'"></span>
+                                                <span x-text="(Math.round(course.progress || 0)) + '% Selesai'"></span>
                                             </span>
                                         </div>
 
@@ -1776,11 +1776,11 @@
                                         <div class="space-y-1.5">
                                             <div class="flex items-center justify-between text-[11px] font-bold">
                                                 <span class="text-slate-500">Kemajuan Belajar</span>
-                                                <span class="text-violet-600 dark:text-violet-400" x-text="(course.completedModules || 0) + ' dari ' + (course.totalModules || 4) + ' Bab Selesai'"></span>
+                                                <span class="text-violet-600 dark:text-violet-400" x-text="(course.completedModules || 0) + ' dari ' + (course.totalModules || (course.modules ? course.modules.length : (course.babs ? course.babs.length : 1))) + ' Bab Selesai'"></span>
                                             </div>
                                             <div class="w-full h-2.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden p-0.5">
                                                 <div class="h-full bg-gradient-to-r from-violet-600 via-indigo-600 to-fuchsia-500 rounded-full transition-all duration-500"
-                                                    :style="'width: ' + Math.max(course.progress, 15) + '%'"></div>
+                                                    :style="'width: ' + Math.max((course.progress || 0), 15) + '%'"></div>
                                             </div>
                                         </div>
 
