@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -69,9 +69,9 @@
                                     :class="activeNode && activeNode.id === node.id ? 'bg-indigo-50/80 border-l-4 border-indigo-600' : 'border-l-4 border-transparent hover:bg-slate-50'"
                                     class="w-full flex items-start gap-3 p-3 text-left transition-all border-t border-slate-100">
                                     <div class="mt-0.5 shrink-0">
-                                        <span x-show="node.type === 'materi'" class="text-blue-500 text-base">📄</span>
-                                        <span x-show="node.type === 'kuis'" class="text-amber-500 text-base">✍️</span>
-                                        <span x-show="node.type === 'video'" class="text-red-500 text-base">▶️</span>
+                                        <span x-show="node.type === 'materi'" class="text-blue-500 text-base">??</span>
+                                        <span x-show="node.type === 'kuis'" class="text-amber-500 text-base">??</span>
+                                        <span x-show="node.type === 'video'" class="text-red-500 text-base">??</span>
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <h4 class="text-xs font-bold truncate transition-colors" :class="activeNode && activeNode.id === node.id ? 'text-indigo-700' : 'text-slate-700'" x-text="node.title"></h4>
@@ -148,12 +148,59 @@
 
                     <!-- Video Content -->
                     <template x-if="activeNode.type === 'video'">
-                        <div class="bg-black rounded-3xl shadow-sm overflow-hidden aspect-video relative flex items-center justify-center">
+                        <div class="bg-black rounded-3xl shadow-sm overflow-hidden aspect-video relative flex flex-col items-center justify-center" x-init="initYoutubePlayer()">
                             <template x-if="activeNode.videoUrl">
-                                <iframe :src="'https://www.youtube.com/embed/' + extractYoutubeId(activeNode.videoUrl)" class="w-full h-full absolute inset-0 border-0" allowfullscreen></iframe>
+                                <div id="yt-player-container" class="w-full h-full absolute inset-0"></div>
                             </template>
                             <template x-if="!activeNode.videoUrl">
                                 <div class="text-white/50 text-sm font-bold">Link Video Belum Tersedia</div>
+                            </template>
+
+                            <!-- Interactive Quiz Overlay -->
+                            <template x-if="interactiveQuiz.active">
+                                <div class="absolute inset-0 z-10 bg-slate-900/90 backdrop-blur-md flex flex-col p-6 sm:p-10 overflow-y-auto">
+                                    <div class="max-w-2xl w-full mx-auto bg-white rounded-3xl p-6 sm:p-8 shadow-2xl relative mt-auto mb-auto">
+                                        <div class="flex items-center gap-3 mb-5 border-b border-slate-100 pb-4">
+                                            <div class="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
+                                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+                                            </div>
+                                            <div>
+                                                <h3 class="font-black text-slate-800 text-lg">Kuis Interaktif</h3>
+                                                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Video dijeda. Jawab untuk melanjutkan.</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-6">
+                                            <h4 class="font-bold text-slate-700 text-base leading-relaxed" x-html="interactiveQuiz.currentQ.text"></h4>
+                                        </div>
+
+                                        <!-- Render Simple PG for Interactive Quiz -->
+                                        <template x-if="interactiveQuiz.currentQ.type === 'pg'">
+                                            <div class="space-y-3">
+                                                <template x-for="(opt, oIdx) in interactiveQuiz.currentQ.options" :key="oIdx">
+                                                    <label class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/30 cursor-pointer transition-colors" :class="interactiveQuiz.answer == oIdx ? 'bg-indigo-50 border-indigo-400 ring-1 ring-indigo-400' : ''">
+                                                        <input type="radio" :name="'iq_' + interactiveQuiz.currentQ.id" :value="oIdx" x-model.number="interactiveQuiz.answer" class="mt-1 w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-600 cursor-pointer">
+                                                        <span class="text-sm text-slate-700 font-medium" x-text="opt"></span>
+                                                    </label>
+                                                </template>
+                                            </div>
+                                        </template>
+
+                                        <template x-if="interactiveQuiz.currentQ.type !== 'pg'">
+                                            <div class="p-4 bg-amber-50 rounded-xl border border-amber-200 text-amber-700 text-xs font-bold">
+                                                Tipe soal ini belum didukung di Pop-up Interactive Video. Silakan gunakan Pilihan Ganda Sederhana.
+                                            </div>
+                                        </template>
+
+                                        <div class="mt-8 flex justify-end gap-3">
+                                            <button @click="skipInteractiveQuiz()" class="px-5 py-2.5 rounded-xl font-bold text-slate-500 hover:bg-slate-100 text-xs transition-colors">Lewati Kuis</button>
+                                            <button @click="submitInteractiveQuiz()" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-md shadow-indigo-600/30 transition-all flex items-center gap-2">
+                                                Kirim Jawaban & Lanjut
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </template>
                         </div>
                     </template>
@@ -171,27 +218,104 @@
                                                     <span class="text-indigo-600 mr-1" x-text="(qIdx + 1) + '.'"></span> 
                                                     <span x-html="q.text"></span>
                                                 </h3>
-                                                <span class="shrink-0 px-2.5 py-1 bg-slate-100 text-slate-500 rounded-lg text-[10px] font-black uppercase" x-text="q.type === 'pg' ? 'Pilihan Ganda' : q.type === 'isian' ? 'Isian Singkat' : q.type"></span>
+                                                <span class="shrink-0 px-2.5 py-1 bg-slate-100 text-slate-500 rounded-lg text-[10px] font-black uppercase" 
+                                                    x-text="q.type === 'pg' ? 'PG Tunggal' : q.type === 'pg_kompleks' ? 'PG Kompleks' : q.type === 'pg_majemuk' ? 'B/S Majemuk' : q.type === 'jodoh' ? 'Menjodohkan' : q.type === 'isian' ? 'Isian Singkat' : 'Essay'"></span>
                                             </div>
 
                                             <!-- PG Sederhana -->
                                             <template x-if="q.type === 'pg'">
                                                 <div class="space-y-2 mt-5">
                                                     <template x-for="(opt, oIdx) in q.options" :key="oIdx">
-                                                        <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/30 cursor-pointer transition-colors" :class="quizAnswers[q.id] === oIdx ? 'bg-indigo-50 border-indigo-400 ring-1 ring-indigo-400' : ''">
-                                                            <input type="radio" :name="'q_' + q.id" :value="oIdx" x-model.number="quizAnswers[q.id]" class="mt-1 w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-600">
+                                                        <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/30 cursor-pointer transition-colors" :class="quizAnswers[q.id] == oIdx ? 'bg-indigo-50 border-indigo-400 ring-1 ring-indigo-400' : ''">
+                                                            <input type="radio" :name="'q_' + q.id" :value="oIdx" x-model.number="quizAnswers[q.id]" class="mt-1 w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-600 cursor-pointer">
                                                             <span class="text-sm text-slate-700 font-medium" x-text="opt"></span>
                                                         </label>
                                                     </template>
                                                 </div>
                                             </template>
 
+                                            <!-- PG Kompleks -->
+                                            <template x-if="q.type === 'pg_kompleks'">
+                                                <div class="space-y-2 mt-5">
+                                                    <p class="text-[11px] font-bold text-slate-500 mb-2">Pilih semua jawaban yang benar (lebih dari satu):</p>
+                                                    <div x-init="if(!quizAnswers[q.id]) quizAnswers[q.id] = []"></div>
+                                                    <template x-for="(opt, oIdx) in q.options" :key="oIdx">
+                                                        <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/30 cursor-pointer transition-colors" :class="quizAnswers[q.id].includes(oIdx.toString()) ? 'bg-indigo-50 border-indigo-400 ring-1 ring-indigo-400' : ''">
+                                                            <input type="checkbox" :value="oIdx.toString()" x-model="quizAnswers[q.id]" class="mt-1 w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-600 cursor-pointer">
+                                                            <span class="text-sm text-slate-700 font-medium" x-text="opt"></span>
+                                                        </label>
+                                                    </template>
+                                                </div>
+                                            </template>
+
+                                            <!-- PG Majemuk (Benar/Salah) -->
+                                            <template x-if="q.type === 'pg_majemuk'">
+                                                <div class="mt-5 space-y-3">
+                                                    <div x-init="if(!quizAnswers[q.id]) quizAnswers[q.id] = {}"></div>
+                                                    <div class="grid grid-cols-12 gap-2 text-[10px] font-black uppercase text-slate-500 border-b border-slate-200 pb-2">
+                                                        <div class="col-span-8">Pernyataan</div>
+                                                        <div class="col-span-2 text-center text-emerald-600">Benar</div>
+                                                        <div class="col-span-2 text-center text-rose-600">Salah</div>
+                                                    </div>
+                                                    <template x-for="(stmt, sIdx) in q.statements" :key="sIdx">
+                                                        <div class="grid grid-cols-12 gap-2 items-center py-2 border-b border-slate-100 hover:bg-slate-50">
+                                                            <div class="col-span-8 text-sm text-slate-700" x-text="stmt.text"></div>
+                                                            <div class="col-span-2 flex justify-center">
+                                                                <input type="radio" :name="'qm_' + q.id + '_' + sIdx" value="true" x-model="quizAnswers[q.id][sIdx]" class="w-4 h-4 text-emerald-500 cursor-pointer focus:ring-emerald-500 border-slate-300">
+                                                            </div>
+                                                            <div class="col-span-2 flex justify-center">
+                                                                <input type="radio" :name="'qm_' + q.id + '_' + sIdx" value="false" x-model="quizAnswers[q.id][sIdx]" class="w-4 h-4 text-rose-500 cursor-pointer focus:ring-rose-500 border-slate-300">
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+
+                                            <!-- Menjodohkan -->
+                                            <template x-if="q.type === 'jodoh'">
+                                                <div class="mt-5">
+                                                    <p class="text-[11px] font-bold text-slate-500 mb-3">Pilih pasangan yang tepat untuk setiap premis di sebelah kiri:</p>
+                                                    <div x-init="
+                                                        if(!quizAnswers[q.id]) quizAnswers[q.id] = {};
+                                                        if(!q._shuffledRights) q._shuffledRights = [...q.pairs.map(p => p.right)].sort(() => Math.random() - 0.5);
+                                                    "></div>
+                                                    <div class="space-y-3">
+                                                        <template x-for="(pair, pIdx) in q.pairs" :key="pIdx">
+                                                            <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                                                                <div class="flex-1 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-medium text-slate-700" x-text="pair.left"></div>
+                                                                <div class="shrink-0 text-slate-300 hidden sm:block">?</div>
+                                                                <select x-model="quizAnswers[q.id][pIdx]" class="flex-1 p-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 font-medium bg-white cursor-pointer">
+                                                                    <option value="">-- Pilih Jawaban --</option>
+                                                                    <template x-for="(rightOpt, rIdx) in q._shuffledRights" :key="rIdx">
+                                                                        <option :value="rightOpt" x-text="rightOpt"></option>
+                                                                    </template>
+                                                                </select>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </template>
+
                                             <!-- Isian Singkat -->
                                             <template x-if="q.type === 'isian'">
                                                 <div class="mt-5">
-                                                    <input type="text" x-model="quizAnswers[q.id]" placeholder="Ketik jawaban Anda..." class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-slate-50 focus:bg-white transition-colors">
+                                                    <input type="text" x-model="quizAnswers[q.id]" placeholder="Ketik jawaban Anda di sini..." class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-slate-50 focus:bg-white transition-colors">
                                                 </div>
                                             </template>
+
+                                            <!-- Essay / File Upload -->
+                                            <template x-if="q.type === 'essai'">
+                                                <div class="mt-5 space-y-3">
+                                                    <textarea x-model="quizAnswers[q.id]" rows="4" placeholder="Ketik jawaban essay Anda (opsional jika mengunggah file)..." class="w-full p-4 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 text-sm bg-slate-50 focus:bg-white transition-colors"></textarea>
+                                                    <div class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:bg-slate-50 transition-colors cursor-pointer relative overflow-hidden group">
+                                                        <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" @change="quizAnswers[q.id + '_file'] = \.target.files[0]?.name">
+                                                        <svg class="w-8 h-8 mx-auto text-slate-400 group-hover:text-indigo-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                                                        <p class="text-sm font-bold text-slate-600" x-text="quizAnswers[q.id + '_file'] ? 'File: ' + quizAnswers[q.id + '_file'] : 'Klik atau Tarik file PDF/Dokumen ke sini'"></p>
+                                                        <p class="text-[10px] text-slate-400 mt-1">Maks. 5MB. Dokumen akan dikirimkan ke pengajar untuk dinilai manual.</p>
+                                                    </div>
+                                                </div>
+                                            </template>
+
                                         </div>
                                     </template>
 
@@ -238,6 +362,16 @@
                 quizAnswers: {},
                 quizState: { submitted: false, score: 0, correct: 0, total: 0 },
                 
+                // YouTube Interactive API state
+                ytPlayer: null,
+                ytPollInterval: null,
+                interactiveQuiz: {
+                    active: false,
+                    currentQ: null,
+                    answer: null,
+                    answeredQs: []
+                },
+                
                 init() {
                     const saved = localStorage.getItem('lms_builder_draft');
                     if (saved) {
@@ -246,18 +380,132 @@
                         } catch(e) { console.error('Gagal meload data', e); }
                     }
                     
+                    // Load YT Iframe API
+                    if (!window.YT) {
+                        const tag = document.createElement('script');
+                        tag.src = "https://www.youtube.com/iframe_api";
+                        const firstScriptTag = document.getElementsByTagName('script')[0];
+                        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                    }
+                    
                     // Auto open first node
                     if (this.babs.length > 0 && this.babs[0].subBabs && this.babs[0].subBabs.length > 0) {
                         this.openNode(this.babs[0].subBabs[0]);
                     }
                 },
 
+                initYoutubePlayer() {
+                    if (this.ytPlayer) {
+                        this.ytPlayer.destroy();
+                        this.ytPlayer = null;
+                    }
+                    if (this.ytPollInterval) {
+                        clearInterval(this.ytPollInterval);
+                    }
+                    
+                    this.interactiveQuiz.active = false;
+                    this.interactiveQuiz.answeredQs = [];
+                    
+                    if (!this.activeNode || this.activeNode.type !== 'video' || !this.activeNode.videoUrl) return;
+                    
+                    const videoId = this.extractYoutubeId(this.activeNode.videoUrl);
+                    if (!videoId) return;
+
+                    const setupPlayer = () => {
+                        this.ytPlayer = new YT.Player('yt-player-container', {
+                            videoId: videoId,
+                            playerVars: { 'playsinline': 1 },
+                            events: {
+                                'onStateChange': this.onPlayerStateChange.bind(this)
+                            }
+                        });
+                    };
+
+                    if (window.YT && window.YT.Player) {
+                        setupPlayer();
+                    } else {
+                        window.onYouTubeIframeAPIReady = () => {
+                            setupPlayer();
+                        };
+                    }
+                },
+
+                onPlayerStateChange(event) {
+                    if (event.data == YT.PlayerState.PLAYING) {
+                        this.ytPollInterval = setInterval(() => this.checkInteractiveQuizzes(), 1000);
+                    } else {
+                        clearInterval(this.ytPollInterval);
+                    }
+                    
+                    // Mark video as completed if it ends
+                    if (event.data == YT.PlayerState.ENDED) {
+                        this.markAsCompleted(this.activeNode.id);
+                    }
+                },
+
+                checkInteractiveQuizzes() {
+                    if (!this.ytPlayer || !this.activeNode || !this.activeNode.questions) return;
+                    
+                    const currentTime = this.ytPlayer.getCurrentTime();
+                    
+                    // Find a question that should trigger now
+                    const qToTrigger = this.activeNode.questions.find(q => 
+                        q.videoTimestamp && 
+                        parseInt(q.videoTimestamp) <= currentTime && 
+                        !this.interactiveQuiz.answeredQs.includes(q.id)
+                    );
+
+                    if (qToTrigger) {
+                        this.ytPlayer.pauseVideo();
+                        this.interactiveQuiz.currentQ = qToTrigger;
+                        this.interactiveQuiz.answer = null;
+                        this.interactiveQuiz.active = true;
+                    }
+                },
+                
+                skipInteractiveQuiz() {
+                    this.interactiveQuiz.answeredQs.push(this.interactiveQuiz.currentQ.id);
+                    this.interactiveQuiz.active = false;
+                    if (this.ytPlayer) this.ytPlayer.playVideo();
+                },
+
+                submitInteractiveQuiz() {
+                    if (this.interactiveQuiz.answer === null) {
+                        alert('Silakan pilih jawaban terlebih dahulu!');
+                        return;
+                    }
+                    
+                    const q = this.interactiveQuiz.currentQ;
+                    if (this.interactiveQuiz.answer == q.correctAnswers) {
+                        // Show toast or something for correct answer
+                        // alert('Benar!');
+                    } else {
+                        // alert('Salah, tapi Anda bisa lanjut menonton.');
+                    }
+                    
+                    this.skipInteractiveQuiz(); // Resumes video and marks as answered
+                },
+
                 openNode(node) {
+                    if (this.ytPlayer) {
+                        this.ytPlayer.destroy();
+                        this.ytPlayer = null;
+                    }
+                    if (this.ytPollInterval) clearInterval(this.ytPollInterval);
+                    
                     this.activeNode = node;
                     this.sidebarOpen = false;
                     this.quizState.submitted = false;
                     this.quizAnswers = {};
+                    
+                    // Allow Alpine to update DOM, then init player if video
+                    this.$nextTick(() => {
+                        if (this.activeNode.type === 'video') {
+                            this.initYoutubePlayer();
+                        }
+                    });
                 },
+
 
                 isCompleted(id) {
                     return this.completedNodes.includes(id);
@@ -287,13 +535,53 @@
                     if (!this.activeNode || !this.activeNode.questions) return;
                     
                     let correct = 0;
-                    const total = this.activeNode.questions.length;
+                    let totalGradable = 0;
                     
                     this.activeNode.questions.forEach(q => {
+                        if (q.type === 'essai') return; // Skip auto-grading for essay
+                        
+                        totalGradable++;
                         const ans = this.quizAnswers[q.id];
+                        
                         if (q.type === 'pg') {
-                            if (ans === q.correctAnswers) correct++;
-                        } else if (q.type === 'isian') {
+                            if (ans == q.correctAnswers) correct++;
+                        } 
+                        else if (q.type === 'pg_kompleks') {
+                            const correctArr = q.correctAnswersArray || [];
+                            const userArr = ans || [];
+                            if (correctArr.length === userArr.length && correctArr.every(val => userArr.includes(val))) {
+                                correct++;
+                            }
+                        }
+                        else if (q.type === 'pg_majemuk') {
+                            let allMatch = true;
+                            const userObj = ans || {};
+                            q.statements.forEach((stmt, sIdx) => {
+                                if (userObj[sIdx] !== stmt.isCorrect) allMatch = false;
+                            });
+                            if (allMatch && q.statements.length > 0) correct++;
+                        }
+                        else if (q.type === 'jodoh') {
+                            let allMatch = true;
+                            const userObj = ans || {};
+                            q.pairs.forEach((pair, pIdx) => {
+                                if (userObj[pIdx] !== pair.right) allMatch = false;
+                            });
+                            if (allMatch && q.pairs.length > 0) correct++;
+                        }
+                        else if (q.type === 'isian') {
+                            if (!q.shortAnswerKeys) return;
+                            const keys = q.shortAnswerKeys.toLowerCase().split(',').map(k => k.trim());
+                            if (ans && keys.includes(ans.toString().toLowerCase().trim())) correct++;
+                        }
+                    });
+
+                    this.quizState.total = totalGradable;
+                    this.quizState.correct = correct;
+                    this.quizState.score = totalGradable > 0 ? Math.round((correct / totalGradable) * 100) : 100;
+                    this.quizState.submitted = true;
+                    this.markAsCompleted(this.activeNode.id);
+                } else if (q.type === 'isian') {
                             const keys = q.shortAnswerKeys.toLowerCase().split(',').map(k => k.trim());
                             if (ans && keys.includes(ans.toLowerCase().trim())) correct++;
                         }
@@ -311,3 +599,8 @@
     </script>
 </body>
 </html>
+
+
+
+
+
