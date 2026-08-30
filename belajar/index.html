@@ -700,7 +700,7 @@
                 <!-- =========================================================================
                      1. VIEW: DASHBOARD UTAMA (OVERVIEW & SUMMARY)
                      ========================================================================= -->
-                <div x-show="activeTab === 'dashboard'" x-cloak class="space-y-7">
+                <div x-show="activeTab === 'dashboard'" x-cloak>
                     
                     <!-- Welcome Hero Banner -->
                     <!-- 1. Logged In Student Hero -->
@@ -1046,7 +1046,7 @@
                 <!-- =========================================================================
                      2. VIEW: PROFIL SISWA (PROFIL SAYA & EDIT PROFIL)
                      ========================================================================= -->
-                <div x-show="activeTab === 'profil'" x-cloak class="space-y-6">
+                <div x-show="activeTab === 'profil'" x-cloak>
                     
                     <!-- Guest Gate Banner for Profile -->
                     <template x-if="!isLoggedIn">
@@ -1101,72 +1101,148 @@
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             
                             <!-- Profile ID Card -->
-                            <div class="rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 p-6 sm:p-7 shadow-xs space-y-5 text-center">
-                                <div class="relative w-28 h-28 mx-auto">
-                                    <img :src="studentProfile.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'" alt="Avatar" class="w-full h-full rounded-3xl object-cover border-4 border-indigo-500 shadow-md">
-                                    <span class="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900 flex items-center justify-center text-[10px] text-white font-black">✓</span>
-                                </div>
+                            <div class="relative overflow-hidden rounded-3xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-none transition-all group">
+                                <!-- Cover Graphic -->
+                                <div class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 opacity-90"></div>
+                                <div class="absolute top-0 left-0 right-0 h-32 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20 mix-blend-overlay"></div>
+                                
+                                <div class="relative p-6 sm:p-7 pt-16 mt-4 text-center">
+                                    <div class="relative w-32 h-32 mx-auto mb-4 group-hover:scale-105 transition-transform duration-500">
+                                        <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-3xl blur-md opacity-40"></div>
+                                        <img :src="studentProfile.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'" alt="Avatar" class="relative w-full h-full rounded-3xl object-cover border-4 border-white dark:border-[#0f172a] shadow-xl z-10">
+                                        <span class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 border-2 border-white dark:border-[#0f172a] flex items-center justify-center text-sm text-white font-black shadow-lg z-20" title="Akun Terverifikasi">✓</span>
+                                    </div>
 
-                                <div>
-                                    <h3 class="text-lg font-black text-slate-900 dark:text-white" x-text="studentProfile.name"></h3>
-                                    <p class="text-xs font-bold text-indigo-600 dark:text-indigo-400" x-text="studentProfile.school"></p>
-                                    <p class="text-[11px] text-slate-400 mt-0.5" x-text="studentProfile.nisn"></p>
-                                </div>
+                                    <div>
+                                        <h3 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight" x-text="studentProfile.name"></h3>
+                                        <div class="flex items-center justify-center gap-1.5 mt-1 text-sm font-bold text-indigo-600 dark:text-indigo-400">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                            <span x-text="studentProfile.school"></span>
+                                        </div>
+                                        <p class="inline-block mt-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-[11px] font-bold text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">NISN: <span x-text="studentProfile.nisn"></span></p>
+                                    </div>
 
-                                <div class="p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-900 text-xs text-indigo-900 dark:text-indigo-200">
-                                    <span class="font-black">🎯 Target Impian:</span>
-                                    <p class="font-bold text-indigo-600 dark:text-indigo-300 mt-0.5" x-text="studentProfile.target"></p>
-                                </div>
+                                    <div class="mt-6 p-4 rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/40 dark:to-purple-950/40 border border-indigo-100/50 dark:border-indigo-900/50 relative overflow-hidden text-left">
+                                        <div class="absolute -right-4 -top-4 text-6xl opacity-10 blur-[1px]">🎯</div>
+                                        <div class="relative z-10">
+                                            <span class="text-xs font-black text-indigo-900 dark:text-indigo-300 uppercase tracking-wider block mb-1">Target Impian</span>
+                                            <p class="font-black text-indigo-600 dark:text-indigo-400 text-lg leading-tight" x-text="studentProfile.target"></p>
+                                        </div>
+                                    </div>
 
-                                <button type="button" @click="profilView = 'edit'"
-                                    class="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition-all">
-                                    Edit Informasi Profil
-                                </button>
+                                    <button type="button" @click="profilView = 'edit'"
+                                        class="mt-5 w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 text-white text-xs font-black transition-all shadow-lg shadow-slate-900/20 dark:shadow-white/10 active:scale-[0.98] flex items-center justify-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                        Edit Informasi Profil
+                                    </button>
+                                </div>
                             </div>
 
                             <!-- Detailed Information & Certificates -->
                             <div class="lg:col-span-2 space-y-6">
-                                <div class="rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 p-6 shadow-xs space-y-4">
-                                    <h4 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Data Akademik Siswa</h4>
+                                <!-- Data Akademik Card -->
+                                <div class="rounded-3xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xl shadow-slate-200/40 dark:shadow-none relative overflow-hidden">
+                                    <div class="absolute top-0 right-0 p-8 opacity-5 dark:opacity-10 pointer-events-none">
+                                        <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/></svg>
+                                    </div>
+                                    <div class="flex items-center gap-3 mb-6 relative z-10">
+                                        <div class="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                        </div>
+                                        <h4 class="text-lg font-black text-slate-900 dark:text-white">Data Akademik Siswa</h4>
+                                    </div>
                                     
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                                        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
-                                            <span class="text-slate-400 font-bold block mb-1">Email Siswa:</span>
-                                            <span class="font-bold text-slate-800 dark:text-slate-200" x-text="studentProfile.email"></span>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10">
+                                        <div class="group p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-700/50 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg hover:shadow-indigo-500/5 transition-all">
+                                            <div class="flex items-start gap-3">
+                                                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-900 text-slate-400 dark:text-slate-500 group-hover:text-indigo-500 group-hover:scale-110 transition-all shadow-sm">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                                </div>
+                                                <div>
+                                                    <span class="text-[11px] font-black text-slate-400 uppercase tracking-wider block mb-0.5">Email Akun</span>
+                                                    <span class="font-bold text-slate-800 dark:text-slate-200 text-sm" x-text="studentProfile.email"></span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
-                                            <span class="text-slate-400 font-bold block mb-1">WhatsApp Siswa:</span>
-                                            <span class="font-bold text-slate-800 dark:text-slate-200" x-text="studentProfile.phone"></span>
+                                        
+                                        <div class="group p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-700/50 hover:border-emerald-200 dark:hover:border-emerald-800 hover:shadow-lg hover:shadow-emerald-500/5 transition-all">
+                                            <div class="flex items-start gap-3">
+                                                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-900 text-slate-400 dark:text-slate-500 group-hover:text-emerald-500 group-hover:scale-110 transition-all shadow-sm">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                                </div>
+                                                <div>
+                                                    <span class="text-[11px] font-black text-slate-400 uppercase tracking-wider block mb-0.5">Nomor WhatsApp</span>
+                                                    <span class="font-bold text-slate-800 dark:text-slate-200 text-sm" x-text="studentProfile.phone"></span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
-                                            <span class="text-slate-400 font-bold block mb-1">Jenjang Sekolah:</span>
-                                            <span class="font-bold text-slate-800 dark:text-slate-200" x-text="studentProfile.level"></span>
+                                        
+                                        <div class="group p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-700/50 hover:border-purple-200 dark:hover:border-purple-800 hover:shadow-lg hover:shadow-purple-500/5 transition-all">
+                                            <div class="flex items-start gap-3">
+                                                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-900 text-slate-400 dark:text-slate-500 group-hover:text-purple-500 group-hover:scale-110 transition-all shadow-sm">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                                </div>
+                                                <div>
+                                                    <span class="text-[11px] font-black text-slate-400 uppercase tracking-wider block mb-0.5">Jenjang Sekolah</span>
+                                                    <span class="font-bold text-slate-800 dark:text-slate-200 text-sm" x-text="studentProfile.level"></span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
-                                            <span class="text-slate-400 font-bold block mb-1">Jenjang &amp; Kelas:</span>
-                                            <span class="font-bold text-slate-800 dark:text-slate-200" x-text="studentProfile.grade"></span>
+                                        
+                                        <div class="group p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-700/50 hover:border-amber-200 dark:hover:border-amber-800 hover:shadow-lg hover:shadow-amber-500/5 transition-all">
+                                            <div class="flex items-start gap-3">
+                                                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-900 text-slate-400 dark:text-slate-500 group-hover:text-amber-500 group-hover:scale-110 transition-all shadow-sm">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                                                </div>
+                                                <div>
+                                                    <span class="text-[11px] font-black text-slate-400 uppercase tracking-wider block mb-0.5">Tingkat Kelas</span>
+                                                    <span class="font-bold text-slate-800 dark:text-slate-200 text-sm" x-text="studentProfile.grade"></span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Certificates Achieved -->
-                                <div class="rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 p-6 shadow-xs space-y-4">
-                                    <h4 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider text-amber-500">Pencapaian &amp; Sertifikat Belajar NLS</h4>
-                                    
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                                        <div class="p-4 rounded-2xl bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 flex items-center justify-between">
-                                            <div>
-                                                <div class="font-black text-amber-900 dark:text-amber-200">Sertifikat Tryout UTBK SNBT #1</div>
-                                                <p class="text-[10px] text-amber-700 dark:text-amber-400">Skor: 745.2 (Lolos Passing Grade)</p>
-                                            </div>
-                                            <span class="text-xl">🎖️</span>
+                                <!-- Certificates Achieved Card -->
+                                <div class="rounded-3xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xl shadow-slate-200/40 dark:shadow-none">
+                                    <div class="flex items-center gap-3 mb-6">
+                                        <div class="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
                                         </div>
-                                        <div class="p-4 rounded-2xl bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900 flex items-center justify-between">
-                                            <div>
-                                                <div class="font-black text-indigo-900 dark:text-indigo-200">Sertifikat Intensif OSN Fisika</div>
-                                                <p class="text-[10px] text-indigo-700 dark:text-indigo-400">Tuntas 12 Modul Mekanika &amp; Termo</p>
+                                        <h4 class="text-lg font-black text-slate-900 dark:text-white">Pencapaian &amp; Sertifikat Belajar</h4>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 p-0.5 hover:-translate-y-1 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/30 cursor-default">
+                                            <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-700"></div>
+                                            <div class="relative h-full bg-white dark:bg-[#0f172a] p-5 rounded-[14px] flex flex-col justify-between">
+                                                <div class="flex items-start justify-between mb-4">
+                                                    <div class="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-500 border border-amber-100 dark:border-amber-900/50">
+                                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                                                    </div>
+                                                    <span class="px-2.5 py-1 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-[10px] font-black uppercase">Tryout SNBT</span>
+                                                </div>
+                                                <div>
+                                                    <h5 class="font-black text-slate-800 dark:text-slate-100 text-[15px] leading-tight mb-1">Sertifikat Tryout UTBK SNBT #1</h5>
+                                                    <p class="text-xs font-bold text-amber-600 dark:text-amber-500">Skor: 745.2 (Lolos Passing Grade)</p>
+                                                </div>
                                             </div>
-                                            <span class="text-xl">🏆</span>
+                                        </div>
+
+                                        <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-0.5 hover:-translate-y-1 transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/30 cursor-default">
+                                            <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-700"></div>
+                                            <div class="relative h-full bg-white dark:bg-[#0f172a] p-5 rounded-[14px] flex flex-col justify-between">
+                                                <div class="flex items-start justify-between mb-4">
+                                                    <div class="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-500 border border-indigo-100 dark:border-indigo-900/50">
+                                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                                                    </div>
+                                                    <span class="px-2.5 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 text-[10px] font-black uppercase">Intensif OSN</span>
+                                                </div>
+                                                <div>
+                                                    <h5 class="font-black text-slate-800 dark:text-slate-100 text-[15px] leading-tight mb-1">Sertifikat Intensif OSN Fisika</h5>
+                                                    <p class="text-xs font-bold text-indigo-600 dark:text-indigo-500">Tuntas 12 Modul Mekanika &amp; Termo</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
