@@ -26,21 +26,23 @@
 <body class="bg-slate-50 text-slate-800 antialiased h-screen overflow-hidden flex flex-col" x-data="lmsBuilder()">
 
     <!-- Top Navbar -->
-    <header class="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between shrink-0 shadow-sm z-10">
-        <div class="flex items-center gap-4">
-            <button onclick="window.history.back()" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    <header class="bg-gradient-to-r from-indigo-50/90 via-sky-50/80 to-purple-50/90 backdrop-blur-2xl border-b border-indigo-100/60 px-6 py-3 flex items-center justify-between shrink-0 shadow-sm z-10 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-200/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+        
+        <div class="flex items-center gap-4 relative z-10">
+            <button onclick="window.history.back()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/60 hover:bg-white shadow-[0_2px_8px_rgba(0,0,0,0.03)] border border-indigo-50 text-indigo-900 transition-all active:scale-95 shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
             </button>
             <div>
-                <h1 class="font-black text-lg text-slate-900 leading-tight">Penyusun Konten & Modul Pembelajaran</h1>
-                <p class="text-xs text-slate-500 font-medium" x-text="'Course: ' + courseTitle"></p>
+                <h1 class="font-black text-lg text-indigo-950 leading-tight">Penyusun Konten & Modul Pembelajaran</h1>
+                <p class="text-[11px] text-indigo-800/70 font-bold tracking-wide mt-0.5" x-text="'Course: ' + courseTitle"></p>
             </div>
         </div>
-        <div class="flex items-center gap-3">
-            <span x-show="isSaving" class="text-xs font-bold text-amber-500 animate-pulse">Menyimpan...</span>
-            <span x-show="!isSaving && lastSaved" class="text-xs font-medium text-slate-400" x-text="'Tersimpan ' + lastSaved"></span>
-            <button @click="saveAll()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+        <div class="flex items-center gap-4 relative z-10">
+            <span x-show="isSaving" class="text-xs font-bold text-amber-500 animate-pulse bg-amber-50 px-3 py-1 rounded-full">Menyimpan...</span>
+            <span x-show="!isSaving && lastSaved" class="text-xs font-bold text-indigo-400 bg-indigo-50/50 px-3 py-1 rounded-full border border-indigo-100/50" x-text="'Tersimpan ' + lastSaved"></span>
+            <button @click="saveAll()" class="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-black text-xs rounded-xl shadow-[0_4px_12px_rgba(79,70,229,0.3)] transition-all active:scale-95 flex items-center gap-2 border border-indigo-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
                 Simpan Modul
             </button>
         </div>
@@ -50,73 +52,81 @@
     <main class="flex-1 flex overflow-hidden">
         
         <!-- Sidebar: Module & Lesson Tree -->
-        <aside class="w-72 bg-white border-r border-slate-200 flex flex-col shrink-0">
-                        <div class="p-4 border-b border-slate-100 flex justify-between items-center">
-                <h3 class="font-bold text-sm text-slate-800">Daftar Bab & Materi</h3>
-                <button @click="addBab()" class="text-indigo-600 hover:text-indigo-800 flex items-center gap-1 text-[10px] font-black uppercase tracking-wider bg-indigo-50 px-2 py-1 rounded-lg" title="Tambah Bab">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg> BAB
+        <aside class="w-72 bg-slate-50/50 border-r border-indigo-100/60 flex flex-col shrink-0 relative z-10">
+            <div class="p-4 border-b border-indigo-100/50 flex justify-between items-center bg-white/40 backdrop-blur-md">
+                <h3 class="font-black text-xs text-indigo-950 uppercase tracking-wide">Daftar Bab & Materi</h3>
+                <button @click="addBab()" class="text-indigo-700 hover:text-white flex items-center gap-1 text-[10px] font-black uppercase tracking-wider bg-indigo-100 hover:bg-indigo-600 transition-colors px-2 py-1.5 rounded-lg shadow-sm" title="Tambah Bab">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/></svg> BAB
                 </button>
             </div>
-            <div class="flex-1 overflow-y-auto builder-scroll p-3 space-y-3">
+            <div class="flex-1 overflow-y-auto builder-scroll p-4 space-y-3">
                 <template x-for="(bab, bIdx) in babs" :key="bab.id">
-                    <div class="border border-slate-200 rounded-xl bg-white overflow-hidden shadow-xs">
+                    <div class="border border-indigo-100/80 rounded-2xl bg-white shadow-[0_2px_10px_rgba(0,0,0,0.02)] overflow-hidden transition-all duration-300">
                         <!-- Bab Header -->
-                        <div class="bg-slate-50 p-2.5 border-b border-slate-200 flex justify-between items-center group cursor-pointer" @click="bab.expanded = !bab.expanded">
+                        <div class="bg-gradient-to-r from-slate-50 to-white p-3 flex justify-between items-center group cursor-pointer border-b border-indigo-50/50" @click="bab.expanded = !bab.expanded">
                             <div class="flex items-center gap-2 flex-1 min-w-0" @click.stop>
-                                <button @click="bab.expanded = !bab.expanded" class="text-slate-400 hover:text-indigo-600 shrink-0">
-                                    <svg class="w-4 h-4 transition-transform" :class="bab.expanded ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                <button @click="bab.expanded = !bab.expanded" class="w-6 h-6 flex items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 transition-colors shrink-0">
+                                    <svg class="w-4 h-4 transition-transform duration-300" :class="bab.expanded ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
                                 </button>
                                 <input type="text" x-model="bab.title" class="flex-1 bg-transparent border-none p-0 text-xs font-black text-slate-800 focus:ring-0 truncate" placeholder="Judul Bab...">
                             </div>
                             <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button @click.stop="addSubBab(bab)" class="text-indigo-600 hover:bg-indigo-100 p-1 rounded-md" title="Tambah Materi/Kuis">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                                <button @click.stop="addSubBab(bab)" class="text-indigo-600 hover:bg-indigo-50 p-1.5 rounded-lg transition-colors shadow-sm border border-transparent hover:border-indigo-100" title="Tambah Materi/Kuis">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
                                 </button>
-                                <button @click.stop="removeBab(bIdx)" class="text-rose-500 hover:bg-rose-100 p-1 rounded-md" title="Hapus Bab">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                <button @click.stop="removeBab(bIdx)" class="text-rose-500 hover:bg-rose-50 p-1.5 rounded-lg transition-colors shadow-sm border border-transparent hover:border-rose-100" title="Hapus Bab">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                 </button>
                             </div>
                         </div>
                         
                         <!-- Sub Babs -->
-                        <div x-show="bab.expanded" class="p-2 space-y-1.5 bg-white">
+                        <div x-show="bab.expanded" x-transition class="p-2.5 space-y-1.5 bg-white">
                             <template x-for="(node, idx) in bab.subBabs" :key="node.id">
                                 <div @click="selectNode(node)" 
-                                     :class="activeNode && activeNode.id === node.id ? 'bg-indigo-50 border-indigo-200 shadow-sm' : 'bg-white border-slate-100 hover:border-slate-300 hover:bg-slate-50'"
-                                     class="p-2.5 border rounded-lg cursor-pointer transition-all flex justify-between items-center group ml-2">
-                                    <div class="flex items-center gap-2 min-w-0">
-                                        <span x-show="node.type === 'materi'" class="text-blue-500 text-base">📄</span>
-                                        <span x-show="node.type === 'kuis'" class="text-amber-500 text-base">✍️</span>
-                                        <span x-show="node.type === 'video'" class="text-red-500 text-base">▶️</span>
-                                        <span class="font-bold text-[11px] truncate text-slate-700" x-text="node.title || 'Tanpa Judul'"></span>
+                                     :class="activeNode && activeNode.id === node.id ? 'bg-indigo-50/80 border-indigo-200/80 shadow-[0_2px_8px_rgba(79,70,229,0.08)]' : 'bg-transparent border-transparent hover:bg-slate-50 hover:border-slate-200'"
+                                     class="p-2.5 border rounded-xl cursor-pointer transition-all flex justify-between items-center group relative overflow-hidden">
+                                    <div x-show="activeNode && activeNode.id === node.id" class="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500"></div>
+                                    <div class="flex items-center gap-3 min-w-0 pl-1">
+                                        <div class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-sm"
+                                            :class="node.type === 'materi' ? 'bg-sky-100 text-sky-600' : (node.type === 'kuis' ? 'bg-amber-100 text-amber-600' : 'bg-rose-100 text-rose-600')">
+                                            <svg x-show="node.type === 'materi'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                            <svg x-show="node.type === 'kuis'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                            <svg x-show="node.type === 'video'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        </div>
+                                        <span class="font-black text-xs truncate" :class="activeNode && activeNode.id === node.id ? 'text-indigo-900' : 'text-slate-700'" x-text="node.title || 'Tanpa Judul'"></span>
                                     </div>
-                                    <button @click.stop="removeSubBab(bab, idx)" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                    <button @click.stop="removeSubBab(bab, idx)" class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:bg-rose-50 hover:text-rose-600 opacity-0 group-hover:opacity-100 transition-all">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                     </button>
                                 </div>
                             </template>
-                            <div x-show="bab.subBabs.length === 0" class="text-center py-3 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                                Belum ada isi bab
+                            <div x-show="bab.subBabs.length === 0" class="text-center py-4 bg-slate-50/50 rounded-xl border border-dashed border-slate-200">
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Belum ada isi bab</p>
                             </div>
                         </div>
                     </div>
                 </template>
-                <div x-show="babs.length === 0" class="text-center p-5 text-xs text-slate-400">
-                    Belum ada Bab. Klik tombol <strong>+ BAB</strong> di atas.
+                <div x-show="babs.length === 0" class="text-center p-6 bg-white rounded-2xl border border-dashed border-indigo-200 shadow-sm">
+                    <div class="w-12 h-12 mx-auto bg-indigo-50 rounded-full flex items-center justify-center text-indigo-400 mb-3">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                    </div>
+                    <p class="text-xs font-bold text-slate-500 mb-1">Modul Masih Kosong</p>
+                    <p class="text-[10px] text-slate-400">Mulai dengan menambahkan bab pertama Anda.</p>
                 </div>
             </div>
         </aside>
 
         <!-- Content Area -->
-        <section class="flex-1 bg-slate-50 overflow-y-auto builder-scroll p-6 relative">
+        <section class="flex-1 bg-slate-50/50 overflow-y-auto builder-scroll p-6 relative">
             
             <template x-if="!activeNode">
                 <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400">
-                    <div class="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mb-4">
-                        <svg class="w-10 h-10 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                    <div class="w-24 h-24 rounded-full bg-white shadow-sm border border-indigo-50 flex items-center justify-center mb-5">
+                        <svg class="w-10 h-10 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                     </div>
-                    <p class="font-bold text-slate-500">Mulai Menyusun Modul</p>
-                    <p class="text-xs mt-1">Pilih materi atau kuis di sebelah kiri untuk mulai mengedit</p>
+                    <p class="font-black text-indigo-900 text-lg">Mulai Menyusun Modul</p>
+                    <p class="text-xs mt-1 text-slate-500">Pilih materi atau kuis di sebelah kiri untuk mulai mengedit</p>
                 </div>
             </template>
 
@@ -124,98 +134,116 @@
                 <div class="max-w-4xl mx-auto space-y-6 pb-20">
                     
                     <!-- Title Editor -->
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-1 h-full" :class="activeNode.type === 'materi' ? 'bg-blue-500' : (activeNode.type === 'kuis' ? 'bg-amber-500' : 'bg-red-500')"></div>
-                        <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Judul Node / Halaman</label>
-                        <input type="text" x-model="activeNode.title" class="w-full text-xl font-black text-slate-900 border-none p-0 focus:ring-0 bg-transparent placeholder-slate-300" placeholder="Masukkan judul materi/kuis...">
+                    <div class="bg-white p-7 rounded-3xl border border-indigo-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1.5 h-full" :class="activeNode.type === 'materi' ? 'bg-gradient-to-b from-sky-400 to-blue-500' : (activeNode.type === 'kuis' ? 'bg-gradient-to-b from-amber-400 to-orange-500' : 'bg-gradient-to-b from-rose-400 to-red-500')"></div>
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50/50 rounded-full blur-2xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
                         
-                        <div class="mt-5 flex flex-wrap gap-4">
-                            <label class="flex items-center gap-2 text-sm cursor-pointer group">
-                                <div class="w-4 h-4 rounded-full border border-slate-300 flex items-center justify-center group-hover:border-blue-500 transition-colors" :class="activeNode.type === 'materi' ? 'border-blue-500' : ''">
-                                    <div class="w-2 h-2 rounded-full bg-blue-500 scale-0 transition-transform" :class="activeNode.type === 'materi' ? 'scale-100' : ''"></div>
-                                </div>
-                                <input type="radio" x-model="activeNode.type" value="materi" class="hidden">
-                                <span class="font-bold text-slate-600 group-hover:text-slate-900" :class="activeNode.type === 'materi' ? 'text-blue-600' : ''">📄 Materi (Teks/PDF)</span>
-                            </label>
+                        <div class="relative z-10 pl-2">
+                            <label class="block text-[10px] font-black uppercase text-indigo-400 mb-1 tracking-wider">Judul Node / Halaman</label>
+                            <input type="text" x-model="activeNode.title" class="w-full text-2xl font-black text-indigo-950 border-none p-0 focus:ring-0 bg-transparent placeholder-slate-300" placeholder="Masukkan judul materi/kuis...">
+                            
+                            <div class="mt-6 flex flex-wrap gap-3">
+                                <label class="cursor-pointer group">
+                                    <input type="radio" x-model="activeNode.type" value="materi" class="hidden">
+                                    <div class="flex items-center gap-2 px-4 py-2 rounded-xl border transition-all"
+                                         :class="activeNode.type === 'materi' ? 'border-sky-200 bg-sky-50 shadow-[0_2px_8px_rgba(14,165,233,0.1)]' : 'border-slate-200 bg-white hover:bg-slate-50'">
+                                        <div class="w-4 h-4 rounded-full border flex items-center justify-center transition-colors" :class="activeNode.type === 'materi' ? 'border-sky-500' : 'border-slate-300 group-hover:border-sky-400'">
+                                            <div class="w-2 h-2 rounded-full bg-sky-500 scale-0 transition-transform" :class="activeNode.type === 'materi' ? 'scale-100' : ''"></div>
+                                        </div>
+                                        <span class="font-bold text-xs" :class="activeNode.type === 'materi' ? 'text-sky-700' : 'text-slate-600 group-hover:text-slate-900'">📄 Materi (Teks/PDF)</span>
+                                    </div>
+                                </label>
 
-                            <label class="flex items-center gap-2 text-sm cursor-pointer group">
-                                <div class="w-4 h-4 rounded-full border border-slate-300 flex items-center justify-center group-hover:border-amber-500 transition-colors" :class="activeNode.type === 'kuis' ? 'border-amber-500' : ''">
-                                    <div class="w-2 h-2 rounded-full bg-amber-500 scale-0 transition-transform" :class="activeNode.type === 'kuis' ? 'scale-100' : ''"></div>
-                                </div>
-                                <input type="radio" x-model="activeNode.type" value="kuis" class="hidden">
-                                <span class="font-bold text-slate-600 group-hover:text-slate-900" :class="activeNode.type === 'kuis' ? 'text-amber-600' : ''">✍️ Kuis & Latihan</span>
-                            </label>
+                                <label class="cursor-pointer group">
+                                    <input type="radio" x-model="activeNode.type" value="kuis" class="hidden">
+                                    <div class="flex items-center gap-2 px-4 py-2 rounded-xl border transition-all"
+                                         :class="activeNode.type === 'kuis' ? 'border-amber-200 bg-amber-50 shadow-[0_2px_8px_rgba(245,158,11,0.1)]' : 'border-slate-200 bg-white hover:bg-slate-50'">
+                                        <div class="w-4 h-4 rounded-full border flex items-center justify-center transition-colors" :class="activeNode.type === 'kuis' ? 'border-amber-500' : 'border-slate-300 group-hover:border-amber-400'">
+                                            <div class="w-2 h-2 rounded-full bg-amber-500 scale-0 transition-transform" :class="activeNode.type === 'kuis' ? 'scale-100' : ''"></div>
+                                        </div>
+                                        <span class="font-bold text-xs" :class="activeNode.type === 'kuis' ? 'text-amber-700' : 'text-slate-600 group-hover:text-slate-900'">✍️ Kuis & Latihan</span>
+                                    </div>
+                                </label>
 
-                            <label class="flex items-center gap-2 text-sm cursor-pointer group">
-                                <div class="w-4 h-4 rounded-full border border-slate-300 flex items-center justify-center group-hover:border-red-500 transition-colors" :class="activeNode.type === 'video' ? 'border-red-500' : ''">
-                                    <div class="w-2 h-2 rounded-full bg-red-500 scale-0 transition-transform" :class="activeNode.type === 'video' ? 'scale-100' : ''"></div>
-                                </div>
-                                <input type="radio" x-model="activeNode.type" value="video" class="hidden">
-                                <span class="font-bold text-slate-600 group-hover:text-slate-900" :class="activeNode.type === 'video' ? 'text-red-600' : ''">▶️ Video Interaktif</span>
-                            </label>
+                                <label class="cursor-pointer group">
+                                    <input type="radio" x-model="activeNode.type" value="video" class="hidden">
+                                    <div class="flex items-center gap-2 px-4 py-2 rounded-xl border transition-all"
+                                         :class="activeNode.type === 'video' ? 'border-rose-200 bg-rose-50 shadow-[0_2px_8px_rgba(244,63,94,0.1)]' : 'border-slate-200 bg-white hover:bg-slate-50'">
+                                        <div class="w-4 h-4 rounded-full border flex items-center justify-center transition-colors" :class="activeNode.type === 'video' ? 'border-rose-500' : 'border-slate-300 group-hover:border-rose-400'">
+                                            <div class="w-2 h-2 rounded-full bg-rose-500 scale-0 transition-transform" :class="activeNode.type === 'video' ? 'scale-100' : ''"></div>
+                                        </div>
+                                        <span class="font-bold text-xs" :class="activeNode.type === 'video' ? 'text-rose-700' : 'text-slate-600 group-hover:text-slate-900'">▶️ Video Interaktif</span>
+                                    </div>
+                                </label>
+                            </div>
                         </div>
                     </div>
 
                     <!-- MATERI EDITOR -->
-                    <div x-show="activeNode.type === 'materi'" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-5 animate-fade-in">
-                        <div>
-                            <label class="block text-[11px] font-black uppercase text-slate-500 mb-2">Sumber / Format Materi</label>
+                    <div x-show="activeNode.type === 'materi'" class="bg-white p-7 rounded-3xl border border-indigo-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-6 animate-fade-in relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-sky-50/50 rounded-full blur-2xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+                        
+                        <div class="relative z-10">
+                            <label class="block text-[11px] font-black uppercase text-indigo-400 tracking-wider mb-3">Sumber / Format Materi</label>
                             <div class="flex gap-3">
-                                <button @click="activeNode.materiFormat = 'ckeditor'" :class="activeNode.materiFormat === 'ckeditor' ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-white border-slate-200 text-slate-600'" class="flex-1 py-2.5 border rounded-xl font-bold text-xs transition-colors text-center">Teks / Artikel (CKEditor)</button>
-                                <button @click="activeNode.materiFormat = 'pdf'" :class="activeNode.materiFormat === 'pdf' ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-white border-slate-200 text-slate-600'" class="flex-1 py-2.5 border rounded-xl font-bold text-xs transition-colors text-center">Embed PDF (Google Drive)</button>
-                                <button @click="activeNode.materiFormat = 'html'" :class="activeNode.materiFormat === 'html' ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-white border-slate-200 text-slate-600'" class="flex-1 py-2.5 border rounded-xl font-bold text-xs transition-colors text-center">Custom HTML Snippet</button>
+                                <button @click="activeNode.materiFormat = 'ckeditor'" :class="activeNode.materiFormat === 'ckeditor' ? 'bg-sky-50 border-sky-200 text-sky-700 shadow-sm' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'" class="flex-1 py-3 border rounded-2xl font-bold text-xs transition-all text-center">Teks / Artikel (CKEditor)</button>
+                                <button @click="activeNode.materiFormat = 'pdf'" :class="activeNode.materiFormat === 'pdf' ? 'bg-sky-50 border-sky-200 text-sky-700 shadow-sm' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'" class="flex-1 py-3 border rounded-2xl font-bold text-xs transition-all text-center">Embed PDF (Google Drive)</button>
+                                <button @click="activeNode.materiFormat = 'html'" :class="activeNode.materiFormat === 'html' ? 'bg-sky-50 border-sky-200 text-sky-700 shadow-sm' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'" class="flex-1 py-3 border rounded-2xl font-bold text-xs transition-all text-center">Custom HTML Snippet</button>
                             </div>
                         </div>
 
-                        <div x-show="activeNode.materiFormat === 'pdf'" class="space-y-2">
-                            <label class="block text-[10px] font-black uppercase text-slate-500">Link Google Drive (File PDF, pastikan akses Publik)</label>
-                            <input type="url" x-model="activeNode.pdfUrl" class="w-full p-3.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-slate-50" placeholder="https://drive.google.com/file/d/xxxxxx/view">
-                            <p class="text-[10px] text-slate-400">Sistem otomatis mengubah link <code>/view</code> menjadi <code>/preview</code> untuk di-embed tanpa border.</p>
+                        <div x-show="activeNode.materiFormat === 'pdf'" class="space-y-3 relative z-10">
+                            <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider">Link Google Drive (File PDF, pastikan akses Publik)</label>
+                            <input type="url" x-model="activeNode.pdfUrl" class="w-full p-4 rounded-2xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-slate-50 shadow-inner" placeholder="https://drive.google.com/file/d/xxxxxx/view">
+                            <p class="text-[10px] text-slate-400 font-medium">Sistem otomatis mengubah link <code class="bg-slate-100 text-indigo-600 px-1 py-0.5 rounded">/view</code> menjadi <code class="bg-slate-100 text-indigo-600 px-1 py-0.5 rounded">/preview</code> untuk di-embed tanpa border.</p>
                             
                             <!-- PDF Preview -->
                             <template x-if="formatGdrivePreview(activeNode.pdfUrl)">
-                                <div class="mt-4 border border-slate-200 rounded-xl overflow-hidden bg-slate-100 max-w-2xl h-[500px] shadow-inner relative">
+                                <div class="mt-5 border border-indigo-100/50 rounded-3xl overflow-hidden bg-slate-100/50 max-w-2xl h-[500px] shadow-inner relative">
                                     <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 pointer-events-none z-0">
-                                        <svg class="w-10 h-10 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                        <span class="text-sm font-bold opacity-50">Memuat Pratinjau Dokumen...</span>
+                                        <svg class="w-10 h-10 mb-2 opacity-30 text-indigo-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                        <span class="text-xs font-black uppercase tracking-widest text-indigo-900/30">Memuat Pratinjau Dokumen...</span>
                                     </div>
-                                    <iframe :src="formatGdrivePreview(activeNode.pdfUrl)" class="relative z-10 w-full h-full" frameborder="0" allow="autoplay" allowfullscreen></iframe>
+                                    <iframe :src="formatGdrivePreview(activeNode.pdfUrl)" class="relative z-10 w-full h-full rounded-3xl" frameborder="0" allow="autoplay" allowfullscreen></iframe>
                                 </div>
                             </template>
                         </div>
 
-                        <div x-show="activeNode.materiFormat === 'ckeditor'" class="space-y-2">
+                        <div x-show="activeNode.materiFormat === 'ckeditor'" class="space-y-3 relative z-10">
                             <div class="flex items-center justify-between">
-                                <label class="block text-[10px] font-black uppercase text-slate-500">Konten Teks</label>
-                                <span class="text-[9px] px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-bold">Rich Text Editor Active</span>
+                                <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider">Konten Teks</label>
+                                <span class="text-[9px] px-2.5 py-1 rounded-full bg-sky-100 text-sky-700 font-bold border border-sky-200">Rich Text Editor Active</span>
                             </div>
-                            <textarea id="lmsEditorArea" class="w-full" x-init="$nextTick(() => { initCKEditor() })"></textarea>
+                            <div class="rounded-2xl overflow-hidden border border-slate-200 focus-within:border-sky-400 focus-within:ring-1 focus-within:ring-sky-400 transition-all shadow-sm">
+                                <textarea id="lmsEditorArea" class="w-full border-none" x-init="$nextTick(() => { initCKEditor() })"></textarea>
+                            </div>
                         </div>
 
-                        <div x-show="activeNode.materiFormat === 'html'" class="space-y-2">
-                            <label class="block text-[10px] font-black uppercase text-slate-500">Kode HTML Raw</label>
-                            <textarea x-model="activeNode.rawHtml" rows="12" class="w-full p-4 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 font-mono text-slate-700 bg-slate-900 text-slate-100" placeholder="<div class='p-5 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white'>\n  <h2 class='font-bold'>Judul Custom</h2>\n</div>"></textarea>
-                            <p class="text-[10px] text-slate-400">Gunakan Tailwind CSS classes. HTML akan dibungkus dalam container sandboxed <code>div.prose</code> saat dirender di halaman siswa.</p>
+                        <div x-show="activeNode.materiFormat === 'html'" class="space-y-3 relative z-10">
+                            <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider">Kode HTML Raw</label>
+                            <textarea x-model="activeNode.rawHtml" rows="12" class="w-full p-5 rounded-2xl border border-slate-800 focus:ring-2 focus:ring-indigo-500 font-mono text-xs text-sky-300 bg-slate-900 shadow-inner" placeholder="<div class='p-5 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white'>\n  <h2 class='font-bold'>Judul Custom</h2>\n</div>"></textarea>
+                            <p class="text-[10px] text-slate-400 font-medium">Gunakan Tailwind CSS classes. HTML akan dibungkus dalam container sandboxed <code class="bg-slate-100 text-indigo-600 px-1 py-0.5 rounded">div.prose</code> saat dirender di halaman siswa.</p>
                         </div>
                     </div>
 
                     <!-- VIDEO EDITOR -->
-                    <div x-show="activeNode.type === 'video'" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4 animate-fade-in">
-                        <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center shrink-0">
-                                <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                    <div x-show="activeNode.type === 'video'" class="bg-white p-7 rounded-3xl border border-indigo-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-6 animate-fade-in relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-rose-50/50 rounded-full blur-2xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+                        <div class="flex items-start gap-5 relative z-10">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-rose-100 to-rose-50 flex items-center justify-center shrink-0 border border-rose-100 shadow-sm">
+                                <svg class="w-7 h-7 text-rose-500" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
                             </div>
-                            <div class="flex-1 space-y-2">
-                                <label class="block text-[11px] font-black uppercase text-slate-500">Link YouTube Video</label>
-                                <input type="url" x-model="activeNode.videoUrl" class="w-full p-3.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 bg-slate-50" placeholder="https://www.youtube.com/watch?v=xxxxxx">
-                                <p class="text-xs text-slate-500 leading-relaxed">
+                            <div class="flex-1 space-y-3">
+                                <label class="block text-[11px] font-black uppercase text-rose-400 tracking-wider">Link YouTube Video</label>
+                                <input type="url" x-model="activeNode.videoUrl" class="w-full p-4 rounded-2xl border border-slate-200 text-sm focus:ring-2 focus:ring-rose-500 focus:border-rose-500 bg-slate-50 shadow-inner" placeholder="https://www.youtube.com/watch?v=xxxxxx">
+                                <p class="text-xs text-slate-500 leading-relaxed font-medium">
                                     Video ini akan diputar menggunakan YouTube Iframe API. <br>
-                                    Untuk membuat kuis pop-up di tengah video (Interactive Video), silakan tambahkan soal kuis di bawah ini dan isi kolom <strong>Video Timestamp (Detik)</strong>. Video akan otomatis berhenti dan memunculkan soal tersebut.
+                                    Untuk membuat kuis pop-up di tengah video (Interactive Video), silakan tambahkan soal kuis di bawah ini dan isi kolom <strong class="text-rose-600">Video Timestamp (Detik)</strong>. Video akan otomatis berhenti dan memunculkan soal tersebut.
                                 </p>
                                 
                                 <!-- Video Preview & Duration -->
                                 <template x-if="getYoutubeId(activeNode.videoUrl)">
-                                    <div class="mt-4 border border-slate-200 rounded-xl overflow-hidden bg-white max-w-lg">
+                                    <div class="mt-5 border border-indigo-100/50 rounded-3xl overflow-hidden bg-white max-w-lg shadow-sm">
                                         <div class="aspect-video bg-black relative">
                                             <iframe :src="'https://www.youtube.com/embed/' + getYoutubeId(activeNode.videoUrl) + '?enablejsapi=1'" 
                                                     class="absolute top-0 left-0 w-full h-full" 
@@ -225,12 +253,12 @@
                                                     @load="initYoutubePlayer($event.target, activeNode)">
                                             </iframe>
                                         </div>
-                                        <div class="p-3 bg-slate-50 flex items-center justify-between border-t border-slate-200">
+                                        <div class="p-4 bg-slate-50 flex items-center justify-between border-t border-slate-200">
                                             <div class="flex items-center gap-2">
-                                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                                <span class="text-xs font-bold text-slate-600">Durasi Video:</span>
+                                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                <span class="text-xs font-black uppercase tracking-wider text-slate-500">Durasi Video:</span>
                                             </div>
-                                            <span class="text-sm font-black text-slate-800" x-text="activeNode.videoDurationFormatted || 'Menghitung...'"></span>
+                                            <span class="text-sm font-black text-indigo-900" x-text="activeNode.videoDurationFormatted || 'Menghitung...'"></span>
                                         </div>
                                     </div>
                                 </template>
@@ -239,21 +267,24 @@
                     </div>
 
                     <!-- KUIS EDITOR (Form Builder) -->
-                    <div x-show="activeNode.type === 'kuis' || activeNode.type === 'video'" class="space-y-5 animate-fade-in">
+                    <div x-show="activeNode.type === 'kuis' || activeNode.type === 'video'" class="space-y-6 animate-fade-in">
                         
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-                            <div>
-                                <h3 class="font-black text-slate-800 flex items-center gap-2">
-                                    <span class="text-xl">📝</span> Daftar Soal Kuis
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-3xl border border-indigo-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-amber-50/50 rounded-full blur-2xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+                            
+                            <div class="relative z-10 pl-2">
+                                <h3 class="font-black text-indigo-950 flex items-center gap-2">
+                                    <span class="text-2xl drop-shadow-sm">📝</span> 
+                                    <span class="text-lg">Daftar Soal Kuis</span>
                                 </h3>
-                                <p class="text-[10px] text-slate-500 font-bold" x-text="activeNode.questions.length + ' Soal Tersedia'"></p>
+                                <p class="text-[10px] text-indigo-400 font-black uppercase tracking-wider mt-1" x-text="activeNode.questions.length + ' Soal Tersedia'"></p>
                             </div>
-                            <div class="flex gap-2">
-                                <button @click="openBulkImport()" class="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-black rounded-xl transition-colors flex items-center gap-1.5">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                            <div class="flex gap-3 relative z-10">
+                                <button @click="openBulkImport()" class="px-5 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-black rounded-xl transition-all shadow-sm flex items-center gap-2 active:scale-95">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                                     Bulk Import
                                 </button>
-                                <button @click="addQuestion()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-xl shadow-md transition-colors flex items-center gap-1.5">
+                                <button @click="addQuestion()" class="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white text-xs font-black rounded-xl shadow-[0_4px_12px_rgba(79,70,229,0.3)] transition-all flex items-center gap-2 border border-indigo-500 active:scale-95">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
                                     Soal Manual
                                 </button>
@@ -261,12 +292,12 @@
                         </div>
 
                         <template x-for="(q, qIdx) in activeNode.questions" :key="q.id">
-                            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5 relative group transition-all hover:border-indigo-300">
+                            <div class="bg-white p-7 rounded-3xl border border-slate-200 shadow-sm space-y-6 relative group transition-all hover:border-indigo-300 hover:shadow-md">
                                 
-                                <div class="absolute -left-3 top-6 w-8 h-8 rounded-full bg-slate-900 text-white font-black text-xs flex items-center justify-center shadow-md ring-4 ring-slate-50" x-text="qIdx + 1"></div>
+                                <div class="absolute -left-4 top-8 w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-indigo-800 text-white font-black text-sm flex items-center justify-center shadow-lg ring-4 ring-slate-50" x-text="qIdx + 1"></div>
                                 
-                                <button @click="removeQuestion(qIdx)" class="absolute top-4 right-4 text-slate-300 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-all opacity-0 group-hover:opacity-100" title="Hapus Soal">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                <button @click="removeQuestion(qIdx)" class="absolute top-5 right-5 text-slate-300 hover:text-red-500 hover:bg-red-50 p-2 rounded-xl transition-all opacity-0 group-hover:opacity-100" title="Hapus Soal">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                 </button>
                                 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 ml-6">
