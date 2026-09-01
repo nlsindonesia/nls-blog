@@ -1082,11 +1082,12 @@
             <!-- Middle: Menu Navigation -->
             <div class="p-3.5 flex-1 overflow-y-auto admin-scrollbar space-y-4">
                 
-                <div class="px-2 pt-1 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                <button @click="isModulManajemenOpen = !isModulManajemenOpen" class="w-full text-left px-2 pt-2 pb-1 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors flex items-center justify-between cursor-pointer">
                     MODUL MANAJEMEN
-                </div>
+                    <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="isModulManajemenOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
 
-                <nav class="space-y-1.5">
+                <nav x-show="isModulManajemenOpen" x-transition class="space-y-1.5">
                     <!-- Menu 1: Kalender Event with Expandable Submenu Dropdown -->
                     <div class="space-y-1">
                         <button type="button" @click="toggleKalenderDropdown()"
@@ -1378,12 +1379,13 @@
                     <!-- =========================================================================
                          MODUL LMS & KURIKULUM COURSES
                          ========================================================================= -->
-                    <div class="pt-3 pb-1 px-3">
-                        <span class="text-[9px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">LMS COURSES &amp; MATERI</span>
-                    </div>
+                    <button @click="isLmsCoursesOpen = !isLmsCoursesOpen" class="w-full text-left pt-3 pb-2 px-3 text-[9px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors flex items-center justify-between cursor-pointer">
+                        LMS COURSES &amp; MATERI
+                        <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="isLmsCoursesOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
 
                     <!-- Menu 5: School (SD, SMP, SMA) -->
-                    <div class="space-y-1">
+                    <div x-show="isLmsCoursesOpen" x-transition class="space-y-1">
                         <button type="button" @click="toggleSchoolDropdown()"
                             :class="activeTab === 'lms_courses' && lmsCategory === 'School' ? 'nav-pill-school font-black bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold'"
                             class="w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs transition-all cursor-pointer text-left group">
@@ -5265,6 +5267,8 @@
                 })(),
                 currentUserSession: null,
                 isAccessDenied: false,
+                isModulManajemenOpen: true,
+                isLmsCoursesOpen: true,
                 showPassword: false,
                 isSidebarOpen: window.innerWidth >= 1024,
                 isMobile: window.innerWidth < 1024,
