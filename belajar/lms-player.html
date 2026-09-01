@@ -337,15 +337,16 @@
                                                     <!-- PG Sederhana -->
                                                     <template x-if="q.type === 'pg'">
                                                         <div class="space-y-3">
-                                                            <template x-for="(opt, oIdx) in q.options" :key="oIdx">
+                                                            <div x-init="if(!q._shuffledIndices) q._shuffledIndices = activeNode.quizShuffleOptions ? q.options.map((_, i) => i).sort(() => Math.random() - 0.5) : q.options.map((_, i) => i)"></div>
+                                                            <template x-for="(oIdx, loopIdx) in q._shuffledIndices" :key="oIdx">
                                                                 <label class="flex items-start gap-4 p-5 rounded-2xl border-2 hover:bg-indigo-50/30 cursor-pointer transition-all" 
                                                                     :class="quizAnswers[q.id] == oIdx ? 'bg-indigo-50/80 border-indigo-400 shadow-md shadow-indigo-100/50' : 'border-slate-100 hover:border-indigo-200'">
                                                                     <div class="w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0 font-bold mt-0.5 transition-colors"
                                                                         :class="quizAnswers[q.id] == oIdx ? 'border-indigo-500 bg-indigo-500 text-white' : 'border-slate-200 text-slate-400'">
-                                                                        <span x-text="String.fromCharCode(65 + oIdx)"></span>
+                                                                        <span x-text="String.fromCharCode(65 + loopIdx)"></span>
                                                                     </div>
                                                                     <input type="radio" :name="'q_' + q.id" :value="oIdx" x-model.number="quizAnswers[q.id]" class="hidden">
-                                                                    <div class="text-base text-slate-700 font-medium pt-1" x-text="opt"></div>
+                                                                    <div class="text-base text-slate-700 font-medium pt-1" x-text="q.options[oIdx]"></div>
                                                                 </label>
                                                             </template>
                                                         </div>
@@ -354,12 +355,12 @@
                                                     <!-- PG Kompleks -->
                                                     <template x-if="q.type === 'pg_kompleks'">
                                                         <div class="space-y-3">
-                                                            <div x-init="if(!quizAnswers[q.id]) quizAnswers[q.id] = []"></div>
-                                                            <template x-for="(opt, oIdx) in q.options" :key="oIdx">
+                                                            <div x-init="if(!quizAnswers[q.id]) quizAnswers[q.id] = []; if(!q._shuffledIndices) q._shuffledIndices = activeNode.quizShuffleOptions ? q.options.map((_, i) => i).sort(() => Math.random() - 0.5) : q.options.map((_, i) => i)"></div>
+                                                            <template x-for="(oIdx, loopIdx) in q._shuffledIndices" :key="oIdx">
                                                                     <label class="flex items-start gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all" 
-                                                                        :class="quizAnswers[q.id] === oIdx.toString() ? 'bg-indigo-50/80 border-indigo-400 shadow-md shadow-indigo-100/50' : 'border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/30'">
-                                                                        <input type="radio" :name="'q_' + q.id" :value="oIdx.toString()" x-model="quizAnswers[q.id]" @change="debounceAutosave()" class="mt-1 w-5 h-5 text-indigo-600 border-slate-300 focus:ring-indigo-600 cursor-pointer">
-                                                                        <span class="text-base text-slate-700 font-medium pt-0.5" x-text="opt"></span>
+                                                                        :class="quizAnswers[q.id].includes(oIdx.toString()) ? 'bg-indigo-50/80 border-indigo-400 shadow-md shadow-indigo-100/50' : 'border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/30'">
+                                                                        <input type="checkbox" :name="'q_' + q.id" :value="oIdx.toString()" x-model="quizAnswers[q.id]" @change="debounceAutosave()" class="mt-1 w-5 h-5 text-indigo-600 border-slate-300 focus:ring-indigo-600 cursor-pointer rounded">
+                                                                        <span class="text-base text-slate-700 font-medium pt-0.5" x-text="q.options[oIdx]"></span>
                                                                     </label>
                                                             </template>
                                                         </div>
@@ -368,30 +369,30 @@
                                                     <!-- PG Majemuk -->
                                                     <template x-if="q.type === 'pg_majemuk'">
                                                         <div class="space-y-4">
-                                                            <div x-init="if(!quizAnswers[q.id]) quizAnswers[q.id] = {}"></div>
-                                                            <div class="grid grid-cols-12 gap-3 text-[11px] font-black uppercase tracking-wider text-slate-400 border-b-2 border-slate-100 pb-3">
-                                                                <div class="col-span-8">Pernyataan</div>
-                                                                <div class="col-span-2 text-center text-emerald-500">Benar</div>
-                                                                <div class="col-span-2 text-center text-rose-500">Salah</div>
-                                                            </div>
-                                                            <template x-for="(stmt, sIdx) in q.statements" :key="sIdx">
-                                                                <div class="grid grid-cols-12 gap-3 items-center py-4 border-b border-slate-50 hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
-                                                                    <div class="col-span-8 text-base font-medium text-slate-700" x-text="stmt.text"></div>
-                                                                    <div class="col-span-2 flex justify-center">
-                                                                        <input type="radio" :name="'qm_' + q.id + '_' + sIdx" value="true" x-model="quizAnswers[q.id][sIdx]" @change="debounceAutosave()" class="w-5 h-5 text-emerald-500 cursor-pointer focus:ring-emerald-500 border-slate-300">
-                                                                    </div>
-                                                                    <div class="col-span-2 flex justify-center">
-                                                                        <input type="radio" :name="'qm_' + q.id + '_' + sIdx" value="false" x-model="quizAnswers[q.id][sIdx]" @change="debounceAutosave()" class="w-5 h-5 text-rose-500 cursor-pointer focus:ring-rose-500 border-slate-300">
-                                                                    </div>
-                                                                </div>
-                                                            </template>
+                                                             <div x-init="if(!quizAnswers[q.id]) quizAnswers[q.id] = {}; if(!q._shuffledStmts) q._shuffledStmts = activeNode.quizShuffleOptions ? q.statements.map((_, i) => i).sort(() => Math.random() - 0.5) : q.statements.map((_, i) => i)"></div>
+                                                             <div class="grid grid-cols-12 gap-3 text-[11px] font-black uppercase tracking-wider text-slate-400 border-b-2 border-slate-100 pb-3">
+                                                                 <div class="col-span-8">Pernyataan</div>
+                                                                 <div class="col-span-2 text-center text-emerald-500">Benar</div>
+                                                                 <div class="col-span-2 text-center text-rose-500">Salah</div>
+                                                             </div>
+                                                             <template x-for="(sIdx, loopIdx) in q._shuffledStmts" :key="sIdx">
+                                                                 <div class="grid grid-cols-12 gap-3 items-center py-4 border-b border-slate-50 hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
+                                                                     <div class="col-span-8 text-base font-medium text-slate-700" x-text="q.statements[sIdx].text"></div>
+                                                                     <div class="col-span-2 flex justify-center">
+                                                                         <input type="radio" :name="'qm_' + q.id + '_' + sIdx" value="true" x-model="quizAnswers[q.id][sIdx]" @change="debounceAutosave()" class="w-5 h-5 text-emerald-500 cursor-pointer focus:ring-emerald-500 border-slate-300">
+                                                                     </div>
+                                                                     <div class="col-span-2 flex justify-center">
+                                                                         <input type="radio" :name="'qm_' + q.id + '_' + sIdx" value="false" x-model="quizAnswers[q.id][sIdx]" @change="debounceAutosave()" class="w-5 h-5 text-rose-500 cursor-pointer focus:ring-rose-500 border-slate-300">
+                                                                     </div>
+                                                                 </div>
+                                                             </template>
                                                         </div>
                                                     </template>
 
                                                     <!-- Menjodohkan -->
                                                     <template x-if="q.type === 'jodoh'">
                                                         <div class="space-y-4">
-                                                            <div x-init="if(!quizAnswers[q.id]) quizAnswers[q.id] = {}; if(!q._shuffledRights) q._shuffledRights = [...q.pairs.map(p => p.right)].sort(() => Math.random() - 0.5);"></div>
+                                                            <div x-init="if(!quizAnswers[q.id]) quizAnswers[q.id] = {}; if(!q._shuffledRights) q._shuffledRights = activeNode.quizShuffleOptions ? [...q.pairs.map(p => p.right)].sort(() => Math.random() - 0.5) : [...q.pairs.map(p => p.right)];"></div>
                                                             <template x-for="(pair, pIdx) in q.pairs" :key="pIdx">
                                                                 <div class="flex flex-col md:flex-row md:items-center gap-4 bg-slate-50/80 p-5 rounded-2xl border border-slate-100">
                                                                     <div class="flex-1 font-medium text-slate-800 text-base" x-text="pair.left"></div>

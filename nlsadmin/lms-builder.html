@@ -308,6 +308,14 @@
                                             </div>
                                             <span class="text-xs font-bold text-slate-600 group-hover:text-indigo-600 transition-colors">Acak Urutan Soal</span>
                                         </label>
+                                        <label class="flex items-center gap-3 cursor-pointer group mt-2">
+                                            <div class="relative flex items-center">
+                                                <input type="checkbox" x-model="activeNode.quizShuffleOptions" class="sr-only">
+                                                <div class="block w-12 h-7 rounded-full transition-colors border" :class="activeNode.quizShuffleOptions ? 'bg-sky-500 border-sky-500' : 'bg-slate-200 border-slate-300'"></div>
+                                                <div class="absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition-transform shadow-sm" :class="activeNode.quizShuffleOptions ? 'translate-x-5' : 'translate-x-0'"></div>
+                                            </div>
+                                            <span class="text-xs font-bold text-slate-600 group-hover:text-sky-600 transition-colors">Acak Urutan Opsi/Pernyataan</span>
+                                        </label>
                                     </div>
                                     <div class="space-y-1.5 md:col-span-3 mt-1 border-t border-indigo-50/50 pt-5">
                                         <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider mb-2">Metode Waktu & Resume (Jika Siswa Keluar)</label>
@@ -738,6 +746,7 @@
                         quizDuration: 30,
                         quizPassingGrade: 70,
                         quizShuffle: true,
+                        quizShuffleOptions: true,
                         quizTimeMethod: 'pause',
                         quizAutoScore: true,
                         questions: []
@@ -1005,6 +1014,14 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
         <td>Newton menemukannya setelah kejatuhan apel.</td>
     </tr>
     <tr>
+        <td>Pernyataan</td>
+        <td>Tentukan kebenaran dari pernyataan sains berikut:</td>
+        <td>Matahari berputar mengelilingi Bumi.<br>Bulan adalah satelit Bumi.<br>Bumi itu datar.</td>
+        <td>Salah, Benar, Salah</td>
+        <td>15</td>
+        <td>Bumi mengelilingi matahari, dan bumi berbentuk bulat.</td>
+    </tr>
+    <tr>
         <td>Essai</td>
         <td>Jelaskan rumus E=mc^2!</td>
         <td></td>
@@ -1066,6 +1083,14 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
         <td>B</td>
         <td>10</td>
         <td>Sesuai aturan KaBaTaKu, perkalian didahulukan. 7x2 = 14, lalu ditambah 5 = 19.</td>
+    </tr>
+    <tr>
+        <td>Pernyataan</td>
+        <td>Tentukan kebenaran dari pernyataan sains berikut:</td>
+        <td>Matahari berputar mengelilingi Bumi.<br>Bulan adalah satelit alami Bumi.<br>Bumi memiliki cincin seperti Saturnus.</td>
+        <td>Salah, Benar, Salah</td>
+        <td>15</td>
+        <td>Bumi yang mengelilingi matahari dan tidak memiliki cincin.</td>
     </tr>
     <tr>
         <td>PG Kompleks</td>
