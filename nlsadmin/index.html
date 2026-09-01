@@ -4512,10 +4512,10 @@
                                                     <!-- Thumbnail Mockup -->
                                                     <div class="w-24 h-16 rounded-md bg-slate-200 dark:bg-slate-700 shrink-0 overflow-hidden relative border border-slate-200 dark:border-slate-700 flex items-center justify-center text-xl shadow-sm">
                                                         <div class="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 opacity-90"></div>
-                                                        <span class="relative z-10 text-white font-black" x-text="course.title.substring(0,1)"></span>
+                                                        <span class="relative z-10 text-white font-black" x-text="(course.title || '?').substring(0,1)"></span>
                                                     </div>
                                                     <div class="space-y-1.5 flex-1">
-                                                        <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm leading-snug line-clamp-2" x-text="course.title"></h3>
+                                                        <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm leading-snug line-clamp-2" x-text="course.title || 'Untitled Course'"></h3>
                                                         <div class="flex items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400 font-medium pt-1">
                                                             <span>Topic: <b class="text-slate-700 dark:text-slate-300" x-text="(course.modules ? course.modules.filter(m => m.type === 'materi').length : 0)"></b></span>
                                                             <span>Lesson: <b class="text-slate-700 dark:text-slate-300">0</b></span>
@@ -4535,8 +4535,8 @@
                                                         <img src="/nls-logo.png" alt="Author" class="w-full h-full object-cover p-1">
                                                     </div>
                                                     <div class="text-xs font-bold text-slate-700 dark:text-slate-300 leading-tight">
-                                                        <div x-text="course.mentor.split(' ')[0]"></div>
-                                                        <div x-text="course.mentor.split(' ').slice(1).join(' ')" class="font-medium text-[11px] text-slate-500"></div>
+                                                        <div x-text="(course.mentor || 'Admin').split(' ')[0]"></div>
+                                                        <div x-text="(course.mentor || 'Admin').split(' ').slice(1).join(' ')" class="font-medium text-[11px] text-slate-500"></div>
                                                     </div>
                                                 </div>
                                             </td>
