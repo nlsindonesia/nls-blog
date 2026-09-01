@@ -5716,8 +5716,25 @@
                         this.isUserDropdownOpen = true;
                     } else if (section === 'lms') {
                         this.activeTab = 'lms_courses';
-                        this.lmsCategory = decodeURIComponent(sub || 'School');
-                        this.lmsLevel = decodeURIComponent(parts[2] || '');
+                        
+                        const rawCat = decodeURIComponent(sub || '').toLowerCase();
+                        const catMap = {
+                            'school': 'School',
+                            'olimpiade': 'Olimpiade',
+                            'tka': 'TKA',
+                            'collage preparation': 'Collage Preparation',
+                            'collage-preparation': 'Collage Preparation'
+                        };
+                        this.lmsCategory = catMap[rawCat] || 'School';
+                        
+                        const rawLvl = decodeURIComponent(parts[2] || '').toLowerCase();
+                        const lvlMap = {
+                            'sd': 'SD', 'smp': 'SMP', 'sma': 'SMA',
+                            'tka sd': 'TKA SD', 'tka smp': 'TKA SMP', 'tka sma': 'TKA SMA',
+                            'snbt': 'SNBT', 'mandiri': 'Mandiri', 'kedinasan': 'Kedinasan',
+                            'trash': 'trash'
+                        };
+                        this.lmsLevel = lvlMap[rawLvl] || decodeURIComponent(parts[2] || '');
                         
                         let menuKey = '';
                         if (this.lmsCategory === 'School') menuKey = 'school';
