@@ -4437,13 +4437,13 @@
                             <!-- Bulk Actions -->
                             <div class="flex items-center gap-2.5">
                                 <div class="relative">
-                                    <select class="appearance-none border border-slate-200 dark:border-slate-700 rounded-full pl-4 pr-9 py-1.5 bg-white dark:bg-slate-900 text-sm font-medium text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors shadow-sm">
-                                        <option>Bulk Action</option>
-                                        <option>Move to Trash</option>
+                                    <select x-model="lmsBulkAction" class="appearance-none border border-slate-200 dark:border-slate-700 rounded-full pl-4 pr-9 py-1.5 bg-white dark:bg-slate-900 text-sm font-medium text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors shadow-sm">
+                                        <option value="">Bulk Action</option>
+                                        <option value="trash">Move to Trash</option>
                                     </select>
                                     <svg class="w-4 h-4 text-slate-400 absolute right-3.5 top-2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                                 </div>
-                                <button class="px-5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-full shadow-sm shadow-indigo-600/20 transition-all cursor-pointer hover:shadow-md">Apply</button>
+                                <button @click="applyLmsBulkAction()" class="px-5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-full shadow-sm shadow-indigo-600/20 transition-all cursor-pointer hover:shadow-md">Apply</button>
                                 <button @click="lmsSelectedCourses = []; lmsFilterSubject = 'All'; lmsSortBy = 'desc'; lmsCourseSearch = ''" class="ml-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer px-3 py-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Reset
                                 </button>
@@ -5354,6 +5354,7 @@
                 lmsSortBy: 'desc',
                 lmsFilterSubject: 'All',
                 lmsSelectedCourses: [],
+                lmsBulkAction: '',
                 quizSubmissions: [],
                 quizFilterCategory: 'all',
                 quizSearchQuery: '',
@@ -8729,6 +8730,40 @@
                         this.lmsSelectedCourses = [];
                     } else {
                         this.lmsSelectedCourses = filtered.map(c => c.id);
+                    }
+                },
+
+                applyLmsBulkAction() {
+                    if (this.lmsSelectedCourses.length === 0) {
+                        alert('Silakan centang setidaknya satu course terlebih dahulu.');
+                        return;
+                    }
+                    if (this.lmsBulkAction === 'trash') {
+                        if (confirm(`Pindahkan ${this.lmsSelectedCourses.length} course yang dipilih ke Tempat Sampah?`)) {
+                            let trashCount = 0;
+                            this.lmsSelectedCourses.forEach(id => {
+                                const idx = this.courses.findIndex(c => c.id === id);
+                                if (idx !== -1) {
+                                    const [deleted] = this.courses.splice(idx, 1);
+                                    deleted.status = 'trashed';
+                                    deleted.deletedAt = new Date().toISOString();
+                                    this.trashCourses.unshift(deleted);
+                                    trashCount++;
+                                    
+                                    if (typeof fetch !== 'undefined') {
+                                        fetch('/api/pg-lms?action=admin_delete_course&id=' + encodeURIComponent(id), {
+                                            method: 'DELETE'
+                                        }).catch(e => {});
+                                    }
+                                }
+                            });
+                            this.saveCoursesToStorage();
+                            this.lmsSelectedCourses = [];
+                            this.lmsBulkAction = '';
+                            this.showToast(`${trashCount} course berhasil dipindahkan ke Trash.`);
+                        }
+                    } else {
+                        alert('Silakan pilih opsi Bulk Action (misal: Move to Trash) terlebih dahulu dari dropdown.');
                     }
                 },
 
