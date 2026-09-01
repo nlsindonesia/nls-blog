@@ -652,6 +652,7 @@ export default async function handler(request, response) {
                 await sql`ALTER TABLE IF EXISTS lms_enrollments ALTER COLUMN user_id TYPE VARCHAR(255) USING user_id::VARCHAR;`;
                 await sql`ALTER TABLE IF EXISTS lms_quiz_results ALTER COLUMN user_id TYPE VARCHAR(255) USING user_id::VARCHAR;`;
                 await sql`ALTER TABLE IF EXISTS lms_quiz_results ALTER COLUMN module_index TYPE VARCHAR(100) USING module_index::VARCHAR;`;
+                await sql`ALTER TABLE IF EXISTS lms_quiz_results ADD COLUMN IF NOT EXISTS paket INTEGER DEFAULT 1;`;
             } catch(e) {}
 
             await sql`
@@ -686,6 +687,7 @@ export default async function handler(request, response) {
                     course_id VARCHAR(100) REFERENCES lms_courses(id) ON DELETE CASCADE,
                     module_index VARCHAR(100),
                     score NUMERIC(5,2),
+                    paket INTEGER DEFAULT 1,
                     answers_json JSONB,
                     submitted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
                 );
@@ -763,13 +765,14 @@ export default async function handler(request, response) {
 
             const progressRes = await sql`SELECT course_id, progress, completed_modules FROM lms_enrollments WHERE user_id = ${userId}`;
             
-            const quizRes = await sql`SELECT course_id, module_index, score, submitted_at as date FROM lms_quiz_results WHERE user_id = ${userId} ORDER BY submitted_at DESC`;
+            const quizRes = await sql`SELECT course_id, module_index, score, paket, submitted_at as date FROM lms_quiz_results WHERE user_id = ${userId} ORDER BY submitted_at DESC`;
             
             // Format quiz results for frontend
             const quizResults = quizRes.rows.map(q => ({
                 courseId: q.course_id,
                 moduleIndex: q.module_index,
                 score: q.score,
+                paket: q.paket || 1,
                 date: new Date(q.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
             }));
 
@@ -822,12 +825,12 @@ export default async function handler(request, response) {
 
         // --- 7. SUBMIT QUIZ ---
         if (action === 'submit_quiz') {
-            const { userId, courseId, moduleIndex, moduleId, score, answers } = request.body;
+            const { userId, courseId, moduleIndex, moduleId, score, answers, paket } = request.body;
             if (!userId || !courseId || score === undefined) return response.status(400).json({ success: false, message: 'Missing required quiz data.' });
 
             const result = await sql`
-                INSERT INTO lms_quiz_results (user_id, course_id, module_index, score, answers_json)
-                VALUES (${userId}, ${courseId}, ${moduleIndex}, ${score}, ${JSON.stringify(answers || {})})
+                INSERT INTO lms_quiz_results (user_id, course_id, module_index, score, answers_json, paket)
+                VALUES (${userId}, ${courseId}, ${moduleIndex}, ${score}, ${JSON.stringify(answers || {})}, ${paket || 1})
                 RETURNING id
             `;
             
@@ -977,7 +980,7 @@ export default async function handler(request, response) {
                 school: r.school || '',
                 courseId: r.course_id,
                 courseTitle: r.coursetitle || 'Program NLS',
-                moduleTitle: `Modul ID: ${r.module_index}`,
+                moduleTitle: `Modul ID: ${r.module_index} (Paket ${r.paket || 1})`,
                 category: r.category || 'School',
                 score: r.score,
                 answers: r.answers_json || {},

@@ -322,8 +322,8 @@
                                     
                                     <!-- Area Kiri: Soal Aktif -->
                                     <div class="flex-1 w-full bg-white rounded-[2.5rem] p-6 sm:p-10 shadow-xl border-2 border-indigo-100 ring-4 ring-indigo-50 relative">
-                                        <template x-if="activeNode.questions && activeNode.questions[quizState.currentQIdx]">
-                                            <div class="relative" x-data="{ get q() { return activeNode.questions[quizState.currentQIdx]; } }">
+                                        <template x-if="quizState.activeQuestions && quizState.activeQuestions[quizState.currentQIdx]">
+                                            <div class="relative" x-data="{ get q() { return quizState.activeQuestions[quizState.currentQIdx]; } }">
                                                 
                                                 <!-- Header Soal -->
                                                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-indigo-50">
@@ -453,7 +453,7 @@
                                                         <span x-text="quizState.doubtful.includes(q.id) ? 'Hapus Ragu-ragu' : 'Tandai Ragu-ragu'"></span>
                                                     </button>
 
-                                                    <button @click="nextQuestion()" :disabled="quizState.currentQIdx === activeNode.questions.length - 1" class="w-full sm:w-auto px-6 py-3.5 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2" :class="quizState.currentQIdx === activeNode.questions.length - 1 ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/30 active:scale-95'">
+                                                    <button @click="nextQuestion()" :disabled="quizState.currentQIdx === quizState.activeQuestions.length - 1" class="w-full sm:w-auto px-6 py-3.5 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2" :class="quizState.currentQIdx === quizState.activeQuestions.length - 1 ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/30 active:scale-95'">
                                                         Selanjutnya
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
                                                     </button>
@@ -479,11 +479,11 @@
                                         <div class="bg-white rounded-3xl p-6 shadow-xl border border-indigo-50">
                                             <div class="flex items-center justify-between mb-4">
                                                 <h4 class="text-xs font-black uppercase tracking-widest text-indigo-950">Nomor Soal</h4>
-                                                <span class="text-xs font-bold text-indigo-500" x-text="activeNode.questions.length + ' Butir'"></span>
+                                                <span class="text-xs font-bold text-indigo-500" x-text="quizState.activeQuestions.length + ' Butir'"></span>
                                             </div>
 
                                             <div class="grid grid-cols-5 gap-2 mb-6">
-                                                <template x-for="(q, qIdx) in activeNode.questions" :key="q.id">
+                                                <template x-for="(q, qIdx) in quizState.activeQuestions" :key="q.id">
                                                     <button @click="goToQuestion(qIdx)" 
                                                         class="aspect-square rounded-xl text-sm font-black flex items-center justify-center transition-all border-b-2 active:scale-95"
                                                         :class="{
@@ -615,7 +615,7 @@
                                     </div>
 
                                     <div class="space-y-8">
-                                        <template x-for="(q, qIdx) in activeNode.questions" :key="q.id">
+                                        <template x-for="(q, qIdx) in quizState.activeQuestions" :key="q.id">
                                             <div class="p-6 sm:p-8 rounded-2xl border-2 border-slate-100 bg-slate-50/50">
                                                 <div class="flex items-start gap-4 mb-4">
                                                     <div class="shrink-0 w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-black flex items-center justify-center text-sm" x-text="qIdx + 1"></div>
@@ -672,7 +672,7 @@
                 completedNodes: [],
                 pastScores: {},
                 quizAnswers: {},
-                quizState: { submitted: false, isSubmitting: false, showDiscussion: false, hasEssay: false, score: 0, correct: 0, total: 0, inProgress: false, currentQIdx: 0, doubtful: [], timeLeft: 0, timerInterval: null, elapsedSeconds: 0, autosaveInterval: null, autosaveTimeout: null },
+                quizState: { submitted: false, isSubmitting: false, showDiscussion: false, hasEssay: false, score: 0, correct: 0, total: 0, inProgress: false, currentQIdx: 0, doubtful: [], timeLeft: 0, timerInterval: null, elapsedSeconds: 0, autosaveInterval: null, autosaveTimeout: null, activeQuestions: [], assignedPaket: 1 },
                 
                 // YouTube Interactive API state
                 ytPlayer: null,
@@ -975,6 +975,9 @@
                         this.quizState.total = '?'; // mark as loaded from history
                         this.quizState.hasEssay = node.questions && node.questions.some(q => q.type === 'essai');
                         this.quizState.inProgress = false;
+                        
+                        this.quizState.assignedPaket = this.pastScores[node.id].paket || 1;
+                        this.quizState.activeQuestions = node.questions ? node.questions.filter(q => (q.paket || 1) === this.quizState.assignedPaket) : [];
                     } else {
                         this.quizState.submitted = false;
                         this.quizState.inProgress = false;
@@ -1049,9 +1052,19 @@
                     this.quizState.submitted = false;
                     this.quizState.elapsedSeconds = 0;
                     
-                    // Initialize shuffle indices for all applicable questions
-                    if (this.activeNode && this.activeNode.questions) {
-                        this.activeNode.questions.forEach(q => {
+                    const packages = this.activeNode.quizPackageCount || 1;
+                    let storedPaket = localStorage.getItem('nls_paket_' + this.courseData.id + '_' + this.activeNode.id);
+                    if (!storedPaket || parseInt(storedPaket) > packages) {
+                        storedPaket = Math.floor(Math.random() * packages) + 1;
+                        localStorage.setItem('nls_paket_' + this.courseData.id + '_' + this.activeNode.id, storedPaket);
+                    }
+                    this.quizState.assignedPaket = parseInt(storedPaket);
+                    
+                    this.quizState.activeQuestions = this.activeNode.questions ? this.activeNode.questions.filter(q => (q.paket || 1) === this.quizState.assignedPaket) : [];
+                    
+                    // Initialize shuffle indices for all applicable active questions
+                    if (this.quizState.activeQuestions) {
+                        this.quizState.activeQuestions.forEach(q => {
                             if ((q.type === 'pg' || q.type === 'pg_kompleks') && q.options) {
                                 q._shuffledIndices = this.activeNode.quizShuffleOptions !== false 
                                     ? q.options.map((_, i) => i).sort(() => Math.random() - 0.5) 
@@ -1202,7 +1215,7 @@
                 },
                 
                 toggleDoubtful() {
-                    const q = this.activeNode.questions[this.quizState.currentQIdx];
+                    const q = this.quizState.activeQuestions[this.quizState.currentQIdx];
                     if (!q) return;
                     if (this.quizState.doubtful.includes(q.id)) {
                         this.quizState.doubtful = this.quizState.doubtful.filter(id => id !== q.id);
@@ -1230,7 +1243,7 @@
                 },
                 
                 nextQuestion() {
-                    if (this.quizState.currentQIdx < this.activeNode.questions.length - 1) {
+                    if (this.quizState.currentQIdx < this.quizState.activeQuestions.length - 1) {
                         this.quizState.currentQIdx++;
                         this.$nextTick(() => { if (window.MathJax) MathJax.typesetPromise(); });
                     }
@@ -1248,12 +1261,12 @@
                     if (this.quizState.autosaveInterval) clearInterval(this.quizState.autosaveInterval);
                     if (this.quizState.autosaveTimeout) clearTimeout(this.quizState.autosaveTimeout);
                     this.quizState.inProgress = false;
-                    if (!this.activeNode || !this.activeNode.questions) return;
+                    if (!this.quizState.activeQuestions || this.quizState.activeQuestions.length === 0) return;
                     
                     let correct = 0;
                     let totalGradable = 0;
                     
-                    this.activeNode.questions.forEach(q => {
+                    this.quizState.activeQuestions.forEach(q => {
                         if (q.type === 'essai') return; // Skip auto-grading for essay
                         
                         totalGradable++;
@@ -1295,7 +1308,7 @@
                     this.quizState.total = totalGradable;
                     this.quizState.correct = correct;
                     this.quizState.score = totalGradable > 0 ? Math.round((correct / totalGradable) * 100) : 100;
-                    this.quizState.hasEssay = this.activeNode.questions.some(q => q.type === 'essai');
+                    this.quizState.hasEssay = this.quizState.activeQuestions.some(q => q.type === 'essai');
                     
                     this.quizState.isSubmitting = true;
                     this.quizState.submitted = false;
@@ -1321,6 +1334,7 @@
                                             moduleIndex: this.activeNode.id, // using ID in place of index for generic usage
                                             moduleId: this.activeNode.id,
                                             score: this.quizState.score,
+                                            paket: this.quizState.assignedPaket,
                                             answers: this.quizAnswers
                                         })
                                     }).catch(e => {});
