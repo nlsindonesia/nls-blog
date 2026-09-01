@@ -651,6 +651,7 @@ export default async function handler(request, response) {
                 await sql`ALTER TABLE IF EXISTS lms_quiz_results DROP CONSTRAINT IF EXISTS lms_quiz_results_user_id_fkey;`;
                 await sql`ALTER TABLE IF EXISTS lms_enrollments ALTER COLUMN user_id TYPE VARCHAR(255) USING user_id::VARCHAR;`;
                 await sql`ALTER TABLE IF EXISTS lms_quiz_results ALTER COLUMN user_id TYPE VARCHAR(255) USING user_id::VARCHAR;`;
+                await sql`ALTER TABLE IF EXISTS lms_quiz_results ALTER COLUMN module_index TYPE VARCHAR(100) USING module_index::VARCHAR;`;
             } catch(e) {}
 
             await sql`
