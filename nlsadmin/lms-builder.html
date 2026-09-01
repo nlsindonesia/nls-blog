@@ -1240,12 +1240,23 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
                         const keysRaw = cols[3].textContent.trim().toUpperCase();
                         let correctAnswers = keysRaw;
                         let correctAnswersArray = [];
+                        
+                        const charToIndex = (char) => {
+                            if (!char) return null;
+                            const code = char.charCodeAt(0);
+                            if (code >= 65 && code <= 90) return (code - 65).toString(); // A=0, B=1
+                            if (code >= 49 && code <= 57) return (code - 49).toString(); // 1=0, 2=1
+                            return null;
+                        };
+
                         if (qType === 'pg_kompleks') {
-                            correctAnswersArray = keysRaw.split(/[,\s]+/).map(k => k.trim()).filter(k => k !== '');
+                            const chars = keysRaw.split(/[,\s]+/).map(k => k.trim().charAt(0)).filter(k => k !== '');
+                            correctAnswersArray = chars.map(c => charToIndex(c)).filter(idx => idx !== null);
                         } else if (qType === 'isian') {
                             correctAnswers = cols[3].textContent.trim(); // preserve case
                         } else if (qType === 'pg') {
-                            correctAnswers = keysRaw.charAt(0); // Take first char just in case
+                            const idx = charToIndex(keysRaw.charAt(0));
+                            if (idx !== null) correctAnswers = idx;
                         }
                         
                         let points = parseInt(cols[4].textContent.trim().replace(/\D/g, ''));
