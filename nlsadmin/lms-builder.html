@@ -829,8 +829,9 @@
                     if (this.activeNode && this.editorInstance) {
                         this.activeNode.rawHtml = this.editorInstance.getData(); 
                     }
-                    if (node && node.type === 'kuis' && node.quizAutoScore === undefined) {
-                        node.quizAutoScore = true;
+                    if (node && node.type === 'kuis') {
+                        if (node.quizAutoScore === undefined) node.quizAutoScore = true;
+                        if (node.quizShuffleOptions === undefined) node.quizShuffleOptions = true;
                     }
                     this.activeNode = node;
                     
