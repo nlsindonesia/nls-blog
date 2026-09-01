@@ -1030,12 +1030,21 @@
                         this.courseData.babs = this.babs;
                         this.courseData.content = this.babs;
                         try {
-                            await fetch('/api/pg-lms', {
+                            const res = await fetch('/api/pg-lms', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ action: 'admin_save_course', course: this.courseData })
                             });
-                        } catch(e) {}
+                            if (!res.ok) {
+                                if (res.status === 413) {
+                                    this.showToast('Gagal: Ukuran materi terlalu besar! (Max 4MB). Kurangi resolusi gambar.', true);
+                                } else {
+                                    this.showToast('Gagal menyimpan ke server!', true);
+                                }
+                            }
+                        } catch(e) {
+                            this.showToast('Koneksi terputus! Gagal menyimpan.', true);
+                        }
                     }
 
                     this.isSaving = false;
