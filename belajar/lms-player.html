@@ -356,11 +356,11 @@
                                                         <div class="space-y-3">
                                                             <div x-init="if(!quizAnswers[q.id]) quizAnswers[q.id] = []"></div>
                                                             <template x-for="(opt, oIdx) in q.options" :key="oIdx">
-                                                                <label class="flex items-start gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all" 
-                                                                    :class="quizAnswers[q.id].includes(oIdx.toString()) ? 'bg-indigo-50/80 border-indigo-400 shadow-md shadow-indigo-100/50' : 'border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/30'">
-                                                                    <input type="checkbox" :value="oIdx.toString()" x-model="quizAnswers[q.id]" class="mt-1 w-5 h-5 rounded-md text-indigo-600 border-slate-300 focus:ring-indigo-600 cursor-pointer">
-                                                                    <span class="text-base text-slate-700 font-medium pt-0.5" x-text="opt"></span>
-                                                                </label>
+                                                                    <label class="flex items-start gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all" 
+                                                                        :class="quizAnswers[q.id] === oIdx.toString() ? 'bg-indigo-50/80 border-indigo-400 shadow-md shadow-indigo-100/50' : 'border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/30'">
+                                                                        <input type="radio" :name="'q_' + q.id" :value="oIdx.toString()" x-model="quizAnswers[q.id]" @change="debounceAutosave()" class="mt-1 w-5 h-5 text-indigo-600 border-slate-300 focus:ring-indigo-600 cursor-pointer">
+                                                                        <span class="text-base text-slate-700 font-medium pt-0.5" x-text="opt"></span>
+                                                                    </label>
                                                             </template>
                                                         </div>
                                                     </template>
@@ -378,10 +378,10 @@
                                                                 <div class="grid grid-cols-12 gap-3 items-center py-4 border-b border-slate-50 hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
                                                                     <div class="col-span-8 text-base font-medium text-slate-700" x-text="stmt.text"></div>
                                                                     <div class="col-span-2 flex justify-center">
-                                                                        <input type="radio" :name="'qm_' + q.id + '_' + sIdx" value="true" x-model="quizAnswers[q.id][sIdx]" class="w-5 h-5 text-emerald-500 cursor-pointer focus:ring-emerald-500 border-slate-300">
+                                                                        <input type="radio" :name="'qm_' + q.id + '_' + sIdx" value="true" x-model="quizAnswers[q.id][sIdx]" @change="debounceAutosave()" class="w-5 h-5 text-emerald-500 cursor-pointer focus:ring-emerald-500 border-slate-300">
                                                                     </div>
                                                                     <div class="col-span-2 flex justify-center">
-                                                                        <input type="radio" :name="'qm_' + q.id + '_' + sIdx" value="false" x-model="quizAnswers[q.id][sIdx]" class="w-5 h-5 text-rose-500 cursor-pointer focus:ring-rose-500 border-slate-300">
+                                                                        <input type="radio" :name="'qm_' + q.id + '_' + sIdx" value="false" x-model="quizAnswers[q.id][sIdx]" @change="debounceAutosave()" class="w-5 h-5 text-rose-500 cursor-pointer focus:ring-rose-500 border-slate-300">
                                                                     </div>
                                                                 </div>
                                                             </template>
@@ -398,12 +398,13 @@
                                                                     <div class="shrink-0 text-slate-300 hidden md:block">
                                                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                                                                     </div>
-                                                                    <select x-model="quizAnswers[q.id][pIdx]" class="flex-1 p-4 rounded-xl border-2 border-slate-200 text-base font-bold text-indigo-900 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 bg-white cursor-pointer transition-all">
-                                                                        <option value="">-- Pilih Jawaban --</option>
-                                                                        <template x-for="(rightOpt, rIdx) in q._shuffledRights" :key="rIdx">
-                                                                            <option :value="rightOpt" x-text="rightOpt"></option>
-                                                                        </template>
-                                                                    </select>
+                                                                    <div class="flex-1 md:w-64">
+                                                                        <select x-model="quizAnswers[q.id][pIdx]" @change="debounceAutosave()" class="w-full p-4 rounded-xl border-2 border-slate-200 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 bg-white cursor-pointer font-medium text-slate-700 appearance-none">
+                                                                            <option value="" disabled selected>Pilih Pasangan...</option>
+                                                                            <template x-for="(rightOpt, rIdx) in q._shuffledRights" :key="rIdx">
+                                                                                <option :value="rightOpt" x-text="rightOpt"></option>
+                                                                            </template>
+                                                                        </select>
                                                                 </div>
                                                             </template>
                                                         </div>
@@ -412,16 +413,16 @@
                                                     <!-- Isian Singkat -->
                                                     <template x-if="q.type === 'isian'">
                                                         <div class="mt-4">
-                                                            <input type="text" x-model="quizAnswers[q.id]" placeholder="Ketik jawaban singkat Anda di sini..." class="w-full px-6 py-5 rounded-2xl border-2 border-slate-200 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 text-lg font-bold bg-slate-50 focus:bg-white transition-all">
+                                                            <input type="text" x-model="quizAnswers[q.id]" @input.debounce.1000ms="debounceAutosave()" placeholder="Ketik jawaban singkat Anda di sini..." class="w-full px-6 py-5 rounded-2xl border-2 border-slate-200 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 text-lg font-bold bg-slate-50 focus:bg-white transition-all">
                                                         </div>
                                                     </template>
 
                                                     <!-- Essay -->
                                                     <template x-if="q.type === 'essai'">
                                                         <div class="mt-4 space-y-4">
-                                                            <textarea x-model="quizAnswers[q.id]" rows="6" placeholder="Ketik jawaban essay Anda (opsional jika mengunggah file)..." class="w-full p-6 rounded-2xl border-2 border-slate-200 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 text-base bg-slate-50 focus:bg-white transition-all font-medium"></textarea>
+                                                            <textarea x-model="quizAnswers[q.id]" @input.debounce.1000ms="debounceAutosave()" rows="6" placeholder="Ketik jawaban essay Anda (opsional jika mengunggah file)..." class="w-full p-6 rounded-2xl border-2 border-slate-200 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 text-base bg-slate-50 focus:bg-white transition-all font-medium"></textarea>
                                                             <div class="border-2 border-dashed border-indigo-200 rounded-2xl p-8 text-center hover:bg-indigo-50/50 transition-colors cursor-pointer relative overflow-hidden group bg-indigo-50/20">
-                                                                <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" @change="quizAnswers[q.id + '_file'] = $event.target.files[0]?.name">
+                                                                <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" @change="quizAnswers[q.id + '_file'] = $event.target.files[0]?.name; debounceAutosave()">
                                                                 <div class="w-16 h-16 mx-auto rounded-full bg-white flex items-center justify-center shadow-sm mb-4 group-hover:scale-110 transition-transform">
                                                                     <svg class="w-8 h-8 text-indigo-400 group-hover:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
                                                                 </div>
@@ -554,7 +555,7 @@
                 activeNode: null,
                 completedNodes: [],
                 quizAnswers: {},
-                quizState: { submitted: false, score: 0, correct: 0, total: 0, inProgress: false, currentQIdx: 0, doubtful: [], timeLeft: 0, timerInterval: null },
+                quizState: { submitted: false, score: 0, correct: 0, total: 0, inProgress: false, currentQIdx: 0, doubtful: [], timeLeft: 0, timerInterval: null, elapsedSeconds: 0, autosaveInterval: null, autosaveTimeout: null },
                 
                 // YouTube Interactive API state
                 ytPlayer: null,
@@ -617,6 +618,8 @@
                     if (this.babs.length > 0 && this.babs[0].subBabs && this.babs[0].subBabs.length > 0) {
                         this.openNode(this.babs[0].subBabs[0]);
                     }
+                    
+                    this.setupBeacon();
                 },
 
                 tryLoadDraft() {
@@ -757,6 +760,7 @@
                     this.quizState.submitted = false;
                       this.quizState.inProgress = false;
                       if (this.quizState.timerInterval) clearInterval(this.quizState.timerInterval);
+                      if (this.quizState.autosaveInterval) clearInterval(this.quizState.autosaveInterval);
                     this.quizAnswers = {};
                     
                     // Allow Alpine to update DOM, then init player if video
@@ -817,28 +821,121 @@
                 },
 
                 
-                startQuiz() {
+                async startQuiz() {
                     this.quizState.inProgress = true;
                     this.quizState.currentQIdx = 0;
                     this.quizState.doubtful = [];
                     this.quizAnswers = {};
                     this.quizState.submitted = false;
+                    this.quizState.elapsedSeconds = 0;
                     
                     let durationStr = this.activeNode.duration || '15 Menit';
                     let mins = parseInt(durationStr.replace(/\D/g, ''));
                     if (isNaN(mins) || mins <= 0) mins = 15;
                     this.quizState.timeLeft = mins * 60;
                     
+                    // Attempt to fetch saved progress
+                    try {
+                        const sessionRaw = localStorage.getItem('nls_student_auth_session') || localStorage.getItem('nls_auth_session');
+                        if (sessionRaw && this.courseData) {
+                            const session = JSON.parse(sessionRaw);
+                            if (session.id) {
+                                const res = await fetch('/api/pg-lms', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ action: 'get_quiz_progress', userId: session.id, courseId: this.courseData.id, moduleId: this.activeNode.id })
+                                });
+                                const data = await res.json();
+                                if (data.success && data.attempt && data.attempt.status === 'in_progress') {
+                                    this.quizState.elapsedSeconds = data.attempt.elapsed_seconds || 0;
+                                    let remaining = this.quizState.timeLeft - this.quizState.elapsedSeconds;
+                                    if (remaining < 0) remaining = 0;
+                                    this.quizState.timeLeft = remaining;
+                                    
+                                    if (data.attempt.answers_json) {
+                                        this.quizAnswers = typeof data.attempt.answers_json === 'string' ? JSON.parse(data.attempt.answers_json) : data.attempt.answers_json;
+                                    }
+                                }
+                            }
+                        }
+                    } catch(e) {}
+                    
                     if (this.quizState.timerInterval) clearInterval(this.quizState.timerInterval);
                     this.quizState.timerInterval = setInterval(() => {
                         this.quizState.timeLeft--;
+                        this.quizState.elapsedSeconds++;
                         if (this.quizState.timeLeft <= 0) {
                             clearInterval(this.quizState.timerInterval);
                             this.submitQuiz(); 
                         }
                     }, 1000);
                     
+                    if (this.quizState.autosaveInterval) clearInterval(this.quizState.autosaveInterval);
+                    this.quizState.autosaveInterval = setInterval(() => {
+                        this.triggerAutosave();
+                    }, 30000);
+                    
                     this.$nextTick(() => { if (window.MathJax) MathJax.typesetPromise(); });
+                },
+                
+                debounceAutosave() {
+                    if (this.quizState.autosaveTimeout) clearTimeout(this.quizState.autosaveTimeout);
+                    this.quizState.autosaveTimeout = setTimeout(() => {
+                        this.triggerAutosave();
+                    }, 3000);
+                },
+                
+                async triggerAutosave() {
+                    if (!this.quizState.inProgress || this.quizState.submitted) return;
+                    try {
+                        const sessionRaw = localStorage.getItem('nls_student_auth_session') || localStorage.getItem('nls_auth_session');
+                        if (sessionRaw && this.courseData && this.activeNode) {
+                            const session = JSON.parse(sessionRaw);
+                            if (session.id) {
+                                fetch('/api/pg-lms', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        action: 'save_quiz_progress',
+                                        userId: session.id,
+                                        courseId: this.courseData.id,
+                                        moduleId: this.activeNode.id,
+                                        elapsedSeconds: this.quizState.elapsedSeconds,
+                                        answers: this.quizAnswers
+                                    })
+                                }).catch(e => {});
+                            }
+                        }
+                    } catch(e) {}
+                },
+                
+                setupBeacon() {
+                    const sendBeaconData = () => {
+                        if (!this.quizState.inProgress || this.quizState.submitted || !this.courseData || !this.activeNode) return;
+                        
+                        const sessionRaw = localStorage.getItem('nls_student_auth_session') || localStorage.getItem('nls_auth_session');
+                        if (!sessionRaw) return;
+                        const session = JSON.parse(sessionRaw);
+                        if (!session.id) return;
+                        
+                        const url = '/api/pg-lms';
+                        const payload = JSON.stringify({
+                            action: 'save_quiz_progress',
+                            userId: session.id,
+                            courseId: this.courseData.id,
+                            moduleId: this.activeNode.id,
+                            elapsedSeconds: this.quizState.elapsedSeconds,
+                            answers: this.quizAnswers
+                        });
+                        
+                        navigator.sendBeacon(url, payload);
+                    };
+                    
+                    window.addEventListener('visibilitychange', () => {
+                        if (document.visibilityState === 'hidden') sendBeaconData();
+                    });
+                    
+                    window.addEventListener('beforeunload', () => sendBeaconData());
                 },
                 
                 formatTime(seconds) {
@@ -892,8 +989,10 @@
                     }
                 },
                 
-submitQuiz() {
+                async submitQuiz() {
                     if (this.quizState.timerInterval) clearInterval(this.quizState.timerInterval);
+                    if (this.quizState.autosaveInterval) clearInterval(this.quizState.autosaveInterval);
+                    if (this.quizState.autosaveTimeout) clearTimeout(this.quizState.autosaveTimeout);
                     this.quizState.inProgress = false;
                     if (!this.activeNode || !this.activeNode.questions) return;
                     
@@ -944,6 +1043,29 @@ submitQuiz() {
                     this.quizState.score = totalGradable > 0 ? Math.round((correct / totalGradable) * 100) : 100;
                     this.quizState.submitted = true;
                     this.markAsCompleted(this.activeNode.id);
+                    
+                    // Final submit to DB
+                    try {
+                        const sessionRaw = localStorage.getItem('nls_student_auth_session') || localStorage.getItem('nls_auth_session');
+                        if (sessionRaw && this.courseData) {
+                            const session = JSON.parse(sessionRaw);
+                            if (session.id) {
+                                fetch('/api/pg-lms', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        action: 'submit_quiz',
+                                        userId: session.id,
+                                        courseId: this.courseData.id,
+                                        moduleIndex: this.activeNode.id, // using ID in place of index for generic usage
+                                        moduleId: this.activeNode.id,
+                                        score: this.quizState.score,
+                                        answers: this.quizAnswers
+                                    })
+                                }).catch(e => {});
+                            }
+                        }
+                    } catch(e) {}
                 }
             }
         }
