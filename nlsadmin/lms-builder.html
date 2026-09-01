@@ -299,6 +299,19 @@
                                             <span class="text-xs font-bold text-slate-600 group-hover:text-indigo-600 transition-colors">Acak Urutan Soal</span>
                                         </label>
                                     </div>
+                                    <div class="space-y-1.5 md:col-span-3 mt-1 border-t border-indigo-50/50 pt-5">
+                                        <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider mb-2">Metode Waktu & Resume (Jika Siswa Keluar)</label>
+                                        <select x-model="activeNode.quizTimeMethod" class="w-full p-3.5 rounded-2xl border border-slate-200 text-sm font-bold focus:ring-2 focus:ring-indigo-500 text-slate-700 bg-slate-50 shadow-inner cursor-pointer appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_1.2rem_center] bg-[length:0.8rem_auto] pr-10">
+                                            <option value="pause">2. Pause & Resume (Waktu berhenti saat keluar, jawaban tersimpan)</option>
+                                            <option value="reset">1. Reset Ulang (Jika keluar, mengulang dari awal & jawaban hangus)</option>
+                                            <option value="realtime">3. Real-time (Waktu terus berjalan di background meskipun keluar)</option>
+                                        </select>
+                                        <p class="text-[11px] text-slate-500 mt-2 font-medium bg-slate-100/80 border border-slate-200 p-3 rounded-xl" x-text="
+                                            activeNode.quizTimeMethod === 'reset' ? '👉 Cocok untuk kuis ketat. Jika siswa terkeluar, mereka harus mengulang dari soal pertama dengan waktu yang di-reset.' : 
+                                            (activeNode.quizTimeMethod === 'pause' || !activeNode.quizTimeMethod ? '👉 Cocok untuk latihan santai. Siswa bisa menjeda kuis dan melanjutkannya nanti dengan sisa waktu yang ada.' : 
+                                            '👉 Cocok untuk ujian/tryout serentak. Waktu akan habis pada rentang yang ditentukan meskipun siswa tidak sedang membuka halaman kuis.')
+                                        "></p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -613,6 +626,7 @@
                         quizDuration: 30,
                         quizPassingGrade: 70,
                         quizShuffle: true,
+                        quizTimeMethod: 'pause',
                         questions: []
                     };
                     bab.subBabs.push(newNode);
