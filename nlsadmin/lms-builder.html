@@ -1105,6 +1105,7 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
                                 let txt = opt.trim();
                                 txt = txt.replace(/^[A-Ea-e][\.\)]\s*/, '');
                                 return txt;
+                            }).filter(o => o !== '');
                         }
                         
                         const keysRaw = cols[3].textContent.trim().toUpperCase();
