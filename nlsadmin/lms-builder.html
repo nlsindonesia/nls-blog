@@ -1206,6 +1206,7 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
                         if (typeRaw.includes('essai') || typeRaw.includes('esai') || typeRaw.includes('uraian')) qType = 'essai';
                         else if (typeRaw.includes('isian') || typeRaw.includes('singkat')) qType = 'isian';
                         else if (typeRaw.includes('kompleks') || typeRaw.includes('ganda kompleks')) qType = 'pg_kompleks';
+                        else if (typeRaw.includes('majemuk') || typeRaw.includes('pernyataan') || typeRaw.includes('benar') || typeRaw.includes('salah')) qType = 'pg_majemuk';
                         
                         const qText = cols[1].innerHTML.trim();
                         
@@ -1240,6 +1241,7 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
                         const keysRaw = cols[3].textContent.trim().toUpperCase();
                         let correctAnswers = keysRaw;
                         let correctAnswersArray = [];
+                        let statements = [];
                         
                         const charToIndex = (char) => {
                             if (!char) return null;
@@ -1257,6 +1259,42 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
                         } else if (qType === 'pg') {
                             const idx = charToIndex(keysRaw.charAt(0));
                             if (idx !== null) correctAnswers = idx;
+                        } else if (qType === 'pg_majemuk') {
+                            const optHtml = cols[2].innerHTML;
+                            const dOpt = document.createElement('div');
+                            dOpt.innerHTML = optHtml;
+                            
+                            let rawStatements = [];
+                            if (dOpt.querySelectorAll('li').length > 0) {
+                                dOpt.querySelectorAll('li').forEach(li => {
+                                    if(li.textContent.trim()) rawStatements.push(li.innerHTML);
+                                });
+                            } else if (dOpt.querySelectorAll('p').length > 0) {
+                                dOpt.querySelectorAll('p').forEach(p => {
+                                    if(p.textContent.trim()) rawStatements.push(p.innerHTML);
+                                });
+                            } else {
+                                rawStatements = dOpt.innerHTML.split(/<br\s*\/?>/i).filter(s => s.trim() !== '');
+                            }
+                            
+                            rawStatements = rawStatements.map(opt => {
+                                let txt = opt.trim();
+                                txt = txt.replace(/^[0-9]+[\.\)]\s*/, '');
+                                return txt;
+                            }).filter(o => o !== '');
+
+                            const keysArray = keysRaw.split(/[,\n\s]+/).map(k => k.trim()).filter(k => k !== '');
+                            
+                            for (let j = 0; j < rawStatements.length; j++) {
+                                let isCorrect = 'true';
+                                if (keysArray[j]) {
+                                    if (keysArray[j].startsWith('S') || keysArray[j].startsWith('F')) isCorrect = 'false';
+                                }
+                                statements.push({
+                                    text: rawStatements[j],
+                                    isCorrect: isCorrect
+                                });
+                            }
                         }
                         
                         let points = parseInt(cols[4].textContent.trim().replace(/\D/g, ''));
@@ -1272,7 +1310,7 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
                             correctAnswers: correctAnswers,
                             correctAnswersArray: correctAnswersArray,
                             shortAnswerKeys: qType === 'isian' ? correctAnswers : '',
-                            statements: [],
+                            statements: statements,
                             pairs: [],
                             discussion: discussion,
                             points: points
