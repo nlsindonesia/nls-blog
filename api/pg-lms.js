@@ -684,9 +684,24 @@ export default async function handler(request, response) {
                     user_id VARCHAR(255),
                     course_id VARCHAR(100) REFERENCES lms_courses(id) ON DELETE CASCADE,
                     module_index INTEGER,
-                    score INTEGER,
+                    score NUMERIC(5,2),
                     answers_json JSONB,
                     submitted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+                );
+            `;
+
+            await sql`
+                CREATE TABLE IF NOT EXISTS lms_quiz_attempts (
+                    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+                    user_id VARCHAR(255),
+                    course_id VARCHAR(100) REFERENCES lms_courses(id) ON DELETE CASCADE,
+                    module_id VARCHAR(100),
+                    status VARCHAR(50) DEFAULT 'in_progress',
+                    started_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                    last_saved_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                    elapsed_seconds INTEGER DEFAULT 0,
+                    answers_json JSONB DEFAULT '{}'::jsonb,
+                    UNIQUE(user_id, course_id, module_id)
                 );
             `;
 
@@ -806,7 +821,7 @@ export default async function handler(request, response) {
 
         // --- 7. SUBMIT QUIZ ---
         if (action === 'submit_quiz') {
-            const { userId, courseId, moduleIndex, score, answers } = request.body;
+            const { userId, courseId, moduleIndex, moduleId, score, answers } = request.body;
             if (!userId || !courseId || score === undefined) return response.status(400).json({ success: false, message: 'Missing required quiz data.' });
 
             const result = await sql`
@@ -815,7 +830,56 @@ export default async function handler(request, response) {
                 RETURNING id
             `;
             
+            if (moduleId) {
+                await sql`
+                    UPDATE lms_quiz_attempts
+                    SET status = 'submitted', last_saved_at = CURRENT_TIMESTAMP
+                    WHERE user_id = ${userId} AND course_id = ${courseId} AND module_id = ${moduleId}
+                `;
+            }
+            
             return response.status(200).json({ success: true, message: 'Quiz submitted.', id: result.rows[0].id });
+        }
+
+        // --- 7.a. GET QUIZ PROGRESS ---
+        if (action === 'get_quiz_progress') {
+            const { userId, courseId, moduleId } = request.body || request.query || {};
+            if (!userId || !courseId || !moduleId) return response.status(400).json({ success: false, message: 'Missing parameters.' });
+
+            const attemptRes = await sql`
+                SELECT * FROM lms_quiz_attempts 
+                WHERE user_id = ${userId} AND course_id = ${courseId} AND module_id = ${moduleId}
+            `;
+            
+            if (attemptRes.rows.length > 0) {
+                return response.status(200).json({ success: true, attempt: attemptRes.rows[0] });
+            } else {
+                return response.status(200).json({ success: true, attempt: null });
+            }
+        }
+
+        // --- 7.b. START OR SAVE QUIZ PROGRESS ---
+        if (action === 'save_quiz_progress') {
+            const { userId, courseId, moduleId, elapsedSeconds, answers } = request.body;
+            if (!userId || !courseId || !moduleId) return response.status(400).json({ success: false, message: 'Missing parameters.' });
+
+            const existing = await sql`SELECT id, status FROM lms_quiz_attempts WHERE user_id = ${userId} AND course_id = ${courseId} AND module_id = ${moduleId}`;
+            
+            if (existing.rows.length === 0) {
+                // Insert new attempt
+                await sql`
+                    INSERT INTO lms_quiz_attempts (user_id, course_id, module_id, elapsed_seconds, answers_json, status, started_at, last_saved_at)
+                    VALUES (${userId}, ${courseId}, ${moduleId}, ${elapsedSeconds || 0}, ${JSON.stringify(answers || {})}, 'in_progress', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                `;
+            } else {
+                // Update existing attempt (if not already submitted, or maybe we want to allow overwriting if it's a reset?)
+                await sql`
+                    UPDATE lms_quiz_attempts
+                    SET elapsed_seconds = ${elapsedSeconds || 0}, answers_json = ${JSON.stringify(answers || {})}, last_saved_at = CURRENT_TIMESTAMP, status = 'in_progress'
+                    WHERE user_id = ${userId} AND course_id = ${courseId} AND module_id = ${moduleId}
+                `;
+            }
+            return response.status(200).json({ success: true, message: 'Progress saved.' });
         }
 
         // --- 8. ADMIN: GET ALL COURSES ---
