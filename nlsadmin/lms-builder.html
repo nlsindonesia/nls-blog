@@ -1396,11 +1396,11 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
                             // Mendeteksi apakah guru menggunakan Bullet/Numbering (<li>) atau sekadar Enter (<p> atau <br>)
                             if (dOpt.querySelectorAll('li').length > 0) {
                                 dOpt.querySelectorAll('li').forEach(li => {
-                                    if(li.textContent.trim()) options.push(li.innerHTML);
+                                    if(li.textContent.trim() || li.querySelector('img')) options.push(li.innerHTML);
                                 });
                             } else if (dOpt.querySelectorAll('p').length > 0) {
                                 dOpt.querySelectorAll('p').forEach(p => {
-                                    if(p.textContent.trim()) options.push(p.innerHTML);
+                                    if(p.textContent.trim() || p.querySelector('img')) options.push(p.innerHTML);
                                 });
                             } else {
                                 options = dOpt.innerHTML.split(/<br\s*\/?>/i).filter(s => s.trim() !== '');
