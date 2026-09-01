@@ -1388,8 +1388,9 @@
                         <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="isLmsCoursesOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
 
-                    <!-- Menu 5: School (SD, SMP, SMA) -->
-                    <div x-show="isLmsCoursesOpen" x-transition class="space-y-1">
+                    <div x-show="isLmsCoursesOpen" x-transition class="space-y-1.5">
+                        <!-- Menu 5: School (SD, SMP, SMA) -->
+                        <div class="space-y-1">
                         <button type="button" @click="toggleSchoolDropdown()"
                             :class="activeTab === 'lms_courses' && lmsCategory === 'School' ? 'nav-pill-school font-black bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold'"
                             class="w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs transition-all cursor-pointer text-left group">
@@ -1742,6 +1743,8 @@
 </div>
                     </div>
 
+
+                    </div>
 
                 <!-- Vue 3 Database Explorer Hub -->
                 <div class="pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-1.5">
