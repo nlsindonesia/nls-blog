@@ -551,7 +551,14 @@
                                                     <span class="text-5xl font-black" x-text="quizState.score"></span>
                                                 </div>
                                                 <h3 class="text-3xl sm:text-4xl font-black text-slate-900 mb-3 tracking-tight" x-text="quizState.score > 70 ? 'Pencapaian Luar Biasa! 🎉' : 'Ayo Tetap Semangat! 💪'"></h3>
-                                                <p class="text-slate-500 text-lg font-medium mb-12">Anda berhasil menjawab benar <strong class="text-slate-800 font-black" x-text="quizState.correct"></strong> dari <strong class="text-slate-800 font-black" x-text="quizState.total"></strong> misi.</p>
+                                                <p class="text-slate-500 text-lg font-medium mb-12">
+                                                    <template x-if="quizState.total !== '?'">
+                                                        <span>Anda berhasil menjawab benar <strong class="text-slate-800 font-black" x-text="quizState.correct"></strong> dari <strong class="text-slate-800 font-black" x-text="quizState.total"></strong> misi.</span>
+                                                    </template>
+                                                    <template x-if="quizState.total === '?'">
+                                                        <span>Kuis ini telah Anda selesaikan.</span>
+                                                    </template>
+                                                </p>
                                             </div>
                                         </template>
 
@@ -655,6 +662,7 @@
                 babs: [],
                 activeNode: null,
                 completedNodes: [],
+                pastScores: {},
                 quizAnswers: {},
                 quizState: { submitted: false, isSubmitting: false, showDiscussion: false, hasEssay: false, score: 0, correct: 0, total: 0, inProgress: false, currentQIdx: 0, doubtful: [], timeLeft: 0, timerInterval: null, elapsedSeconds: 0, autosaveInterval: null, autosaveTimeout: null },
                 
@@ -820,10 +828,20 @@
                                     body: JSON.stringify({ action: 'get_lms_data', userId: session.id })
                                 });
                                 const data = await res.json();
-                                if (data.success && data.lmsData && data.lmsData.progressMap) {
-                                    const courseProgress = data.lmsData.progressMap[this.courseData.id];
-                                    if (courseProgress && courseProgress.completedModules) {
-                                        this.completedNodes = courseProgress.completedModules;
+                                if (data.success && data.lmsData) {
+                                    if (data.lmsData.progressMap) {
+                                        const courseProgress = data.lmsData.progressMap[this.courseData.id];
+                                        if (courseProgress && courseProgress.completedModules) {
+                                            this.completedNodes = courseProgress.completedModules;
+                                        }
+                                    }
+                                    if (data.lmsData.quizResults) {
+                                        this.pastScores = {};
+                                        data.lmsData.quizResults.forEach(qr => {
+                                            if (qr.courseId === this.courseData.id) {
+                                                this.pastScores[qr.moduleIndex] = qr;
+                                            }
+                                        });
                                     }
                                 }
                             }
@@ -941,10 +959,18 @@
                         window.history.pushState({ nodeId: node.id }, '', url);
                     }
 
-                    this.quizState.submitted = false;
-                      this.quizState.inProgress = false;
-                      if (this.quizState.timerInterval) clearInterval(this.quizState.timerInterval);
-                      if (this.quizState.autosaveInterval) clearInterval(this.quizState.autosaveInterval);
+                    if (node && node.type === 'kuis' && this.pastScores[node.id]) {
+                        this.quizState.submitted = true;
+                        this.quizState.score = this.pastScores[node.id].score;
+                        this.quizState.total = '?'; // mark as loaded from history
+                        this.quizState.hasEssay = node.questions && node.questions.some(q => q.type === 'essai');
+                        this.quizState.inProgress = false;
+                    } else {
+                        this.quizState.submitted = false;
+                        this.quizState.inProgress = false;
+                        if (this.quizState.timerInterval) clearInterval(this.quizState.timerInterval);
+                        if (this.quizState.autosaveInterval) clearInterval(this.quizState.autosaveInterval);
+                    }
                     this.quizAnswers = {};
                     
                     // Allow Alpine to update DOM, then init player if video
