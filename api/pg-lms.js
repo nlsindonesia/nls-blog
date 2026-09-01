@@ -732,7 +732,8 @@ export default async function handler(request, response) {
             }
             
             const res = await query;
-            const courses = res.rows.map(r => r.content_json);
+            // Filter out draft and trashed courses for students
+            const courses = res.rows.map(r => r.content_json).filter(c => c.status !== 'draft' && c.status !== 'trashed');
             return response.status(200).json({ success: true, data: courses });
         }
 
