@@ -1087,7 +1087,12 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
                             const dOpt = document.createElement('div');
                             dOpt.innerHTML = optHtml;
                             
-                            if (dOpt.querySelectorAll('p').length > 0) {
+                            // Mendeteksi apakah guru menggunakan Bullet/Numbering (<li>) atau sekadar Enter (<p> atau <br>)
+                            if (dOpt.querySelectorAll('li').length > 0) {
+                                dOpt.querySelectorAll('li').forEach(li => {
+                                    if(li.textContent.trim()) options.push(li.innerHTML);
+                                });
+                            } else if (dOpt.querySelectorAll('p').length > 0) {
                                 dOpt.querySelectorAll('p').forEach(p => {
                                     if(p.textContent.trim()) options.push(p.innerHTML);
                                 });
@@ -1095,11 +1100,11 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
                                 options = dOpt.innerHTML.split(/<br\s*\/?>/i).filter(s => s.trim() !== '');
                             }
                             
+                            // Membersihkan awalan seperti "A.", "b)", atau bullet ekstra jika ada
                             options = options.map(opt => {
                                 let txt = opt.trim();
                                 txt = txt.replace(/^[A-Ea-e][\.\)]\s*/, '');
                                 return txt;
-                            }).filter(o => o !== '');
                         }
                         
                         const keysRaw = cols[3].textContent.trim().toUpperCase();
