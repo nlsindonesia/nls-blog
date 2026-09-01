@@ -4517,10 +4517,10 @@
                                                     <div class="space-y-1.5 flex-1">
                                                         <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm leading-snug line-clamp-2" x-text="course.title || 'Untitled Course'"></h3>
                                                         <div class="flex items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400 font-medium pt-1">
-                                                            <span>Topic: <b class="text-slate-700 dark:text-slate-300" x-text="(course.modules ? course.modules.filter(m => m.type === 'materi').length : 0)"></b></span>
-                                                            <span>Lesson: <b class="text-slate-700 dark:text-slate-300">0</b></span>
-                                                            <span>Quiz: <b class="text-slate-700 dark:text-slate-300" x-text="(course.modules ? course.modules.filter(m => m.type === 'kuis').length : 0)"></b></span>
-                                                            <span>Assignment: <b class="text-slate-700 dark:text-slate-300">0</b></span>
+                                                            <span>Topic: <b class="text-slate-700 dark:text-slate-300" x-text="(course.modules && course.modules.length > 0) ? course.modules.length : (course.totalModules || 0)"></b></span>
+                                                            <span>Lesson: <b class="text-slate-700 dark:text-slate-300" x-text="course.modules ? course.modules.filter(m => m.type === 'materi').length : 0"></b></span>
+                                                            <span>Quiz: <b class="text-slate-700 dark:text-slate-300" x-text="course.modules ? course.modules.filter(m => m.type === 'kuis').length : 0"></b></span>
+                                                            <span>Video: <b class="text-slate-700 dark:text-slate-300" x-text="course.modules ? course.modules.filter(m => m.type === 'video').length : 0"></b></span>
                                                         </div>
                                                     </div>
                                                 </div>
