@@ -472,6 +472,15 @@
                                     </p>
                                 </div>
 
+                                <!-- Pembahasan / Explanation -->
+                                <div class="ml-6 border-t border-slate-100 pt-5 mt-4">
+                                    <label class="block text-[10px] font-black uppercase text-indigo-400 mb-2 flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        Pembahasan Soal (Opsional)
+                                    </label>
+                                    <textarea x-model="q.discussion" rows="2" class="w-full p-3.5 rounded-xl border border-indigo-100 text-sm focus:ring-2 focus:ring-indigo-500 bg-indigo-50/30 text-indigo-900 leading-relaxed placeholder-indigo-300 transition-all" placeholder="Tuliskan pembahasan atau penjelasan mengapa kunci jawaban tersebut benar. Akan ditampilkan setelah siswa selesai mengerjakan kuis."></textarea>
+                                </div>
+
                             </div>
                         </template>
                         <div x-show="activeNode.questions.length === 0" class="text-center p-8 border-2 border-dashed border-slate-300 rounded-2xl bg-slate-50 text-slate-500 flex flex-col items-center gap-3">
@@ -709,7 +718,8 @@
                         correctAnswersArray: [], // for pg_kompleks
                         shortAnswerKeys: '',
                         statements: [{text: '', isCorrect: 'true'}],
-                        pairs: [{left: '', right: ''}]
+                        pairs: [{left: '', right: ''}],
+                        discussion: ''
                     });
                 },
 
