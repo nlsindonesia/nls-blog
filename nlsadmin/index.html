@@ -4517,10 +4517,10 @@
                                                     <div class="space-y-1.5 flex-1">
                                                         <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm leading-snug line-clamp-2" x-text="course.title || 'Untitled Course'"></h3>
                                                         <div class="flex items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400 font-medium pt-1">
-                                                            <span>Topic: <b class="text-slate-700 dark:text-slate-300" x-text="(course.modules && course.modules.length > 0) ? course.modules.length : (course.totalModules || 0)"></b></span>
-                                                            <span>Lesson: <b class="text-slate-700 dark:text-slate-300" x-text="course.modules ? course.modules.filter(m => m.type === 'materi').length : 0"></b></span>
-                                                            <span>Quiz: <b class="text-slate-700 dark:text-slate-300" x-text="course.modules ? course.modules.filter(m => m.type === 'kuis').length : 0"></b></span>
-                                                            <span>Video: <b class="text-slate-700 dark:text-slate-300" x-text="course.modules ? course.modules.filter(m => m.type === 'video').length : 0"></b></span>
+                                                            <span>Topic: <b class="text-slate-700 dark:text-slate-300" x-text="countCourseBabs(course)"></b></span>
+                                                            <span>Lesson: <b class="text-slate-700 dark:text-slate-300" x-text="countCourseItems(course, 'materi')"></b></span>
+                                                            <span>Quiz: <b class="text-slate-700 dark:text-slate-300" x-text="countCourseItems(course, 'kuis')"></b></span>
+                                                            <span>Video: <b class="text-slate-700 dark:text-slate-300" x-text="countCourseItems(course, 'video')"></b></span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -8704,18 +8704,36 @@
                     return this.trashCourses.filter(c => c && c.category === this.lmsCategory);
                 },
 
+                countCourseBabs(course) {
+                    if (course.babs) return course.babs.length;
+                    if (course.content) return course.content.length;
+                    if (course.modules) return course.modules.length;
+                    return course.totalModules || 0;
+                },
+
+                countCourseItems(course, type) {
+                    let count = 0;
+                    const babs = course.babs || course.content || course.modules || [];
+                    babs.forEach(bab => {
+                        if (bab.subBabs) {
+                            count += bab.subBabs.filter(s => s.type === type).length;
+                        } else if (bab.type === type) {
+                            count++;
+                        }
+                    });
+                    return count;
+                },
+
                 getTotalModulesCount() {
                     const list = this.getFilteredLmsCourses();
-                    return list.reduce((acc, c) => acc + (Array.isArray(c.modules) ? c.modules.length : (c.totalModules || 0)), 0);
+                    return list.reduce((acc, c) => acc + this.countCourseBabs(c), 0);
                 },
 
                 getTotalQuizzesAndVideosCount() {
                     const list = this.getFilteredLmsCourses();
                     let count = 0;
                     list.forEach(c => {
-                        if (Array.isArray(c.modules)) {
-                            count += c.modules.filter(m => m.type === 'kuis' || m.type === 'video').length;
-                        }
+                        count += this.countCourseItems(c, 'kuis') + this.countCourseItems(c, 'video');
                     });
                     return count;
                 },
