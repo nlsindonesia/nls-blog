@@ -4408,103 +4408,186 @@
                     </div>
                 </div>
 
-                <!-- Course Management List & Table -->
-                <div class="bg-white dark:bg-[#131D38] rounded-3xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-xs space-y-5">
+                <!-- Course Management List & Table (Tutor LMS Style) -->
+                <div class="bg-white dark:bg-slate-900 rounded-lg shadow-sm border border-slate-200 dark:border-slate-800 pb-4">
                     
-                    <!-- Search & Filter Header -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
-                        <div class="flex items-center gap-3">
-                            <span class="text-sm font-black text-slate-900 dark:text-white" x-text="'Daftar Course ' + lmsCategory + ' (' + lmsLevel + ')'"></span>
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
-                                x-text="getFilteredLmsCourses().length + ' Kelas'"></span>
+                    <!-- Top Tabs -->
+                    <div class="flex items-center justify-between px-6 pt-6 pb-4 border-b border-slate-200 dark:border-slate-800">
+                        <div class="flex items-center gap-4">
+                            <h2 class="text-xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-3">
+                                <span x-text="'Courses ' + lmsCategory + ' (' + lmsLevel + ')'"></span>
+                                <button type="button" @click="openCreateCourseModal()" class="px-3 py-1 text-sm rounded-md border border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 font-semibold transition-colors flex items-center gap-1 cursor-pointer">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg> Add New
+                                </button>
+                            </h2>
                         </div>
-
-                        <div class="flex items-center gap-3">
-                            <div class="relative w-full sm:w-64">
-                                <input type="text" x-model="lmsCourseSearch" placeholder="Cari judul course / mentor..."
-                                    class="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-hidden focus:ring-2 focus:ring-indigo-500">
-                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                                </span>
-                            </div>
-
-                            <button type="button" @click="openCreateCourseModal()"
-                                class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs transition-all shadow-md shadow-indigo-600/20 flex items-center gap-1.5 shrink-0 cursor-pointer">
-                                <span>+ Tambah</span>
-                            </button>
+                        <div class="hidden md:flex items-center gap-5 text-sm font-medium text-slate-500 dark:text-slate-400">
+                            <button @click="showTrashCourses = false" :class="!showTrashCourses ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 pb-2' : 'hover:text-slate-800 dark:hover:text-slate-200 pb-2'">All (<span x-text="getFilteredLmsCourses().length"></span>)</button>
+                            <button class="hover:text-slate-800 dark:hover:text-slate-200 pb-2">Mine (<span x-text="getFilteredLmsCourses().length"></span>)</button>
+                            <button class="hover:text-slate-800 dark:hover:text-slate-200 pb-2">Published (<span x-text="getFilteredLmsCourses().length"></span>)</button>
+                            <button class="hover:text-slate-800 dark:hover:text-slate-200 pb-2">Draft (0)</button>
+                            <button class="hover:text-slate-800 dark:hover:text-slate-200 pb-2">Pending (0)</button>
+                            <button @click="showTrashCourses = true" :class="showTrashCourses ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 pb-2' : 'hover:text-slate-800 dark:hover:text-slate-200 pb-2'">Trash (<span x-text="getFilteredTrashCourses().length"></span>)</button>
                         </div>
                     </div>
 
-                    <!-- Course Cards Grid -->
-                    <div x-show="!showTrashCourses" class="space-y-6">
-                    <template x-if="getFilteredLmsCourses().length === 0">
-                        <div class="p-12 text-center text-slate-400 space-y-3">
-                            <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-2xl">📚</div>
-                            <h4 class="text-sm font-bold text-slate-700 dark:text-slate-300">Belum Ada Course di Jenjang Ini</h4>
-                            <p class="text-xs text-slate-400 max-w-sm mx-auto">Klik tombol "+ Buat Kelas / Course Baru" di atas untuk menambahkan kurikulum kelas.</p>
-                        </div>
-                    </template>
+                    <div x-show="!showTrashCourses">
+                        <!-- Filters row -->
+                        <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4 px-6 py-4 bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-200 dark:border-slate-800">
+                            <!-- Bulk Actions -->
+                            <div class="flex items-center gap-2 text-sm">
+                                <select class="border border-slate-300 dark:border-slate-700 rounded-md px-3 py-1.5 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                                    <option>Bulk Action</option>
+                                    <option>Move to Trash</option>
+                                </select>
+                                <button class="px-4 py-1.5 border border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 rounded-md hover:bg-indigo-50 dark:hover:bg-indigo-900/30 font-medium bg-white dark:bg-slate-900">Apply</button>
+                                <button class="ml-2 text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-sm flex items-center gap-1 cursor-pointer">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Reset
+                                </button>
+                            </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                        <template x-for="course in getFilteredLmsCourses()" :key="course.id">
-                            <div class="rounded-3xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 p-5 sm:p-6 flex flex-col justify-between space-y-4 hover:border-indigo-400 dark:hover:border-indigo-600 transition-all">
-                                <div class="space-y-3">
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex flex-wrap items-center gap-2">
-                                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase"
-                                                :class="getCategoryBadgeClass(course.category)" x-text="course.category"></span>
-                                            <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300" x-text="course.level"></span>
-                                            <span x-show="course.subject" class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800" x-text="course.subject"></span>
-                                        </div>
-                                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                                            Dipublikasikan
-                                        </span>
-                                    </div>
-
-                                    <div>
-                                        <h3 class="text-base font-black text-slate-900 dark:text-white leading-snug" x-text="course.title"></h3>
-                                        <p class="text-xs text-slate-500 mt-1 line-clamp-2" x-text="course.description"></p>
-                                    </div>
-
-                                    <!-- Mentor & Content breakdown chips -->
-                                    <div class="p-3 rounded-2xl bg-white dark:bg-[#131D38] border border-slate-100 dark:border-slate-800 text-xs space-y-2">
-                                        <div class="flex items-center justify-between text-slate-600 dark:text-slate-300 font-semibold">
-                                            <span class="text-slate-400">Mentor Pengajar:</span>
-                                            <span class="font-bold text-slate-800 dark:text-slate-200" x-text="course.mentor"></span>
-                                        </div>
-                                        <div class="flex items-center gap-2 pt-1 border-t border-slate-100 dark:border-slate-800/80 text-[10px] font-bold">
-                                            <span class="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
-                                                x-text="(course.modules ? course.modules.filter(m => m.type === 'materi').length : 0) + ' Materi Teks/PDF'"></span>
-                                            <span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
-                                                x-text="(course.modules ? course.modules.filter(m => m.type === 'kuis').length : 0) + ' Kuis'"></span>
-                                            <span class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
-                                                x-text="(course.modules ? course.modules.filter(m => m.type === 'video').length : 0) + ' Video'"></span>
-                                        </div>
+                            <!-- Filters & Search -->
+                            <div class="flex flex-wrap items-center gap-4 text-sm">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-slate-500 hidden sm:inline">Category</span>
+                                    <select class="border border-slate-300 dark:border-slate-700 rounded-md px-3 py-1.5 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 outline-none min-w-[130px]">
+                                        <option>All Category</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-slate-500 hidden sm:inline">Sort By</span>
+                                    <select class="border border-slate-300 dark:border-slate-700 rounded-md px-3 py-1.5 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                                        <option>DESC</option>
+                                        <option>ASC</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-center gap-2 hidden lg:flex">
+                                    <span class="text-slate-500">Date</span>
+                                    <div class="relative">
+                                        <input type="text" placeholder="MMMM d, yyyy" class="border border-slate-300 dark:border-slate-700 rounded-md px-3 py-1.5 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 w-36 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                                        <svg class="w-4 h-4 text-slate-400 absolute right-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                     </div>
                                 </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-slate-500 hidden sm:inline">Search</span>
+                                    <div class="relative">
+                                        <input type="text" x-model="lmsCourseSearch" placeholder="Search..." class="border border-slate-300 dark:border-slate-700 rounded-md pl-8 pr-3 py-1.5 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 w-48 lg:w-64 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                                        <svg class="w-4 h-4 text-slate-400 absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                                <!-- Action Buttons -->
-                                <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2">
-                                    <button type="button" @click="openModuleBuilder(course)"
-                                        class="flex-1 py-2.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-                                        <span>Kelola Isi (Materi / Kuis / Video)</span>
-                                    </button>
+                        <!-- Table Area -->
+                        <div class="overflow-x-auto min-h-[400px]">
+                            <table class="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+                                <thead class="bg-slate-50/80 dark:bg-slate-800/50 text-xs font-bold text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700">
+                                    <tr>
+                                        <th class="p-4 w-12 text-center"><input type="checkbox" class="rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer"></th>
+                                        <th class="p-4 whitespace-nowrap">Title <span class="text-[10px] ml-1 text-slate-400">⇅</span></th>
+                                        <th class="p-4">Categories</th>
+                                        <th class="p-4">Author</th>
+                                        <th class="p-4">Price</th>
+                                        <th class="p-4 whitespace-nowrap">Date <span class="text-[10px] ml-1 text-slate-400">⇅</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                                    <template x-if="getFilteredLmsCourses().length === 0">
+                                        <tr>
+                                            <td colspan="6" class="p-12 text-center">
+                                                <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-2xl mb-3">📚</div>
+                                                <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Belum Ada Course</div>
+                                                <div class="text-xs text-slate-400 mt-1">Klik tombol "+ Add New" di atas untuk menambahkan.</div>
+                                            </td>
+                                        </tr>
+                                    </template>
                                     
-                                    <button type="button" @click="editCourseInfo(course)"
-                                        class="p-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all cursor-pointer" title="Edit Info Course">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                    </button>
-
-                                    <button type="button" @click="deleteCourse(course.id)"
-                                        class="p-2.5 rounded-xl bg-rose-100 hover:bg-rose-200 dark:bg-rose-950 dark:hover:bg-rose-900 text-rose-700 dark:text-rose-300 transition-all cursor-pointer" title="Hapus Course">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </template>
+                                    <template x-for="course in getFilteredLmsCourses()" :key="course.id">
+                                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+                                            <td class="p-4 align-top pt-5 text-center">
+                                                <input type="checkbox" class="rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer">
+                                            </td>
+                                            <td class="p-4 align-top pt-5 min-w-[320px]">
+                                                <div class="flex gap-4">
+                                                    <!-- Thumbnail Mockup -->
+                                                    <div class="w-24 h-16 rounded-md bg-slate-200 dark:bg-slate-700 shrink-0 overflow-hidden relative border border-slate-200 dark:border-slate-700 flex items-center justify-center text-xl shadow-sm">
+                                                        <div class="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 opacity-90"></div>
+                                                        <span class="relative z-10 text-white font-black" x-text="course.title.substring(0,1)"></span>
+                                                    </div>
+                                                    <div class="space-y-1.5 flex-1">
+                                                        <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm leading-snug line-clamp-2" x-text="course.title"></h3>
+                                                        <div class="flex items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400 font-medium pt-1">
+                                                            <span>Topic: <b class="text-slate-700 dark:text-slate-300" x-text="(course.modules ? course.modules.filter(m => m.type === 'materi').length : 0)"></b></span>
+                                                            <span>Lesson: <b class="text-slate-700 dark:text-slate-300">0</b></span>
+                                                            <span>Quiz: <b class="text-slate-700 dark:text-slate-300" x-text="(course.modules ? course.modules.filter(m => m.type === 'kuis').length : 0)"></b></span>
+                                                            <span>Assignment: <b class="text-slate-700 dark:text-slate-300">0</b></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="p-4 align-top pt-5 text-xs text-slate-700 dark:text-slate-300">
+                                                <div x-text="course.category" class="font-medium"></div>
+                                                <div x-text="course.level" class="text-slate-500 mt-0.5"></div>
+                                            </td>
+                                            <td class="p-4 align-top pt-5">
+                                                <div class="flex items-center gap-2">
+                                                    <div class="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden flex items-center justify-center shrink-0 border border-slate-300 dark:border-slate-600">
+                                                        <img src="/nls-logo.png" alt="Author" class="w-full h-full object-cover p-1">
+                                                    </div>
+                                                    <div class="text-xs font-bold text-slate-700 dark:text-slate-300 leading-tight">
+                                                        <div x-text="course.mentor.split(' ')[0]"></div>
+                                                        <div x-text="course.mentor.split(' ').slice(1).join(' ')" class="font-medium text-[11px] text-slate-500"></div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="p-4 align-top pt-5 font-bold text-slate-700 dark:text-slate-300 text-sm">
+                                                Free
+                                            </td>
+                                            <td class="p-4 align-top pt-5">
+                                                <div class="flex flex-col xl:flex-row xl:items-start justify-between gap-3">
+                                                    <div class="text-xs whitespace-nowrap mt-1">
+                                                        <div class="text-slate-700 dark:text-slate-300 font-medium">May 17, 2019</div>
+                                                        <div class="text-slate-500">10:14 am</div>
+                                                    </div>
+                                                    
+                                                    <div class="flex items-center gap-2 opacity-100 xl:opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                                                        <!-- Publish Button (Dropdown styled) -->
+                                                        <button class="flex items-center gap-1 px-2.5 py-1.5 rounded-md border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[11px] font-bold cursor-pointer hover:bg-emerald-100 dark:hover:bg-emerald-900/50">
+                                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> Publish <svg class="w-3 h-3 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                                        </button>
+                                                        
+                                                        <!-- View Course Button -->
+                                                        <button @click="openModuleBuilder(course)" class="px-2.5 py-1.5 rounded-md border border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 text-[11px] font-bold hover:bg-indigo-50 dark:hover:bg-indigo-900/30 cursor-pointer bg-white dark:bg-slate-900">
+                                                            View Course
+                                                        </button>
+                                                        
+                                                        <!-- Dots Dropdown -->
+                                                        <div class="relative" x-data="{ open: false }">
+                                                            <button @click="open = !open" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+                                                            </button>
+                                                            <div x-show="open" @click.away="open = false" style="display: none;" class="absolute right-0 mt-1 w-36 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl z-20 py-1">
+                                                                <button @click="editCourseInfo(course); open=false" class="w-full text-left px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 flex items-center gap-2">
+                                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg> Edit Course
+                                                                </button>
+                                                                <button @click="openModuleBuilder(course); open=false" class="w-full text-left px-4 py-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 flex items-center gap-2">
+                                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg> Manage Content
+                                                                </button>
+                                                                <div class="border-t border-slate-100 dark:border-slate-700 my-1"></div>
+                                                                <button @click="deleteCourse(course.id); open=false" class="w-full text-left px-4 py-2 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 flex items-center gap-2">
+                                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg> Move to Trash
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-
                 </div>
 
                 <!-- Trash View for LMS Courses -->
