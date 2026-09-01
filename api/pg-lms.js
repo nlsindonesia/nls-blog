@@ -683,7 +683,7 @@ export default async function handler(request, response) {
                     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
                     user_id VARCHAR(255),
                     course_id VARCHAR(100) REFERENCES lms_courses(id) ON DELETE CASCADE,
-                    module_index INTEGER,
+                    module_index VARCHAR(100),
                     score NUMERIC(5,2),
                     answers_json JSONB,
                     submitted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -976,7 +976,7 @@ export default async function handler(request, response) {
                 school: r.school || '',
                 courseId: r.course_id,
                 courseTitle: r.coursetitle || 'Program NLS',
-                moduleTitle: `Modul Ke-${r.module_index + 1}`,
+                moduleTitle: `Modul ID: ${r.module_index}`,
                 category: r.category || 'School',
                 score: r.score,
                 answers: r.answers_json || {},
