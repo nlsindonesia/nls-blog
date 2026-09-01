@@ -604,9 +604,14 @@
                             <li>Poin Benar <span class="font-normal text-xs text-slate-400">(Angka)</span></li>
                             <li>Pembahasan <span class="font-normal text-xs text-slate-400">(Penjelasan)</span></li>
                         </ol>
-                        <button @click="copyGDocsTemplate()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs transition-colors border border-slate-300">
-                            📋 Salin Contoh Tabel ke Clipboard
-                        </button>
+                        <div class="flex flex-col sm:flex-row gap-2 mt-4">
+                            <button @click="copyGDocsTemplate()" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-[11px] transition-colors border border-slate-300 flex items-center justify-center gap-1.5 shadow-sm active:scale-95">
+                                📋 Salin Contoh Tabel
+                            </button>
+                            <button @click="downloadGDocsTemplate()" class="flex-1 py-2.5 bg-sky-50 hover:bg-sky-100 text-sky-700 rounded-xl font-black text-[11px] transition-colors border border-sky-200 flex items-center justify-center gap-1.5 shadow-sm active:scale-95">
+                                ⬇️ Download Template (.doc)
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1020,6 +1025,118 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
                     } catch(e) {
                         this.showToast('Browser Anda tidak mendukung copy HTML otomatis. Silakan buat tabel manual.');
                     }
+                },
+
+                downloadGDocsTemplate() {
+                    const html = `
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head><meta charset='utf-8'><title>Template Soal LMS</title></head>
+<body>
+<h2>Template Import Soal NLS</h2>
+<p>Silakan isi tabel di bawah ini sesuai format. <b>Jangan ubah urutan atau menghapus kolom (Tipe Soal s.d. Pembahasan).</b> Anda boleh menghapus atau menambah baris ke bawah.</p>
+<table border="1" style="border-collapse: collapse; width: 100%;">
+    <tr style="background-color: #f1f5f9;">
+        <th>Tipe Soal</th>
+        <th>Pertanyaan</th>
+        <th>Pilihan Ganda (Khusus PG)</th>
+        <th>Kunci Jawaban</th>
+        <th>Poin Benar</th>
+        <th>Pembahasan</th>
+    </tr>
+    <tr>
+        <td>PG</td>
+        <td>Apa ibu kota Indonesia saat ini?</td>
+        <td>A. Bandung<br>B. Jakarta<br>C. Surabaya<br>D. Semarang</td>
+        <td>B</td>
+        <td>10</td>
+        <td>Berdasarkan sejarah, Jakarta adalah ibu kota negara.</td>
+    </tr>
+    <tr>
+        <td>PG</td>
+        <td>Siapa presiden pertama RI?</td>
+        <td>A. Soeharto<br>B. BJ Habibie<br>C. Soekarno<br>D. Megawati</td>
+        <td>C</td>
+        <td>10</td>
+        <td>Soekarno dan Hatta adalah proklamator kemerdekaan RI.</td>
+    </tr>
+    <tr>
+        <td>PG</td>
+        <td>5 + 7 x 2 = ...</td>
+        <td>A. 24<br>B. 19<br>C. 14<br>D. 35</td>
+        <td>B</td>
+        <td>10</td>
+        <td>Sesuai aturan KaBaTaKu, perkalian didahulukan. 7x2 = 14, lalu ditambah 5 = 19.</td>
+    </tr>
+    <tr>
+        <td>PG Kompleks</td>
+        <td>Manakah di bawah ini yang merupakan hewan mamalia? (Pilih 2)</td>
+        <td>A. Lumba-lumba<br>B. Hiu<br>C. Paus<br>D. Buaya</td>
+        <td>A, C</td>
+        <td>15</td>
+        <td>Lumba-lumba dan Paus berkembang biak dengan melahirkan dan menyusui.</td>
+    </tr>
+    <tr>
+        <td>PG Kompleks</td>
+        <td>Siapa saja pahlawan kemerdekaan dari Sumatera?</td>
+        <td>A. Cut Nyak Dien<br>B. Pangeran Diponegoro<br>C. Tuanku Imam Bonjol<br>D. Kapitan Pattimura</td>
+        <td>A, C</td>
+        <td>15</td>
+        <td>Cut Nyak Dien dari Aceh dan Tuanku Imam Bonjol dari Sumbar.</td>
+    </tr>
+    <tr>
+        <td>PG Kompleks</td>
+        <td>Warna primer penyusun cahaya (RGB) adalah...</td>
+        <td>A. Red<br>B. Yellow<br>C. Green<br>D. Blue</td>
+        <td>A, C, D</td>
+        <td>15</td>
+        <td>RGB adalah Red, Green, Blue.</td>
+    </tr>
+    <tr>
+        <td>Isian Singkat</td>
+        <td>Ibukota provinsi Jawa Timur adalah...</td>
+        <td></td>
+        <td>Surabaya</td>
+        <td>10</td>
+        <td>Surabaya dikenal sebagai Kota Pahlawan.</td>
+    </tr>
+    <tr>
+        <td>Isian Singkat</td>
+        <td>Nilai dari akar pangkat dua 144 adalah...</td>
+        <td></td>
+        <td>12</td>
+        <td>10</td>
+        <td>12 x 12 = 144</td>
+    </tr>
+    <tr>
+        <td>Esai</td>
+        <td>Jelaskan secara singkat mengapa kita perlu melestarikan hutan!</td>
+        <td></td>
+        <td></td>
+        <td>25</td>
+        <td>Hutan adalah paru-paru dunia yang menjaga siklus oksigen dan mencegah banjir.</td>
+    </tr>
+    <tr>
+        <td>Uraian</td>
+        <td>Sebutkan 3 dampak pemanasan global bagi kehidupan manusia!</td>
+        <td></td>
+        <td></td>
+        <td>25</td>
+        <td>1. Es kutub mencair<br>2. Cuaca ekstrem<br>3. Naiknya permukaan air laut.</td>
+    </tr>
+</table>
+</body></html>`;
+                    
+                    const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'Template_Soal_LMS_NLS.doc';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    this.showToast('Template .doc berhasil didownload!');
                 },
 
                 processGDocsImport(event) {
