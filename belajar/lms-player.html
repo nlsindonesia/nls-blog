@@ -734,8 +734,23 @@
                         this.tryLoadDraft();
                     }
                     
-                    // Fetch completed modules from server if available (mocked for now since it needs user data)
                     this.loadProgress();
+
+                    window.addEventListener('popstate', (e) => {
+                        const params = new URLSearchParams(window.location.search);
+                        const nodeId = params.get('node');
+                        if (nodeId) {
+                            const found = this.findNodeById(nodeId);
+                            if (found) {
+                                found.bab.expanded = true;
+                                this.openNode(found.node, true);
+                            }
+                        } else {
+                            if (this.babs && this.babs.length > 0 && this.babs[0].subBabs && this.babs[0].subBabs.length > 0) {
+                                this.openNode(this.babs[0].subBabs[0], true);
+                            }
+                        }
+                    });
 
                     // Load YT Iframe API
                     if (!window.YT) {
@@ -743,14 +758,45 @@
                         tag.src = "https://www.youtube.com/iframe_api";
                         const firstScriptTag = document.getElementsByTagName('script')[0];
                         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                        window.onYouTubeIframeAPIReady = () => {
+                            if (this.activeNode && this.activeNode.type === 'video') {
+                                this.initYoutubePlayer();
+                            }
+                        };
                     }
-                    
-                    // Auto open first node
-                    if (this.babs.length > 0 && this.babs[0].subBabs && this.babs[0].subBabs.length > 0) {
-                        this.openNode(this.babs[0].subBabs[0]);
-                    }
+
+                    this.handleInitialNode();
                     
                     this.setupBeacon();
+                },
+
+                findNodeById(nodeId) {
+                    if (!this.babs) return null;
+                    for (let bab of this.babs) {
+                        if (!bab.subBabs) continue;
+                        const found = bab.subBabs.find(s => s.id === nodeId);
+                        if (found) return { bab, node: found };
+                    }
+                    return null;
+                },
+
+                handleInitialNode() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const initialNodeId = urlParams.get('node');
+                    
+                    if (initialNodeId) {
+                        const found = this.findNodeById(initialNodeId);
+                        if (found) {
+                            found.bab.expanded = true;
+                            this.openNode(found.node, true);
+                            return;
+                        }
+                    }
+                    
+                    // Fallback to first node if not found or not specified
+                    if (this.babs && this.babs.length > 0 && this.babs[0].subBabs && this.babs[0].subBabs.length > 0) {
+                        this.openNode(this.babs[0].subBabs[0], true);
+                    }
                 },
 
                 tryLoadDraft() {
@@ -879,7 +925,7 @@
                     this.skipInteractiveQuiz(); // Resumes video and marks as answered
                 },
 
-                openNode(node) {
+                openNode(node, skipPush = false) {
                     if (this.ytPlayer) {
                         this.ytPlayer.destroy();
                         this.ytPlayer = null;
@@ -888,6 +934,13 @@
                     
                     this.activeNode = node;
                     this.sidebarOpen = false;
+
+                    if (!skipPush && node) {
+                        const url = new URL(window.location);
+                        url.searchParams.set('node', node.id);
+                        window.history.pushState({ nodeId: node.id }, '', url);
+                    }
+
                     this.quizState.submitted = false;
                       this.quizState.inProgress = false;
                       if (this.quizState.timerInterval) clearInterval(this.quizState.timerInterval);
