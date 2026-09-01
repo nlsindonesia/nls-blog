@@ -8,6 +8,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <!-- CKEditor 4 Full Suite -->
     <script src="https://cdn.ckeditor.com/4.22.1/full-all/ckeditor.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }
         .builder-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -353,6 +354,10 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                                     Bulk Import
                                 </button>
+                                <button @click="openGDocsImport()" class="px-5 py-2.5 bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 text-xs font-black rounded-xl transition-all shadow-sm flex items-center gap-2 active:scale-95">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    Import G-Docs/Word
+                                </button>
                                 <button @click="addQuestion()" class="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white text-xs font-black rounded-xl shadow-[0_4px_12px_rgba(79,70,229,0.3)] transition-all flex items-center gap-2 border border-indigo-500 active:scale-95">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
                                     Soal Manual
@@ -560,6 +565,57 @@
         </div>
     </div>
 
+    <!-- G-Docs Import Modal -->
+    <div x-show="showGDocsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity" x-cloak>
+        <div class="bg-white w-full max-w-4xl rounded-3xl shadow-2xl border border-slate-200 flex flex-col max-h-[90vh]" @click.outside="showGDocsModal = false">
+            <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 rounded-t-3xl">
+                <div>
+                    <h3 class="font-black text-xl text-slate-800 flex items-center gap-2">📄 Import dari Google Docs / Word</h3>
+                    <p class="text-xs text-slate-500 mt-1 font-medium">Unggah file .docx yang berisi tabel soal sesuai format.</p>
+                </div>
+                <button @click="showGDocsModal = false" class="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-200 rounded-xl transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1 bg-slate-50/50">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                    <!-- Drop Zone -->
+                    <div class="bg-white p-6 rounded-2xl border-2 border-dashed border-sky-200 shadow-sm relative flex flex-col items-center justify-center text-center hover:bg-sky-50/50 hover:border-sky-400 transition-all group min-h-[250px]">
+                        <input type="file" accept=".docx" @change="processGDocsImport($event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                        <div class="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center mb-4 text-sky-500 group-hover:scale-110 transition-transform">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                        </div>
+                        <h4 class="font-black text-slate-800 text-lg mb-1">Pilih / Tarik File .docx</h4>
+                        <p class="text-sm text-slate-500 font-medium px-4">Download file Anda dari Google Docs (File > Download > Microsoft Word), lalu unggah ke sini.</p>
+                    </div>
+                    
+                    <!-- Guide -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm text-sm">
+                        <h4 class="font-black text-slate-800 mb-3 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Struktur Tabel Wajib
+                        </h4>
+                        <p class="text-slate-600 mb-4 leading-relaxed">Tabel di file Anda <strong>harus persis</strong> berisi 6 kolom dari kiri ke kanan (tanpa nomor). Header bebas. Urutan:</p>
+                        <ol class="list-decimal pl-5 space-y-1.5 text-slate-700 font-bold mb-4">
+                            <li>Tipe Soal <span class="font-normal text-xs text-slate-400">(PG / Essai / Isian)</span></li>
+                            <li>Pertanyaan <span class="font-normal text-xs text-slate-400">(Boleh ada gambar)</span></li>
+                            <li>Pilihan Ganda <span class="font-normal text-xs text-slate-400">(Enter tiap opsi)</span></li>
+                            <li>Kunci Jawaban <span class="font-normal text-xs text-slate-400">(A/B/C dll)</span></li>
+                            <li>Poin Benar <span class="font-normal text-xs text-slate-400">(Angka)</span></li>
+                            <li>Pembahasan <span class="font-normal text-xs text-slate-400">(Penjelasan)</span></li>
+                        </ol>
+                        <button @click="copyGDocsTemplate()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs transition-colors border border-slate-300">
+                            📋 Salin Contoh Tabel ke Clipboard
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="p-5 border-t border-slate-100 bg-white rounded-b-3xl flex justify-end">
+                <button @click="showGDocsModal = false" class="px-5 py-2.5 font-bold text-slate-600 hover:bg-slate-100 rounded-xl text-sm transition-colors">Batal</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Alert Toast (Simulated) -->
     <div x-show="toast.show" x-transition class="fixed bottom-6 right-6 px-6 py-3 bg-slate-900 text-white font-bold text-sm rounded-2xl shadow-2xl z-50 flex items-center gap-3" x-cloak>
         <span class="text-emerald-400">✓</span>
@@ -575,6 +631,7 @@
                 isSaving: false,
                 lastSaved: '',
                 showBulkModal: false,
+                showGDocsModal: false,
                 bulkText: '',
                 toast: { show: false, message: '' },
                                 nodes: [], // fallback variable not used directly in tree anymore
@@ -917,6 +974,177 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
                     this.showBulkModal = false;
                     this.showToast(`Berhasil import ${imported} soal!`);
                     this.saveAll();
+                },
+
+                openGDocsImport() {
+                    this.showGDocsModal = true;
+                },
+                
+                copyGDocsTemplate() {
+                    const html = `
+<table border="1" style="border-collapse: collapse; width: 100%;">
+    <tr>
+        <th>Tipe Soal</th>
+        <th>Pertanyaan</th>
+        <th>Pilihan Ganda (Khusus PG)</th>
+        <th>Kunci Jawaban</th>
+        <th>Poin</th>
+        <th>Pembahasan</th>
+    </tr>
+    <tr>
+        <td>PG</td>
+        <td>Siapa penemu gaya gravitasi?</td>
+        <td>A. Newton<br>B. Einstein<br>C. Tesla</td>
+        <td>A</td>
+        <td>10</td>
+        <td>Newton menemukannya setelah kejatuhan apel.</td>
+    </tr>
+    <tr>
+        <td>Essai</td>
+        <td>Jelaskan rumus E=mc^2!</td>
+        <td></td>
+        <td></td>
+        <td>20</td>
+        <td>Rumus dari Einstein tentang massa dan energi.</td>
+    </tr>
+</table>`;
+                    
+                    const blob = new Blob([html], {type: 'text/html'});
+                    try {
+                        const clipboardItem = new window.ClipboardItem({ 'text/html': blob });
+                        navigator.clipboard.write([clipboardItem]).then(() => {
+                            this.showToast('Tabel HTML disalin! Paste (Ctrl+V) langsung di Google Docs.');
+                        }).catch(() => {
+                            this.showToast('Gagal menyalin tabel. Izin diblokir browser.');
+                        });
+                    } catch(e) {
+                        this.showToast('Browser Anda tidak mendukung copy HTML otomatis. Silakan buat tabel manual.');
+                    }
+                },
+
+                processGDocsImport(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+                    
+                    this.showToast('Sedang membaca dokumen...', true);
+                    
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const arrayBuffer = e.target.result;
+                        mammoth.convertToHtml({arrayBuffer: arrayBuffer})
+                            .then(result => {
+                                const html = result.value;
+                                this.parseGDocsHtml(html);
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                this.showToast('Gagal membaca file .docx!');
+                            })
+                            .finally(() => {
+                                event.target.value = ''; // reset input
+                            });
+                    };
+                    reader.readAsArrayBuffer(file);
+                },
+
+                parseGDocsHtml(html) {
+                    const div = document.createElement('div');
+                    div.innerHTML = html;
+                    
+                    const tables = div.querySelectorAll('table');
+                    if (tables.length === 0) {
+                        this.showToast('Tidak ada tabel yang ditemukan di dokumen!');
+                        return;
+                    }
+                    
+                    const firstTable = tables[0];
+                    const rows = firstTable.querySelectorAll('tr');
+                    
+                    if (rows.length <= 1) {
+                        this.showToast('Tabel kosong atau hanya berisi header!');
+                        return;
+                    }
+                    
+                    let imported = 0;
+                    
+                    // Skip index 0 (header)
+                    for (let i = 1; i < rows.length; i++) {
+                        const cols = rows[i].querySelectorAll('td');
+                        if (cols.length < 6) continue;
+                        
+                        const typeRaw = cols[0].textContent.trim().toLowerCase();
+                        let qType = 'pg';
+                        if (typeRaw.includes('essai') || typeRaw.includes('esai') || typeRaw.includes('uraian')) qType = 'essai';
+                        else if (typeRaw.includes('isian') || typeRaw.includes('singkat')) qType = 'isian';
+                        else if (typeRaw.includes('kompleks') || typeRaw.includes('ganda kompleks')) qType = 'pg_kompleks';
+                        
+                        const qText = cols[1].innerHTML.trim();
+                        
+                        // Parse options (Column 3)
+                        let options = [];
+                        if (qType === 'pg' || qType === 'pg_kompleks') {
+                            const optHtml = cols[2].innerHTML;
+                            const dOpt = document.createElement('div');
+                            dOpt.innerHTML = optHtml;
+                            
+                            if (dOpt.querySelectorAll('p').length > 0) {
+                                dOpt.querySelectorAll('p').forEach(p => {
+                                    if(p.textContent.trim()) options.push(p.innerHTML);
+                                });
+                            } else {
+                                options = dOpt.innerHTML.split(/<br\s*\/?>/i).filter(s => s.trim() !== '');
+                            }
+                            
+                            options = options.map(opt => {
+                                let txt = opt.trim();
+                                txt = txt.replace(/^[A-Ea-e][\.\)]\s*/, '');
+                                return txt;
+                            }).filter(o => o !== '');
+                        }
+                        
+                        const keysRaw = cols[3].textContent.trim().toUpperCase();
+                        let correctAnswers = keysRaw;
+                        let correctAnswersArray = [];
+                        if (qType === 'pg_kompleks') {
+                            correctAnswersArray = keysRaw.split(/[,\s]+/).map(k => k.trim()).filter(k => k !== '');
+                        } else if (qType === 'isian') {
+                            correctAnswers = cols[3].textContent.trim(); // preserve case
+                        } else if (qType === 'pg') {
+                            correctAnswers = keysRaw.charAt(0); // Take first char just in case
+                        }
+                        
+                        let points = parseInt(cols[4].textContent.trim().replace(/\D/g, ''));
+                        if (isNaN(points)) points = 10;
+                        
+                        const discussion = cols[5].innerHTML.trim();
+                        
+                        const newQ = {
+                            id: 'q_' + Date.now() + '_' + i,
+                            type: qType,
+                            text: qText,
+                            options: options,
+                            correctAnswers: correctAnswers,
+                            correctAnswersArray: correctAnswersArray,
+                            shortAnswerKeys: qType === 'isian' ? correctAnswers : '',
+                            statements: [],
+                            pairs: [],
+                            discussion: discussion,
+                            points: points
+                        };
+                        
+                        if (qType === 'pg' && options.length === 0) continue; // Skip invalid PG
+                        
+                        this.activeNode.questions.push(newQ);
+                        imported++;
+                    }
+                    
+                    if (imported > 0) {
+                        this.showGDocsModal = false;
+                        this.showToast(`Berhasil import ${imported} soal dari dokumen!`);
+                        this.saveAll();
+                    } else {
+                        this.showToast('Gagal mengimpor. Pastikan format tabel sudah sesuai (6 kolom).');
+                    }
                 },
 
                 getYoutubeId(url) {
