@@ -211,7 +211,7 @@
                             <template x-if="activeNode.materiFormat === 'pdf' && activeNode.pdfUrl">
                                 <div class="w-full h-[700px] bg-slate-100 relative">
                                     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 to-indigo-500 z-10"></div>
-                                    <iframe :src="activeNode.pdfUrl + '/preview'" class="w-full h-full border-0 relative z-0"></iframe>
+                                    <iframe :src="formatGdrivePreview(activeNode.pdfUrl)" class="w-full h-full border-0 relative z-0"></iframe>
                                 </div>
                             </template>
                             <template x-if="activeNode.materiFormat === 'ckeditor' || activeNode.materiFormat === 'html'">
@@ -666,6 +666,36 @@
                     currentQ: null,
                     answer: null,
                     answeredQs: []
+                },
+
+                formatGdrivePreview(url) {
+                    if (!url) return null;
+                    if (url.includes('drive.google.com/file/d/')) {
+                        const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+                        if (match && match[1]) {
+                            return `https://drive.google.com/file/d/${match[1]}/preview`;
+                        }
+                    }
+                    if (url.includes('drive.google.com/drive/folders/')) {
+                        const match = url.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+                        if (match && match[1]) {
+                            let resourceKey = '';
+                            if (url.includes('resourcekey=')) {
+                                const rkMatch = url.match(/resourcekey=([^&]+)/);
+                                if (rkMatch && rkMatch[1]) {
+                                    resourceKey = `&resourcekey=${rkMatch[1]}`;
+                                }
+                            }
+                            return `https://drive.google.com/embeddedfolderview?id=${match[1]}${resourceKey}#list`;
+                        }
+                    }
+                    if (url.includes('drive.google.com/open?id=')) {
+                        const match = url.match(/id=([a-zA-Z0-9_-]+)/);
+                        if (match && match[1]) {
+                            return `https://drive.google.com/file/d/${match[1]}/preview`;
+                        }
+                    }
+                    return null;
                 },
                 
                 async init() {
