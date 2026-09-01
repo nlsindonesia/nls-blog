@@ -48,6 +48,15 @@
         </div>
     </header>
 
+    <!-- FLOATING POINT INDICATOR -->
+    <div x-show="activeNode && activeNode.type === 'kuis' && !activeNode.quizAutoScore" class="fixed bottom-6 right-6 z-50 bg-white/90 backdrop-blur-md px-6 py-4 rounded-3xl shadow-2xl border flex items-center gap-4 transition-all duration-300 animate-fade-in" :class="calculateTotalPoints() === 100 ? 'border-emerald-500 shadow-emerald-500/20' : 'border-rose-500 shadow-rose-500/20'">
+        <div>
+            <p class="text-[10px] font-black uppercase tracking-wider text-slate-500">Total Poin Manual</p>
+            <p class="text-3xl font-black" :class="calculateTotalPoints() === 100 ? 'text-emerald-600' : 'text-rose-600'" x-text="calculateTotalPoints()"></p>
+        </div>
+        <div class="text-sm font-bold text-slate-400 self-end mb-1">/ 100</div>
+    </div>
+
     <!-- Main Workspace -->
     <main class="flex-1 flex overflow-hidden">
         
@@ -312,6 +321,19 @@
                                             '👉 Cocok untuk ujian/tryout serentak. Waktu akan habis pada rentang yang ditentukan meskipun siswa tidak sedang membuka halaman kuis.')
                                         "></p>
                                     </div>
+                                    <div class="space-y-1.5 md:col-span-3 mt-1 border-t border-indigo-50/50 pt-5">
+                                        <label class="flex items-center gap-3 cursor-pointer group">
+                                            <div class="relative flex items-center shrink-0">
+                                                <input type="checkbox" x-model="activeNode.quizAutoScore" class="sr-only">
+                                                <div class="block w-12 h-7 rounded-full transition-colors border" :class="activeNode.quizAutoScore ? 'bg-amber-400 border-amber-400' : 'bg-slate-200 border-slate-300'"></div>
+                                                <div class="absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition-transform shadow-sm" :class="activeNode.quizAutoScore ? 'translate-x-5' : 'translate-x-0'"></div>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="text-xs font-bold text-slate-700 group-hover:text-amber-600 transition-colors">Distribusi Bobot Otomatis (Total 100)</span>
+                                                <span class="text-[10px] text-slate-500 font-medium">Sistem akan membagi rata nilai 100 ke seluruh soal secara otomatis. Bobot tiap soal akan terkunci.</span>
+                                            </div>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -361,8 +383,8 @@
                                     </div>
                                     <div class="flex gap-4">
                                         <div class="space-y-1 flex-1">
-                                            <label class="block text-[10px] font-black uppercase text-slate-500">Bobot Poin</label>
-                                            <input type="number" x-model="q.points" class="w-full p-2.5 rounded-xl border border-slate-200 text-sm font-bold focus:ring-2 focus:ring-indigo-500 text-center">
+                                            <label class="block text-[10px] font-black uppercase text-slate-500">Bobot Poin <span x-show="activeNode.quizAutoScore" class="text-amber-500 ml-1">(Otomatis)</span></label>
+                                            <input type="number" x-model="q.points" class="w-full p-2.5 rounded-xl border border-slate-200 text-sm font-bold focus:ring-2 focus:ring-indigo-500 text-center transition-colors" :readonly="activeNode.quizAutoScore" :class="activeNode.quizAutoScore ? 'bg-slate-100/50 text-slate-400 cursor-not-allowed' : ''">
                                         </div>
                                         <div class="space-y-1 flex-1" x-show="activeNode.type === 'video'">
                                             <label class="block text-[10px] font-black uppercase text-slate-500 text-red-500">Trigger Video (Detik)</label>
@@ -604,6 +626,22 @@
                     }
                 },
 
+                calculateTotalPoints() {
+                    if (!this.activeNode || !this.activeNode.questions) return 0;
+                    return this.activeNode.questions.reduce((sum, q) => sum + (parseFloat(q.points) || 0), 0);
+                },
+
+                updateAutoScores() {
+                    if (!this.activeNode || this.activeNode.type !== 'kuis' || !this.activeNode.quizAutoScore) return;
+                    const objectiveQs = this.activeNode.questions.filter(q => q.type !== 'essai');
+                    if (objectiveQs.length > 0) {
+                        const scorePerQ = +(100 / objectiveQs.length).toFixed(2);
+                        objectiveQs.forEach(q => {
+                            q.points = scorePerQ;
+                        });
+                    }
+                },
+
                 addBab() {
                     this.babs.push({
                         id: 'bab_' + Date.now(),
@@ -627,6 +665,7 @@
                         quizPassingGrade: 70,
                         quizShuffle: true,
                         quizTimeMethod: 'pause',
+                        quizAutoScore: true,
                         questions: []
                     };
                     bab.subBabs.push(newNode);
@@ -683,6 +722,27 @@
 
                 async saveAll(silent = false) {
                     if (!silent) this.isSaving = true;
+                    if (this.activeNode && this.editorInstance) {
+                        this.activeNode.rawHtml = this.editorInstance.getData();
+                    }
+
+                    // Auto-Score Distribution before saving!
+                    if (this.babs) {
+                        this.babs.forEach(bab => {
+                            if (bab.subBabs) {
+                                bab.subBabs.forEach(node => {
+                                    if (node.type === 'kuis' && node.quizAutoScore && node.questions) {
+                                        const objQs = node.questions.filter(q => q.type !== 'essai' && q.type !== 'uraian');
+                                        if (objQs.length > 0) {
+                                            const score = +(100 / objQs.length).toFixed(2);
+                                            objQs.forEach(q => q.points = score);
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+
                     // Backup locally
                     localStorage.setItem('lms_builder_draft', JSON.stringify(this.babs));
 
