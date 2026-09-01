@@ -785,9 +785,46 @@
                 activeNode: null,
                 editorInstance: null,
 
+                findNodeById(nodeId) {
+                    for (let bab of this.babs) {
+                        const found = bab.subBabs.find(s => s.id === nodeId);
+                        if (found) {
+                            return { bab, node: found };
+                        }
+                    }
+                    return null;
+                },
+
+                handleInitialNode() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const initialNodeId = urlParams.get('node');
+                    if (initialNodeId) {
+                        const found = this.findNodeById(initialNodeId);
+                        if (found) {
+                            found.bab.expanded = true;
+                            this.selectNode(found.node, true);
+                        }
+                    }
+                },
+
                 async init() {
                     const urlParams = new URLSearchParams(window.location.search);
                     this.courseId = urlParams.get('course');
+                    
+                    window.addEventListener('popstate', (e) => {
+                        const params = new URLSearchParams(window.location.search);
+                        const nodeId = params.get('node');
+                        if (nodeId) {
+                            const found = this.findNodeById(nodeId);
+                            if (found) {
+                                found.bab.expanded = true;
+                                this.selectNode(found.node, true);
+                            }
+                        } else {
+                            this.activeNode = null;
+                        }
+                    });
+
                     if (this.courseId) {
                         try {
                             const res = await fetch('/api/pg-lms');
@@ -799,12 +836,15 @@
                                     this.courseTitle = course.title || 'Course';
                                     this.babs = (course.babs && course.babs.length > 0) ? course.babs : 
                                                 ((course.content && course.content.length > 0) ? course.content : (course.modules || []));
+                                    
+                                    this.handleInitialNode();
                                     return;
                                 }
                             }
                         } catch(e) {}
                     }
                     this.tryLoadDraft();
+                    this.handleInitialNode();
                 },
                 tryLoadDraft() {
                     const saved = localStorage.getItem('lms_builder_draft');
@@ -825,7 +865,7 @@
                     this.saveAll(true);
                 },
 
-                selectNode(node) {
+                selectNode(node, skipPush = false) {
                     if (this.activeNode && this.editorInstance) {
                         this.activeNode.rawHtml = this.editorInstance.getData(); 
                     }
@@ -834,6 +874,12 @@
                         if (node.quizShuffleOptions === undefined) node.quizShuffleOptions = true;
                     }
                     this.activeNode = node;
+                    
+                    if (!skipPush && node) {
+                        const url = new URL(window.location);
+                        url.searchParams.set('node', node.id);
+                        window.history.pushState({ nodeId: node.id }, '', url);
+                    }
                     
                     if (this.activeNode && this.editorInstance) {
                         setTimeout(() => {
@@ -897,6 +943,9 @@
                         const bab = this.babs[idx];
                         if (this.activeNode && bab.subBabs.find(s => s.id === this.activeNode.id)) {
                             this.activeNode = null;
+                            const url = new URL(window.location);
+                            url.searchParams.delete('node');
+                            window.history.pushState(null, '', url);
                         }
                         this.babs.splice(idx, 1);
                         this.saveAll();
@@ -907,6 +956,9 @@
                     if (confirm('Hapus Sub Bab ini?')) {
                         if (this.activeNode && this.activeNode.id === bab.subBabs[idx].id) {
                             this.activeNode = null;
+                            const url = new URL(window.location);
+                            url.searchParams.delete('node');
+                            window.history.pushState(null, '', url);
                         }
                         bab.subBabs.splice(idx, 1);
                         this.saveAll();
