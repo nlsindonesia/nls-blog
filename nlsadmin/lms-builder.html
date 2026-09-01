@@ -581,11 +581,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                     <!-- Drop Zone -->
                     <div class="bg-white p-6 rounded-2xl border-2 border-dashed border-sky-200 shadow-sm relative flex flex-col items-center justify-center text-center hover:bg-sky-50/50 hover:border-sky-400 transition-all group min-h-[250px]">
-                        <input type="file" accept=".docx" @change="processGDocsImport($event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                        <input type="file" accept=".doc,.docx" @change="processGDocsImport($event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                         <div class="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center mb-4 text-sky-500 group-hover:scale-110 transition-transform">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
                         </div>
-                        <h4 class="font-black text-slate-800 text-lg mb-1">Pilih / Tarik File .docx</h4>
+                        <h4 class="font-black text-slate-800 text-lg mb-1">Pilih / Tarik File .doc atau .docx</h4>
                         <p class="text-sm text-slate-500 font-medium px-4">Download file Anda dari Google Docs (File > Download > Microsoft Word), lalu unggah ke sini.</p>
                     </div>
                     
@@ -1145,23 +1145,35 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
                     
                     this.showToast('Sedang membaca dokumen...', true);
                     
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const arrayBuffer = e.target.result;
-                        mammoth.convertToHtml({arrayBuffer: arrayBuffer})
-                            .then(result => {
-                                const html = result.value;
-                                this.parseGDocsHtml(html);
-                            })
-                            .catch(err => {
-                                console.error(err);
-                                this.showToast('Gagal membaca file .docx!');
-                            })
-                            .finally(() => {
-                                event.target.value = ''; // reset input
-                            });
+                    // Cek apakah file ini adalah HTML (.doc) hasil unduhan kita atau .docx asli (ZIP)
+                    const checkReader = new FileReader();
+                    checkReader.onload = (e) => {
+                        const text = e.target.result;
+                        if (text.includes('<html') || text.includes('<table')) {
+                            // Ini adalah file HTML (.doc) yang disamarkan, parse langsung
+                            this.parseGDocsHtml(text);
+                            event.target.value = ''; // reset input
+                        } else {
+                            // Ini adalah .docx asli, gunakan Mammoth
+                            const reader = new FileReader();
+                            reader.onload = (e2) => {
+                                const arrayBuffer = e2.target.result;
+                                mammoth.convertToHtml({arrayBuffer: arrayBuffer})
+                                    .then(result => {
+                                        this.parseGDocsHtml(result.value);
+                                    })
+                                    .catch(err => {
+                                        console.error(err);
+                                        this.showToast('Gagal membaca file! Pastikan file adalah .docx asli dari MS Word atau Google Docs.');
+                                    })
+                                    .finally(() => {
+                                        event.target.value = ''; // reset input
+                                    });
+                            };
+                            reader.readAsArrayBuffer(file);
+                        }
                     };
-                    reader.readAsArrayBuffer(file);
+                    checkReader.readAsText(file);
                 },
 
                 parseGDocsHtml(html) {
