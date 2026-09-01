@@ -49,12 +49,12 @@
     </header>
 
     <!-- FLOATING POINT INDICATOR -->
-    <div x-show="activeNode && activeNode.type === 'kuis' && !activeNode.quizAutoScore" class="fixed bottom-6 right-6 z-50 bg-white/90 backdrop-blur-md px-6 py-4 rounded-3xl shadow-2xl border flex items-center gap-4 transition-all duration-300 animate-fade-in" :class="calculateTotalPoints() === 100 ? 'border-emerald-500 shadow-emerald-500/20' : 'border-rose-500 shadow-rose-500/20'">
+    <div x-show="activeNode && activeNode.type === 'kuis' && !activeNode.quizAutoScore" class="fixed bottom-6 right-6 z-50 bg-white/90 backdrop-blur-md px-6 py-4 rounded-3xl shadow-2xl border border-indigo-200 shadow-indigo-500/10 flex items-center gap-4 transition-all duration-300 animate-fade-in">
         <div>
-            <p class="text-[10px] font-black uppercase tracking-wider text-slate-500">Total Poin Manual</p>
-            <p class="text-3xl font-black" :class="calculateTotalPoints() === 100 ? 'text-emerald-600' : 'text-rose-600'" x-text="calculateTotalPoints()"></p>
+            <p class="text-[10px] font-black uppercase tracking-wider text-slate-500">Total Poin Maksimal</p>
+            <p class="text-3xl font-black text-indigo-600" x-text="calculateTotalPoints()"></p>
         </div>
-        <div class="text-sm font-bold text-slate-400 self-end mb-1">/ 100</div>
+        <div class="text-[11px] font-bold text-indigo-400 bg-indigo-50 px-2 py-1 rounded-lg self-end mb-1">Mode Manual</div>
     </div>
 
     <!-- Main Workspace -->
@@ -625,6 +625,9 @@
                 selectNode(node) {
                     if (this.activeNode && this.editorInstance) {
                         this.activeNode.rawHtml = this.editorInstance.getData(); 
+                    }
+                    if (node && node.type === 'kuis' && node.quizAutoScore === undefined) {
+                        node.quizAutoScore = true;
                     }
                     this.activeNode = node;
                     
