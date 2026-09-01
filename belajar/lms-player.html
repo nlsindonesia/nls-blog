@@ -947,13 +947,35 @@
                                 });
                                 const data = await res.json();
                                 if (data.success && data.attempt && data.attempt.status === 'in_progress') {
-                                    this.quizState.elapsedSeconds = data.attempt.elapsed_seconds || 0;
-                                    let remaining = this.quizState.timeLeft - this.quizState.elapsedSeconds;
-                                    if (remaining < 0) remaining = 0;
-                                    this.quizState.timeLeft = remaining;
+                                    let method = this.activeNode.quizTimeMethod || 'pause';
                                     
-                                    if (data.attempt.answers_json) {
-                                        this.quizAnswers = typeof data.attempt.answers_json === 'string' ? JSON.parse(data.attempt.answers_json) : data.attempt.answers_json;
+                                    if (method !== 'reset') {
+                                        // Load answers for pause and realtime
+                                        if (data.attempt.answers_json) {
+                                            this.quizAnswers = typeof data.attempt.answers_json === 'string' ? JSON.parse(data.attempt.answers_json) : data.attempt.answers_json;
+                                        }
+                                        
+                                        if (method === 'realtime') {
+                                            const startedAt = new Date(data.attempt.started_at).getTime();
+                                            const serverNow = new Date(data.server_now).getTime();
+                                            this.quizState.elapsedSeconds = Math.floor((serverNow - startedAt) / 1000);
+                                        } else {
+                                            // pause
+                                            this.quizState.elapsedSeconds = data.attempt.elapsed_seconds || 0;
+                                        }
+                                        
+                                        let remaining = this.quizState.timeLeft - this.quizState.elapsedSeconds;
+                                        if (remaining < 0) remaining = 0;
+                                        this.quizState.timeLeft = remaining;
+                                        
+                                        // Auto-submit immediately if realtime time is up
+                                        if (this.quizState.timeLeft <= 0) {
+                                            this.submitQuiz();
+                                            return;
+                                        }
+                                    } else {
+                                        // It's reset method, immediately force save to clear DB
+                                        this.triggerAutosave(true);
                                     }
                                 }
                             }
@@ -981,11 +1003,11 @@
                 debounceAutosave() {
                     if (this.quizState.autosaveTimeout) clearTimeout(this.quizState.autosaveTimeout);
                     this.quizState.autosaveTimeout = setTimeout(() => {
-                        this.triggerAutosave();
+                        this.triggerAutosave(false);
                     }, 3000);
                 },
                 
-                async triggerAutosave() {
+                async triggerAutosave(isReset = false) {
                     if (!this.quizState.inProgress || this.quizState.submitted) return;
                     try {
                         const sessionRaw = localStorage.getItem('nls_student_auth_session') || localStorage.getItem('nls_auth_session');
@@ -1001,7 +1023,8 @@
                                         courseId: this.courseData.id,
                                         moduleId: this.activeNode.id,
                                         elapsedSeconds: this.quizState.elapsedSeconds,
-                                        answers: this.quizAnswers
+                                        answers: this.quizAnswers,
+                                        isReset: isReset
                                     })
                                 }).catch(e => {});
                             }

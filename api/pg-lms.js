@@ -852,9 +852,9 @@ export default async function handler(request, response) {
             `;
             
             if (attemptRes.rows.length > 0) {
-                return response.status(200).json({ success: true, attempt: attemptRes.rows[0] });
+                return response.status(200).json({ success: true, attempt: attemptRes.rows[0], server_now: new Date().toISOString() });
             } else {
-                return response.status(200).json({ success: true, attempt: null });
+                return response.status(200).json({ success: true, attempt: null, server_now: new Date().toISOString() });
             }
         }
 
@@ -872,12 +872,19 @@ export default async function handler(request, response) {
                     VALUES (${userId}, ${courseId}, ${moduleId}, ${elapsedSeconds || 0}, ${JSON.stringify(answers || {})}, 'in_progress', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
                 `;
             } else {
-                // Update existing attempt (if not already submitted, or maybe we want to allow overwriting if it's a reset?)
-                await sql`
-                    UPDATE lms_quiz_attempts
-                    SET elapsed_seconds = ${elapsedSeconds || 0}, answers_json = ${JSON.stringify(answers || {})}, last_saved_at = CURRENT_TIMESTAMP, status = 'in_progress'
-                    WHERE user_id = ${userId} AND course_id = ${courseId} AND module_id = ${moduleId}
-                `;
+                if (request.body.isReset) {
+                    await sql`
+                        UPDATE lms_quiz_attempts
+                        SET elapsed_seconds = ${elapsedSeconds || 0}, answers_json = ${JSON.stringify(answers || {})}, last_saved_at = CURRENT_TIMESTAMP, status = 'in_progress', started_at = CURRENT_TIMESTAMP
+                        WHERE user_id = ${userId} AND course_id = ${courseId} AND module_id = ${moduleId}
+                    `;
+                } else {
+                    await sql`
+                        UPDATE lms_quiz_attempts
+                        SET elapsed_seconds = ${elapsedSeconds || 0}, answers_json = ${JSON.stringify(answers || {})}, last_saved_at = CURRENT_TIMESTAMP, status = 'in_progress'
+                        WHERE user_id = ${userId} AND course_id = ${courseId} AND module_id = ${moduleId}
+                    `;
+                }
             }
             return response.status(200).json({ success: true, message: 'Progress saved.' });
         }
