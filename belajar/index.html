@@ -1310,12 +1310,53 @@
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" x-show="studentProfile.level !== 'Gapyear'">
                                 <div>
-                                    <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Kelas Spesifik *</label>
-                                    <input type="text" x-model="studentProfile.grade" required placeholder="Contoh: 12 SMA - IPA"
-                                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                                    <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Kelas Berapa? *</label>
+                                    <select x-model="studentProfile.tingkatKelas" :required="studentProfile.level !== 'Gapyear'"
+                                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold focus:ring-2 focus:ring-indigo-500 outline-hidden">
+                                        <option value="" disabled selected>-- Pilih Kelas --</option>
+                                        <template x-if="studentProfile.level === 'SMA'">
+                                            <optgroup label="Tingkat SMA/SMK/MA">
+                                                <option value="Kelas 10">Kelas 10</option>
+                                                <option value="Kelas 11">Kelas 11</option>
+                                                <option value="Kelas 12">Kelas 12</option>
+                                            </optgroup>
+                                        </template>
+                                        <template x-if="studentProfile.level === 'SMP'">
+                                            <optgroup label="Tingkat SMP/MTs">
+                                                <option value="Kelas 7">Kelas 7 (VII)</option>
+                                                <option value="Kelas 8">Kelas 8 (VIII)</option>
+                                                <option value="Kelas 9">Kelas 9 (IX)</option>
+                                            </optgroup>
+                                        </template>
+                                        <template x-if="studentProfile.level === 'SD'">
+                                            <optgroup label="Tingkat SD/MI">
+                                                <option value="Kelas 1">Kelas 1</option>
+                                                <option value="Kelas 2">Kelas 2</option>
+                                                <option value="Kelas 3">Kelas 3</option>
+                                                <option value="Kelas 4">Kelas 4</option>
+                                                <option value="Kelas 5">Kelas 5</option>
+                                                <option value="Kelas 6">Kelas 6</option>
+                                            </optgroup>
+                                        </template>
+                                    </select>
                                 </div>
+                                <div>
+                                    <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Jenis Kelas / Jurusan <span class="text-slate-400 font-normal">(Opsional)</span></label>
+                                    <input type="text" x-model="studentProfile.jenisKelas" list="profilJenisKelasOptions" placeholder="Contoh: MIPA 1, Akuntansi, 10.A"
+                                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold focus:ring-2 focus:ring-indigo-500 outline-hidden">
+                                    <datalist id="profilJenisKelasOptions">
+                                        <option value="A"><option value="B"><option value="C"><option value="Unggulan">
+                                        <option value="MIPA"><option value="IPS"><option value="Bahasa">
+                                        <option value="Teknik Komputer & Jaringan (TKJ)"><option value="Akuntansi">
+                                        <option value="Pemasaran"><option value="Multimedia">
+                                    </datalist>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
                                 <div>
                                     <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Target Belajar Utama *</label>
                                     <select x-model="studentProfile.target" required
@@ -1331,9 +1372,10 @@
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Alamat Email Aktif *</label>
-                                    <input type="email" x-model="studentProfile.email" required
-                                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                                    <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Alamat Email Aktif <span class="text-rose-500">*</span></label>
+                                    <input type="email" x-model="studentProfile.email" readonly title="Email tidak dapat diubah karena merupakan User ID"
+                                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 text-xs font-bold cursor-not-allowed">
+                                    <span class="block text-[10px] text-slate-500 mt-1">(Email digunakan sebagai User ID. Hubungi Admin jika ingin mengganti email).</span>
                                 </div>
                                 <div>
                                     <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Nomor WhatsApp Siswa *</label>
@@ -2523,13 +2565,28 @@
                         const DEFAULT_AVATAR = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E`;
                         const avatar = s.avatar && !s.avatar.includes('article-placeholder') && !s.avatar.includes('nls-logo-300') && !s.avatar.includes('unsplash.com') ? s.avatar : DEFAULT_AVATAR;
                         const nisn = (s.nisn || '').startsWith('NISN:') ? s.nisn : ('NISN: ' + (s.nisn || 'Terdaftar'));
+                        const rawGrade = s.grade || s.level || 'Kelas 12 SMA';
+                        let tk = '';
+                        let jk = '';
+                        const possibleTingkat = ['Kelas 10', 'Kelas 11', 'Kelas 12', 'Kelas 7', 'Kelas 8', 'Kelas 9', 'Kelas 1', 'Kelas 2', 'Kelas 3', 'Kelas 4', 'Kelas 5', 'Kelas 6'];
+                        for (let p of possibleTingkat) {
+                            if (rawGrade.startsWith(p)) {
+                                tk = p;
+                                jk = rawGrade.substring(p.length).trim();
+                                break;
+                            }
+                        }
+                        if (!tk) tk = '';
+
                         return {
                             id: s.id || '',
                             name: s.name || 'Siswa NLS',
                             nisn: nisn,
                             school: s.school || 'Sekolah NLS',
                             level: s.level || 'SMA',
-                            grade: s.grade || s.level || '12 SMA - IPA',
+                            grade: rawGrade,
+                            tingkatKelas: tk,
+                            jenisKelas: jk,
                             email: s.email || '',
                             phone: s.phone || '',
                             parentPhone: s.parentPhone || '-',
@@ -3335,6 +3392,13 @@
                 },
 
                 async saveStudentProfile() {
+                    // Update raw grade logic
+                    if (this.studentProfile.level !== 'Gapyear') {
+                        this.studentProfile.grade = `${this.studentProfile.tingkatKelas || ''} ${this.studentProfile.jenisKelas || ''}`.trim();
+                    } else {
+                        this.studentProfile.grade = 'Gapyear';
+                    }
+
                     localStorage.setItem('nls_student_profile_v1', JSON.stringify(this.studentProfile));
                     
                     try {
