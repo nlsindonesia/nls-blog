@@ -288,10 +288,38 @@
                                 <input type="text" x-model="regForm.nisn" placeholder="Contoh: 0081293412"
                                     class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-primary focus:border-transparent outline-hidden transition-all dark:text-white">
                             </div>
-                            <div class="space-y-1">
+                            <div class="space-y-1 relative" @click.outside="showSchoolDropdown = false">
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Asal Sekolah <span class="text-rose-500">*</span></label>
-                                <input type="text" x-model="regForm.school" required placeholder="Contoh: SMA Negeri 1 Bekasi"
-                                    class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-primary focus:border-transparent outline-hidden transition-all dark:text-white">
+                                <div class="relative">
+                                    <input type="text" x-model="schoolSearchQuery" @input="handleSchoolSearch()" @focus="if(schoolSearchQuery.length >= 2) showSchoolDropdown = true" required placeholder="Cari atau ketik nama sekolah..."
+                                        class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-primary focus:border-transparent outline-hidden transition-all dark:text-white">
+                                    
+                                    <div x-show="isSearchingSchool" class="absolute right-3 top-1/2 -translate-y-1/2">
+                                        <div class="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Autocomplete Dropdown -->
+                                <div x-show="showSchoolDropdown && schoolSearchResults.length > 0" x-transition x-cloak
+                                    class="absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden max-h-60 overflow-y-auto">
+                                    <ul class="divide-y divide-slate-100 dark:divide-slate-700/50">
+                                        <template x-for="school in schoolSearchResults" :key="school.id">
+                                            <li @click="selectSchool(school)"
+                                                class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors">
+                                                <div class="font-bold text-xs text-slate-900 dark:text-white" x-text="school.name"></div>
+                                                <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 flex gap-2">
+                                                    <span x-text="'NPSN: ' + (school.npsn || '-')"></span>
+                                                    <span>&bull;</span>
+                                                    <span x-text="school.city + ', ' + school.province"></span>
+                                                </div>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </div>
+                                <div x-show="showSchoolDropdown && schoolSearchQuery.length >= 2 && schoolSearchResults.length === 0 && !isSearchingSchool" x-transition x-cloak
+                                    class="absolute z-50 w-full mt-1 px-4 py-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xl text-xs text-slate-500 dark:text-slate-400">
+                                    Sekolah tidak ditemukan. Anda dapat melanjutkannya sebagai input manual.
+                                </div>
                             </div>
                         </div>
 
@@ -463,6 +491,51 @@
                     show: false,
                     message: '',
                     type: 'success'
+                },
+
+                handleSchoolSearch() {
+                    clearTimeout(this.searchSchoolTimeout);
+                    this.regForm.school = this.schoolSearchQuery;
+                    
+                    if (!this.schoolSearchQuery || this.schoolSearchQuery.length < 2) {
+                        this.schoolSearchResults = [];
+                        this.showSchoolDropdown = false;
+                        return;
+                    }
+
+                    this.isSearchingSchool = true;
+                    this.showSchoolDropdown = true;
+
+                    this.searchSchoolTimeout = setTimeout(async () => {
+                        try {
+                            const res = await fetch('/api/pg-auth', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ action: 'search_schools', query: this.schoolSearchQuery })
+                            });
+                            const data = await res.json();
+                            if (data.success) {
+                                this.schoolSearchResults = data.data;
+                            }
+                        } catch(e) {
+                            console.error('School search error:', e);
+                        } finally {
+                            this.isSearchingSchool = false;
+                        }
+                    }, 500);
+                },
+                
+                selectSchool(school) {
+                    this.schoolSearchQuery = school.name;
+                    this.regForm.school = school.name;
+                    this.schoolSearchResults = [];
+                    this.showSchoolDropdown = false;
+                    
+                    if (school.level) {
+                        if (['SD', 'SMP', 'SMA'].includes(school.level)) {
+                            this.regForm.level = school.level;
+                        }
+                    }
                 },
 
                 init() {

@@ -1373,6 +1373,17 @@
                                     :class="trashUsers.length > 0 ? 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-800' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'"
                                     x-text="trashUsers.length"></span>
                             </button>
+
+                            <!-- Submenu 4: Daftar Sekolah -->
+                            <button type="button" @click="activeTab = 'users'; userView = 'schools'"
+                                :class="activeTab === 'users' && userView === 'schools' ? 'submenu-users-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                        :class="activeTab === 'users' && userView === 'schools' ? 'bg-fuchsia-600 ring-4 ring-fuchsia-200 dark:ring-fuchsia-900/80 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate">Daftar Sekolah</span>
+                                </div>
+                            </button>
                         </div>
                     </div>
 
@@ -4333,6 +4344,93 @@
                     </div>
                 </div>
 
+                <!-- ==============================================================
+                     SUBVIEW 4: SCHOOL MANAGEMENT (userView === 'schools')
+                     ============================================================== -->
+                <div x-show="userView === 'schools'" x-cloak class="space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">Manajemen Sekolah</h2>
+                            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
+                                Kelola daftar sekolah dan lihat jumlah siswa yang mendaftar dari tiap sekolah.
+                            </p>
+                        </div>
+                        <button type="button" @click="openSchoolModal()"
+                            class="px-4 py-2.5 rounded-xl bg-fuchsia-600 hover:bg-fuchsia-700 text-white text-xs font-bold transition-all shadow-xs shrink-0 flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                            <span>Tambah Sekolah</span>
+                        </button>
+                    </div>
+
+                    <!-- Filter Area -->
+                    <div class="bg-white dark:bg-[#131D38] p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row gap-3">
+                        <div class="flex-1">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Cari Nama / NPSN</label>
+                            <input type="text" x-model="userFilter.search" placeholder="Ketik kata kunci pencarian..."
+                                class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 focus:outline-hidden focus:ring-2 focus:ring-fuchsia-500 transition-all">
+                        </div>
+                    </div>
+
+                    <!-- Schools Table -->
+                    <div class="bg-white dark:bg-[#131D38] border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-xs relative">
+                        <div x-show="isSchoolsLoading" class="absolute inset-0 z-10 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm flex justify-center items-center">
+                            <div class="w-8 h-8 border-4 border-fuchsia-200 border-t-fuchsia-600 rounded-full animate-spin"></div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-50/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                        <th class="py-3.5 px-4 sm:px-6 w-[60px]">No</th>
+                                        <th class="py-3.5 px-4">Nama Sekolah & NPSN</th>
+                                        <th class="py-3.5 px-4">Jenjang</th>
+                                        <th class="py-3.5 px-4">Lokasi</th>
+                                        <th class="py-3.5 px-4 text-center">Jml Siswa</th>
+                                        <th class="py-3.5 px-4 sm:px-6 text-right">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80 text-xs">
+                                    <template x-for="(school, index) in schools.filter(s => !userFilter.search || s.name.toLowerCase().includes(userFilter.search.toLowerCase()) || (s.npsn && s.npsn.toLowerCase().includes(userFilter.search.toLowerCase())))" :key="school.id">
+                                        <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/40 transition-colors">
+                                            <td class="py-4 px-4 sm:px-6 font-medium text-slate-500" x-text="index + 1"></td>
+                                            <td class="py-4 px-4">
+                                                <div class="font-bold text-slate-900 dark:text-white" x-text="school.name"></div>
+                                                <div class="text-[10px] text-slate-500" x-text="'NPSN: ' + (school.npsn || '-')"></div>
+                                            </td>
+                                            <td class="py-4 px-4">
+                                                <span class="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-900/50 dark:text-fuchsia-300 border border-fuchsia-200 dark:border-fuchsia-800" x-text="school.level"></span>
+                                            </td>
+                                            <td class="py-4 px-4 text-slate-600 dark:text-slate-300">
+                                                <div x-text="school.city + ', ' + school.province"></div>
+                                                <div class="text-[10px] text-slate-400" x-text="school.country !== 'Indonesia' ? school.country : ''"></div>
+                                            </td>
+                                            <td class="py-4 px-4 text-center">
+                                                <span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300" x-text="school.student_count"></span>
+                                            </td>
+                                            <td class="py-4 px-4 sm:px-6 text-right">
+                                                <div class="inline-flex items-center gap-2">
+                                                    <button type="button" @click="openSchoolModal(school)"
+                                                        class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                                    </button>
+                                                    <button type="button" @click="deleteSchool(school.id)"
+                                                        class="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-900/20 dark:hover:bg-rose-900/40 text-rose-600 dark:text-rose-400 transition-colors">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                    <tr x-show="schools.length === 0 && !isSchoolsLoading">
+                                        <td colspan="6" class="py-12 text-center text-slate-400">
+                                            Belum ada data sekolah. Silahkan tambahkan sekolah baru.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- =========================================================================
@@ -5284,6 +5382,73 @@
         </div>
     </div>
 
+    <!-- MODAL SCHOOL MANAGEMENT (TAMBAH / EDIT) -->
+    <div x-show="schoolModal.isOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs overflow-y-auto">
+        <div class="bg-white dark:bg-[#131D38] rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl relative border border-slate-200 dark:border-slate-700"
+            @click.outside="schoolModal.isOpen = false">
+            <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <h3 class="text-lg font-black text-slate-900 dark:text-white" x-text="schoolModal.isEdit ? 'Edit Data Sekolah' : 'Tambah Sekolah Baru'"></h3>
+                <button type="button" @click="schoolModal.isOpen = false" class="p-2 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <form @submit.prevent="submitSchool" class="p-5 sm:p-6 space-y-4">
+                <div class="space-y-1">
+                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">NPSN (Opsional)</label>
+                    <input type="text" x-model="schoolModal.form.npsn" placeholder="Nomor Pokok Sekolah Nasional"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-fuchsia-500">
+                </div>
+                
+                <div class="space-y-1">
+                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Nama Sekolah <span class="text-rose-500">*</span></label>
+                    <input type="text" x-model="schoolModal.form.name" required placeholder="Contoh: SMA Negeri 1 Jakarta"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-fuchsia-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Jenjang <span class="text-rose-500">*</span></label>
+                        <select x-model="schoolModal.form.level" required class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold text-slate-900 dark:text-white">
+                            <option value="SD">SD/Sederajat</option>
+                            <option value="SMP">SMP/Sederajat</option>
+                            <option value="SMA">SMA/Sederajat</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Negara <span class="text-rose-500">*</span></label>
+                        <input type="text" x-model="schoolModal.form.country" required placeholder="Contoh: Indonesia"
+                            class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-fuchsia-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Kota/Kabupaten</label>
+                        <input type="text" x-model="schoolModal.form.city" placeholder="Contoh: Jakarta Selatan"
+                            class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-fuchsia-500">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Provinsi</label>
+                        <input type="text" x-model="schoolModal.form.province" placeholder="Contoh: DKI Jakarta"
+                            class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-fuchsia-500">
+                    </div>
+                </div>
+                
+                <div class="pt-4 flex justify-end gap-3 border-t border-slate-100 dark:border-slate-800">
+                    <button type="button" @click="schoolModal.isOpen = false"
+                        class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition-all">Batal</button>
+                    <button type="submit" :disabled="isSchoolsLoading"
+                        class="px-5 py-2.5 rounded-xl bg-fuchsia-600 hover:bg-fuchsia-700 active:scale-95 text-white text-xs font-black transition-all flex items-center gap-2">
+                        <span x-show="isSchoolsLoading" class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                        <span x-text="schoolModal.isEdit ? 'Simpan Perubahan' : 'Tambahkan'"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Global Toast Notification -->
     <div x-show="toast.show" x-cloak x-transition
         class="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl bg-slate-900 text-white text-xs font-bold shadow-2xl flex items-center gap-2 border border-slate-700">
@@ -5321,8 +5486,17 @@
                 isPengajarDropdownOpen: true,
 
                 // USER MANAGEMENT STATE
-                userView: 'present', // 'present', 'add', 'trash'
+                userView: 'present', // 'present', 'add', 'trash', 'schools'
                 isUserDropdownOpen: true,
+                
+                // SCHOOL MANAGEMENT STATE
+                schools: [],
+                isSchoolsLoading: false,
+                schoolModal: {
+                    isOpen: false,
+                    isEdit: false,
+                    form: { id: '', npsn: '', name: '', level: 'SMA', city: '', province: '', country: 'Indonesia' }
+                },
                 showUserPassword: false,
                 userFilter: { search: '', role: 'all', status: 'all' },
 
@@ -5827,6 +6001,8 @@
                     if (!localStorage.getItem("nls_users_v1")) {
                         this.saveUsersToStorage();
                     }
+                    this.fetchSchools();
+                    
                     window.addEventListener('resize', () => {
                         this.isMobile = window.innerWidth < 1024;
                     });
@@ -7426,6 +7602,90 @@
                     a.setAttribute('href', dataStr);
                     a.setAttribute('download', `nls-users-${Date.now()}.json`);
                     a.click();
+                },
+
+                // SCHOOL MANAGEMENT METHODS
+                async fetchSchools() {
+                    this.isSchoolsLoading = true;
+                    try {
+                        const res = await fetch('/api/pg-auth', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ action: 'admin_get_schools' })
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            this.schools = data.data;
+                        }
+                    } catch(e) {
+                        console.error('Failed to fetch schools:', e);
+                    } finally {
+                        this.isSchoolsLoading = false;
+                    }
+                },
+
+                openSchoolModal(school = null) {
+                    if (school) {
+                        this.schoolModal.isEdit = true;
+                        this.schoolModal.form = { ...school };
+                    } else {
+                        this.schoolModal.isEdit = false;
+                        this.schoolModal.form = { id: '', npsn: '', name: '', level: 'SMA', city: '', province: '', country: 'Indonesia' };
+                    }
+                    this.schoolModal.isOpen = true;
+                },
+
+                closeSchoolModal() {
+                    this.schoolModal.isOpen = false;
+                },
+
+                async submitSchool() {
+                    this.isSchoolsLoading = true;
+                    try {
+                        const res = await fetch('/api/pg-auth', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                action: 'admin_save_school',
+                                ...this.schoolModal.form
+                            })
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            this.showToast(this.schoolModal.isEdit ? 'Sekolah diperbarui' : 'Sekolah ditambahkan');
+                            this.closeSchoolModal();
+                            this.fetchSchools();
+                        } else {
+                            alert(data.message || 'Gagal menyimpan sekolah');
+                        }
+                    } catch(e) {
+                        alert('Terjadi kesalahan koneksi');
+                    } finally {
+                        this.isSchoolsLoading = false;
+                    }
+                },
+
+                async deleteSchool(id) {
+                    if (!confirm('Yakin ingin menghapus sekolah ini? Data siswa yang sudah memakai sekolah ini tidak akan terhapus, namun tidak terkait lagi.')) return;
+                    this.isSchoolsLoading = true;
+                    try {
+                        const res = await fetch('/api/pg-auth', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ action: 'admin_delete_school', id })
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            this.showToast('Sekolah berhasil dihapus');
+                            this.fetchSchools();
+                        } else {
+                            alert(data.message || 'Gagal menghapus sekolah');
+                        }
+                    } catch(e) {
+                        alert('Terjadi kesalahan koneksi');
+                    } finally {
+                        this.isSchoolsLoading = false;
+                    }
                 },
 
                 cleanPhone(phone) {

@@ -26,6 +26,19 @@ export default async function handler(request, response) {
                 );
             `;
             
+            const schoolsTable = await sql`
+                CREATE TABLE IF NOT EXISTS lms_schools (
+                    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+                    npsn VARCHAR(50),
+                    name VARCHAR(255) NOT NULL,
+                    level VARCHAR(50),
+                    city VARCHAR(150),
+                    province VARCHAR(150),
+                    country VARCHAR(150) DEFAULT 'Indonesia',
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+                );
+            `;
+            
             // Alter existing table just in case it was created with VARCHAR(20)
             await sql`ALTER TABLE users ALTER COLUMN grade TYPE VARCHAR(255);`;
             await sql`ALTER TABLE users ALTER COLUMN level TYPE VARCHAR(100);`;
@@ -88,6 +101,58 @@ export default async function handler(request, response) {
             `;
             
             return response.status(201).json({ success: true, message: 'User registered successfully.', user: result.rows[0] });
+        }
+
+        // --- 4. ADMIN: GET SCHOOLS ---
+        if (action === 'admin_get_schools') {
+            const result = await sql`
+                SELECT s.*, (SELECT COUNT(*) FROM users u WHERE u.school = s.name OR u.school = s.id::text) as student_count
+                FROM lms_schools s
+                ORDER BY s.created_at DESC
+            `;
+            return response.status(200).json({ success: true, data: result.rows });
+        }
+
+        // --- 5. ADMIN: SAVE SCHOOL ---
+        if (action === 'admin_save_school') {
+            const { id, npsn, name, level, city, province, country } = request.body;
+            let result;
+            if (id) {
+                result = await sql`
+                    UPDATE lms_schools 
+                    SET npsn = ${npsn}, name = ${name}, level = ${level}, city = ${city}, province = ${province}, country = ${country}
+                    WHERE id = ${id} RETURNING *
+                `;
+            } else {
+                result = await sql`
+                    INSERT INTO lms_schools (npsn, name, level, city, province, country)
+                    VALUES (${npsn}, ${name}, ${level}, ${city}, ${province}, ${country})
+                    RETURNING *
+                `;
+            }
+            return response.status(200).json({ success: true, data: result.rows[0] });
+        }
+
+        // --- 6. ADMIN: DELETE SCHOOL ---
+        if (action === 'admin_delete_school') {
+            const { id } = request.body;
+            if (!id) return response.status(400).json({ success: false, message: 'ID required' });
+            await sql`DELETE FROM lms_schools WHERE id = ${id}`;
+            return response.status(200).json({ success: true, message: 'Deleted successfully' });
+        }
+
+        // --- 7. PUBLIC: SEARCH SCHOOLS ---
+        if (action === 'search_schools') {
+            const query = request.body?.query || request.query?.query || '';
+            if (query.length < 2) return response.status(200).json({ success: true, data: [] });
+            
+            const searchParam = `%${query}%`;
+            const result = await sql`
+                SELECT * FROM lms_schools 
+                WHERE name ILIKE ${searchParam} OR npsn ILIKE ${searchParam}
+                ORDER BY name ASC LIMIT 20
+            `;
+            return response.status(200).json({ success: true, data: result.rows });
         }
 
         return response.status(400).json({ success: false, message: 'Invalid action specified.' });
