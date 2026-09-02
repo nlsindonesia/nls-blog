@@ -2161,10 +2161,11 @@
                                             <div class="p-5 sm:p-6 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
                                                 <div class="flex items-start gap-3">
                                                     <span class="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-black text-xs shrink-0" x-text="qIdx + 1"></span>
-                                                    <div class="font-black text-slate-900 dark:text-white text-sm leading-relaxed" x-text="q.question"></div>
+                                                <div class="font-black text-slate-900 dark:text-white text-sm leading-relaxed" x-html="q.question || q.text"></div>
                                                 </div>
                                                 
-                                                <div class="space-y-2 pl-9">
+                                                <!-- Pilihan Ganda Biasa -->
+                                                <div class="space-y-2 pl-9" x-show="!q.type || q.type === 'pg'">
                                                     <template x-for="(opt, oIdx) in q.options" :key="oIdx">
                                                         <label class="flex items-center gap-3 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-[#131d38] cursor-pointer hover:border-indigo-500 transition-all">
                                                             <input type="radio" :name="'quiz_q_' + qIdx" :value="oIdx" x-model="userAnswers[qIdx]"
@@ -2172,6 +2173,41 @@
                                                             <span class="font-semibold text-slate-800 dark:text-slate-200" x-text="opt"></span>
                                                         </label>
                                                     </template>
+                                                </div>
+
+                                                <!-- Range Slider -->
+                                                <div class="pl-9 pt-4 pb-2" x-show="q.type === 'range'">
+                                                    <div class="relative pt-6">
+                                                        <!-- Tooltip Label -->
+                                                        <div class="absolute -top-1 left-[var(--thumb-pos,50%)] -translate-x-1/2 px-3 py-1 bg-indigo-600 text-white text-xs font-black rounded-lg shadow-md transition-all duration-75 whitespace-nowrap"
+                                                             x-text="userAnswers[qIdx] !== undefined ? userAnswers[qIdx] : (q.rangeMin || 0)"
+                                                             :style="`--thumb-pos: ${ ((userAnswers[qIdx] !== undefined ? userAnswers[qIdx] : (q.rangeMin || 0)) - (q.rangeMin || 0)) / ((q.rangeMax || 100) - (q.rangeMin || 0)) * 100 }%;`">
+                                                            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-indigo-600 rotate-45"></div>
+                                                        </div>
+                                                        <!-- Input Range -->
+                                                        <input type="range" 
+                                                            :min="q.rangeMin || 0" 
+                                                            :max="q.rangeMax || 100" 
+                                                            :step="q.rangeStep || 1" 
+                                                            x-model.number="userAnswers[qIdx]"
+                                                            x-init="if (userAnswers[qIdx] === undefined) userAnswers[qIdx] = (q.rangeMin || 0)"
+                                                            class="w-full h-3 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/50">
+                                                        <!-- Tick Marks Container -->
+                                                        <div class="relative w-full h-6 mt-2 text-[10px] font-bold text-slate-400">
+                                                            <!-- Render Ticks Dynamically -->
+                                                            <template x-for="i in Math.floor(((q.rangeMax || 100) - (q.rangeMin || 0)) / (q.rangeStep || 10)) + 1">
+                                                                <div class="absolute top-0 -translate-x-1/2 flex flex-col items-center" 
+                                                                     :style="`left: ${ (i-1) / Math.floor(((q.rangeMax || 100) - (q.rangeMin || 0)) / (q.rangeStep || 10)) * 100 }%;`">
+                                                                    <div class="w-px h-1.5 bg-slate-300 dark:bg-slate-600 mb-0.5"></div>
+                                                                    <span x-text="(q.rangeMin || 0) + ((i-1) * (q.rangeStep || 10))"></span>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                    <p class="text-center text-[10px] text-slate-400 mt-2 flex items-center justify-center gap-1">
+                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>
+                                                        Geser slider ke kiri atau kanan untuk memilih nilai yang tepat
+                                                    </p>
                                                 </div>
                                             </div>
                                         </template>
@@ -2349,14 +2385,14 @@
             <div class="p-6 overflow-y-auto space-y-4 text-xs">
                 <template x-for="(item, iIdx) in (explanationModal.data ? explanationModal.data.questions : sampleQuizQuestions)" :key="iIdx">
                     <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2.5">
-                        <div class="font-black text-slate-900 dark:text-white" x-text="(iIdx + 1) + '. ' + item.question"></div>
+                        <div class="font-black text-slate-900 dark:text-white" x-html="(iIdx + 1) + '. ' + (item.question || item.text)"></div>
                         <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-900 text-emerald-900 dark:text-emerald-200">
                             <span class="font-black">Kunci Jawaban: </span>
-                            <span x-text="item.correctAnswer"></span>
+                            <span x-text="item.type === 'range' ? item.rangeCorrect : (item.correctAnswer || (item.options && item.correctAnswers !== undefined ? item.options[item.correctAnswers] : ''))"></span>
                         </div>
                         <div class="p-3 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50 text-slate-700 dark:text-slate-300">
                             <span class="font-black text-indigo-600 dark:text-indigo-400">Pembahasan: </span>
-                            <p class="mt-1" x-text="item.explanation"></p>
+                            <div class="mt-1" x-html="item.explanation || item.discussion"></div>
                         </div>
                     </div>
                 </template>
@@ -2520,6 +2556,41 @@
         </div>
     </div>
 
+    <style>
+        /* Custom Range Slider Thumb Style */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 3px solid #4f46e5;
+            cursor: pointer;
+            margin-top: -6px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+            box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3);
+            transition: transform 0.1s;
+        }
+        input[type=range]::-webkit-slider-thumb:active {
+            transform: scale(1.1);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 12px;
+            cursor: pointer;
+            background: #e2e8f0;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+        }
+        .dark input[type=range]::-webkit-slider-runnable-track {
+            background: #1e293b;
+            border-color: #334155;
+        }
+    </style>
     <!-- =========================================================================
          ALPINE.JS LOGIC SCRIPT
          ========================================================================= -->
@@ -3354,10 +3425,17 @@
                     const totalQ = this.currentQuizQuestions.length;
                     let correct = 0;
                     for (let i = 0; i < totalQ; i++) {
-                        const userOptIdx = this.userAnswers[i];
-                        if (userOptIdx !== undefined) {
-                            const userText = this.currentQuizQuestions[i].options[userOptIdx];
-                            if (userText === this.currentQuizQuestions[i].correctAnswer) correct++;
+                        const q = this.currentQuizQuestions[i];
+                        if (q.type === 'range') {
+                            const userAnswer = parseFloat(this.userAnswers[i]);
+                            const correctAnswer = parseFloat(q.rangeCorrect);
+                            if (userAnswer === correctAnswer) correct++;
+                        } else {
+                            const userOptIdx = this.userAnswers[i];
+                            if (userOptIdx !== undefined) {
+                                const userText = q.options[userOptIdx];
+                                if (userText === q.correctAnswer || userOptIdx == q.correctAnswers) correct++;
+                            }
                         }
                     }
                     const score = Math.round((correct / totalQ) * 100);
