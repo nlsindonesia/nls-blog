@@ -1357,7 +1357,18 @@
                                     x-text="users.length"></span>
                             </button>
 
-                            <!-- Submenu 3: Trash User -->
+                            <!-- Submenu 3: Daftar Sekolah -->
+                            <button type="button" @click="activeTab = 'users'; userView = 'schools'"
+                                :class="activeTab === 'users' && userView === 'schools' ? 'submenu-users-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                        :class="activeTab === 'users' && userView === 'schools' ? 'bg-fuchsia-600 ring-4 ring-fuchsia-200 dark:ring-fuchsia-900/80 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate">Daftar Sekolah</span>
+                                </div>
+                            </button>
+
+                            <!-- Submenu 4: Trash User -->
                             <button type="button" @click="openTrashUserView()"
                                 :class="activeTab === 'users' && userView === 'trash' ? 'submenu-users-active text-rose-700 dark:text-rose-300' : 'submenu-btn-inactive'"
                                 class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left group">
@@ -1372,17 +1383,6 @@
                                 <span class="text-[10px] px-2 py-0.5 rounded-full font-black"
                                     :class="trashUsers.length > 0 ? 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-800' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'"
                                     x-text="trashUsers.length"></span>
-                            </button>
-
-                            <!-- Submenu 4: Daftar Sekolah -->
-                            <button type="button" @click="activeTab = 'users'; userView = 'schools'"
-                                :class="activeTab === 'users' && userView === 'schools' ? 'submenu-users-active' : 'submenu-btn-inactive'"
-                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
-                                <div class="flex items-center gap-2.5 min-w-0">
-                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
-                                        :class="activeTab === 'users' && userView === 'schools' ? 'bg-fuchsia-600 ring-4 ring-fuchsia-200 dark:ring-fuchsia-900/80 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
-                                    <span class="truncate">Daftar Sekolah</span>
-                                </div>
                             </button>
                         </div>
                     </div>
