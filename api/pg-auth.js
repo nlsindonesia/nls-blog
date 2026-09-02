@@ -103,6 +103,64 @@ export default async function handler(request, response) {
             return response.status(201).json({ success: true, message: 'User registered successfully.', user: result.rows[0] });
         }
 
+        // --- 3.1 GOOGLE AUTH (LOGIN / AUTO-REGISTER) ---
+        if (action === 'google_auth') {
+            const { credential } = request.body;
+            if (!credential) return response.status(400).json({ success: false, message: 'Google credential missing.' });
+
+            try {
+                // Verify token with Google's tokeninfo endpoint
+                const verifyRes = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${credential}`);
+                const googleData = await verifyRes.json();
+                
+                if (googleData.error || !googleData.email) {
+                    return response.status(401).json({ success: false, message: 'Invalid Google credential.' });
+                }
+
+                const email = googleData.email;
+                const name = googleData.name || email.split('@')[0];
+                
+                // Check if user exists
+                const checkUser = await sql`SELECT id, username, email, role, name, phone, school, level, grade FROM users WHERE email = ${email} LIMIT 1`;
+                
+                if (checkUser.rows.length > 0) {
+                    // Login existing user
+                    return response.status(200).json({ success: true, message: 'Login via Google successful.', user: checkUser.rows[0] });
+                } else {
+                    // Auto-Register new user
+                    const finalUsername = email.split('@')[0] + Math.floor(Math.random() * 10000);
+                    const password_hash = 'GOOGLE_SSO_USER';
+                    
+                    const result = await sql`
+                        INSERT INTO users (username, email, password_hash, role, name, phone, school, level, grade)
+                        VALUES (${finalUsername}, ${email}, ${password_hash}, 'siswa', ${name}, '-', '-', '-', '-')
+                        RETURNING id, username, email, role, name, phone, school, level, grade;
+                    `;
+                    return response.status(201).json({ success: true, message: 'Account automatically created via Google.', user: result.rows[0] });
+                }
+            } catch (err) {
+                console.error("Google auth error:", err);
+                return response.status(500).json({ success: false, message: 'Gagal terhubung dengan layanan Google.' });
+            }
+        }
+
+        // --- 3.2 UPDATE PROFILE (FORCE COMPLETION) ---
+        if (action === 'update_profile') {
+            const { id, email, phone, school, level, targetProgram } = request.body;
+            if (!id || !email) return response.status(400).json({ success: false, message: 'User ID and Email required.' });
+            
+            const result = await sql`
+                UPDATE users 
+                SET phone = ${phone}, school = ${school}, level = ${level}, grade = ${targetProgram}
+                WHERE id = ${id} AND email = ${email}
+                RETURNING id, username, email, role, name, phone, school, level, grade;
+            `;
+            
+            if (result.rows.length === 0) return response.status(404).json({ success: false, message: 'User not found.' });
+            
+            return response.status(200).json({ success: true, message: 'Profile updated successfully.', user: result.rows[0] });
+        }
+
         // --- 4. ADMIN: GET SCHOOLS ---
         if (action === 'admin_get_schools') {
             const result = await sql`

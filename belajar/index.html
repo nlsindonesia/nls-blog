@@ -2350,6 +2350,99 @@
         </div>
     </div>
 
+    <!-- FORCE PROFILE MODAL -->
+    <div x-show="forceProfileModal.isOpen" x-cloak
+        class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
+        
+        <div x-show="forceProfileModal.isOpen"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+            class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700 flex flex-col max-h-[90vh]">
+            
+            <div class="p-6 sm:p-8 bg-gradient-to-br from-primary/10 to-transparent border-b border-slate-100 dark:border-slate-800">
+                <div class="w-12 h-12 bg-primary/20 text-primary rounded-2xl flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                <h3 class="text-xl font-black text-slate-800 dark:text-white">Lengkapi Profil Anda</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
+                    Untuk memberikan pengalaman belajar yang dipersonalisasi, sistem kami mewajibkan Anda untuk melengkapi profil Asal Sekolah dan Nomor Telepon.
+                </p>
+            </div>
+
+            <div class="p-6 sm:p-8 space-y-4 overflow-y-auto">
+                <!-- Phone -->
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Nomor WhatsApp Aktif <span class="text-rose-500">*</span></label>
+                    <input type="text" x-model="forceProfileModal.phone" placeholder="08xxxxxxxxxx" required
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-primary focus:border-transparent outline-hidden transition-all dark:text-white">
+                </div>
+                
+                <!-- School Search -->
+                <div class="space-y-1 relative" @click.outside="forceProfileModal.showSchoolDropdown = false">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                        Asal Sekolah <span class="text-rose-500">*</span>
+                        <span class="block text-[10px] font-normal text-slate-500 mt-0.5">Ketik min. 2 huruf untuk mencari.</span>
+                    </label>
+                    <div class="relative">
+                        <input type="text" x-model="forceProfileModal.schoolSearchQuery" @input="handleForceSchoolSearch()" @focus="if(forceProfileModal.schoolSearchQuery.length >= 2) forceProfileModal.showSchoolDropdown = true" required placeholder="Ketik nama sekolah..."
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-primary focus:border-transparent outline-hidden transition-all dark:text-white">
+                        <div x-show="forceProfileModal.isSearchingSchool" class="absolute right-3 top-1/2 -translate-y-1/2">
+                            <div class="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                        </div>
+                    </div>
+                    
+                    <div x-show="forceProfileModal.showSchoolDropdown && forceProfileModal.schoolSearchResults.length > 0" x-transition x-cloak
+                        class="absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden max-h-48 overflow-y-auto">
+                        <ul class="divide-y divide-slate-100 dark:divide-slate-700/50">
+                            <template x-for="school in forceProfileModal.schoolSearchResults" :key="school.id">
+                                <li @click="selectForceSchool(school)"
+                                    class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors">
+                                    <div class="font-bold text-xs text-slate-900 dark:text-white" x-text="school.name"></div>
+                                    <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 flex gap-2">
+                                        <span x-text="'NPSN: ' + (school.npsn || '-')"></span><span>&bull;</span><span x-text="school.city"></span>
+                                    </div>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Level & Target -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Jenjang</label>
+                        <select x-model="forceProfileModal.level"
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-primary focus:border-transparent outline-hidden transition-all dark:text-white">
+                            <option value="SD">SD/Sederajat</option>
+                            <option value="SMP">SMP/Sederajat</option>
+                            <option value="SMA">SMA/Sederajat</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Target</label>
+                        <select x-model="forceProfileModal.targetProgram"
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-primary focus:border-transparent outline-hidden transition-all dark:text-white">
+                            <option value="Persiapan OSN & Olimpiade">OSN / Olimpiade</option>
+                            <option value="SNBT & Ujian Mandiri PTN">SNBT / UTBK</option>
+                            <option value="Pemantapan TKA & Sekolah Unggulan">TKA</option>
+                            <option value="SKD Kedinasan (IPDN/STAN/STIS)">Kedinasan</option>
+                            <option value="Kurikulum Standar Sekolah">Sekolah Reguler</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 sm:p-8 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 mt-auto">
+                <button type="button" @click="submitForceProfile()" :disabled="forceProfileModal.isSaving || !forceProfileModal.phone || !forceProfileModal.schoolSearchQuery"
+                    class="w-full py-3.5 rounded-xl bg-primary text-white font-extrabold text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 cursor-pointer">
+                    <span x-show="forceProfileModal.isSaving" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                    <span x-text="forceProfileModal.isSaving ? 'Menyimpan...' : 'Simpan Profil & Lanjutkan'"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- =========================================================================
          ALPINE.JS LOGIC SCRIPT
          ========================================================================= -->
@@ -2400,6 +2493,20 @@
                     course: null,
                     message: '',
                     title: ''
+                },
+
+                // Force Profile Modal State
+                forceProfileModal: {
+                    isOpen: false,
+                    phone: '',
+                    level: 'SMA',
+                    targetProgram: 'Persiapan OSN & Olimpiade',
+                    schoolSearchQuery: '',
+                    schoolSearchResults: [],
+                    showSchoolDropdown: false,
+                    isSearchingSchool: false,
+                    searchSchoolTimeout: null,
+                    isSaving: false
                 },
 
                 // Student Profile State (Loaded when logged in)
@@ -3287,6 +3394,13 @@
                                 roleLabel: s.roleLabel || (s.role === 'teacher' ? 'Guru / Pengajar' : (s.role === 'super_admin' ? 'Super Admin' : 'Siswa')),
                                 avatar: avatar
                             };
+                            
+                            // Check for Incomplete Profile
+                            if (this.studentProfile.phone === '-' || this.studentProfile.school === '-') {
+                                this.forceProfileModal.isOpen = true;
+                                this.forceProfileModal.phone = this.studentProfile.phone !== '-' ? this.studentProfile.phone : '';
+                            }
+
                             if (this.studentProfile.id) {
                                 this.fetchMyLMSData(this.studentProfile.id);
                             }
@@ -3389,6 +3503,105 @@
                     setTimeout(() => {
                         window.location.reload();
                     }, 500);
+                },
+
+                // -----------------------------------------------------
+                // FORCE PROFILE MODAL LOGIC
+                // -----------------------------------------------------
+                handleForceSchoolSearch() {
+                    if (this.forceProfileModal.schoolSearchQuery.length < 2) {
+                        this.forceProfileModal.schoolSearchResults = [];
+                        this.forceProfileModal.showSchoolDropdown = false;
+                        return;
+                    }
+                    
+                    if (this.forceProfileModal.searchSchoolTimeout) {
+                        clearTimeout(this.forceProfileModal.searchSchoolTimeout);
+                    }
+                    
+                    this.forceProfileModal.isSearchingSchool = true;
+                    this.forceProfileModal.showSchoolDropdown = true;
+                    
+                    this.forceProfileModal.searchSchoolTimeout = setTimeout(async () => {
+                        try {
+                            const res = await fetch('/api/pg-auth', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ action: 'search_schools', query: this.forceProfileModal.schoolSearchQuery })
+                            });
+                            const data = await res.json();
+                            if (data.success) {
+                                this.forceProfileModal.schoolSearchResults = data.data;
+                            }
+                        } catch(err) {
+                            console.error('School search failed:', err);
+                        } finally {
+                            this.forceProfileModal.isSearchingSchool = false;
+                        }
+                    }, 500);
+                },
+
+                selectForceSchool(school) {
+                    this.forceProfileModal.schoolSearchQuery = school.name;
+                    this.forceProfileModal.showSchoolDropdown = false;
+                },
+
+                async submitForceProfile() {
+                    if (!this.forceProfileModal.phone || !this.forceProfileModal.schoolSearchQuery) {
+                        this.showToast('Silakan isi Nomor WhatsApp dan Asal Sekolah', 'error');
+                        return;
+                    }
+                    
+                    this.forceProfileModal.isSaving = true;
+                    
+                    try {
+                        const res = await fetch('/api/pg-auth', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                action: 'update_profile',
+                                id: this.studentProfile.id,
+                                email: this.studentProfile.email,
+                                phone: this.forceProfileModal.phone,
+                                school: this.forceProfileModal.schoolSearchQuery,
+                                level: this.forceProfileModal.level,
+                                targetProgram: this.forceProfileModal.targetProgram
+                            })
+                        });
+                        
+                        const data = await res.json();
+                        if (data.success) {
+                            // Update Local Session Data
+                            this.studentProfile.phone = data.user.phone;
+                            this.studentProfile.school = data.user.school;
+                            this.studentProfile.level = data.user.level;
+                            this.studentProfile.targetProgram = data.user.grade;
+                            this.studentProfile.grade = data.user.grade;
+                            
+                            // Re-save session
+                            let authRaw = localStorage.getItem('nls_student_auth_session') || localStorage.getItem('nls_auth_session');
+                            if (authRaw) {
+                                let sess = JSON.parse(authRaw);
+                                Object.assign(sess, data.user);
+                                localStorage.setItem('nls_student_auth_session', JSON.stringify(sess));
+                            }
+                            localStorage.setItem('nls_student_profile_v1', JSON.stringify(this.studentProfile));
+                            
+                            if (window.NlsSSO) {
+                                window.NlsSSO.broadcastLogin(this.studentProfile);
+                            }
+                            
+                            this.showToast('Profil berhasil dilengkapi!', 'success');
+                            this.forceProfileModal.isOpen = false;
+                        } else {
+                            this.showToast(data.message || 'Gagal menyimpan profil', 'error');
+                        }
+                    } catch(err) {
+                        console.error('Update profile error:', err);
+                        this.showToast('Terjadi kesalahan jaringan', 'error');
+                    } finally {
+                        this.forceProfileModal.isSaving = false;
+                    }
                 },
 
                 showToast(msg, type = 'success') {
