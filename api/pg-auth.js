@@ -146,12 +146,42 @@ export default async function handler(request, response) {
             const query = request.body?.query || request.query?.query || '';
             if (query.length < 2) return response.status(200).json({ success: true, data: [] });
             
-            const searchParam = `%${query}%`;
-            const result = await sql`
-                SELECT * FROM lms_schools 
-                WHERE name ILIKE ${searchParam} OR npsn ILIKE ${searchParam}
-                ORDER BY name ASC LIMIT 20
-            `;
+            // Expand common abbreviations for Indonesian schools
+            let processedQuery = query.toLowerCase()
+                .replace(/\bsman\b/g, 'sma negeri')
+                .replace(/\bsmpn\b/g, 'smp negeri')
+                .replace(/\bsdn\b/g, 'sd negeri')
+                .replace(/\bsmak\b/g, 'sma kristen')
+                .replace(/\bsmpk\b/g, 'smp kristen')
+                .replace(/\bsdk\b/g, 'sd kristen')
+                .replace(/\bmtsn\b/g, 'mts negeri')
+                .replace(/\bman\b/g, 'ma negeri')
+                .replace(/\bmin\b/g, 'mi negeri')
+                .replace(/\bsmas\b/g, 'sma swasta')
+                .replace(/\bsmps\b/g, 'smp swasta')
+                .replace(/\bsds\b/g, 'sd swasta')
+                .replace(/\bsmk\b/g, 'smk')
+                .replace(/\bsmkn\b/g, 'smk negeri')
+                .replace(/\bsmks\b/g, 'smk swasta')
+                .replace(/\bpkbm\b/g, 'pkbm');
+
+            const words = processedQuery.trim().split(/\s+/).filter(w => w.length > 0).slice(0, 4); // Max 4 words for performance
+            
+            let result;
+            if (words.length === 1) {
+                const w1 = `%${words[0]}%`;
+                result = await sql`SELECT * FROM lms_schools WHERE name ILIKE ${w1} OR npsn ILIKE ${w1} ORDER BY name ASC LIMIT 20`;
+            } else if (words.length === 2) {
+                const w1 = `%${words[0]}%`; const w2 = `%${words[1]}%`;
+                result = await sql`SELECT * FROM lms_schools WHERE name ILIKE ${w1} AND name ILIKE ${w2} ORDER BY name ASC LIMIT 20`;
+            } else if (words.length === 3) {
+                const w1 = `%${words[0]}%`; const w2 = `%${words[1]}%`; const w3 = `%${words[2]}%`;
+                result = await sql`SELECT * FROM lms_schools WHERE name ILIKE ${w1} AND name ILIKE ${w2} AND name ILIKE ${w3} ORDER BY name ASC LIMIT 20`;
+            } else {
+                const w1 = `%${words[0]}%`; const w2 = `%${words[1]}%`; const w3 = `%${words[2]}%`; const w4 = `%${words[3]}%`;
+                result = await sql`SELECT * FROM lms_schools WHERE name ILIKE ${w1} AND name ILIKE ${w2} AND name ILIKE ${w3} AND name ILIKE ${w4} ORDER BY name ASC LIMIT 20`;
+            }
+            
             return response.status(200).json({ success: true, data: result.rows });
         }
 
