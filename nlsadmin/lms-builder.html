@@ -657,7 +657,7 @@
                                 </div>
 
                                 <!-- OSN Biologi (4 Pernyataan) -->
-                                <div x-show="q.type === 'osn_biologi'" class="space-y-4 ml-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <div x-show="q.type === 'osn_biologi'" x-init="if (!Array.isArray(q.osnStatements) || q.osnStatements.length !== 4) q.osnStatements = [{text: '', isTrue: true}, {text: '', isTrue: true}, {text: '', isTrue: true}, {text: '', isTrue: true}]" class="space-y-4 ml-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
                                     <label class="block text-[10px] font-black uppercase text-slate-500">4 Pernyataan Khusus OSN</label>
                                     <p class="text-[10px] text-slate-500 leading-relaxed -mt-1 mb-2">Siswa akan diminta menentukan Benar/Salah untuk tiap pernyataan. Bobot: 4 B (100%), 3 B (60%), 2 B (20%), 0-1 B (0%).</p>
                                     
