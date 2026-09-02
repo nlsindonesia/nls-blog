@@ -546,6 +546,26 @@
                 },
 
                 init() {
+                    // Initialize Google Sign In
+                    if (window.google && google.accounts) {
+                        google.accounts.id.initialize({
+                            client_id: '1074629503313-l0inr5qljcdqsu1di410oerjedqspa50.apps.googleusercontent.com',
+                            callback: this.handleGoogleCallback.bind(this)
+                        });
+                        
+                        const btnDiv = document.getElementById("googleBtnDiv");
+                        if (btnDiv) {
+                            google.accounts.id.renderButton(btnDiv, {
+                                theme: this.isDarkMode ? "filled_black" : "outline",
+                                size: "large",
+                                type: "standard",
+                                shape: "rectangular",
+                                text: "signin_with",
+                                width: 280
+                            });
+                        }
+                    }
+
                     // Check dark mode
                     const savedTheme = localStorage.getItem('nls_theme');
                     if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
