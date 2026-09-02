@@ -9,7 +9,7 @@
 <body class="bg-slate-50 text-slate-800 p-8">
     <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-md p-6">
         <h1 class="text-2xl font-black mb-4">Sync Data Lokal ke Server Vercel</h1>
-        <p class="mb-4">Halaman ini akan mengunggah semua draft kursus yang ada di laptop Anda ke database utama (Vercel) sehingga bisa diakses dari perangkat manapun.</p>
+        <p class="mb-4">Halaman ini akan mengunggah semua draft kursus yang ada di browser Anda (termasuk yang belum tersimpan di server) ke database utama (Vercel) sehingga bisa diakses dari perangkat manapun.</p>
         
         <button id="syncBtn" class="bg-indigo-600 text-white px-4 py-2 rounded font-bold hover:bg-indigo-700">Mulai Upload ke Vercel</button>
         
@@ -30,50 +30,66 @@
         btn.addEventListener('click', async () => {
             btn.disabled = true;
             btn.classList.add('opacity-50');
-            log('Memulai sinkronisasi...');
+            log('Memulai sinkronisasi dari ' + window.location.hostname + '...');
             
-            // Sync nls_lms_courses_v1
+            // 1. Ambil nls_lms_courses_v1
             let courses = [];
             try {
                 const raw = localStorage.getItem('nls_lms_courses_v1');
                 if (raw) courses = JSON.parse(raw);
             } catch(e) { log('Gagal membaca nls_lms_courses_v1'); }
             
+            // 2. Ambil lms_builder_draft (Draft terakhir yang diedit)
+            let latestDraftBabs = null;
+            try {
+                const babsRaw = localStorage.getItem('lms_builder_draft');
+                if (babsRaw) {
+                    latestDraftBabs = JSON.parse(babsRaw);
+                }
+            } catch(e) {}
+
             if (courses.length > 0) {
-                log('Ditemukan ' + courses.length + ' kursus lokal. Mengunggah ke Vercel...');
+                log('Ditemukan ' + courses.length + ' kursus di memory browser. Mempersiapkan...');
                 for (const course of courses) {
                     try {
+                        // Jika ada draft terbaru, gabungkan ke kursus yang diedit terakhir kali
+                        // (Asumsi draft terbaru adalah milik kursus yang baru saja dibuat/diedit)
+                        if (latestDraftBabs && latestDraftBabs.length > 0) {
+                            if (!course.babs || course.babs.length === 0 || course.updated_at >= new Date().toISOString().split('T')[0]) {
+                                log(' ⚠️ Menggabungkan Draft Builder terbaru ke dalam kursus: ' + course.title);
+                                course.babs = latestDraftBabs;
+                                course.content = latestDraftBabs;
+                            }
+                        }
+
                         log('- Mengunggah: ' + (course.title || course.id));
-                        const res = await fetch('https://nls-belajar.vercel.app/api/pg-lms', {
+                        
+                        const apiUrl = window.location.hostname === 'localhost' ? 'https://nls-belajar.vercel.app/api/pg-lms' : '/api/pg-lms';
+                        
+                        const res = await fetch(apiUrl, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ action: 'admin_save_course', course: course })
                         });
+                        
                         if (res.ok) {
-                            log('  ✅ Berhasil');
+                            log('  ✅ Berhasil tersimpan di Database Cloud!');
                         } else {
-                            log('  ❌ Gagal (Status: ' + res.status + ')');
+                            if (res.status === 413) {
+                                log('  ❌ GAGAL (413): Ukuran materi TERLALU BESAR (Lebih dari 4.5MB). Kurangi jumlah gambar/hapus gambar besar!');
+                            } else {
+                                log('  ❌ Gagal (Status: ' + res.status + ')');
+                            }
                         }
                     } catch(e) {
-                        log('  ❌ Error: ' + e.message);
+                        log('  ❌ Error Koneksi: ' + e.message);
                     }
                 }
             } else {
-                log('Tidak ada kursus lokal di nls_lms_courses_v1.');
+                log('Tidak ada kursus lokal di memory browser (' + window.location.hostname + ').');
             }
             
-            // Sync lms_builder_draft
-            try {
-                const babsRaw = localStorage.getItem('lms_builder_draft');
-                if (babsRaw) {
-                    const babs = JSON.parse(babsRaw);
-                    if (babs.length > 0) {
-                        log('Ditemukan draft builder yang belum disimpan. (Abaikan jika kosong)');
-                    }
-                }
-            } catch(e) {}
-            
-            log('<b>Selesai!</b> Semua data lokal sudah diunggah. Silakan buka aplikasi dari perangkat lain.');
+            log('<b>Proses Selesai!</b>');
         });
     </script>
 </body>
