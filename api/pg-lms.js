@@ -815,9 +815,12 @@ export default async function handler(request, response) {
             if (!userId || !courseId) return response.status(400).json({ success: false, message: 'Missing userId or courseId.' });
 
             await sql`
-                UPDATE lms_enrollments 
-                SET progress = ${progress || 0}, completed_modules = ${JSON.stringify(completedModules || [])}::jsonb, last_accessed = CURRENT_TIMESTAMP
-                WHERE user_id = ${userId} AND course_id = ${courseId}
+                INSERT INTO lms_enrollments (user_id, course_id, progress, completed_modules, last_accessed)
+                VALUES (${userId}, ${courseId}, ${progress || 0}, ${JSON.stringify(completedModules || [])}::jsonb, CURRENT_TIMESTAMP)
+                ON CONFLICT (user_id, course_id) DO UPDATE SET
+                    progress = EXCLUDED.progress,
+                    completed_modules = EXCLUDED.completed_modules,
+                    last_accessed = EXCLUDED.last_accessed
             `;
             
             return response.status(200).json({ success: true, message: 'Progress updated.' });
