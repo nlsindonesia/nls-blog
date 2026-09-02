@@ -3484,13 +3484,29 @@
                             this.isLoggedIn = true;
                             const avatar = s.avatar && !s.avatar.includes('article-placeholder') && !s.avatar.includes('nls-logo-300') && !s.avatar.includes('unsplash.com') ? s.avatar : DEFAULT_AVATAR;
                             const nisn = (s.nisn || '').startsWith('NISN:') ? s.nisn : ('NISN: ' + (s.nisn || 'Terdaftar'));
+                            
+                            const rawGrade = s.grade || s.level || 'Kelas 12 SMA';
+                            let tk = '';
+                            let jk = '';
+                            const possibleTingkat = ['Kelas 10', 'Kelas 11', 'Kelas 12', 'Kelas 7', 'Kelas 8', 'Kelas 9', 'Kelas 1', 'Kelas 2', 'Kelas 3', 'Kelas 4', 'Kelas 5', 'Kelas 6'];
+                            for (let p of possibleTingkat) {
+                                if (rawGrade.startsWith(p)) {
+                                    tk = p;
+                                    jk = rawGrade.substring(p.length).trim();
+                                    break;
+                                }
+                            }
+                            if (!tk) tk = '';
+
                             this.studentProfile = {
                                 id: s.id || '',
                                 name: s.name || 'Siswa NLS',
                                 nisn: nisn,
                                 school: s.school || 'Sekolah NLS',
                                 level: s.level || 'SMA',
-                                grade: s.grade || s.level || '12 SMA - IPA',
+                                grade: rawGrade,
+                                tingkatKelas: tk,
+                                jenisKelas: jk,
                                 email: s.email || '',
                                 phone: s.phone || '',
                                 parentPhone: s.parentPhone || '-',
