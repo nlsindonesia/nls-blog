@@ -2175,6 +2175,77 @@
                                                     </template>
                                                 </div>
 
+                                                <!-- PG Kompleks -->
+                                                <div class="space-y-2 pl-9" x-show="q.type === 'pg_kompleks'" x-init="if (!Array.isArray(userAnswers[qIdx])) userAnswers[qIdx] = []">
+                                                    <template x-for="(opt, oIdx) in q.options" :key="oIdx">
+                                                        <label class="flex items-center gap-3 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-[#131d38] cursor-pointer hover:border-indigo-500 transition-all">
+                                                            <input type="checkbox" :value="oIdx" x-model="userAnswers[qIdx]"
+                                                                class="w-5 h-5 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500">
+                                                            <span class="font-semibold text-slate-800 dark:text-slate-200" x-text="opt"></span>
+                                                        </label>
+                                                    </template>
+                                                    <p class="text-[10px] text-slate-400 mt-2 flex items-center gap-1">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                        Anda dapat memilih lebih dari satu jawaban.
+                                                    </p>
+                                                </div>
+
+                                                <!-- PG Majemuk -->
+                                                <div class="pl-9 pt-4 pb-2" x-show="q.type === 'pg_majemuk'" x-init="if (!Array.isArray(userAnswers[qIdx])) userAnswers[qIdx] = Array((q.statements || []).length).fill(null)">
+                                                    <div class="space-y-3 mt-2">
+                                                        <template x-for="(stmt, stmtIdx) in (q.statements || [])" :key="stmtIdx">
+                                                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:shadow-md transition-shadow">
+                                                                <div class="flex gap-3 flex-1">
+                                                                    <span class="w-6 h-6 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5" x-text="stmtIdx + 1"></span>
+                                                                    <div class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed" x-text="stmt.text"></div>
+                                                                </div>
+                                                                <div class="flex items-center gap-2 shrink-0 ml-9 sm:ml-0">
+                                                                    <label class="relative flex items-center justify-center w-24 h-10 rounded-lg cursor-pointer transition-all border select-none overflow-hidden"
+                                                                           :class="userAnswers[qIdx][stmtIdx] === 'true' ? 'bg-emerald-500 border-emerald-600 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'">
+                                                                        <input type="radio" :name="pg_maj_ans_ + qIdx + _ + stmtIdx" value="true" x-model="userAnswers[qIdx][stmtIdx]" class="sr-only">
+                                                                        <span class="font-bold text-sm z-10 relative">BENAR</span>
+                                                                    </label>
+                                                                    <label class="relative flex items-center justify-center w-24 h-10 rounded-lg cursor-pointer transition-all border select-none overflow-hidden"
+                                                                           :class="userAnswers[qIdx][stmtIdx] === 'false' ? 'bg-rose-500 border-rose-600 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'">
+                                                                        <input type="radio" :name="pg_maj_ans_ + qIdx + _ + stmtIdx" value="false" x-model="userAnswers[qIdx][stmtIdx]" class="sr-only">
+                                                                        <span class="font-bold text-sm z-10 relative">SALAH</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Isian Singkat -->
+                                                <div class="pl-9 pt-2 pb-2" x-show="q.type === 'isian'">
+                                                    <input type="text" x-model="userAnswers[qIdx]" class="w-full sm:w-2/3 p-4 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-sm" placeholder="Ketik jawaban singkat Anda di sini...">
+                                                </div>
+
+                                                <!-- Essai -->
+                                                <div class="pl-9 pt-2 pb-2" x-show="q.type === 'essai'">
+                                                    <textarea x-model="userAnswers[qIdx]" rows="5" class="w-full p-4 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-sm leading-relaxed" placeholder="Uraikan jawaban Anda secara lengkap di sini..."></textarea>
+                                                </div>
+
+                                                <!-- Menjodohkan (Jodoh) -->
+                                                <div class="pl-9 pt-4 pb-2" x-show="q.type === 'jodoh'" x-init="if (!userAnswers[qIdx] || !userAnswers[qIdx].options) { let opts = (q.pairs||[]).map(p => p.right).filter(Boolean); userAnswers[qIdx] = { answers: Array((q.pairs||[]).length).fill(''), options: [...new Set(opts)].sort(() => Math.random() - 0.5) }; }">
+                                                    <div class="space-y-3">
+                                                        <template x-for="(pair, pIdx) in (q.pairs || [])" :key="pIdx">
+                                                            <div class="flex flex-col sm:flex-row sm:items-center gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
+                                                                <div class="flex-1 font-semibold text-slate-700 dark:text-slate-300 text-sm" x-text="pair.left"></div>
+                                                                <div class="shrink-0 text-slate-400 hidden sm:block">
+                                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                                                </div>
+                                                                <select x-model="userAnswers[qIdx].answers[pIdx]" class="flex-1 p-3 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-[#131d38] text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer">
+                                                                    <option value="" disabled>-- Pilih Pasangan --</option>
+                                                                    <template x-for="opt in userAnswers[qIdx].options" :key="opt">
+                                                                        <option :value="opt" x-text="opt"></option>
+                                                                    </template>
+                                                                </select>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </div>
+
                                                 <!-- Range Slider -->
                                                 <div class="pl-9 pt-4 pb-2" x-show="q.type === 'range'">
                                                     <div class="relative pt-6">
@@ -3740,6 +3811,44 @@
                                 else if (correctCount === 2) correct += 0.2;
                                 else correct += 0; // 0 or 1
                             }
+                        } else if (q.type === 'pg_kompleks') {
+                            const uAns = Array.isArray(this.userAnswers[i]) ? this.userAnswers[i].map(Number) : [];
+                            const cAns = Array.isArray(q.correctAnswersArray) ? q.correctAnswersArray.map(Number) : [];
+                            if (uAns.length === cAns.length && cAns.length > 0) {
+                                let allMatch = true;
+                                for (let c of cAns) {
+                                    if (!uAns.includes(c)) allMatch = false;
+                                }
+                                if (allMatch) correct++;
+                            }
+                        } else if (q.type === 'pg_majemuk') {
+                            const uAns = Array.isArray(this.userAnswers[i]) ? this.userAnswers[i] : [];
+                            const stmts = q.statements || [];
+                            const totalStmts = stmts.length;
+                            if (totalStmts > 0) {
+                                let correctStmts = 0;
+                                for (let j = 0; j < totalStmts; j++) {
+                                    if (uAns[j] === stmts[j].isCorrect) correctStmts++;
+                                }
+                                correct += (correctStmts / totalStmts);
+                            }
+                        } else if (q.type === 'isian') {
+                            const uAns = (this.userAnswers[i] || '').toString().trim().toLowerCase();
+                            const keys = (q.shortAnswerKeys || '').toLowerCase().split(/[,|]/).map(s => s.trim());
+                            if (uAns && keys.includes(uAns)) correct++;
+                        } else if (q.type === 'essai') {
+                            correct += 0;
+                        } else if (q.type === 'jodoh') {
+                            const uAns = this.userAnswers[i] && Array.isArray(this.userAnswers[i].answers) ? this.userAnswers[i].answers : [];
+                            const pairs = q.pairs || [];
+                            const totalPairs = pairs.length;
+                            if (totalPairs > 0) {
+                                let correctPairs = 0;
+                                for (let j = 0; j < totalPairs; j++) {
+                                    if (uAns[j] === pairs[j].right) correctPairs++;
+                                }
+                                correct += (correctPairs / totalPairs);
+                            }
                         } else {
                             const userOptIdx = this.userAnswers[i];
                             if (userOptIdx !== undefined) {
@@ -4185,6 +4294,7 @@
     </script>
 </body>
 </html>
+
 
 
 
