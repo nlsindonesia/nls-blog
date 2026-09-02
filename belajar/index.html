@@ -2246,6 +2246,54 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                <!-- Puzzle Game -->
+                                                <div class="pl-9 pt-4 pb-2" x-show="q.type === 'puzzle'" x-init="initPuzzle(qIdx, q)">
+                                                    <div class="max-w-[400px] mx-auto space-y-4" x-data="{ get state() { return userAnswers[qIdx] || {board:[], tray:[]} } }">
+                                                        <template x-if="q.puzzleImage && state">
+                                                            <div>
+                                                                <!-- The Board -->
+                                                                <div class="bg-slate-100 dark:bg-slate-800 rounded-xl p-2 border-2 border-slate-200 dark:border-slate-700 mx-auto">
+                                                                    <div class="w-full aspect-square grid gap-0.5 bg-slate-300 dark:bg-slate-600 border border-slate-300 dark:border-slate-600 rounded overflow-hidden" 
+                                                                         :style="`grid-template-columns: repeat(${q.puzzleDifficulty || 4}, 1fr); grid-template-rows: repeat(${q.puzzleDifficulty || 4}, 1fr);`">
+                                                                        <template x-for="(pieceIdx, bIdx) in state.board" :key="bIdx">
+                                                                            <div class="w-full h-full bg-slate-50 dark:bg-slate-900 relative flex items-center justify-center border border-dashed border-slate-300 dark:border-slate-700"
+                                                                                 @dragover.prevent=""
+                                                                                 @drop="handlePuzzleDrop($event, qIdx, 'board', bIdx)">
+                                                                                <template x-if="pieceIdx !== null">
+                                                                                    <div class="absolute inset-0 cursor-grab active:cursor-grabbing hover:scale-105 transition-transform z-10"
+                                                                                         draggable="true"
+                                                                                         @dragstart="handlePuzzleDragStart($event, qIdx, 'board', bIdx, pieceIdx)"
+                                                                                         :style="`background-image: url(${q.puzzleImage}); background-size: ${(q.puzzleDifficulty || 4) * 100}% ${(q.puzzleDifficulty || 4) * 100}%; background-position: ${ (pieceIdx % (q.puzzleDifficulty || 4)) * 100 / ((q.puzzleDifficulty || 4) - 1) }% ${ Math.floor(pieceIdx / (q.puzzleDifficulty || 4)) * 100 / ((q.puzzleDifficulty || 4) - 1) }%;`">
+                                                                                    </div>
+                                                                                </template>
+                                                                            </div>
+                                                                        </template>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <!-- The Tray -->
+                                                                <div class="mt-4 p-4 rounded-xl bg-indigo-50/50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800">
+                                                                    <p class="text-[10px] font-black text-indigo-400 mb-2 uppercase flex items-center gap-1.5"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg> Tray Potongan (Tarik ke atas)</p>
+                                                                    <div class="flex flex-wrap gap-2 min-h-[60px]"
+                                                                         @dragover.prevent=""
+                                                                         @drop="handlePuzzleDrop($event, qIdx, 'tray', null)">
+                                                                        <template x-for="(pieceIdx, tIdx) in state.tray" :key="pieceIdx">
+                                                                            <div class="w-12 h-12 bg-white dark:bg-slate-800 rounded shadow-sm border border-slate-200 dark:border-slate-700 cursor-grab active:cursor-grabbing hover:scale-105 hover:-translate-y-1 transition-all flex-shrink-0"
+                                                                                 draggable="true"
+                                                                                 @dragstart="handlePuzzleDragStart($event, qIdx, 'tray', tIdx, pieceIdx)"
+                                                                                 :style="`background-image: url(${q.puzzleImage}); background-size: ${(q.puzzleDifficulty || 4) * 100}% ${(q.puzzleDifficulty || 4) * 100}%; background-position: ${ (pieceIdx % (q.puzzleDifficulty || 4)) * 100 / ((q.puzzleDifficulty || 4) - 1) }% ${ Math.floor(pieceIdx / (q.puzzleDifficulty || 4)) * 100 / ((q.puzzleDifficulty || 4) - 1) }%;`">
+                                                                            </div>
+                                                                        </template>
+                                                                        <template x-if="state.tray.length === 0">
+                                                                            <div class="w-full text-center text-xs text-slate-400 font-medium py-4">Semua potongan telah ditempatkan!</div>
+                                                                        </template>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </template>
                                     </div>
@@ -2423,10 +2471,23 @@
                 <template x-for="(item, iIdx) in (explanationModal.data ? explanationModal.data.questions : sampleQuizQuestions)" :key="iIdx">
                     <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2.5">
                         <div class="font-black text-slate-900 dark:text-white" x-html="(iIdx + 1) + '. ' + (item.question || item.text)"></div>
-                        <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-900 text-emerald-900 dark:text-emerald-200">
-                            <span class="font-black">Kunci Jawaban: </span>
-                            <span x-text="item.type === 'range' ? item.rangeCorrect : (item.type === 'graph' && item.graphCoordinates ? item.graphCoordinates.map(c => `(${c.x},${c.y})`).join(', ') : (item.correctAnswer || (item.options && item.correctAnswers !== undefined ? item.options[item.correctAnswers] : '')))"></span>
-                        </div>
+                        
+                        <!-- For non-puzzle items -->
+                        <template x-if="item.type !== 'puzzle'">
+                            <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-900 text-emerald-900 dark:text-emerald-200">
+                                <span class="font-black">Kunci Jawaban: </span>
+                                <span x-text="item.type === 'range' ? item.rangeCorrect : (item.type === 'graph' && item.graphCoordinates ? item.graphCoordinates.map(c => `(${c.x},${c.y})`).join(', ') : (item.correctAnswer || (item.options && item.correctAnswers !== undefined ? item.options[item.correctAnswers] : '')))"></span>
+                            </div>
+                        </template>
+
+                        <!-- For puzzle items -->
+                        <template x-if="item.type === 'puzzle' && item.puzzleImage">
+                            <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-900 text-emerald-900 dark:text-emerald-200">
+                                <span class="font-black block mb-2">Gambar yang Benar: </span>
+                                <img :src="item.puzzleImage" class="w-full max-w-[200px] aspect-auto rounded shadow-sm border border-emerald-200">
+                            </div>
+                        </template>
+
                         <div class="p-3 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50 text-slate-700 dark:text-slate-300">
                             <span class="font-black text-indigo-600 dark:text-indigo-400">Pembahasan: </span>
                             <div class="mt-1" x-html="item.explanation || item.discussion"></div>
@@ -3485,6 +3546,64 @@
                     this.userAnswers[qIdx] = [];
                 },
 
+                // --- PUZZLE LOGIC ---
+                initPuzzle(qIdx, q) {
+                    if (q.type === 'puzzle') {
+                        if (!this.userAnswers[qIdx] || !this.userAnswers[qIdx].board) {
+                            const diff = q.puzzleDifficulty || 4;
+                            const totalPieces = diff * diff;
+                            let pieces = Array.from({length: totalPieces}, (_, i) => i);
+                            // Shuffle pieces
+                            for (let i = pieces.length - 1; i > 0; i--) {
+                                const j = Math.floor(Math.random() * (i + 1));
+                                [pieces[i], pieces[j]] = [pieces[j], pieces[i]];
+                            }
+                            this.userAnswers[qIdx] = {
+                                board: Array(totalPieces).fill(null),
+                                tray: pieces
+                            };
+                        }
+                    }
+                },
+                
+                handlePuzzleDragStart(e, qIdx, source, sourceIdx, pieceIdx) {
+                    e.dataTransfer.setData('text/plain', JSON.stringify({ qIdx, source, sourceIdx, pieceIdx }));
+                    e.dataTransfer.effectAllowed = 'move';
+                },
+                
+                handlePuzzleDrop(e, qIdx, target, targetIdx) {
+                    const dataStr = e.dataTransfer.getData('text/plain');
+                    if (!dataStr) return;
+                    try {
+                        const data = JSON.parse(dataStr);
+                        if (data.qIdx !== qIdx) return; // Prevent cross-question drag
+                        
+                        let state = this.userAnswers[qIdx];
+                        
+                        // Remove from source
+                        if (data.source === 'tray') {
+                            state.tray.splice(data.sourceIdx, 1);
+                        } else if (data.source === 'board') {
+                            state.board[data.sourceIdx] = null;
+                        }
+                        
+                        // Add to target
+                        if (target === 'tray') {
+                            state.tray.push(data.pieceIdx);
+                        } else if (target === 'board') {
+                            // If target slot is occupied, move existing piece back to tray
+                            const existingPiece = state.board[targetIdx];
+                            if (existingPiece !== null) {
+                                state.tray.push(existingPiece);
+                            }
+                            state.board[targetIdx] = data.pieceIdx;
+                        }
+                        
+                        // Trigger reactivity
+                        this.userAnswers[qIdx] = { ...state, board: [...state.board], tray: [...state.tray] };
+                    } catch (err) {}
+                },
+
                 submitQuiz() {
                     const totalQ = this.currentQuizQuestions.length;
                     let correct = 0;
@@ -3499,7 +3618,6 @@
                             const cAns = Array.isArray(q.graphCoordinates) ? q.graphCoordinates : [];
                             
                             if (uAns.length === cAns.length && cAns.length > 0) {
-                                // check if every point in uAns exists in cAns (order agnostic)
                                 let matchedAll = true;
                                 for (let p of cAns) {
                                     if (!uAns.find(up => Number(up.x) === Number(p.x) && Number(up.y) === Number(p.y))) {
@@ -3508,6 +3626,17 @@
                                     }
                                 }
                                 if (matchedAll) correct++;
+                            }
+                        } else if (q.type === 'puzzle') {
+                            const state = this.userAnswers[i];
+                            if (state && state.board) {
+                                let correctPieces = 0;
+                                const diff = q.puzzleDifficulty || 4;
+                                const totalPieces = diff * diff;
+                                for (let p = 0; p < totalPieces; p++) {
+                                    if (state.board[p] === p) correctPieces++;
+                                }
+                                correct += (correctPieces / totalPieces); // Proportional score!
                             }
                         } else {
                             const userOptIdx = this.userAnswers[i];
