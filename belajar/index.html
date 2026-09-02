@@ -1293,10 +1293,40 @@
                             </div>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Asal Sekolah *</label>
-                                    <input type="text" x-model="studentProfile.school" required
-                                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                                <div class="relative" @click.outside="showSchoolDropdown = false">
+                                    <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">
+                                        Asal Sekolah *
+                                        <span class="block text-[10px] font-normal text-slate-500 mt-0.5">Ketik min. 2 huruf untuk memunculkan pilihan sekolah.</span>
+                                    </label>
+                                    <div class="relative">
+                                        <input type="text" x-model="schoolSearchQuery" @input="handleSchoolSearch()" @focus="if(schoolSearchQuery.length >= 2) showSchoolDropdown = true" required placeholder="Cari atau ketik nama sekolah..."
+                                            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold focus:ring-2 focus:ring-indigo-500 outline-hidden">
+                                        <div x-show="isSearchingSchool" class="absolute right-3 top-1/2 -translate-y-1/2">
+                                            <div class="w-4 h-4 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
+                                        </div>
+                                    </div>
+                                    <!-- Autocomplete Dropdown -->
+                                    <div x-show="showSchoolDropdown && schoolSearchResults.length > 0" x-transition x-cloak
+                                        class="absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden max-h-60 overflow-y-auto">
+                                        <ul class="divide-y divide-slate-100 dark:divide-slate-700/50">
+                                            <template x-for="school in schoolSearchResults" :key="school.id">
+                                                <li @click="selectSchool(school)"
+                                                    class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors">
+                                                    <div class="font-bold text-xs text-slate-900 dark:text-white" x-text="school.name"></div>
+                                                    <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 flex gap-2">
+                                                        <span x-text="'NPSN: ' + (school.npsn || '-')"></span>
+                                                        <span>&bull;</span>
+                                                        <span x-text="school.city + ', ' + school.province"></span>
+                                                    </div>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </div>
+                                    <div x-show="showSchoolDropdown && schoolSearchQuery.length >= 2 && schoolSearchResults.length === 0 && !isSearchingSchool" x-transition x-cloak
+                                        class="absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xl p-4 text-center">
+                                        <p class="text-xs text-slate-500 dark:text-slate-400">Sekolah tidak ditemukan.</p>
+                                        <p class="text-[10px] font-bold text-slate-700 dark:text-slate-300 mt-1">Silakan ketik manual nama sekolah Anda.</p>
+                                    </div>
                                 </div>
                                 <div>
                                     <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Jenjang Sekolah *</label>
@@ -1352,6 +1382,7 @@
                                         <option value="Teknik Komputer & Jaringan (TKJ)"><option value="Akuntansi">
                                         <option value="Pemasaran"><option value="Multimedia">
                                     </datalist>
+                                    <span class="block text-[10px] text-slate-500 mt-1">Pilih dari daftar atau ketik manual (Contoh: 12.1, IPS 2).</span>
                                 </div>
                             </div>
 
@@ -2555,6 +2586,13 @@
                     isSaving: false
                 },
 
+                // School Search for Edit Profil
+                schoolSearchQuery: '',
+                schoolSearchResults: [],
+                showSchoolDropdown: false,
+                isSearchingSchool: false,
+                searchSchoolTimeout: null,
+
                 // Student Profile State (Loaded when logged in)
                 studentProfile: (function() {
                     try {
@@ -3487,6 +3525,7 @@
                             const sess = JSON.parse(authRaw);
                             updateStateFromSession(sess);
                             localStorage.setItem('nls_student_profile_v1', JSON.stringify(this.studentProfile));
+                            this.schoolSearchQuery = this.studentProfile.school || '';
                         } else {
                             this.isLoggedIn = false;
                             this.studentProfile = null;
@@ -3571,6 +3610,50 @@
                     setTimeout(() => {
                         window.location.reload();
                     }, 500);
+                },
+
+                // -----------------------------------------------------
+                // PROFILE SCHOOL SEARCH LOGIC
+                // -----------------------------------------------------
+                handleSchoolSearch() {
+                    this.studentProfile.school = this.schoolSearchQuery;
+                    
+                    if (this.schoolSearchQuery.length < 2) {
+                        this.schoolSearchResults = [];
+                        this.showSchoolDropdown = false;
+                        return;
+                    }
+                    
+                    if (this.searchSchoolTimeout) {
+                        clearTimeout(this.searchSchoolTimeout);
+                    }
+                    
+                    this.isSearchingSchool = true;
+                    this.showSchoolDropdown = true;
+                    
+                    this.searchSchoolTimeout = setTimeout(async () => {
+                        try {
+                            const res = await fetch('/api/pg-auth', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ action: 'search_schools', query: this.schoolSearchQuery })
+                            });
+                            const data = await res.json();
+                            if (data.success) {
+                                this.schoolSearchResults = data.data;
+                            }
+                        } catch(err) {
+                            console.error('School search failed:', err);
+                        } finally {
+                            this.isSearchingSchool = false;
+                        }
+                    }, 500);
+                },
+
+                selectSchool(school) {
+                    this.schoolSearchQuery = school.name;
+                    this.studentProfile.school = school.name;
+                    this.showSchoolDropdown = false;
                 },
 
                 // -----------------------------------------------------
