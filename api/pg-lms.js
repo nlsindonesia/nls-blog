@@ -773,7 +773,8 @@ export default async function handler(request, response) {
                 moduleIndex: q.module_index,
                 score: q.score,
                 paket: q.paket || 1,
-                date: new Date(q.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+                date: new Date(q.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
+                datetime: new Date(q.date).toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
             }));
 
             // Format progress map

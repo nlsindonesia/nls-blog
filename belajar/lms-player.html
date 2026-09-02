@@ -565,23 +565,67 @@
                                     
                                     <div class="relative z-10">
                                         
-                                        <!-- No Essay: Show Final Score -->
+                                        <!-- No Essay: Show Final Score & History -->
                                         <template x-if="!quizState.hasEssay">
-                                            <div>
-                                                <div class="w-32 h-32 mx-auto rounded-[2rem] flex items-center justify-center mb-8 shadow-xl rotate-3" :class="quizState.score > 70 ? 'bg-gradient-to-br from-emerald-100 to-emerald-200 text-emerald-700 border-4 border-white' : 'bg-gradient-to-br from-rose-100 to-rose-200 text-rose-700 border-4 border-white'">
-                                                    <span class="text-5xl font-black" x-text="quizState.score"></span>
+                                            <div class="w-full">
+                                                <!-- Current/Best Score Header -->
+                                                <div class="flex flex-col sm:flex-row items-center justify-between gap-6 bg-slate-50 border-2 border-slate-100 rounded-3xl p-6 sm:p-8 mb-8">
+                                                    <div class="flex items-center gap-6">
+                                                        <div class="w-24 h-24 rounded-[1.5rem] flex items-center justify-center shadow-lg rotate-3 shrink-0" :class="quizState.score >= 70 ? 'bg-gradient-to-br from-emerald-100 to-emerald-200 text-emerald-700 border-2 border-white' : 'bg-gradient-to-br from-rose-100 to-rose-200 text-rose-700 border-2 border-white'">
+                                                            <span class="text-4xl font-black" x-text="quizState.score"></span>
+                                                        </div>
+                                                        <div class="text-left">
+                                                            <h3 class="text-2xl sm:text-3xl font-black text-slate-900 mb-1 tracking-tight" x-text="quizState.score >= 70 ? 'Lulus KKM! 🎉' : 'Belum Lulus 😢'"></h3>
+                                                            <p class="text-slate-500 font-medium">Standar Kelulusan (KKM): <strong class="text-slate-800 font-bold">70</strong></p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="shrink-0 text-right hidden sm:block">
+                                                        <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Status Kuis</div>
+                                                        <div class="px-4 py-2 rounded-xl text-sm font-bold shadow-sm inline-flex items-center gap-2" :class="quizState.score >= 70 ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                            <span x-text="quizState.score >= 70 ? 'Tuntas' : 'Mengulang'"></span>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <h3 class="text-3xl sm:text-4xl font-black text-slate-900 mb-3 tracking-tight" x-text="quizState.score > 70 ? 'Pencapaian Luar Biasa! 🎉' : 'Ayo Tetap Semangat! 💪'"></h3>
-                                                <p class="text-slate-500 text-lg font-medium mb-12">
-                                                    <template x-if="quizState.total !== '?'">
-                                                        <span>Anda berhasil menjawab benar <strong class="text-slate-800 font-black" x-text="quizState.correct"></strong> dari <strong class="text-slate-800 font-black" x-text="quizState.total"></strong> misi.</span>
-                                                    </template>
-                                                    <template x-if="quizState.total === '?'">
-                                                        <span>Kuis ini telah Anda selesaikan.</span>
-                                                    </template>
-                                                </p>
+
+                                                <!-- History Table -->
+                                                <div class="mb-12 text-left" x-show="pastScores[activeNode.id] && pastScores[activeNode.id].length > 0">
+                                                    <h4 class="text-lg font-black text-slate-900 mb-4 flex items-center gap-2">
+                                                        <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                        Riwayat Percobaan Kuis
+                                                    </h4>
+                                                    <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+                                                        <table class="w-full text-left text-sm whitespace-nowrap">
+                                                            <thead class="bg-slate-50 text-slate-500 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
+                                                                <tr>
+                                                                    <th class="py-3 px-4 sm:px-6">Percobaan</th>
+                                                                    <th class="py-3 px-4 sm:px-6">Waktu Pengerjaan</th>
+                                                                    <th class="py-3 px-4 sm:px-6">Nilai</th>
+                                                                    <th class="py-3 px-4 sm:px-6 text-right">Status</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="divide-y divide-slate-100">
+                                                                <template x-for="(attempt, idx) in pastScores[activeNode.id]" :key="idx">
+                                                                    <tr class="hover:bg-slate-50 transition-colors">
+                                                                        <td class="py-3 px-4 sm:px-6 font-bold text-slate-700">
+                                                                            Percobaan <span x-text="pastScores[activeNode.id].length - idx"></span>
+                                                                            <span x-show="idx === 0" class="ml-2 inline-block px-2 py-0.5 rounded text-[9px] bg-indigo-100 text-indigo-700 uppercase tracking-wider font-black">Terbaru</span>
+                                                                        </td>
+                                                                        <td class="py-3 px-4 sm:px-6 text-slate-500 font-medium" x-text="attempt.datetime || attempt.date || '-'"></td>
+                                                                        <td class="py-3 px-4 sm:px-6">
+                                                                            <span class="font-black text-base" :class="attempt.score >= 70 ? 'text-emerald-600' : 'text-rose-600'" x-text="attempt.score"></span>
+                                                                        </td>
+                                                                        <td class="py-3 px-4 sm:px-6 text-right">
+                                                                            <span class="inline-flex px-2 py-1 rounded-lg text-xs font-bold" :class="attempt.score >= 70 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'" x-text="attempt.score >= 70 ? 'Lulus' : 'Gagal'"></span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </template>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </template>
+                                        </template>plate>
 
                                         <!-- Has Essay: Show Manual Grading Notice -->
                                         <template x-if="quizState.hasEssay">
@@ -861,8 +905,9 @@
                                         data.lmsData.quizResults.forEach(qr => {
                                             if (qr.courseId === this.courseData.id) {
                                                 if (!this.pastScores[qr.moduleIndex]) {
-                                                    this.pastScores[qr.moduleIndex] = qr;
+                                                    this.pastScores[qr.moduleIndex] = [];
                                                 }
+                                                this.pastScores[qr.moduleIndex].push(qr);
                                             }
                                         });
                                     }
@@ -982,14 +1027,14 @@
                         window.history.pushState({ nodeId: node.id }, '', url);
                     }
 
-                    if (node && node.type === 'kuis' && this.pastScores[node.id]) {
+                    if (node && node.type === 'kuis' && this.pastScores[node.id] && this.pastScores[node.id].length > 0) {
                         this.quizState.submitted = true;
-                        this.quizState.score = this.pastScores[node.id].score;
+                        this.quizState.score = this.pastScores[node.id][0].score;
                         this.quizState.total = '?'; // mark as loaded from history
                         this.quizState.hasEssay = node.questions && node.questions.some(q => q.type === 'essai');
                         this.quizState.inProgress = false;
                         
-                        this.quizState.assignedPaket = this.pastScores[node.id].paket || 1;
+                        this.quizState.assignedPaket = this.pastScores[node.id][0].paket || 1;
                         this.quizState.activeQuestions = node.questions ? node.questions.filter(q => (q.paket || 1) === this.quizState.assignedPaket) : [];
                     } else {
                         this.quizState.submitted = false;
@@ -1331,6 +1376,14 @@
                         this.quizState.submitted = true;
                         this.markAsCompleted(this.activeNode.id);
                         
+                        // Add to local history for immediate display
+                        if (!this.pastScores[this.activeNode.id]) this.pastScores[this.activeNode.id] = [];
+                        this.pastScores[this.activeNode.id].unshift({
+                            score: this.quizState.score,
+                            datetime: new Date().toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                            paket: this.quizState.assignedPaket
+                        });
+
                         // Final submit to DB
                         try {
                             const sessionRaw = localStorage.getItem('nls_student_auth_session') || localStorage.getItem('nls_auth_session');
