@@ -779,9 +779,16 @@ export default async function handler(request, response) {
             // Format progress map
             const progressMap = {};
             progressRes.rows.forEach(r => {
+                let parsedModules = [];
+                if (Array.isArray(r.completed_modules)) {
+                    parsedModules = r.completed_modules;
+                } else if (typeof r.completed_modules === 'string') {
+                    try { parsedModules = JSON.parse(r.completed_modules); } catch(e) {}
+                }
+
                 progressMap[r.course_id] = {
                     progress: r.progress,
-                    completedModules: Array.isArray(r.completed_modules) ? r.completed_modules : []
+                    completedModules: parsedModules
                 };
             });
 
