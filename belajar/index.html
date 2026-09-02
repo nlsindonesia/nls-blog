@@ -3157,7 +3157,22 @@
                         const data = await res.json();
                         if (data.success && data.lmsData) {
                             this.enrolledIds = data.lmsData.enrolledIds || [];
-                            this.quizResults = data.lmsData.quizResults || [];
+                            
+                            const rawQuiz = data.lmsData.quizResults || [];
+                            this.quizResults = rawQuiz.map((q, idx) => {
+                                const course = this.courses.find(c => c.id === q.courseId);
+                                const module = course && course.modules ? course.modules[q.moduleIndex] : null;
+                                return {
+                                    id: 'qr-' + q.courseId + '-' + q.moduleIndex + '-' + idx,
+                                    title: 'Kuis: ' + (module ? module.title : 'Evaluasi Bab'),
+                                    courseTitle: course ? course.title : 'Program NLS',
+                                    subject: course ? course.category : 'Evaluasi',
+                                    date: q.date,
+                                    score: q.score,
+                                    questions: module && module.questions ? module.questions : []
+                                };
+                            });
+
                             // Update local cache for quiz results
                             try {
                                 localStorage.setItem('nls_lms_quiz_results_' + userId, JSON.stringify(this.quizResults));
