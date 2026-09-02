@@ -23,6 +23,14 @@
         .cke_top { background: #f8fafc !important; border-bottom: 1px solid #e2e8f0 !important; }
         .cke_bottom { background: #f8fafc !important; border-top: 1px solid #e2e8f0 !important; }
     </style>
+    <!-- MathJax for LaTeX Rendering -->
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased h-screen overflow-hidden flex flex-col" x-data="lmsBuilder()">
 
@@ -1207,6 +1215,9 @@
                 previewQuestion(idx) {
                     this.previewQ = this.activeNode.questions[idx];
                     this.showPreviewModal = true;
+                    setTimeout(() => {
+                        if (window.MathJax) window.MathJax.typesetPromise();
+                    }, 50);
                 },
 
                 removeQuestion(idx) {
