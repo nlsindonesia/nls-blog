@@ -2309,6 +2309,34 @@
                                                     </div>
                                                 </div>
 
+                                                <!-- OSN Biologi -->
+                                                <div class="pl-9 pt-4 pb-2" x-show="q.type === 'osn_biologi'" x-init="if (!Array.isArray(userAnswers[qIdx])) userAnswers[qIdx] = [null, null, null, null]">
+                                                    <div class="space-y-3 mt-4">
+                                                        <template x-for="(stmt, stmtIdx) in (q.osnStatements || [])" :key="stmtIdx">
+                                                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:shadow-md transition-shadow">
+                                                                <div class="flex gap-3 flex-1">
+                                                                    <span class="w-6 h-6 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5" x-text="stmtIdx + 1"></span>
+                                                                    <div class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed" x-text="stmt.text"></div>
+                                                                </div>
+                                                                <div class="flex items-center gap-2 shrink-0 ml-9 sm:ml-0">
+                                                                    <label class="relative flex items-center justify-center w-24 h-10 rounded-lg cursor-pointer transition-all border select-none overflow-hidden"
+                                                                           :class="userAnswers[qIdx][stmtIdx] === true ? 'bg-emerald-500 border-emerald-600 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'">
+                                                                        <input type="radio" :name="`osn_ans_${qIdx}_${stmtIdx}`" :value="true" x-model="userAnswers[qIdx][stmtIdx]" class="sr-only">
+                                                                        <span class="font-bold text-sm z-10 relative">BENAR</span>
+                                                                        <div class="absolute inset-0 bg-emerald-600 opacity-0 transition-opacity" :class="userAnswers[qIdx][stmtIdx] === true ? 'opacity-10' : ''"></div>
+                                                                    </label>
+                                                                    <label class="relative flex items-center justify-center w-24 h-10 rounded-lg cursor-pointer transition-all border select-none overflow-hidden"
+                                                                           :class="userAnswers[qIdx][stmtIdx] === false ? 'bg-rose-500 border-rose-600 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'">
+                                                                        <input type="radio" :name="`osn_ans_${qIdx}_${stmtIdx}`" :value="false" x-model="userAnswers[qIdx][stmtIdx]" class="sr-only">
+                                                                        <span class="font-bold text-sm z-10 relative">SALAH</span>
+                                                                        <div class="absolute inset-0 bg-rose-600 opacity-0 transition-opacity" :class="userAnswers[qIdx][stmtIdx] === false ? 'opacity-10' : ''"></div>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </template>
                                     </div>
@@ -2487,8 +2515,8 @@
                     <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2.5">
                         <div class="font-black text-slate-900 dark:text-white" x-html="(iIdx + 1) + '. ' + (item.question || item.text)"></div>
                         
-                        <!-- For non-puzzle/non-blank items -->
-                        <template x-if="item.type !== 'puzzle' && item.type !== 'blank'">
+                        <!-- For non-puzzle/non-blank/non-osn items -->
+                        <template x-if="item.type !== 'puzzle' && item.type !== 'blank' && item.type !== 'osn_biologi'">
                             <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-900 text-emerald-900 dark:text-emerald-200">
                                 <span class="font-black">Kunci Jawaban: </span>
                                 <span x-text="item.type === 'range' ? item.rangeCorrect : (item.type === 'graph' && item.graphCoordinates ? item.graphCoordinates.map(c => `(${c.x},${c.y})`).join(', ') : (item.correctAnswer || (item.options && item.correctAnswers !== undefined ? item.options[item.correctAnswers] : '')))"></span>
@@ -2512,6 +2540,25 @@
                             <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-900 text-emerald-900 dark:text-emerald-200">
                                 <span class="font-black block mb-2">Gambar yang Benar: </span>
                                 <img :src="item.puzzleImage" class="w-full max-w-[200px] aspect-auto rounded shadow-sm border border-emerald-200">
+                            </div>
+                        </template>
+
+                        <!-- For OSN Biologi items -->
+                        <template x-if="item.type === 'osn_biologi'">
+                            <div class="space-y-2 mt-2">
+                                <span class="font-black text-emerald-900 dark:text-emerald-200 block mb-2 text-sm">Kunci Jawaban:</span>
+                                <template x-for="(stmt, stmtIdx) in (item.osnStatements || [])" :key="stmtIdx">
+                                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 flex justify-between gap-4 items-start">
+                                        <div class="flex gap-2">
+                                            <span class="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5" x-text="stmtIdx + 1"></span>
+                                            <div class="text-sm text-slate-700 dark:text-slate-300" x-text="stmt.text"></div>
+                                        </div>
+                                        <div class="shrink-0 px-3 py-1 rounded-md text-xs font-bold shadow-sm"
+                                             :class="stmt.isTrue ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800' : 'bg-rose-100 text-rose-700 dark:bg-rose-900/50 dark:text-rose-400 border border-rose-200 dark:border-rose-800'"
+                                             x-text="stmt.isTrue ? 'BENAR' : 'SALAH'">
+                                        </div>
+                                    </div>
+                                </template>
                             </div>
                         </template>
 
@@ -3677,6 +3724,21 @@
                                     }
                                 }
                                 correct += (correctBlanks / totalBlanks); // Proportional score!
+                            }
+                        } else if (q.type === 'osn_biologi') {
+                            const uAns = Array.isArray(this.userAnswers[i]) ? this.userAnswers[i] : [];
+                            const cAns = q.osnStatements || [];
+                            if (cAns.length === 4) {
+                                let correctCount = 0;
+                                for (let j = 0; j < 4; j++) {
+                                    if (uAns[j] === cAns[j].isTrue) {
+                                        correctCount++;
+                                    }
+                                }
+                                if (correctCount === 4) correct += 1.0;
+                                else if (correctCount === 3) correct += 0.6;
+                                else if (correctCount === 2) correct += 0.2;
+                                else correct += 0; // 0 or 1
                             }
                         } else {
                             const userOptIdx = this.userAnswers[i];
