@@ -549,7 +549,7 @@
                                 </div>
 
                                 <!-- Graph (Koordinat) -->
-                                <div x-show="q.type === 'graph'" class="space-y-4 ml-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <div x-show="q.type === 'graph'" x-init="if (!Array.isArray(q.graphCoordinates)) q.graphCoordinates = [{x: 0, y: 0}]" class="space-y-4 ml-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
                                     <label class="block text-[10px] font-black uppercase text-slate-500">Koordinat Jawaban Benar (X, Y)</label>
                                     <p class="text-[10px] text-slate-500 leading-relaxed -mt-1 mb-2">Tentukan titik-titik koordinat yang harus ditebak siswa pada kuadran (-10 hingga 10).</p>
                                     
@@ -593,7 +593,7 @@
                                 </div>
 
                                 <!-- Puzzle (Image & Difficulty) -->
-                                <div x-show="q.type === 'puzzle'" class="space-y-4 ml-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <div x-show="q.type === 'puzzle'" x-init="if (typeof q.puzzleDifficulty === 'undefined') q.puzzleDifficulty = 4" class="space-y-4 ml-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
                                     <label class="block text-[10px] font-black uppercase text-slate-500">Konfigurasi Puzzle</label>
                                     <p class="text-[10px] text-slate-500 leading-relaxed -mt-1 mb-2">Upload gambar (maks 1MB) yang akan dijadikan puzzle untuk disusun oleh siswa.</p>
                                     
@@ -639,7 +639,7 @@
                                 </div>
 
                                 <!-- Fill in the Blanks -->
-                                <div x-show="q.type === 'blank'" class="space-y-4 ml-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <div x-show="q.type === 'blank'" x-init="if (typeof q.blankText === 'undefined') { q.blankText = ''; q.blankAnswers = ''; }" class="space-y-4 ml-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
                                     <label class="block text-[10px] font-black uppercase text-slate-500">Isi Titik-Titik</label>
                                     <p class="text-[10px] text-slate-500 leading-relaxed -mt-1 mb-2">Gunakan format <code class="bg-slate-200 px-1 rounded text-slate-700">{dash}</code> untuk mewakili satu kata rumpang.</p>
                                     
