@@ -18,10 +18,11 @@ export default async function handler(request, response) {
                     password_hash VARCHAR(255) NOT NULL,
                     role VARCHAR(20) DEFAULT 'siswa',
                     name VARCHAR(100),
-                    phone VARCHAR(20),
+                    nisn VARCHAR(50),
+                    phone VARCHAR(50),
                     school VARCHAR(150),
                     level VARCHAR(100),
-                    grade VARCHAR(100),
+                    grade VARCHAR(255),
                     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
                 );
             `;
@@ -40,6 +41,7 @@ export default async function handler(request, response) {
             `;
             
             // Alter existing table just in case it was created with VARCHAR(20)
+            await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS nisn VARCHAR(50);`;
             await sql`ALTER TABLE users ALTER COLUMN grade TYPE VARCHAR(255);`;
             await sql`ALTER TABLE users ALTER COLUMN level TYPE VARCHAR(100);`;
             await sql`ALTER TABLE users ALTER COLUMN role TYPE VARCHAR(100);`;
@@ -95,9 +97,9 @@ export default async function handler(request, response) {
             const userRole = role || 'siswa';
 
             const result = await sql`
-                INSERT INTO users (username, email, password_hash, role, name, phone, school, level, grade)
-                VALUES (${finalUsername}, ${email}, ${password_hash}, ${userRole}, ${name || ''}, ${phone || ''}, ${school || ''}, ${level || ''}, ${finalGrade || ''})
-                RETURNING id, username, email, role, name;
+                INSERT INTO users (username, email, password_hash, role, name, nisn, phone, school, level, grade)
+                VALUES (${finalUsername}, ${email}, ${password_hash}, ${userRole}, ${name || ''}, ${nisn || ''}, ${phone || ''}, ${school || ''}, ${level || ''}, ${finalGrade || ''})
+                RETURNING id, username, email, role, name, nisn;
             `;
             
             return response.status(201).json({ success: true, message: 'User registered successfully.', user: result.rows[0] });
