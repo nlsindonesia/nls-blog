@@ -427,6 +427,7 @@
                                             <option value="isian">✎ Isian Singkat (Kata Kunci)</option>
                                             <option value="essai">📄 Essai Bebas / Upload Dokumen</option>
                                             <option value="range">🎯 Range Slider (Tebakan Rentang Angka)</option>
+                                            <option value="graph">📈 Interactive Graph (Koordinat Cartesian)</option>
                                         </select>
                                     </div>
                                     <div class="flex gap-4">
@@ -541,6 +542,50 @@
                                         <label class="block text-[10px] font-black uppercase text-emerald-600 mb-1">Correct Value (Jawaban Benar)</label>
                                         <input type="number" x-model.number="q.rangeCorrect" class="w-full p-2.5 rounded-lg border border-emerald-300 bg-emerald-50/50 text-sm focus:ring-2 focus:ring-emerald-500 shadow-sm font-bold" placeholder="e.g. 50">
                                         <p class="text-[10px] text-slate-500 mt-1">Siswa harus menggeser slider ke nilai ini agar mendapat poin penuh.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Graph (Koordinat) -->
+                                <div x-show="q.type === 'graph'" class="space-y-4 ml-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                    <label class="block text-[10px] font-black uppercase text-slate-500">Koordinat Jawaban Benar (X, Y)</label>
+                                    <p class="text-[10px] text-slate-500 leading-relaxed -mt-1 mb-2">Tentukan titik-titik koordinat yang harus ditebak siswa pada kuadran (-10 hingga 10).</p>
+                                    
+                                    <div class="space-y-2">
+                                        <template x-for="(coord, cIdx) in q.graphCoordinates" :key="cIdx">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center text-xs font-black text-slate-500 shrink-0" x-text="cIdx + 1"></div>
+                                                <div class="flex-1 grid grid-cols-2 gap-2">
+                                                    <input type="number" x-model.number="coord.x" class="p-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 shadow-sm" placeholder="X (e.g. -4)">
+                                                    <input type="number" x-model.number="coord.y" class="p-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 shadow-sm" placeholder="Y (e.g. 5)">
+                                                </div>
+                                                <button @click="q.graphCoordinates.splice(cIdx, 1)" class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <button @click="q.graphCoordinates.push({x: 0, y: 0})" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-3 py-1.5 rounded-lg mt-2">+ Tambah Koordinat</button>
+
+                                    <!-- Graph Preview -->
+                                    <div class="mt-4 border-t border-slate-200 pt-4 flex flex-col items-center">
+                                        <label class="block text-[10px] font-black uppercase text-slate-500 mb-2">Preview Koordinat</label>
+                                        <div class="relative w-full max-w-[280px] aspect-square bg-white border border-slate-300 rounded overflow-hidden">
+                                            <!-- Grid Lines -->
+                                            <div class="absolute inset-0" style="background-image: linear-gradient(to right, #e2e8f0 1px, transparent 1px), linear-gradient(to bottom, #e2e8f0 1px, transparent 1px); background-size: 5% 5%;"></div>
+                                            <!-- Axes -->
+                                            <div class="absolute top-0 bottom-0 left-1/2 w-px bg-slate-900 z-10"></div>
+                                            <div class="absolute left-0 right-0 top-1/2 h-px bg-slate-900 z-10"></div>
+                                            <!-- Axis Labels -->
+                                            <span class="absolute left-1 top-1/2 text-[9px] font-bold text-slate-500 z-10 -mt-3.5">-10</span>
+                                            <span class="absolute right-1 top-1/2 text-[9px] font-bold text-slate-500 z-10 -mt-3.5">10</span>
+                                            <span class="absolute left-1/2 top-1 text-[9px] font-bold text-slate-500 z-10 ml-1">10</span>
+                                            <span class="absolute left-1/2 bottom-1 text-[9px] font-bold text-slate-500 z-10 ml-1">-10</span>
+                                            
+                                            <!-- Plot Points -->
+                                            <template x-for="coord in q.graphCoordinates">
+                                                <div class="absolute w-2.5 h-2.5 bg-blue-600 border-2 border-white rounded-full -translate-x-1/2 translate-y-1/2 z-20 shadow-sm"
+                                                     :style="`left: ${ Math.max(0, Math.min(100, ((Number(coord.x) + 10) / 20) * 100)) }%; bottom: ${ Math.max(0, Math.min(100, ((Number(coord.y) + 10) / 20) * 100)) }%;`">
+                                                </div>
+                                            </template>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1049,6 +1094,7 @@
                         rangeMax: 100,
                         rangeStep: 10,
                         rangeCorrect: 50,
+                        graphCoordinates: [{x: 0, y: 0}],
                         discussion: ''
                     });
                 },
