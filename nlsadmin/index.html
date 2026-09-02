@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -767,7 +767,7 @@
             border: none !important;
         }
         /* =====================================================================
-           UI POLISH OVERRIDE (inline â€” dimuat bersama HTML, anti cache terpisah)
+           UI POLISH OVERRIDE (inline — dimuat bersama HTML, anti cache terpisah)
            ===================================================================== */
 
         /* Kartu event ber-warna tebal (2.5px) -> 1.5px halus */
@@ -2676,7 +2676,7 @@
                                     <div class="google-snippet-box">
                                         <div class="google-url flex items-center gap-1.5">
                                             <img src="/nls-logo-300.png" class="w-3.5 h-3.5 rounded-full" alt="Icon">
-                                            <span>https://next-level-study.com â€º blog â€º <span x-text="articleEditor.form.slug || 'judul-berita'"></span></span>
+                                            <span>https://next-level-study.com &rsaquo; blog &rsaquo; <span x-text="articleEditor.form.slug || 'judul-berita'"></span></span>
                                         </div>
                                         <div class="google-title font-bold text-sm sm:text-base mt-1" x-text="articleEditor.form.metaTitle || articleEditor.form.title || 'Judul Artikel Next Level Study'"></div>
                                         <div class="google-desc text-xs mt-1" x-text="articleEditor.form.metaDescription || 'Deskripsi ringkasan artikel akan tampil di sini pada hasil pencarian mesin telusur Google.'"></div>
@@ -2728,16 +2728,16 @@
                                         <p class="text-[11px] font-black uppercase text-slate-500">Pemeriksaan SEO Otomatis:</p>
                                         <div class="space-y-1.5 text-xs font-medium">
                                             <div class="flex items-center gap-2" :class="checkKeywordInTitle() ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'">
-                                                <span>â€¢ Kata kunci terdapat di Judul</span>
+                                                <span>• Kata kunci terdapat di Judul</span>
                                             </div>
                                             <div class="flex items-center gap-2" :class="checkKeywordInDesc() ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'">
-                                                <span>â€¢ Kata kunci terdapat di Meta Description</span>
+                                                <span>• Kata kunci terdapat di Meta Description</span>
                                             </div>
                                             <div class="flex items-center gap-2" :class="checkTitleLength() ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'">
-                                                <span>â€¢ Panjang judul ideal (40-65 karakter)</span>
+                                                <span>• Panjang judul ideal (40-65 karakter)</span>
                                             </div>
                                             <div class="flex items-center gap-2" :class="checkDescLength() ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'">
-                                                <span>â€¢ Panjang deskripsi ideal (110-160 karakter)</span>
+                                                <span>• Panjang deskripsi ideal (110-160 karakter)</span>
                                             </div>
                                         </div>
                                     </div>
@@ -3407,9 +3407,9 @@
                             <div class="flex items-center gap-2">
                                 <select x-model="teacherAppStatusFilter" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold">
                                     <option value="all">Semua Status Pendaftaran</option>
-                                    <option value="pending">Ã¢ÂÂ³ Menunggu Review (Pending)</option>
-                                    <option value="accepted">âœ“ Telah Diterima (Accepted)</option>
-                                    <option value="rejected">âœ• Ditolak (Rejected)</option>
+                                    <option value="pending">Ã⏳ Menunggu Review (Pending)</option>
+                                    <option value="accepted">✓ Telah Diterima (Accepted)</option>
+                                    <option value="rejected">✖ Ditolak (Rejected)</option>
                                 </select>
 
                                 <select x-model="teacherAppCategoryFilter" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold">
@@ -3449,7 +3449,7 @@
                                         <div class="flex items-center gap-2">
                                             <span x-show="app.status === 'pending'" class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-700 flex items-center gap-1">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span>
-                                                <span>Menunggu Review</span>
+                                                <⏳ Menunggu Review</span>
                                             </span>
                                             <span x-show="app.status === 'accepted'" class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
                                                 <svg class="w-3 h-3 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
@@ -9533,6 +9533,8 @@
     </script>
 </body>
 </html>
+
+
 
 
 

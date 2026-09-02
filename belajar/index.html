@@ -678,10 +678,10 @@
                                         <span>ðŸ‘¤</span> <span>Profil Saya</span>
                                     </button>
                                     <button type="button" @click="openMyClassView('actived'); userDropdownOpen = false" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 text-left">
-                                        <span>ðŸ“š</span> <span>Kelas Aktif Saya</span>
+                                        <span>📚</span> <span>Kelas Aktif Saya</span>
                                     </button>
                                     <button type="button" @click="openMyClassView('quiz_result'); userDropdownOpen = false" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 text-left">
-                                        <span>ðŸ“Š</span> <span>Riwayat Nilai Kuis</span>
+                                        <span>📊</span> <span>Riwayat Nilai Kuis</span>
                                     </button>
                                 </div>
 
@@ -711,7 +711,7 @@
                         <div class="gradient-hero-lms rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-xl shadow-indigo-950/20">
                             <div class="relative z-10 max-w-2xl space-y-3">
                                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-[11px] font-extrabold uppercase tracking-wide">
-                                    <span>ðŸš€ Ruang Belajar &amp; Evaluasi NLS</span>
+                                    <span>🚀 Ruang Belajar &amp; Evaluasi NLS</span>
                                 </div>
                                 <h1 class="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
                                     Halo, <span x-text="studentProfile.name"></span>! ðŸ‘‹
@@ -746,7 +746,7 @@
                                     <span>ðŸŒŸ Mode Pratinjau Terbuka (Guest Preview)</span>
                                 </div>
                                 <h1 class="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
-                                    Selamat Datang di Portal Belajar NLS! ðŸŽ“
+                                    Selamat Datang di Portal Belajar NLS! 🎓
                                 </h1>
                                 <p class="text-xs sm:text-sm text-indigo-100/90 leading-relaxed">
                                     Jelajahi seluruh silabus kurikulum, ringkasan materi unggulan, dan bank soal olimpiade/UTBK. Masuk ke akun siswa Anda untuk mendaftar kelas &amp; menyimpan nilai kuis.
@@ -776,7 +776,7 @@
                             <div class="p-5 rounded-2xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-2">
                                 <div class="flex items-center justify-between">
                                     <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Program Unggulan</span>
-                                    <span class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center font-bold">ðŸŽ“</span>
+                                    <span class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center font-bold">🎓</span>
                                 </div>
                                 <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="courses.length + ' Kelas'"></div>
                                 <p class="text-[10px] text-slate-400 font-medium">School, OSN, TKA, &amp; SNBT</p>
@@ -817,7 +817,7 @@
                             <div class="p-5 rounded-2xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-2">
                                 <div class="flex items-center justify-between">
                                     <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Kelas Aktif</span>
-                                    <span class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center font-bold">ðŸ“š</span>
+                                    <span class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center font-bold">📚</span>
                                 </div>
                                 <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="myActivedClasses.length"></div>
                                 <p class="text-[10px] text-slate-400 font-medium">Kelas sedang diikuti</p>
@@ -826,7 +826,7 @@
                             <div class="p-5 rounded-2xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-2">
                                 <div class="flex items-center justify-between">
                                     <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Modul Tuntas</span>
-                                    <span class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center font-bold">â±ï¸</span>
+                                    <span class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center font-bold">⏱ï¸</span>
                                 </div>
                                 <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="getTotalCompletedModules() + ' Bab'"></div>
                                 <p class="text-[10px] text-slate-400 font-medium">Materi telah dipelajari</p>
@@ -884,7 +884,7 @@
                                             <div>
                                                 <h4 class="text-sm font-black text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors leading-snug flex items-start gap-1">
                                                     <span x-text="course.title"></span>
-                                                    <span x-show="course.isLocked" class="text-amber-500 text-xs mt-0.5" title="Password Protected">ðŸ”’</span>
+                                                    <span x-show="course.isLocked" class="text-amber-500 text-xs mt-0.5" title="Password Protected">🔒</span>
                                                 </h4>
                                                 <p class="text-xs text-slate-500 mt-1 line-clamp-2" x-text="course.description"></p>
                                             </div>
@@ -929,11 +929,11 @@
                         <!-- 1. Guest Mode Right Column (Getting Started Guide & CTA) -->
                         <template x-if="!isLoggedIn">
                             <div class="space-y-4">
-                                <!-- ðŸš€ Card 1: Cara Memulai Belajar di NLS -->
+                                <!-- 🚀 Card 1: Cara Memulai Belajar di NLS -->
                                 <div class="p-5 rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
                                     <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                                         <div class="flex items-center gap-2">
-                                            <span class="w-7 h-7 rounded-xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-black text-xs">ðŸš€</span>
+                                            <span class="w-7 h-7 rounded-xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-black text-xs">🚀</span>
                                             <h3 class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-white">Langkah Belajar NLS</h3>
                                         </div>
                                         <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300">Tamu</span>
@@ -977,9 +977,9 @@
                                     </div>
 
                                     <div class="space-y-1.5 text-[11px] text-indigo-100/90 pl-1">
-                                        <div class="flex items-center gap-2"><span>âœ“</span> <span>Akses video kuliah resolusi tinggi</span></div>
-                                        <div class="flex items-center gap-2"><span>âœ“</span> <span>Unduh rangkuman materi PDF</span></div>
-                                        <div class="flex items-center gap-2"><span>âœ“</span> <span>Rekap skor tryout tersinkronisasi</span></div>
+                                        <div class="flex items-center gap-2"><span>✓</span> <span>Akses video kuliah resolusi tinggi</span></div>
+                                        <div class="flex items-center gap-2"><span>✓</span> <span>Unduh rangkuman materi PDF</span></div>
+                                        <div class="flex items-center gap-2"><span>✓</span> <span>Rekap skor tryout tersinkronisasi</span></div>
                                     </div>
 
                                     <div class="pt-1 space-y-2">
@@ -998,9 +998,9 @@
                                 <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs space-y-2">
                                     <span class="font-black text-slate-800 dark:text-slate-200 block text-[11px] uppercase tracking-wider">ðŸŽ¯ Fasilitas Unggulan Siswa NLS:</span>
                                     <div class="text-[11px] text-slate-500 dark:text-slate-400 space-y-1">
-                                        <div>â€¢ Mentor Juara OSN &amp; Dosen Alumni PTN Top 3</div>
-                                        <div>â€¢ Konsultasi Jurusan SNBT &amp; Strategi Kelulusan</div>
-                                        <div>â€¢ Bedah Soal HOTS &amp; Trik Pengerjaan 30 Detik</div>
+                                        <div>• Mentor Juara OSN &amp; Dosen Alumni PTN Top 3</div>
+                                        <div>• Konsultasi Jurusan SNBT &amp; Strategi Kelulusan</div>
+                                        <div>• Bedah Soal HOTS &amp; Trik Pengerjaan 30 Detik</div>
                                     </div>
                                 </div>
                             </div>
@@ -1019,7 +1019,7 @@
                                         <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/70 border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
                                             <div class="min-w-0">
                                                 <div class="text-xs font-black text-slate-900 dark:text-white truncate" x-text="q.title"></div>
-                                                <div class="text-[10px] text-slate-400 font-medium" x-text="q.subject + ' â€¢ ' + q.date"></div>
+                                                <div class="text-[10px] text-slate-400 font-medium" x-text="q.subject + ' • ' + q.date"></div>
                                             </div>
                                             <div class="text-right shrink-0">
                                                 <div class="text-sm font-black" :class="q.score >= 80 ? 'text-emerald-600' : 'text-amber-500'" x-text="q.score + '/100'"></div>
@@ -1116,7 +1116,7 @@
                                     <div class="relative w-32 h-32 mx-auto mb-4 group-hover:scale-105 transition-transform duration-500">
                                         <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-3xl blur-md opacity-40"></div>
                                         <img :src="studentProfile.avatar || `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E`" alt="Avatar" class="relative w-full h-full rounded-3xl object-cover border-4 border-white dark:border-[#0f172a] shadow-xl z-10">
-                                        <span class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 border-2 border-white dark:border-[#0f172a] flex items-center justify-center text-sm text-white font-black shadow-lg z-20" title="Akun Terverifikasi">âœ“</span>
+                                        <span class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 border-2 border-white dark:border-[#0f172a] flex items-center justify-center text-sm text-white font-black shadow-lg z-20" title="Akun Terverifikasi">✓</span>
                                     </div>
 
                                     <div>
@@ -1396,8 +1396,8 @@
                                     <select x-model="studentProfile.target" required
                                         class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold focus:ring-2 focus:ring-indigo-500 outline-hidden text-indigo-600 dark:text-indigo-400">
                                         <option value="Persiapan OSN & Olimpiade">ðŸ† Persiapan OSN & Olimpiade</option>
-                                        <option value="UTBK SNBT 2026 / PTN Top 3">ðŸŽ“ UTBK SNBT & Masuk PTN</option>
-                                        <option value="Pemantapan TKA & Sekolah Unggulan">ðŸ“š Pemantapan TKA</option>
+                                        <option value="UTBK SNBT 2026 / PTN Top 3">🎓 UTBK SNBT & Masuk PTN</option>
+                                        <option value="Pemantapan TKA & Sekolah Unggulan">📚 Pemantapan TKA</option>
                                         <option value="SKD Kedinasan (IPDN/STAN/STIS)">ðŸ›ï¸ Sekolah Kedinasan</option>
                                         <option value="Kurikulum Standar Sekolah">ðŸ“– Kurikulum Reguler Sekolah</option>
                                     </select>
@@ -1456,12 +1456,12 @@
                             <!-- Banner Right Quick Stats Pill Badge -->
                             <div class="flex flex-wrap md:flex-col gap-2 shrink-0">
                                 <div class="px-3.5 py-2 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center gap-2 text-xs font-bold">
-                                    <span>ðŸ“š</span>
+                                    <span>📚</span>
                                     <span x-text="getFilteredCoursesByCategory().length + ' Kelas Tersedia'"></span>
                                 </div>
                                 <div class="px-3.5 py-2 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center gap-2 text-xs font-bold">
-                                    <span>â­</span>
-                                    <span>Rating 4.9 â€¢ Mentor Ahli</span>
+                                    <span>⭐</span>
+                                    <span>Rating 4.9 • Mentor Ahli</span>
                                 </div>
                             </div>
                         </div>
@@ -1491,7 +1491,7 @@
                                 <button type="button" @click="openSchoolView('sma')"
                                     class="px-4 py-2.5 rounded-2xl transition-all flex items-center gap-2 cursor-pointer shrink-0"
                                     :class="schoolLevel === 'sma' ? 'bg-sky-600 text-white shadow-md shadow-sky-600/20 font-black' : 'bg-white dark:bg-[#131d38] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'">
-                                    <span>ðŸŽ“ SMA / MA</span>
+                                    <span>🎓 SMA / MA</span>
                                     <span class="px-2 py-0.5 rounded-lg text-[10px]" :class="schoolLevel === 'sma' ? 'bg-white/20 text-white' : 'bg-sky-100 dark:bg-sky-950 text-sky-700 dark:sky-300'">Kelas 10-12</span>
                                 </button>
                             </div>
@@ -1544,7 +1544,7 @@
                                 <button type="button" @click="openTkaView('tka_sma')"
                                     class="px-4 py-2.5 rounded-2xl transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
                                     :class="tkaLevel === 'tka_sma' ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20 font-black' : 'bg-white dark:bg-[#131d38] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'">
-                                    <span>ðŸ“Š TKA SMA (Saintek &amp; Soshum)</span>
+                                    <span>📊 TKA SMA (Saintek &amp; Soshum)</span>
                                 </button>
                             </div>
                         </template>
@@ -1588,7 +1588,7 @@
                                     <div>
                                         <h3 class="text-base font-black text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors leading-snug flex items-start gap-1.5">
                                             <span x-text="course.title"></span>
-                                            <span x-show="course.isLocked" class="text-amber-500 text-sm mt-0.5" title="Password Protected">ðŸ”’</span>
+                                            <span x-show="course.isLocked" class="text-amber-500 text-sm mt-0.5" title="Password Protected">🔒</span>
                                         </h3>
                                         <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 line-clamp-2 leading-relaxed" x-text="course.description"></p>
                                     </div>
@@ -1603,7 +1603,7 @@
                                         </div>
                                         <div class="flex items-center justify-between pt-1 border-t border-slate-200/60 dark:border-slate-800">
                                             <div class="flex items-center gap-2">
-                                                <span class="w-5 h-5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center text-[10px] font-black">ðŸ“š</span>
+                                                <span class="w-5 h-5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center text-[10px] font-black">📚</span>
                                                 <span class="text-slate-400 font-medium">Kurikulum:</span>
                                             </div>
                                             <span class="font-black text-indigo-600 dark:text-indigo-400" x-text="course.totalModules + ' Modul & Bab'"></span>
@@ -1643,7 +1643,7 @@
                         <div class="p-6 sm:p-7 rounded-3xl bg-gradient-to-r from-slate-100 via-indigo-50/50 to-purple-50/50 dark:from-[#131d38] dark:via-[#1e1b4b] dark:to-[#131d38] border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                             <div class="space-y-1">
                                 <div class="flex items-center gap-2">
-                                    <span class="text-lg">ðŸ’¡</span>
+                                    <span class="text-lg">💡</span>
                                     <h4 class="text-sm font-black text-slate-900 dark:text-white">Butuh Bimbingan Privat 1-on-1 atau Mata Pelajaran Kustom?</h4>
                                 </div>
                                 <p class="text-xs text-slate-500 dark:text-slate-400">Tim Kurikulum NLS menyediakan layanan bimbingan intensif privat, kurikulum olimpiade kustom, dan bedah soal mandiri.</p>
@@ -1666,7 +1666,7 @@
                     <template x-if="!isLoggedIn">
                         <div class="p-8 sm:p-12 text-center rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 shadow-xl space-y-5">
                             <div class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-amber-500 text-white flex items-center justify-center text-4xl shadow-xl shadow-indigo-600/30">
-                                ðŸ”’
+                                🔒
                             </div>
                             <div class="max-w-md mx-auto space-y-2">
                                 <h3 class="text-xl font-black text-slate-900 dark:text-white">Kelas Saya Memerlukan Login Akun Siswa</h3>
@@ -1701,7 +1701,7 @@
                             <div class="space-y-3 max-w-2xl">
                                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/20 border border-violet-400/40 text-violet-300 text-[11px] font-black uppercase tracking-wider backdrop-blur-md">
                                     <span class="w-2 h-2 rounded-full bg-fuchsia-400 animate-pulse"></span>
-                                    <span>Ruang Belajar Mandiri Siswa â€¢ NLS Pro Space</span>
+                                    <span>Ruang Belajar Mandiri Siswa • NLS Pro Space</span>
                                 </div>
 
                                 <div class="flex items-center gap-3.5 pt-1">
@@ -1711,7 +1711,7 @@
                                             Semangat Belajar, <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-300 via-fuchsia-300 to-pink-300" x-text="studentProfile.name.split(' ')[0] || 'Siswa'"></span>! âœ¨
                                         </h1>
                                         <p class="text-xs sm:text-sm text-slate-300 font-medium mt-0.5">
-                                            <span class="text-violet-300 font-bold" x-text="studentProfile.target || 'Target: FK UI / OSN Emas'"></span> â€¢ Pantau kemajuan modul &amp; raih skor sempurna di setiap evaluasi.
+                                            <span class="text-violet-300 font-bold" x-text="studentProfile.target || 'Target: FK UI / OSN Emas'"></span> • Pantau kemajuan modul &amp; raih skor sempurna di setiap evaluasi.
                                         </p>
                                     </div>
                                 </div>
@@ -1721,25 +1721,25 @@
                             <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
                                 <button type="button" @click="resumeLatestClass()"
                                     class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 text-white text-xs font-black shadow-lg shadow-fuchsia-500/30 active:scale-95 transition-all flex items-center justify-center gap-2.5 cursor-pointer">
-                                    <span>â–¶ Lanjut Belajar Bab Aktif</span>
+                                    <span>▶ Lanjut Belajar Bab Aktif</span>
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                                 </button>
                                 <button type="button" @click="myclassView = 'quiz_result'"
                                     class="px-4 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-black backdrop-blur-md transition-all flex items-center justify-center gap-2 cursor-pointer">
-                                    <span>ðŸ“Š Cek Riwayat Kuis</span>
+                                    <span>📊 Cek Riwayat Kuis</span>
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- ðŸ“Š 2. FOUR HOLOGRAPHIC QUICK-METRIC HUD CARDS -->
+                    <!-- 📊 2. FOUR HOLOGRAPHIC QUICK-METRIC HUD CARDS -->
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                         
                         <!-- Card 1: Kelas Aktif -->
                         <div class="p-4 sm:p-5 rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200/80 dark:border-slate-800 shadow-xs relative overflow-hidden group hover:border-violet-500/50 transition-all">
                             <div class="flex items-center justify-between">
                                 <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Kelas Aktif</span>
-                                <span class="w-8 h-8 rounded-xl bg-violet-100 dark:bg-violet-950/80 text-violet-600 dark:text-violet-400 flex items-center justify-center font-black text-sm shadow-2xs">ðŸ“š</span>
+                                <span class="w-8 h-8 rounded-xl bg-violet-100 dark:bg-violet-950/80 text-violet-600 dark:text-violet-400 flex items-center justify-center font-black text-sm shadow-2xs">📚</span>
                             </div>
                             <div class="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="myActivedClasses.length"></div>
                             <div class="mt-1 flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
@@ -1752,7 +1752,7 @@
                         <div class="p-4 sm:p-5 rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200/80 dark:border-slate-800 shadow-xs relative overflow-hidden group hover:border-emerald-500/50 transition-all">
                             <div class="flex items-center justify-between">
                                 <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Modul Tuntas</span>
-                                <span class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-sm shadow-2xs">âœ…</span>
+                                <span class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-sm shadow-2xs">✅</span>
                             </div>
                             <div class="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="getTotalCompletedModules() + ' Bab'"></div>
                             <div class="mt-1 text-[10px] text-slate-500 font-semibold truncate">
@@ -1793,7 +1793,7 @@
                             <button type="button" @click="myclassView = 'actived'"
                                 class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer"
                                 :class="myclassView === 'actived' ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-600/20' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'">
-                                <span>ðŸ“š Kelas Aktif Saya</span>
+                                <span>📚 Kelas Aktif Saya</span>
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-black"
                                     :class="myclassView === 'actived' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'"
                                     x-text="myActivedClasses.length"></span>
@@ -1817,7 +1817,7 @@
                         </div>
                     </div>
 
-                    <!-- ðŸ“š 4.A: TAB 1 - ACTIVED CLASS CARDS GRID -->
+                    <!-- 📚 4.A: TAB 1 - ACTIVED CLASS CARDS GRID -->
                     <div x-show="myclassView === 'actived'" class="space-y-6">
                         <template x-if="myActivedClasses.length === 0">
                             <div class="p-12 text-center rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 space-y-4">
@@ -1856,7 +1856,7 @@
                                         <div>
                                             <h3 class="text-base font-black text-slate-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors leading-snug flex items-start gap-1.5">
                                                 <span x-text="course.title"></span>
-                                                <span x-show="course.isLocked" class="text-amber-500 text-sm mt-0.5" title="Password Protected">ðŸ”’</span>
+                                                <span x-show="course.isLocked" class="text-amber-500 text-sm mt-0.5" title="Password Protected">🔒</span>
                                             </h3>
                                             <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 line-clamp-2 leading-relaxed" x-text="course.description"></p>
                                         </div>
@@ -1961,7 +1961,7 @@
                                                 <td class="py-4 px-4">
                                                     <span class="px-2.5 py-1 rounded-full text-[10px] font-black"
                                                         :class="q.score >= 75 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'"
-                                                        x-text="q.score >= 75 ? 'âœ… Lulus / Tuntas' : 'âš¡ Perlu Evaluasi'"></span>
+                                                        x-text="q.score >= 75 ? '✅ Lulus / Tuntas' : 'âš¡ Perlu Evaluasi'"></span>
                                                 </td>
                                                 <td class="py-4 px-4 sm:px-6 text-right">
                                                     <button type="button" @click="showQuizExplanation(q)"
@@ -2027,7 +2027,7 @@
                     <template x-if="!isLoggedIn">
                         <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-amber-900 dark:text-amber-200 text-xs font-semibold">
                             <div class="flex items-center gap-2.5">
-                                <span class="text-lg">ðŸ”’</span>
+                                <span class="text-lg">🔒</span>
                                 <div>
                                     <strong class="font-black">Mode Pratinjau Terbuka (Guest Preview):</strong>
                                     <span>Anda dapat melihat rincian silabus kelas ini. Masuk ke akun siswa Anda untuk mendaftar, menyimpan progres, mengunduh PDF, dan mengerjakan kuis evaluasi.</span>
@@ -2043,7 +2043,7 @@
                     <!-- 2. Main 2-Column Split Workspace (Silabus Kiri vs Player / Materi / Kuis Kanan) -->
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                         
-                        <!-- ðŸ“š Left Column: Syllabus & Module List (4 cols) -->
+                        <!-- 📚 Left Column: Syllabus & Module List (4 cols) -->
                         <div class="lg:col-span-4 rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-4">
                             <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                                 <div class="flex items-center gap-2">
@@ -2063,13 +2063,13 @@
                                                 <span class="text-[10px] font-black uppercase tracking-wider"
                                                     :class="studyRoom.activeModuleIndex === mIdx ? 'text-indigo-200' : 'text-slate-400'"
                                                     x-text="'Bab ' + (mIdx + 1)"></span>
-                                                <span class="text-[10px]" :class="studyRoom.activeModuleIndex === mIdx ? 'text-indigo-200' : 'text-slate-400'">â€¢</span>
+                                                <span class="text-[10px]" :class="studyRoom.activeModuleIndex === mIdx ? 'text-indigo-200' : 'text-slate-400'">•</span>
                                                 <span class="text-[10px]" :class="studyRoom.activeModuleIndex === mIdx ? 'text-indigo-200' : 'text-slate-400'" x-text="mod.type"></span>
                                             </div>
                                             <div class="font-extrabold text-sm leading-snug line-clamp-2" x-text="mod.title"></div>
-                                            <div class="text-[10px] opacity-75 font-medium" x-text="'â±ï¸ ' + mod.duration"></div>
+                                            <div class="text-[10px] opacity-75 font-medium" x-text="'⏱ï¸ ' + mod.duration"></div>
                                         </div>
-                                        <span class="text-sm shrink-0 mt-1" x-text="mod.completed ? 'âœ…' : (studyRoom.activeModuleIndex === mIdx ? 'â–¶ï¸' : 'â³')"></span>
+                                        <span class="text-sm shrink-0 mt-1" x-text="mod.completed ? '✅' : (studyRoom.activeModuleIndex === mIdx ? '▶ï¸' : '⏳')"></span>
                                     </button>
                                 </template>
                             </div>
@@ -2088,7 +2088,7 @@
                                             <div class="flex items-center gap-2">
                                                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
                                                     x-text="'Bab ' + (studyRoom.activeModuleIndex + 1) + ' dari ' + studyRoom.modules.length"></span>
-                                                <span class="text-xs text-slate-400 font-bold" x-text="'â€¢ ' + getActiveModule().type"></span>
+                                                <span class="text-xs text-slate-400 font-bold" x-text="'• ' + getActiveModule().type"></span>
                                             </div>
                                             <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1.5" x-text="getActiveModule().title"></h2>
                                         </div>
@@ -2103,13 +2103,13 @@
                                         <div class="absolute inset-0 bg-radial from-indigo-500/10 via-transparent to-transparent pointer-events-none"></div>
 
                                         <div class="text-center p-6 space-y-3 relative z-10">
-                                            <button type="button" @click="showToast('â–¶ Memutar video pembelajaran Bab ' + (studyRoom.activeModuleIndex + 1) + '...')"
+                                            <button type="button" @click="showToast('▶ Memutar video pembelajaran Bab ' + (studyRoom.activeModuleIndex + 1) + '...')"
                                                 class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center text-3xl shadow-2xl shadow-indigo-600/40 hover:scale-110 active:scale-95 transition-all cursor-pointer">
-                                                â–¶
+                                                ▶
                                             </button>
                                             <div>
                                                 <h4 class="text-sm sm:text-base font-black text-white" x-text="getActiveModule().title"></h4>
-                                                <p class="text-xs text-slate-400 mt-1" x-text="'Video Kuliah Interaktif â€¢ Format HD 1080p â€¢ ' + getActiveModule().duration"></p>
+                                                <p class="text-xs text-slate-400 mt-1" x-text="'Video Kuliah Interaktif • Format HD 1080p • ' + getActiveModule().duration"></p>
                                             </div>
                                         </div>
                                     </div>
@@ -2117,7 +2117,7 @@
                                     <!-- Material Summary Notes & Concept Box -->
                                     <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs leading-relaxed space-y-3">
                                         <div class="flex items-center gap-2">
-                                            <span class="w-6 h-6 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-black">ðŸ’¡</span>
+                                            <span class="w-6 h-6 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-black">💡</span>
                                             <h4 class="font-black text-slate-900 dark:text-white text-sm">Rangkuman Konsep &amp; Poin Inti Bab:</h4>
                                         </div>
                                         <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed" x-text="getActiveModule().summary"></p>
@@ -2671,7 +2671,7 @@
             <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-indigo-500 via-amber-500 to-rose-500"></div>
 
             <div class="w-16 h-16 rounded-3xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800/60 text-indigo-600 dark:text-indigo-400 mx-auto flex items-center justify-center text-3xl shadow-inner">
-                ðŸ”’
+                🔒
             </div>
 
             <div class="space-y-2">
@@ -2684,9 +2684,9 @@
                     <span>âœ¨</span> <span>Keuntungan Akun Siswa NLS:</span>
                 </div>
                 <div class="space-y-1 text-[11px] text-slate-500 dark:text-slate-400">
-                    <div>âœ“ Akses penuh modul pembelajaran &amp; unduh rangkuman PDF</div>
-                    <div>âœ“ Pengerjaan kuis CBT &amp; kunci pembahasan langkah-demi-langkah</div>
-                    <div>âœ“ Rekap nilai tryout otomatis masuk ke Super Admin NLS</div>
+                    <div>✓ Akses penuh modul pembelajaran &amp; unduh rangkuman PDF</div>
+                    <div>✓ Pengerjaan kuis CBT &amp; kunci pembahasan langkah-demi-langkah</div>
+                    <div>✓ Rekap nilai tryout otomatis masuk ke Super Admin NLS</div>
                 </div>
             </div>
 
@@ -2996,7 +2996,7 @@
 
                     // Olimpiade ONMIPA
                     { id: 'c-oly-4', category: 'Olimpiade', level: 'ONMIPA', title: 'ONMIPA Matematika Analisis Real & Aljabar Linear', description: 'Pelatihan mahasiswa untuk seleksi ONMIPA wilayah & nasional mata uji Analisis Real & Aljabar Abstrak.', mentor: 'Prof. Tim Akademik NLS', totalModules: 8, completedModules: 0, progress: 0 },
-                    { id: 'c-oly-4b', category: 'Olimpiade', level: 'ONMIPA', title: 'ONMIPA Fisika Kuantum & Elektrodinamika Klasik', description: 'Persamaan SchrÃ¶dinger, operator mekanika kuantum, dan persamaan Maxwell pada medium dielektrik.', mentor: 'Dr. Sarah Kartika, M.Sc.', totalModules: 10, completedModules: 0, progress: 0 },
+                    { id: 'c-oly-4b', category: 'Olimpiade', level: 'ONMIPA', title: 'ONMIPA Fisika Kuantum & Elektrodinamika Klasik', description: 'Persamaan Schrödinger, operator mekanika kuantum, dan persamaan Maxwell pada medium dielektrik.', mentor: 'Dr. Sarah Kartika, M.Sc.', totalModules: 10, completedModules: 0, progress: 0 },
 
                     // Olimpiade Internasional
                     { id: 'c-oly-5', category: 'Olimpiade', level: 'Internasional', title: 'International Physics Olympiad (IPhO) Preparation', description: 'Advanced problem-solving for IMO/IPhO candidate camp and Asian Physics Olympiad (APhO).', mentor: 'Dr. Sarah Kartika, M.Sc.', totalModules: 15, completedModules: 0, progress: 0 },
@@ -3050,16 +3050,16 @@
                 userAnswers: {},
                 currentQuizQuestions: [
                     {
-                        question: 'Sebuah partikel bergerak dengan persamaan posisi x(t) = 4tÂ³ - 6tÂ² + 2t. Berapakah percepatan partikel saat t = 2 detik?',
-                        options: ['18 m/sÂ²', '36 m/sÂ²', '42 m/sÂ²', '48 m/sÂ²'],
-                        correctAnswer: '36 m/sÂ²',
-                        explanation: 'Turunan pertama v(t) = 12tÂ² - 12t + 2. Turunan kedua a(t) = 24t - 12. Saat t = 2, a(2) = 24(2) - 12 = 36 m/sÂ².'
+                        question: 'Sebuah partikel bergerak dengan persamaan posisi x(t) = 4t³ - 6t² + 2t. Berapakah percepatan partikel saat t = 2 detik?',
+                        options: ['18 m/s²', '36 m/s²', '42 m/s²', '48 m/s²'],
+                        correctAnswer: '36 m/s²',
+                        explanation: 'Turunan pertama v(t) = 12t² - 12t + 2. Turunan kedua a(t) = 24t - 12. Saat t = 2, a(2) = 24(2) - 12 = 36 m/s².'
                     },
                     {
                         question: 'Jika log_2(x) + log_2(x - 2) = 3, maka nilai x yang memenuhi persamaan tersebut adalah...',
                         options: ['x = 4', 'x = -2', 'x = 2 atau x = 4', 'x = 8'],
                         correctAnswer: 'x = 4',
-                        explanation: 'log_2(x(x-2)) = 3 => xÂ² - 2x = 8 => xÂ² - 2x - 8 = 0 => (x-4)(x+2) = 0. Karena syarat numerus x > 2, maka nilai x yang valid adalah x = 4.'
+                        explanation: 'log_2(x(x-2)) = 3 => x² - 2x = 8 => x² - 2x - 8 = 0 => (x-4)(x+2) = 0. Karena syarat numerus x > 2, maka nilai x yang valid adalah x = 4.'
                     },
                     {
                         question: 'Nilai dari limit x menuju 0 dari (sin 4x) / (tan 2x) adalah...',
@@ -3081,14 +3081,14 @@
 
                 sampleQuizQuestions: [
                     {
-                        question: 'Sebuah partikel bergerak dengan persamaan posisi x(t) = 4tÂ³ - 6tÂ² + 2t. Berapakah percepatan partikel saat t = 2 detik?',
-                        correctAnswer: '36 m/sÂ²',
-                        explanation: 'Turunan pertama v(t) = 12tÂ² - 12t + 2. Turunan kedua a(t) = 24t - 12. Saat t = 2, a(2) = 24(2) - 12 = 36 m/sÂ².'
+                        question: 'Sebuah partikel bergerak dengan persamaan posisi x(t) = 4t³ - 6t² + 2t. Berapakah percepatan partikel saat t = 2 detik?',
+                        correctAnswer: '36 m/s²',
+                        explanation: 'Turunan pertama v(t) = 12t² - 12t + 2. Turunan kedua a(t) = 24t - 12. Saat t = 2, a(2) = 24(2) - 12 = 36 m/s².'
                     },
                     {
                         question: 'Jika log_2(x) + log_2(x - 2) = 3, maka nilai x yang memenuhi persamaan tersebut adalah...',
                         correctAnswer: 'x = 4',
-                        explanation: 'log_2(x(x-2)) = 3 => xÂ² - 2x = 8 => xÂ² - 2x - 8 = 0 => (x-4)(x+2) = 0. Karena syarat numerus x > 2, maka nilai x yang valid adalah x = 4.'
+                        explanation: 'log_2(x(x-2)) = 3 => x² - 2x = 8 => x² - 2x - 8 = 0 => (x-4)(x+2) = 0. Karena syarat numerus x > 2, maka nilai x yang valid adalah x = 4.'
                     },
                     {
                         question: 'Nilai dari limit x menuju 0 dari (sin 4x) / (tan 2x) adalah...',
@@ -3431,7 +3431,7 @@
                     if (this.activeTab === 'school') return 'ðŸ«';
                     if (this.activeTab === 'olimpiade') return 'ðŸ†';
                     if (this.activeTab === 'tka') return 'ðŸ“';
-                    if (this.activeTab === 'college') return 'ðŸŽ“';
+                    if (this.activeTab === 'college') return '🎓';
                     return 'âœ¨';
                 },
 
@@ -4768,10 +4768,10 @@
                                         <span>ðŸ‘¤</span> <span>Profil Saya</span>
                                     </button>
                                     <button type="button" @click="openMyClassView('actived'); userDropdownOpen = false" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 text-left">
-                                        <span>ðŸ“š</span> <span>Kelas Aktif Saya</span>
+                                        <span>📚</span> <span>Kelas Aktif Saya</span>
                                     </button>
                                     <button type="button" @click="openMyClassView('quiz_result'); userDropdownOpen = false" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 text-left">
-                                        <span>ðŸ“Š</span> <span>Riwayat Nilai Kuis</span>
+                                        <span>📊</span> <span>Riwayat Nilai Kuis</span>
                                     </button>
                                 </div>
 
@@ -4801,7 +4801,7 @@
                         <div class="gradient-hero-lms rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-xl shadow-indigo-950/20">
                             <div class="relative z-10 max-w-2xl space-y-3">
                                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-[11px] font-extrabold uppercase tracking-wide">
-                                    <span>ðŸš€ Ruang Belajar &amp; Evaluasi NLS</span>
+                                    <span>🚀 Ruang Belajar &amp; Evaluasi NLS</span>
                                 </div>
                                 <h1 class="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
                                     Halo, <span x-text="studentProfile.name"></span>! ðŸ‘‹
@@ -4836,7 +4836,7 @@
                                     <span>ðŸŒŸ Mode Pratinjau Terbuka (Guest Preview)</span>
                                 </div>
                                 <h1 class="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
-                                    Selamat Datang di Portal Belajar NLS! ðŸŽ“
+                                    Selamat Datang di Portal Belajar NLS! 🎓
                                 </h1>
                                 <p class="text-xs sm:text-sm text-indigo-100/90 leading-relaxed">
                                     Jelajahi seluruh silabus kurikulum, ringkasan materi unggulan, dan bank soal olimpiade/UTBK. Masuk ke akun siswa Anda untuk mendaftar kelas &amp; menyimpan nilai kuis.
@@ -4866,7 +4866,7 @@
                             <div class="p-5 rounded-2xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-2">
                                 <div class="flex items-center justify-between">
                                     <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Program Unggulan</span>
-                                    <span class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center font-bold">ðŸŽ“</span>
+                                    <span class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center font-bold">🎓</span>
                                 </div>
                                 <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="courses.length + ' Kelas'"></div>
                                 <p class="text-[10px] text-slate-400 font-medium">School, OSN, TKA, &amp; SNBT</p>
@@ -4907,7 +4907,7 @@
                             <div class="p-5 rounded-2xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-2">
                                 <div class="flex items-center justify-between">
                                     <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Kelas Aktif</span>
-                                    <span class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center font-bold">ðŸ“š</span>
+                                    <span class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center font-bold">📚</span>
                                 </div>
                                 <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="myActivedClasses.length"></div>
                                 <p class="text-[10px] text-slate-400 font-medium">Kelas sedang diikuti</p>
@@ -4916,7 +4916,7 @@
                             <div class="p-5 rounded-2xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-2">
                                 <div class="flex items-center justify-between">
                                     <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Modul Tuntas</span>
-                                    <span class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center font-bold">â±ï¸</span>
+                                    <span class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center font-bold">⏱ï¸</span>
                                 </div>
                                 <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="getTotalCompletedModules() + ' Bab'"></div>
                                 <p class="text-[10px] text-slate-400 font-medium">Materi telah dipelajari</p>
@@ -4974,7 +4974,7 @@
                                             <div>
                                                 <h4 class="text-sm font-black text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors leading-snug flex items-start gap-1">
                                                     <span x-text="course.title"></span>
-                                                    <span x-show="course.isLocked" class="text-amber-500 text-xs mt-0.5" title="Password Protected">ðŸ”’</span>
+                                                    <span x-show="course.isLocked" class="text-amber-500 text-xs mt-0.5" title="Password Protected">🔒</span>
                                                 </h4>
                                                 <p class="text-xs text-slate-500 mt-1 line-clamp-2" x-text="course.description"></p>
                                             </div>
@@ -5019,11 +5019,11 @@
                         <!-- 1. Guest Mode Right Column (Getting Started Guide & CTA) -->
                         <template x-if="!isLoggedIn">
                             <div class="space-y-4">
-                                <!-- ðŸš€ Card 1: Cara Memulai Belajar di NLS -->
+                                <!-- 🚀 Card 1: Cara Memulai Belajar di NLS -->
                                 <div class="p-5 rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
                                     <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                                         <div class="flex items-center gap-2">
-                                            <span class="w-7 h-7 rounded-xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-black text-xs">ðŸš€</span>
+                                            <span class="w-7 h-7 rounded-xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-black text-xs">🚀</span>
                                             <h3 class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-white">Langkah Belajar NLS</h3>
                                         </div>
                                         <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300">Tamu</span>
@@ -5067,9 +5067,9 @@
                                     </div>
 
                                     <div class="space-y-1.5 text-[11px] text-indigo-100/90 pl-1">
-                                        <div class="flex items-center gap-2"><span>âœ“</span> <span>Akses video kuliah resolusi tinggi</span></div>
-                                        <div class="flex items-center gap-2"><span>âœ“</span> <span>Unduh rangkuman materi PDF</span></div>
-                                        <div class="flex items-center gap-2"><span>âœ“</span> <span>Rekap skor tryout tersinkronisasi</span></div>
+                                        <div class="flex items-center gap-2"><span>✓</span> <span>Akses video kuliah resolusi tinggi</span></div>
+                                        <div class="flex items-center gap-2"><span>✓</span> <span>Unduh rangkuman materi PDF</span></div>
+                                        <div class="flex items-center gap-2"><span>✓</span> <span>Rekap skor tryout tersinkronisasi</span></div>
                                     </div>
 
                                     <div class="pt-1 space-y-2">
@@ -5088,9 +5088,9 @@
                                 <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs space-y-2">
                                     <span class="font-black text-slate-800 dark:text-slate-200 block text-[11px] uppercase tracking-wider">ðŸŽ¯ Fasilitas Unggulan Siswa NLS:</span>
                                     <div class="text-[11px] text-slate-500 dark:text-slate-400 space-y-1">
-                                        <div>â€¢ Mentor Juara OSN &amp; Dosen Alumni PTN Top 3</div>
-                                        <div>â€¢ Konsultasi Jurusan SNBT &amp; Strategi Kelulusan</div>
-                                        <div>â€¢ Bedah Soal HOTS &amp; Trik Pengerjaan 30 Detik</div>
+                                        <div>• Mentor Juara OSN &amp; Dosen Alumni PTN Top 3</div>
+                                        <div>• Konsultasi Jurusan SNBT &amp; Strategi Kelulusan</div>
+                                        <div>• Bedah Soal HOTS &amp; Trik Pengerjaan 30 Detik</div>
                                     </div>
                                 </div>
                             </div>
@@ -5109,7 +5109,7 @@
                                         <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/70 border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
                                             <div class="min-w-0">
                                                 <div class="text-xs font-black text-slate-900 dark:text-white truncate" x-text="q.title"></div>
-                                                <div class="text-[10px] text-slate-400 font-medium" x-text="q.subject + ' â€¢ ' + q.date"></div>
+                                                <div class="text-[10px] text-slate-400 font-medium" x-text="q.subject + ' • ' + q.date"></div>
                                             </div>
                                             <div class="text-right shrink-0">
                                                 <div class="text-sm font-black" :class="q.score >= 80 ? 'text-emerald-600' : 'text-amber-500'" x-text="q.score + '/100'"></div>
@@ -5206,7 +5206,7 @@
                                     <div class="relative w-32 h-32 mx-auto mb-4 group-hover:scale-105 transition-transform duration-500">
                                         <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-3xl blur-md opacity-40"></div>
                                         <img :src="studentProfile.avatar || `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E`" alt="Avatar" class="relative w-full h-full rounded-3xl object-cover border-4 border-white dark:border-[#0f172a] shadow-xl z-10">
-                                        <span class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 border-2 border-white dark:border-[#0f172a] flex items-center justify-center text-sm text-white font-black shadow-lg z-20" title="Akun Terverifikasi">âœ“</span>
+                                        <span class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 border-2 border-white dark:border-[#0f172a] flex items-center justify-center text-sm text-white font-black shadow-lg z-20" title="Akun Terverifikasi">✓</span>
                                     </div>
 
                                     <div>
@@ -5486,8 +5486,8 @@
                                     <select x-model="studentProfile.target" required
                                         class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold focus:ring-2 focus:ring-indigo-500 outline-hidden text-indigo-600 dark:text-indigo-400">
                                         <option value="Persiapan OSN & Olimpiade">ðŸ† Persiapan OSN & Olimpiade</option>
-                                        <option value="UTBK SNBT 2026 / PTN Top 3">ðŸŽ“ UTBK SNBT & Masuk PTN</option>
-                                        <option value="Pemantapan TKA & Sekolah Unggulan">ðŸ“š Pemantapan TKA</option>
+                                        <option value="UTBK SNBT 2026 / PTN Top 3">🎓 UTBK SNBT & Masuk PTN</option>
+                                        <option value="Pemantapan TKA & Sekolah Unggulan">📚 Pemantapan TKA</option>
                                         <option value="SKD Kedinasan (IPDN/STAN/STIS)">ðŸ›ï¸ Sekolah Kedinasan</option>
                                         <option value="Kurikulum Standar Sekolah">ðŸ“– Kurikulum Reguler Sekolah</option>
                                     </select>
@@ -5546,12 +5546,12 @@
                             <!-- Banner Right Quick Stats Pill Badge -->
                             <div class="flex flex-wrap md:flex-col gap-2 shrink-0">
                                 <div class="px-3.5 py-2 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center gap-2 text-xs font-bold">
-                                    <span>ðŸ“š</span>
+                                    <span>📚</span>
                                     <span x-text="getFilteredCoursesByCategory().length + ' Kelas Tersedia'"></span>
                                 </div>
                                 <div class="px-3.5 py-2 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center gap-2 text-xs font-bold">
-                                    <span>â­</span>
-                                    <span>Rating 4.9 â€¢ Mentor Ahli</span>
+                                    <span>⭐</span>
+                                    <span>Rating 4.9 • Mentor Ahli</span>
                                 </div>
                             </div>
                         </div>
@@ -5581,7 +5581,7 @@
                                 <button type="button" @click="openSchoolView('sma')"
                                     class="px-4 py-2.5 rounded-2xl transition-all flex items-center gap-2 cursor-pointer shrink-0"
                                     :class="schoolLevel === 'sma' ? 'bg-sky-600 text-white shadow-md shadow-sky-600/20 font-black' : 'bg-white dark:bg-[#131d38] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'">
-                                    <span>ðŸŽ“ SMA / MA</span>
+                                    <span>🎓 SMA / MA</span>
                                     <span class="px-2 py-0.5 rounded-lg text-[10px]" :class="schoolLevel === 'sma' ? 'bg-white/20 text-white' : 'bg-sky-100 dark:bg-sky-950 text-sky-700 dark:sky-300'">Kelas 10-12</span>
                                 </button>
                             </div>
@@ -5634,7 +5634,7 @@
                                 <button type="button" @click="openTkaView('tka_sma')"
                                     class="px-4 py-2.5 rounded-2xl transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
                                     :class="tkaLevel === 'tka_sma' ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20 font-black' : 'bg-white dark:bg-[#131d38] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'">
-                                    <span>ðŸ“Š TKA SMA (Saintek &amp; Soshum)</span>
+                                    <span>📊 TKA SMA (Saintek &amp; Soshum)</span>
                                 </button>
                             </div>
                         </template>
@@ -5678,7 +5678,7 @@
                                     <div>
                                         <h3 class="text-base font-black text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors leading-snug flex items-start gap-1.5">
                                             <span x-text="course.title"></span>
-                                            <span x-show="course.isLocked" class="text-amber-500 text-sm mt-0.5" title="Password Protected">ðŸ”’</span>
+                                            <span x-show="course.isLocked" class="text-amber-500 text-sm mt-0.5" title="Password Protected">🔒</span>
                                         </h3>
                                         <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 line-clamp-2 leading-relaxed" x-text="course.description"></p>
                                     </div>
@@ -5693,7 +5693,7 @@
                                         </div>
                                         <div class="flex items-center justify-between pt-1 border-t border-slate-200/60 dark:border-slate-800">
                                             <div class="flex items-center gap-2">
-                                                <span class="w-5 h-5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center text-[10px] font-black">ðŸ“š</span>
+                                                <span class="w-5 h-5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center text-[10px] font-black">📚</span>
                                                 <span class="text-slate-400 font-medium">Kurikulum:</span>
                                             </div>
                                             <span class="font-black text-indigo-600 dark:text-indigo-400" x-text="course.totalModules + ' Modul & Bab'"></span>
@@ -5733,7 +5733,7 @@
                         <div class="p-6 sm:p-7 rounded-3xl bg-gradient-to-r from-slate-100 via-indigo-50/50 to-purple-50/50 dark:from-[#131d38] dark:via-[#1e1b4b] dark:to-[#131d38] border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                             <div class="space-y-1">
                                 <div class="flex items-center gap-2">
-                                    <span class="text-lg">ðŸ’¡</span>
+                                    <span class="text-lg">💡</span>
                                     <h4 class="text-sm font-black text-slate-900 dark:text-white">Butuh Bimbingan Privat 1-on-1 atau Mata Pelajaran Kustom?</h4>
                                 </div>
                                 <p class="text-xs text-slate-500 dark:text-slate-400">Tim Kurikulum NLS menyediakan layanan bimbingan intensif privat, kurikulum olimpiade kustom, dan bedah soal mandiri.</p>
@@ -5756,7 +5756,7 @@
                     <template x-if="!isLoggedIn">
                         <div class="p-8 sm:p-12 text-center rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 shadow-xl space-y-5">
                             <div class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-amber-500 text-white flex items-center justify-center text-4xl shadow-xl shadow-indigo-600/30">
-                                ðŸ”’
+                                🔒
                             </div>
                             <div class="max-w-md mx-auto space-y-2">
                                 <h3 class="text-xl font-black text-slate-900 dark:text-white">Kelas Saya Memerlukan Login Akun Siswa</h3>
@@ -5791,7 +5791,7 @@
                             <div class="space-y-3 max-w-2xl">
                                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/20 border border-violet-400/40 text-violet-300 text-[11px] font-black uppercase tracking-wider backdrop-blur-md">
                                     <span class="w-2 h-2 rounded-full bg-fuchsia-400 animate-pulse"></span>
-                                    <span>Ruang Belajar Mandiri Siswa â€¢ NLS Pro Space</span>
+                                    <span>Ruang Belajar Mandiri Siswa • NLS Pro Space</span>
                                 </div>
 
                                 <div class="flex items-center gap-3.5 pt-1">
@@ -5801,7 +5801,7 @@
                                             Semangat Belajar, <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-300 via-fuchsia-300 to-pink-300" x-text="studentProfile.name.split(' ')[0] || 'Siswa'"></span>! âœ¨
                                         </h1>
                                         <p class="text-xs sm:text-sm text-slate-300 font-medium mt-0.5">
-                                            <span class="text-violet-300 font-bold" x-text="studentProfile.target || 'Target: FK UI / OSN Emas'"></span> â€¢ Pantau kemajuan modul &amp; raih skor sempurna di setiap evaluasi.
+                                            <span class="text-violet-300 font-bold" x-text="studentProfile.target || 'Target: FK UI / OSN Emas'"></span> • Pantau kemajuan modul &amp; raih skor sempurna di setiap evaluasi.
                                         </p>
                                     </div>
                                 </div>
@@ -5811,25 +5811,25 @@
                             <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
                                 <button type="button" @click="resumeLatestClass()"
                                     class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 text-white text-xs font-black shadow-lg shadow-fuchsia-500/30 active:scale-95 transition-all flex items-center justify-center gap-2.5 cursor-pointer">
-                                    <span>â–¶ Lanjut Belajar Bab Aktif</span>
+                                    <span>▶ Lanjut Belajar Bab Aktif</span>
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                                 </button>
                                 <button type="button" @click="myclassView = 'quiz_result'"
                                     class="px-4 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-black backdrop-blur-md transition-all flex items-center justify-center gap-2 cursor-pointer">
-                                    <span>ðŸ“Š Cek Riwayat Kuis</span>
+                                    <span>📊 Cek Riwayat Kuis</span>
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- ðŸ“Š 2. FOUR HOLOGRAPHIC QUICK-METRIC HUD CARDS -->
+                    <!-- 📊 2. FOUR HOLOGRAPHIC QUICK-METRIC HUD CARDS -->
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                         
                         <!-- Card 1: Kelas Aktif -->
                         <div class="p-4 sm:p-5 rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200/80 dark:border-slate-800 shadow-xs relative overflow-hidden group hover:border-violet-500/50 transition-all">
                             <div class="flex items-center justify-between">
                                 <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Kelas Aktif</span>
-                                <span class="w-8 h-8 rounded-xl bg-violet-100 dark:bg-violet-950/80 text-violet-600 dark:text-violet-400 flex items-center justify-center font-black text-sm shadow-2xs">ðŸ“š</span>
+                                <span class="w-8 h-8 rounded-xl bg-violet-100 dark:bg-violet-950/80 text-violet-600 dark:text-violet-400 flex items-center justify-center font-black text-sm shadow-2xs">📚</span>
                             </div>
                             <div class="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="myActivedClasses.length"></div>
                             <div class="mt-1 flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
@@ -5842,7 +5842,7 @@
                         <div class="p-4 sm:p-5 rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200/80 dark:border-slate-800 shadow-xs relative overflow-hidden group hover:border-emerald-500/50 transition-all">
                             <div class="flex items-center justify-between">
                                 <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Modul Tuntas</span>
-                                <span class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-sm shadow-2xs">âœ…</span>
+                                <span class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-sm shadow-2xs">✅</span>
                             </div>
                             <div class="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="getTotalCompletedModules() + ' Bab'"></div>
                             <div class="mt-1 text-[10px] text-slate-500 font-semibold truncate">
@@ -5883,7 +5883,7 @@
                             <button type="button" @click="myclassView = 'actived'"
                                 class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer"
                                 :class="myclassView === 'actived' ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-600/20' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'">
-                                <span>ðŸ“š Kelas Aktif Saya</span>
+                                <span>📚 Kelas Aktif Saya</span>
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-black"
                                     :class="myclassView === 'actived' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'"
                                     x-text="myActivedClasses.length"></span>
@@ -5907,7 +5907,7 @@
                         </div>
                     </div>
 
-                    <!-- ðŸ“š 4.A: TAB 1 - ACTIVED CLASS CARDS GRID -->
+                    <!-- 📚 4.A: TAB 1 - ACTIVED CLASS CARDS GRID -->
                     <div x-show="myclassView === 'actived'" class="space-y-6">
                         <template x-if="myActivedClasses.length === 0">
                             <div class="p-12 text-center rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 space-y-4">
@@ -5946,7 +5946,7 @@
                                         <div>
                                             <h3 class="text-base font-black text-slate-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors leading-snug flex items-start gap-1.5">
                                                 <span x-text="course.title"></span>
-                                                <span x-show="course.isLocked" class="text-amber-500 text-sm mt-0.5" title="Password Protected">ðŸ”’</span>
+                                                <span x-show="course.isLocked" class="text-amber-500 text-sm mt-0.5" title="Password Protected">🔒</span>
                                             </h3>
                                             <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 line-clamp-2 leading-relaxed" x-text="course.description"></p>
                                         </div>
@@ -6051,7 +6051,7 @@
                                                 <td class="py-4 px-4">
                                                     <span class="px-2.5 py-1 rounded-full text-[10px] font-black"
                                                         :class="q.score >= 75 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'"
-                                                        x-text="q.score >= 75 ? 'âœ… Lulus / Tuntas' : 'âš¡ Perlu Evaluasi'"></span>
+                                                        x-text="q.score >= 75 ? '✅ Lulus / Tuntas' : 'âš¡ Perlu Evaluasi'"></span>
                                                 </td>
                                                 <td class="py-4 px-4 sm:px-6 text-right">
                                                     <button type="button" @click="showQuizExplanation(q)"
@@ -6117,7 +6117,7 @@
                     <template x-if="!isLoggedIn">
                         <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-amber-900 dark:text-amber-200 text-xs font-semibold">
                             <div class="flex items-center gap-2.5">
-                                <span class="text-lg">ðŸ”’</span>
+                                <span class="text-lg">🔒</span>
                                 <div>
                                     <strong class="font-black">Mode Pratinjau Terbuka (Guest Preview):</strong>
                                     <span>Anda dapat melihat rincian silabus kelas ini. Masuk ke akun siswa Anda untuk mendaftar, menyimpan progres, mengunduh PDF, dan mengerjakan kuis evaluasi.</span>
@@ -6133,7 +6133,7 @@
                     <!-- 2. Main 2-Column Split Workspace (Silabus Kiri vs Player / Materi / Kuis Kanan) -->
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                         
-                        <!-- ðŸ“š Left Column: Syllabus & Module List (4 cols) -->
+                        <!-- 📚 Left Column: Syllabus & Module List (4 cols) -->
                         <div class="lg:col-span-4 rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-4">
                             <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                                 <div class="flex items-center gap-2">
@@ -6153,13 +6153,13 @@
                                                 <span class="text-[10px] font-black uppercase tracking-wider"
                                                     :class="studyRoom.activeModuleIndex === mIdx ? 'text-indigo-200' : 'text-slate-400'"
                                                     x-text="'Bab ' + (mIdx + 1)"></span>
-                                                <span class="text-[10px]" :class="studyRoom.activeModuleIndex === mIdx ? 'text-indigo-200' : 'text-slate-400'">â€¢</span>
+                                                <span class="text-[10px]" :class="studyRoom.activeModuleIndex === mIdx ? 'text-indigo-200' : 'text-slate-400'">•</span>
                                                 <span class="text-[10px]" :class="studyRoom.activeModuleIndex === mIdx ? 'text-indigo-200' : 'text-slate-400'" x-text="mod.type"></span>
                                             </div>
                                             <div class="font-extrabold text-sm leading-snug line-clamp-2" x-text="mod.title"></div>
-                                            <div class="text-[10px] opacity-75 font-medium" x-text="'â±ï¸ ' + mod.duration"></div>
+                                            <div class="text-[10px] opacity-75 font-medium" x-text="'⏱ï¸ ' + mod.duration"></div>
                                         </div>
-                                        <span class="text-sm shrink-0 mt-1" x-text="mod.completed ? 'âœ…' : (studyRoom.activeModuleIndex === mIdx ? 'â–¶ï¸' : 'â³')"></span>
+                                        <span class="text-sm shrink-0 mt-1" x-text="mod.completed ? '✅' : (studyRoom.activeModuleIndex === mIdx ? '▶ï¸' : '⏳')"></span>
                                     </button>
                                 </template>
                             </div>
@@ -6178,7 +6178,7 @@
                                             <div class="flex items-center gap-2">
                                                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
                                                     x-text="'Bab ' + (studyRoom.activeModuleIndex + 1) + ' dari ' + studyRoom.modules.length"></span>
-                                                <span class="text-xs text-slate-400 font-bold" x-text="'â€¢ ' + getActiveModule().type"></span>
+                                                <span class="text-xs text-slate-400 font-bold" x-text="'• ' + getActiveModule().type"></span>
                                             </div>
                                             <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1.5" x-text="getActiveModule().title"></h2>
                                         </div>
@@ -6193,13 +6193,13 @@
                                         <div class="absolute inset-0 bg-radial from-indigo-500/10 via-transparent to-transparent pointer-events-none"></div>
 
                                         <div class="text-center p-6 space-y-3 relative z-10">
-                                            <button type="button" @click="showToast('â–¶ Memutar video pembelajaran Bab ' + (studyRoom.activeModuleIndex + 1) + '...')"
+                                            <button type="button" @click="showToast('▶ Memutar video pembelajaran Bab ' + (studyRoom.activeModuleIndex + 1) + '...')"
                                                 class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center text-3xl shadow-2xl shadow-indigo-600/40 hover:scale-110 active:scale-95 transition-all cursor-pointer">
-                                                â–¶
+                                                ▶
                                             </button>
                                             <div>
                                                 <h4 class="text-sm sm:text-base font-black text-white" x-text="getActiveModule().title"></h4>
-                                                <p class="text-xs text-slate-400 mt-1" x-text="'Video Kuliah Interaktif â€¢ Format HD 1080p â€¢ ' + getActiveModule().duration"></p>
+                                                <p class="text-xs text-slate-400 mt-1" x-text="'Video Kuliah Interaktif • Format HD 1080p • ' + getActiveModule().duration"></p>
                                             </div>
                                         </div>
                                     </div>
@@ -6207,7 +6207,7 @@
                                     <!-- Material Summary Notes & Concept Box -->
                                     <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs leading-relaxed space-y-3">
                                         <div class="flex items-center gap-2">
-                                            <span class="w-6 h-6 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-black">ðŸ’¡</span>
+                                            <span class="w-6 h-6 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-black">💡</span>
                                             <h4 class="font-black text-slate-900 dark:text-white text-sm">Rangkuman Konsep &amp; Poin Inti Bab:</h4>
                                         </div>
                                         <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed" x-text="getActiveModule().summary"></p>
@@ -6761,7 +6761,7 @@
             <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-indigo-500 via-amber-500 to-rose-500"></div>
 
             <div class="w-16 h-16 rounded-3xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800/60 text-indigo-600 dark:text-indigo-400 mx-auto flex items-center justify-center text-3xl shadow-inner">
-                ðŸ”’
+                🔒
             </div>
 
             <div class="space-y-2">
@@ -6774,9 +6774,9 @@
                     <span>âœ¨</span> <span>Keuntungan Akun Siswa NLS:</span>
                 </div>
                 <div class="space-y-1 text-[11px] text-slate-500 dark:text-slate-400">
-                    <div>âœ“ Akses penuh modul pembelajaran &amp; unduh rangkuman PDF</div>
-                    <div>âœ“ Pengerjaan kuis CBT &amp; kunci pembahasan langkah-demi-langkah</div>
-                    <div>âœ“ Rekap nilai tryout otomatis masuk ke Super Admin NLS</div>
+                    <div>✓ Akses penuh modul pembelajaran &amp; unduh rangkuman PDF</div>
+                    <div>✓ Pengerjaan kuis CBT &amp; kunci pembahasan langkah-demi-langkah</div>
+                    <div>✓ Rekap nilai tryout otomatis masuk ke Super Admin NLS</div>
                 </div>
             </div>
 
@@ -7086,7 +7086,7 @@
 
                     // Olimpiade ONMIPA
                     { id: 'c-oly-4', category: 'Olimpiade', level: 'ONMIPA', title: 'ONMIPA Matematika Analisis Real & Aljabar Linear', description: 'Pelatihan mahasiswa untuk seleksi ONMIPA wilayah & nasional mata uji Analisis Real & Aljabar Abstrak.', mentor: 'Prof. Tim Akademik NLS', totalModules: 8, completedModules: 0, progress: 0 },
-                    { id: 'c-oly-4b', category: 'Olimpiade', level: 'ONMIPA', title: 'ONMIPA Fisika Kuantum & Elektrodinamika Klasik', description: 'Persamaan SchrÃ¶dinger, operator mekanika kuantum, dan persamaan Maxwell pada medium dielektrik.', mentor: 'Dr. Sarah Kartika, M.Sc.', totalModules: 10, completedModules: 0, progress: 0 },
+                    { id: 'c-oly-4b', category: 'Olimpiade', level: 'ONMIPA', title: 'ONMIPA Fisika Kuantum & Elektrodinamika Klasik', description: 'Persamaan Schrödinger, operator mekanika kuantum, dan persamaan Maxwell pada medium dielektrik.', mentor: 'Dr. Sarah Kartika, M.Sc.', totalModules: 10, completedModules: 0, progress: 0 },
 
                     // Olimpiade Internasional
                     { id: 'c-oly-5', category: 'Olimpiade', level: 'Internasional', title: 'International Physics Olympiad (IPhO) Preparation', description: 'Advanced problem-solving for IMO/IPhO candidate camp and Asian Physics Olympiad (APhO).', mentor: 'Dr. Sarah Kartika, M.Sc.', totalModules: 15, completedModules: 0, progress: 0 },
@@ -7140,16 +7140,16 @@
                 userAnswers: {},
                 currentQuizQuestions: [
                     {
-                        question: 'Sebuah partikel bergerak dengan persamaan posisi x(t) = 4tÂ³ - 6tÂ² + 2t. Berapakah percepatan partikel saat t = 2 detik?',
-                        options: ['18 m/sÂ²', '36 m/sÂ²', '42 m/sÂ²', '48 m/sÂ²'],
-                        correctAnswer: '36 m/sÂ²',
-                        explanation: 'Turunan pertama v(t) = 12tÂ² - 12t + 2. Turunan kedua a(t) = 24t - 12. Saat t = 2, a(2) = 24(2) - 12 = 36 m/sÂ².'
+                        question: 'Sebuah partikel bergerak dengan persamaan posisi x(t) = 4t³ - 6t² + 2t. Berapakah percepatan partikel saat t = 2 detik?',
+                        options: ['18 m/s²', '36 m/s²', '42 m/s²', '48 m/s²'],
+                        correctAnswer: '36 m/s²',
+                        explanation: 'Turunan pertama v(t) = 12t² - 12t + 2. Turunan kedua a(t) = 24t - 12. Saat t = 2, a(2) = 24(2) - 12 = 36 m/s².'
                     },
                     {
                         question: 'Jika log_2(x) + log_2(x - 2) = 3, maka nilai x yang memenuhi persamaan tersebut adalah...',
                         options: ['x = 4', 'x = -2', 'x = 2 atau x = 4', 'x = 8'],
                         correctAnswer: 'x = 4',
-                        explanation: 'log_2(x(x-2)) = 3 => xÂ² - 2x = 8 => xÂ² - 2x - 8 = 0 => (x-4)(x+2) = 0. Karena syarat numerus x > 2, maka nilai x yang valid adalah x = 4.'
+                        explanation: 'log_2(x(x-2)) = 3 => x² - 2x = 8 => x² - 2x - 8 = 0 => (x-4)(x+2) = 0. Karena syarat numerus x > 2, maka nilai x yang valid adalah x = 4.'
                     },
                     {
                         question: 'Nilai dari limit x menuju 0 dari (sin 4x) / (tan 2x) adalah...',
@@ -7171,14 +7171,14 @@
 
                 sampleQuizQuestions: [
                     {
-                        question: 'Sebuah partikel bergerak dengan persamaan posisi x(t) = 4tÂ³ - 6tÂ² + 2t. Berapakah percepatan partikel saat t = 2 detik?',
-                        correctAnswer: '36 m/sÂ²',
-                        explanation: 'Turunan pertama v(t) = 12tÂ² - 12t + 2. Turunan kedua a(t) = 24t - 12. Saat t = 2, a(2) = 24(2) - 12 = 36 m/sÂ².'
+                        question: 'Sebuah partikel bergerak dengan persamaan posisi x(t) = 4t³ - 6t² + 2t. Berapakah percepatan partikel saat t = 2 detik?',
+                        correctAnswer: '36 m/s²',
+                        explanation: 'Turunan pertama v(t) = 12t² - 12t + 2. Turunan kedua a(t) = 24t - 12. Saat t = 2, a(2) = 24(2) - 12 = 36 m/s².'
                     },
                     {
                         question: 'Jika log_2(x) + log_2(x - 2) = 3, maka nilai x yang memenuhi persamaan tersebut adalah...',
                         correctAnswer: 'x = 4',
-                        explanation: 'log_2(x(x-2)) = 3 => xÂ² - 2x = 8 => xÂ² - 2x - 8 = 0 => (x-4)(x+2) = 0. Karena syarat numerus x > 2, maka nilai x yang valid adalah x = 4.'
+                        explanation: 'log_2(x(x-2)) = 3 => x² - 2x = 8 => x² - 2x - 8 = 0 => (x-4)(x+2) = 0. Karena syarat numerus x > 2, maka nilai x yang valid adalah x = 4.'
                     },
                     {
                         question: 'Nilai dari limit x menuju 0 dari (sin 4x) / (tan 2x) adalah...',
@@ -7521,7 +7521,7 @@
                     if (this.activeTab === 'school') return 'ðŸ«';
                     if (this.activeTab === 'olimpiade') return 'ðŸ†';
                     if (this.activeTab === 'tka') return 'ðŸ“';
-                    if (this.activeTab === 'college') return 'ðŸŽ“';
+                    if (this.activeTab === 'college') return '🎓';
                     return 'âœ¨';
                 },
 
@@ -8863,10 +8863,10 @@
                                         <span>ðŸ‘¤</span> <span>Profil Saya</span>
                                     </button>
                                     <button type="button" @click="openMyClassView('actived'); userDropdownOpen = false" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 text-left">
-                                        <span>ðŸ“š</span> <span>Kelas Aktif Saya</span>
+                                        <span>📚</span> <span>Kelas Aktif Saya</span>
                                     </button>
                                     <button type="button" @click="openMyClassView('quiz_result'); userDropdownOpen = false" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 text-left">
-                                        <span>ðŸ“Š</span> <span>Riwayat Nilai Kuis</span>
+                                        <span>📊</span> <span>Riwayat Nilai Kuis</span>
                                     </button>
                                 </div>
 
@@ -8896,7 +8896,7 @@
                         <div class="gradient-hero-lms rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-xl shadow-indigo-950/20">
                             <div class="relative z-10 max-w-2xl space-y-3">
                                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-[11px] font-extrabold uppercase tracking-wide">
-                                    <span>ðŸš€ Ruang Belajar &amp; Evaluasi NLS</span>
+                                    <span>🚀 Ruang Belajar &amp; Evaluasi NLS</span>
                                 </div>
                                 <h1 class="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
                                     Halo, <span x-text="studentProfile.name"></span>! ðŸ‘‹
@@ -8931,7 +8931,7 @@
                                     <span>ðŸŒŸ Mode Pratinjau Terbuka (Guest Preview)</span>
                                 </div>
                                 <h1 class="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
-                                    Selamat Datang di Portal Belajar NLS! ðŸŽ“
+                                    Selamat Datang di Portal Belajar NLS! 🎓
                                 </h1>
                                 <p class="text-xs sm:text-sm text-indigo-100/90 leading-relaxed">
                                     Jelajahi seluruh silabus kurikulum, ringkasan materi unggulan, dan bank soal olimpiade/UTBK. Masuk ke akun siswa Anda untuk mendaftar kelas &amp; menyimpan nilai kuis.
@@ -8961,7 +8961,7 @@
                             <div class="p-5 rounded-2xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-2">
                                 <div class="flex items-center justify-between">
                                     <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Program Unggulan</span>
-                                    <span class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center font-bold">ðŸŽ“</span>
+                                    <span class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center font-bold">🎓</span>
                                 </div>
                                 <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="courses.length + ' Kelas'"></div>
                                 <p class="text-[10px] text-slate-400 font-medium">School, OSN, TKA, &amp; SNBT</p>
@@ -9002,7 +9002,7 @@
                             <div class="p-5 rounded-2xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-2">
                                 <div class="flex items-center justify-between">
                                     <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Kelas Aktif</span>
-                                    <span class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center font-bold">ðŸ“š</span>
+                                    <span class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center font-bold">📚</span>
                                 </div>
                                 <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="myActivedClasses.length"></div>
                                 <p class="text-[10px] text-slate-400 font-medium">Kelas sedang diikuti</p>
@@ -9011,7 +9011,7 @@
                             <div class="p-5 rounded-2xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-2">
                                 <div class="flex items-center justify-between">
                                     <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Modul Tuntas</span>
-                                    <span class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center font-bold">â±ï¸</span>
+                                    <span class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center font-bold">⏱ï¸</span>
                                 </div>
                                 <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="getTotalCompletedModules() + ' Bab'"></div>
                                 <p class="text-[10px] text-slate-400 font-medium">Materi telah dipelajari</p>
@@ -9069,7 +9069,7 @@
                                             <div>
                                                 <h4 class="text-sm font-black text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors leading-snug flex items-start gap-1">
                                                     <span x-text="course.title"></span>
-                                                    <span x-show="course.isLocked" class="text-amber-500 text-xs mt-0.5" title="Password Protected">ðŸ”’</span>
+                                                    <span x-show="course.isLocked" class="text-amber-500 text-xs mt-0.5" title="Password Protected">🔒</span>
                                                 </h4>
                                                 <p class="text-xs text-slate-500 mt-1 line-clamp-2" x-text="course.description"></p>
                                             </div>
@@ -9114,11 +9114,11 @@
                         <!-- 1. Guest Mode Right Column (Getting Started Guide & CTA) -->
                         <template x-if="!isLoggedIn">
                             <div class="space-y-4">
-                                <!-- ðŸš€ Card 1: Cara Memulai Belajar di NLS -->
+                                <!-- 🚀 Card 1: Cara Memulai Belajar di NLS -->
                                 <div class="p-5 rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
                                     <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                                         <div class="flex items-center gap-2">
-                                            <span class="w-7 h-7 rounded-xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-black text-xs">ðŸš€</span>
+                                            <span class="w-7 h-7 rounded-xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-black text-xs">🚀</span>
                                             <h3 class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-white">Langkah Belajar NLS</h3>
                                         </div>
                                         <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300">Tamu</span>
@@ -9162,9 +9162,9 @@
                                     </div>
 
                                     <div class="space-y-1.5 text-[11px] text-indigo-100/90 pl-1">
-                                        <div class="flex items-center gap-2"><span>âœ“</span> <span>Akses video kuliah resolusi tinggi</span></div>
-                                        <div class="flex items-center gap-2"><span>âœ“</span> <span>Unduh rangkuman materi PDF</span></div>
-                                        <div class="flex items-center gap-2"><span>âœ“</span> <span>Rekap skor tryout tersinkronisasi</span></div>
+                                        <div class="flex items-center gap-2"><span>✓</span> <span>Akses video kuliah resolusi tinggi</span></div>
+                                        <div class="flex items-center gap-2"><span>✓</span> <span>Unduh rangkuman materi PDF</span></div>
+                                        <div class="flex items-center gap-2"><span>✓</span> <span>Rekap skor tryout tersinkronisasi</span></div>
                                     </div>
 
                                     <div class="pt-1 space-y-2">
@@ -9183,9 +9183,9 @@
                                 <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs space-y-2">
                                     <span class="font-black text-slate-800 dark:text-slate-200 block text-[11px] uppercase tracking-wider">ðŸŽ¯ Fasilitas Unggulan Siswa NLS:</span>
                                     <div class="text-[11px] text-slate-500 dark:text-slate-400 space-y-1">
-                                        <div>â€¢ Mentor Juara OSN &amp; Dosen Alumni PTN Top 3</div>
-                                        <div>â€¢ Konsultasi Jurusan SNBT &amp; Strategi Kelulusan</div>
-                                        <div>â€¢ Bedah Soal HOTS &amp; Trik Pengerjaan 30 Detik</div>
+                                        <div>• Mentor Juara OSN &amp; Dosen Alumni PTN Top 3</div>
+                                        <div>• Konsultasi Jurusan SNBT &amp; Strategi Kelulusan</div>
+                                        <div>• Bedah Soal HOTS &amp; Trik Pengerjaan 30 Detik</div>
                                     </div>
                                 </div>
                             </div>
@@ -9204,7 +9204,7 @@
                                         <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/70 border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
                                             <div class="min-w-0">
                                                 <div class="text-xs font-black text-slate-900 dark:text-white truncate" x-text="q.title"></div>
-                                                <div class="text-[10px] text-slate-400 font-medium" x-text="q.subject + ' â€¢ ' + q.date"></div>
+                                                <div class="text-[10px] text-slate-400 font-medium" x-text="q.subject + ' • ' + q.date"></div>
                                             </div>
                                             <div class="text-right shrink-0">
                                                 <div class="text-sm font-black" :class="q.score >= 80 ? 'text-emerald-600' : 'text-amber-500'" x-text="q.score + '/100'"></div>
@@ -9301,7 +9301,7 @@
                                     <div class="relative w-32 h-32 mx-auto mb-4 group-hover:scale-105 transition-transform duration-500">
                                         <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-3xl blur-md opacity-40"></div>
                                         <img :src="studentProfile.avatar || `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E`" alt="Avatar" class="relative w-full h-full rounded-3xl object-cover border-4 border-white dark:border-[#0f172a] shadow-xl z-10">
-                                        <span class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 border-2 border-white dark:border-[#0f172a] flex items-center justify-center text-sm text-white font-black shadow-lg z-20" title="Akun Terverifikasi">âœ“</span>
+                                        <span class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 border-2 border-white dark:border-[#0f172a] flex items-center justify-center text-sm text-white font-black shadow-lg z-20" title="Akun Terverifikasi">✓</span>
                                     </div>
 
                                     <div>
@@ -9581,8 +9581,8 @@
                                     <select x-model="studentProfile.target" required
                                         class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold focus:ring-2 focus:ring-indigo-500 outline-hidden text-indigo-600 dark:text-indigo-400">
                                         <option value="Persiapan OSN & Olimpiade">ðŸ† Persiapan OSN & Olimpiade</option>
-                                        <option value="UTBK SNBT 2026 / PTN Top 3">ðŸŽ“ UTBK SNBT & Masuk PTN</option>
-                                        <option value="Pemantapan TKA & Sekolah Unggulan">ðŸ“š Pemantapan TKA</option>
+                                        <option value="UTBK SNBT 2026 / PTN Top 3">🎓 UTBK SNBT & Masuk PTN</option>
+                                        <option value="Pemantapan TKA & Sekolah Unggulan">📚 Pemantapan TKA</option>
                                         <option value="SKD Kedinasan (IPDN/STAN/STIS)">ðŸ›ï¸ Sekolah Kedinasan</option>
                                         <option value="Kurikulum Standar Sekolah">ðŸ“– Kurikulum Reguler Sekolah</option>
                                     </select>
@@ -9641,12 +9641,12 @@
                             <!-- Banner Right Quick Stats Pill Badge -->
                             <div class="flex flex-wrap md:flex-col gap-2 shrink-0">
                                 <div class="px-3.5 py-2 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center gap-2 text-xs font-bold">
-                                    <span>ðŸ“š</span>
+                                    <span>📚</span>
                                     <span x-text="getFilteredCoursesByCategory().length + ' Kelas Tersedia'"></span>
                                 </div>
                                 <div class="px-3.5 py-2 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center gap-2 text-xs font-bold">
-                                    <span>â­</span>
-                                    <span>Rating 4.9 â€¢ Mentor Ahli</span>
+                                    <span>⭐</span>
+                                    <span>Rating 4.9 • Mentor Ahli</span>
                                 </div>
                             </div>
                         </div>
@@ -9676,7 +9676,7 @@
                                 <button type="button" @click="openSchoolView('sma')"
                                     class="px-4 py-2.5 rounded-2xl transition-all flex items-center gap-2 cursor-pointer shrink-0"
                                     :class="schoolLevel === 'sma' ? 'bg-sky-600 text-white shadow-md shadow-sky-600/20 font-black' : 'bg-white dark:bg-[#131d38] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'">
-                                    <span>ðŸŽ“ SMA / MA</span>
+                                    <span>🎓 SMA / MA</span>
                                     <span class="px-2 py-0.5 rounded-lg text-[10px]" :class="schoolLevel === 'sma' ? 'bg-white/20 text-white' : 'bg-sky-100 dark:bg-sky-950 text-sky-700 dark:sky-300'">Kelas 10-12</span>
                                 </button>
                             </div>
@@ -9729,7 +9729,7 @@
                                 <button type="button" @click="openTkaView('tka_sma')"
                                     class="px-4 py-2.5 rounded-2xl transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
                                     :class="tkaLevel === 'tka_sma' ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20 font-black' : 'bg-white dark:bg-[#131d38] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'">
-                                    <span>ðŸ“Š TKA SMA (Saintek &amp; Soshum)</span>
+                                    <span>📊 TKA SMA (Saintek &amp; Soshum)</span>
                                 </button>
                             </div>
                         </template>
@@ -9773,7 +9773,7 @@
                                     <div>
                                         <h3 class="text-base font-black text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors leading-snug flex items-start gap-1.5">
                                             <span x-text="course.title"></span>
-                                            <span x-show="course.isLocked" class="text-amber-500 text-sm mt-0.5" title="Password Protected">ðŸ”’</span>
+                                            <span x-show="course.isLocked" class="text-amber-500 text-sm mt-0.5" title="Password Protected">🔒</span>
                                         </h3>
                                         <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 line-clamp-2 leading-relaxed" x-text="course.description"></p>
                                     </div>
@@ -9788,7 +9788,7 @@
                                         </div>
                                         <div class="flex items-center justify-between pt-1 border-t border-slate-200/60 dark:border-slate-800">
                                             <div class="flex items-center gap-2">
-                                                <span class="w-5 h-5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center text-[10px] font-black">ðŸ“š</span>
+                                                <span class="w-5 h-5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center text-[10px] font-black">📚</span>
                                                 <span class="text-slate-400 font-medium">Kurikulum:</span>
                                             </div>
                                             <span class="font-black text-indigo-600 dark:text-indigo-400" x-text="course.totalModules + ' Modul & Bab'"></span>
@@ -9828,7 +9828,7 @@
                         <div class="p-6 sm:p-7 rounded-3xl bg-gradient-to-r from-slate-100 via-indigo-50/50 to-purple-50/50 dark:from-[#131d38] dark:via-[#1e1b4b] dark:to-[#131d38] border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                             <div class="space-y-1">
                                 <div class="flex items-center gap-2">
-                                    <span class="text-lg">ðŸ’¡</span>
+                                    <span class="text-lg">💡</span>
                                     <h4 class="text-sm font-black text-slate-900 dark:text-white">Butuh Bimbingan Privat 1-on-1 atau Mata Pelajaran Kustom?</h4>
                                 </div>
                                 <p class="text-xs text-slate-500 dark:text-slate-400">Tim Kurikulum NLS menyediakan layanan bimbingan intensif privat, kurikulum olimpiade kustom, dan bedah soal mandiri.</p>
@@ -9851,7 +9851,7 @@
                     <template x-if="!isLoggedIn">
                         <div class="p-8 sm:p-12 text-center rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 shadow-xl space-y-5">
                             <div class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-amber-500 text-white flex items-center justify-center text-4xl shadow-xl shadow-indigo-600/30">
-                                ðŸ”’
+                                🔒
                             </div>
                             <div class="max-w-md mx-auto space-y-2">
                                 <h3 class="text-xl font-black text-slate-900 dark:text-white">Kelas Saya Memerlukan Login Akun Siswa</h3>
@@ -9886,7 +9886,7 @@
                             <div class="space-y-3 max-w-2xl">
                                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/20 border border-violet-400/40 text-violet-300 text-[11px] font-black uppercase tracking-wider backdrop-blur-md">
                                     <span class="w-2 h-2 rounded-full bg-fuchsia-400 animate-pulse"></span>
-                                    <span>Ruang Belajar Mandiri Siswa â€¢ NLS Pro Space</span>
+                                    <span>Ruang Belajar Mandiri Siswa • NLS Pro Space</span>
                                 </div>
 
                                 <div class="flex items-center gap-3.5 pt-1">
@@ -9896,7 +9896,7 @@
                                             Semangat Belajar, <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-300 via-fuchsia-300 to-pink-300" x-text="studentProfile.name.split(' ')[0] || 'Siswa'"></span>! âœ¨
                                         </h1>
                                         <p class="text-xs sm:text-sm text-slate-300 font-medium mt-0.5">
-                                            <span class="text-violet-300 font-bold" x-text="studentProfile.target || 'Target: FK UI / OSN Emas'"></span> â€¢ Pantau kemajuan modul &amp; raih skor sempurna di setiap evaluasi.
+                                            <span class="text-violet-300 font-bold" x-text="studentProfile.target || 'Target: FK UI / OSN Emas'"></span> • Pantau kemajuan modul &amp; raih skor sempurna di setiap evaluasi.
                                         </p>
                                     </div>
                                 </div>
@@ -9906,25 +9906,25 @@
                             <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
                                 <button type="button" @click="resumeLatestClass()"
                                     class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 text-white text-xs font-black shadow-lg shadow-fuchsia-500/30 active:scale-95 transition-all flex items-center justify-center gap-2.5 cursor-pointer">
-                                    <span>â–¶ Lanjut Belajar Bab Aktif</span>
+                                    <span>▶ Lanjut Belajar Bab Aktif</span>
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                                 </button>
                                 <button type="button" @click="myclassView = 'quiz_result'"
                                     class="px-4 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-black backdrop-blur-md transition-all flex items-center justify-center gap-2 cursor-pointer">
-                                    <span>ðŸ“Š Cek Riwayat Kuis</span>
+                                    <span>📊 Cek Riwayat Kuis</span>
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- ðŸ“Š 2. FOUR HOLOGRAPHIC QUICK-METRIC HUD CARDS -->
+                    <!-- 📊 2. FOUR HOLOGRAPHIC QUICK-METRIC HUD CARDS -->
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                         
                         <!-- Card 1: Kelas Aktif -->
                         <div class="p-4 sm:p-5 rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200/80 dark:border-slate-800 shadow-xs relative overflow-hidden group hover:border-violet-500/50 transition-all">
                             <div class="flex items-center justify-between">
                                 <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Kelas Aktif</span>
-                                <span class="w-8 h-8 rounded-xl bg-violet-100 dark:bg-violet-950/80 text-violet-600 dark:text-violet-400 flex items-center justify-center font-black text-sm shadow-2xs">ðŸ“š</span>
+                                <span class="w-8 h-8 rounded-xl bg-violet-100 dark:bg-violet-950/80 text-violet-600 dark:text-violet-400 flex items-center justify-center font-black text-sm shadow-2xs">📚</span>
                             </div>
                             <div class="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="myActivedClasses.length"></div>
                             <div class="mt-1 flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
@@ -9937,7 +9937,7 @@
                         <div class="p-4 sm:p-5 rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200/80 dark:border-slate-800 shadow-xs relative overflow-hidden group hover:border-emerald-500/50 transition-all">
                             <div class="flex items-center justify-between">
                                 <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Modul Tuntas</span>
-                                <span class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-sm shadow-2xs">âœ…</span>
+                                <span class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-sm shadow-2xs">✅</span>
                             </div>
                             <div class="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" x-text="getTotalCompletedModules() + ' Bab'"></div>
                             <div class="mt-1 text-[10px] text-slate-500 font-semibold truncate">
@@ -9978,7 +9978,7 @@
                             <button type="button" @click="myclassView = 'actived'"
                                 class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer"
                                 :class="myclassView === 'actived' ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-600/20' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'">
-                                <span>ðŸ“š Kelas Aktif Saya</span>
+                                <span>📚 Kelas Aktif Saya</span>
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-black"
                                     :class="myclassView === 'actived' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'"
                                     x-text="myActivedClasses.length"></span>
@@ -10002,7 +10002,7 @@
                         </div>
                     </div>
 
-                    <!-- ðŸ“š 4.A: TAB 1 - ACTIVED CLASS CARDS GRID -->
+                    <!-- 📚 4.A: TAB 1 - ACTIVED CLASS CARDS GRID -->
                     <div x-show="myclassView === 'actived'" class="space-y-6">
                         <template x-if="myActivedClasses.length === 0">
                             <div class="p-12 text-center rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 space-y-4">
@@ -10041,7 +10041,7 @@
                                         <div>
                                             <h3 class="text-base font-black text-slate-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors leading-snug flex items-start gap-1.5">
                                                 <span x-text="course.title"></span>
-                                                <span x-show="course.isLocked" class="text-amber-500 text-sm mt-0.5" title="Password Protected">ðŸ”’</span>
+                                                <span x-show="course.isLocked" class="text-amber-500 text-sm mt-0.5" title="Password Protected">🔒</span>
                                             </h3>
                                             <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 line-clamp-2 leading-relaxed" x-text="course.description"></p>
                                         </div>
@@ -10146,7 +10146,7 @@
                                                 <td class="py-4 px-4">
                                                     <span class="px-2.5 py-1 rounded-full text-[10px] font-black"
                                                         :class="q.score >= 75 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'"
-                                                        x-text="q.score >= 75 ? 'âœ… Lulus / Tuntas' : 'âš¡ Perlu Evaluasi'"></span>
+                                                        x-text="q.score >= 75 ? '✅ Lulus / Tuntas' : 'âš¡ Perlu Evaluasi'"></span>
                                                 </td>
                                                 <td class="py-4 px-4 sm:px-6 text-right">
                                                     <button type="button" @click="showQuizExplanation(q)"
@@ -10212,7 +10212,7 @@
                     <template x-if="!isLoggedIn">
                         <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-amber-900 dark:text-amber-200 text-xs font-semibold">
                             <div class="flex items-center gap-2.5">
-                                <span class="text-lg">ðŸ”’</span>
+                                <span class="text-lg">🔒</span>
                                 <div>
                                     <strong class="font-black">Mode Pratinjau Terbuka (Guest Preview):</strong>
                                     <span>Anda dapat melihat rincian silabus kelas ini. Masuk ke akun siswa Anda untuk mendaftar, menyimpan progres, mengunduh PDF, dan mengerjakan kuis evaluasi.</span>
@@ -10228,7 +10228,7 @@
                     <!-- 2. Main 2-Column Split Workspace (Silabus Kiri vs Player / Materi / Kuis Kanan) -->
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                         
-                        <!-- ðŸ“š Left Column: Syllabus & Module List (4 cols) -->
+                        <!-- 📚 Left Column: Syllabus & Module List (4 cols) -->
                         <div class="lg:col-span-4 rounded-3xl bg-white dark:bg-[#131d38] border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-4">
                             <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                                 <div class="flex items-center gap-2">
@@ -10248,13 +10248,13 @@
                                                 <span class="text-[10px] font-black uppercase tracking-wider"
                                                     :class="studyRoom.activeModuleIndex === mIdx ? 'text-indigo-200' : 'text-slate-400'"
                                                     x-text="'Bab ' + (mIdx + 1)"></span>
-                                                <span class="text-[10px]" :class="studyRoom.activeModuleIndex === mIdx ? 'text-indigo-200' : 'text-slate-400'">â€¢</span>
+                                                <span class="text-[10px]" :class="studyRoom.activeModuleIndex === mIdx ? 'text-indigo-200' : 'text-slate-400'">•</span>
                                                 <span class="text-[10px]" :class="studyRoom.activeModuleIndex === mIdx ? 'text-indigo-200' : 'text-slate-400'" x-text="mod.type"></span>
                                             </div>
                                             <div class="font-extrabold text-sm leading-snug line-clamp-2" x-text="mod.title"></div>
-                                            <div class="text-[10px] opacity-75 font-medium" x-text="'â±ï¸ ' + mod.duration"></div>
+                                            <div class="text-[10px] opacity-75 font-medium" x-text="'⏱ï¸ ' + mod.duration"></div>
                                         </div>
-                                        <span class="text-sm shrink-0 mt-1" x-text="mod.completed ? 'âœ…' : (studyRoom.activeModuleIndex === mIdx ? 'â–¶ï¸' : 'â³')"></span>
+                                        <span class="text-sm shrink-0 mt-1" x-text="mod.completed ? '✅' : (studyRoom.activeModuleIndex === mIdx ? '▶ï¸' : '⏳')"></span>
                                     </button>
                                 </template>
                             </div>
@@ -10273,7 +10273,7 @@
                                             <div class="flex items-center gap-2">
                                                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
                                                     x-text="'Bab ' + (studyRoom.activeModuleIndex + 1) + ' dari ' + studyRoom.modules.length"></span>
-                                                <span class="text-xs text-slate-400 font-bold" x-text="'â€¢ ' + getActiveModule().type"></span>
+                                                <span class="text-xs text-slate-400 font-bold" x-text="'• ' + getActiveModule().type"></span>
                                             </div>
                                             <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1.5" x-text="getActiveModule().title"></h2>
                                         </div>
@@ -10288,13 +10288,13 @@
                                         <div class="absolute inset-0 bg-radial from-indigo-500/10 via-transparent to-transparent pointer-events-none"></div>
 
                                         <div class="text-center p-6 space-y-3 relative z-10">
-                                            <button type="button" @click="showToast('â–¶ Memutar video pembelajaran Bab ' + (studyRoom.activeModuleIndex + 1) + '...')"
+                                            <button type="button" @click="showToast('▶ Memutar video pembelajaran Bab ' + (studyRoom.activeModuleIndex + 1) + '...')"
                                                 class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center text-3xl shadow-2xl shadow-indigo-600/40 hover:scale-110 active:scale-95 transition-all cursor-pointer">
-                                                â–¶
+                                                ▶
                                             </button>
                                             <div>
                                                 <h4 class="text-sm sm:text-base font-black text-white" x-text="getActiveModule().title"></h4>
-                                                <p class="text-xs text-slate-400 mt-1" x-text="'Video Kuliah Interaktif â€¢ Format HD 1080p â€¢ ' + getActiveModule().duration"></p>
+                                                <p class="text-xs text-slate-400 mt-1" x-text="'Video Kuliah Interaktif • Format HD 1080p • ' + getActiveModule().duration"></p>
                                             </div>
                                         </div>
                                     </div>
@@ -10302,7 +10302,7 @@
                                     <!-- Material Summary Notes & Concept Box -->
                                     <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs leading-relaxed space-y-3">
                                         <div class="flex items-center gap-2">
-                                            <span class="w-6 h-6 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-black">ðŸ’¡</span>
+                                            <span class="w-6 h-6 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-black">💡</span>
                                             <h4 class="font-black text-slate-900 dark:text-white text-sm">Rangkuman Konsep &amp; Poin Inti Bab:</h4>
                                         </div>
                                         <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed" x-text="getActiveModule().summary"></p>
@@ -10856,7 +10856,7 @@
             <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-indigo-500 via-amber-500 to-rose-500"></div>
 
             <div class="w-16 h-16 rounded-3xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800/60 text-indigo-600 dark:text-indigo-400 mx-auto flex items-center justify-center text-3xl shadow-inner">
-                ðŸ”’
+                🔒
             </div>
 
             <div class="space-y-2">
@@ -10869,9 +10869,9 @@
                     <span>âœ¨</span> <span>Keuntungan Akun Siswa NLS:</span>
                 </div>
                 <div class="space-y-1 text-[11px] text-slate-500 dark:text-slate-400">
-                    <div>âœ“ Akses penuh modul pembelajaran &amp; unduh rangkuman PDF</div>
-                    <div>âœ“ Pengerjaan kuis CBT &amp; kunci pembahasan langkah-demi-langkah</div>
-                    <div>âœ“ Rekap nilai tryout otomatis masuk ke Super Admin NLS</div>
+                    <div>✓ Akses penuh modul pembelajaran &amp; unduh rangkuman PDF</div>
+                    <div>✓ Pengerjaan kuis CBT &amp; kunci pembahasan langkah-demi-langkah</div>
+                    <div>✓ Rekap nilai tryout otomatis masuk ke Super Admin NLS</div>
                 </div>
             </div>
 
@@ -11181,7 +11181,7 @@
 
                     // Olimpiade ONMIPA
                     { id: 'c-oly-4', category: 'Olimpiade', level: 'ONMIPA', title: 'ONMIPA Matematika Analisis Real & Aljabar Linear', description: 'Pelatihan mahasiswa untuk seleksi ONMIPA wilayah & nasional mata uji Analisis Real & Aljabar Abstrak.', mentor: 'Prof. Tim Akademik NLS', totalModules: 8, completedModules: 0, progress: 0 },
-                    { id: 'c-oly-4b', category: 'Olimpiade', level: 'ONMIPA', title: 'ONMIPA Fisika Kuantum & Elektrodinamika Klasik', description: 'Persamaan SchrÃ¶dinger, operator mekanika kuantum, dan persamaan Maxwell pada medium dielektrik.', mentor: 'Dr. Sarah Kartika, M.Sc.', totalModules: 10, completedModules: 0, progress: 0 },
+                    { id: 'c-oly-4b', category: 'Olimpiade', level: 'ONMIPA', title: 'ONMIPA Fisika Kuantum & Elektrodinamika Klasik', description: 'Persamaan Schrödinger, operator mekanika kuantum, dan persamaan Maxwell pada medium dielektrik.', mentor: 'Dr. Sarah Kartika, M.Sc.', totalModules: 10, completedModules: 0, progress: 0 },
 
                     // Olimpiade Internasional
                     { id: 'c-oly-5', category: 'Olimpiade', level: 'Internasional', title: 'International Physics Olympiad (IPhO) Preparation', description: 'Advanced problem-solving for IMO/IPhO candidate camp and Asian Physics Olympiad (APhO).', mentor: 'Dr. Sarah Kartika, M.Sc.', totalModules: 15, completedModules: 0, progress: 0 },
@@ -11235,16 +11235,16 @@
                 userAnswers: {},
                 currentQuizQuestions: [
                     {
-                        question: 'Sebuah partikel bergerak dengan persamaan posisi x(t) = 4tÂ³ - 6tÂ² + 2t. Berapakah percepatan partikel saat t = 2 detik?',
-                        options: ['18 m/sÂ²', '36 m/sÂ²', '42 m/sÂ²', '48 m/sÂ²'],
-                        correctAnswer: '36 m/sÂ²',
-                        explanation: 'Turunan pertama v(t) = 12tÂ² - 12t + 2. Turunan kedua a(t) = 24t - 12. Saat t = 2, a(2) = 24(2) - 12 = 36 m/sÂ².'
+                        question: 'Sebuah partikel bergerak dengan persamaan posisi x(t) = 4t³ - 6t² + 2t. Berapakah percepatan partikel saat t = 2 detik?',
+                        options: ['18 m/s²', '36 m/s²', '42 m/s²', '48 m/s²'],
+                        correctAnswer: '36 m/s²',
+                        explanation: 'Turunan pertama v(t) = 12t² - 12t + 2. Turunan kedua a(t) = 24t - 12. Saat t = 2, a(2) = 24(2) - 12 = 36 m/s².'
                     },
                     {
                         question: 'Jika log_2(x) + log_2(x - 2) = 3, maka nilai x yang memenuhi persamaan tersebut adalah...',
                         options: ['x = 4', 'x = -2', 'x = 2 atau x = 4', 'x = 8'],
                         correctAnswer: 'x = 4',
-                        explanation: 'log_2(x(x-2)) = 3 => xÂ² - 2x = 8 => xÂ² - 2x - 8 = 0 => (x-4)(x+2) = 0. Karena syarat numerus x > 2, maka nilai x yang valid adalah x = 4.'
+                        explanation: 'log_2(x(x-2)) = 3 => x² - 2x = 8 => x² - 2x - 8 = 0 => (x-4)(x+2) = 0. Karena syarat numerus x > 2, maka nilai x yang valid adalah x = 4.'
                     },
                     {
                         question: 'Nilai dari limit x menuju 0 dari (sin 4x) / (tan 2x) adalah...',
@@ -11266,14 +11266,14 @@
 
                 sampleQuizQuestions: [
                     {
-                        question: 'Sebuah partikel bergerak dengan persamaan posisi x(t) = 4tÂ³ - 6tÂ² + 2t. Berapakah percepatan partikel saat t = 2 detik?',
-                        correctAnswer: '36 m/sÂ²',
-                        explanation: 'Turunan pertama v(t) = 12tÂ² - 12t + 2. Turunan kedua a(t) = 24t - 12. Saat t = 2, a(2) = 24(2) - 12 = 36 m/sÂ².'
+                        question: 'Sebuah partikel bergerak dengan persamaan posisi x(t) = 4t³ - 6t² + 2t. Berapakah percepatan partikel saat t = 2 detik?',
+                        correctAnswer: '36 m/s²',
+                        explanation: 'Turunan pertama v(t) = 12t² - 12t + 2. Turunan kedua a(t) = 24t - 12. Saat t = 2, a(2) = 24(2) - 12 = 36 m/s².'
                     },
                     {
                         question: 'Jika log_2(x) + log_2(x - 2) = 3, maka nilai x yang memenuhi persamaan tersebut adalah...',
                         correctAnswer: 'x = 4',
-                        explanation: 'log_2(x(x-2)) = 3 => xÂ² - 2x = 8 => xÂ² - 2x - 8 = 0 => (x-4)(x+2) = 0. Karena syarat numerus x > 2, maka nilai x yang valid adalah x = 4.'
+                        explanation: 'log_2(x(x-2)) = 3 => x² - 2x = 8 => x² - 2x - 8 = 0 => (x-4)(x+2) = 0. Karena syarat numerus x > 2, maka nilai x yang valid adalah x = 4.'
                     },
                     {
                         question: 'Nilai dari limit x menuju 0 dari (sin 4x) / (tan 2x) adalah...',
@@ -11616,7 +11616,7 @@
                     if (this.activeTab === 'school') return 'ðŸ«';
                     if (this.activeTab === 'olimpiade') return 'ðŸ†';
                     if (this.activeTab === 'tka') return 'ðŸ“';
-                    if (this.activeTab === 'college') return 'ðŸŽ“';
+                    if (this.activeTab === 'college') return '🎓';
                     return 'âœ¨';
                 },
 
@@ -12482,6 +12482,7 @@
     </script>
 </body>
 </html>
+
 
 
 
