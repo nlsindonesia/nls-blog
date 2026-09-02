@@ -637,6 +637,15 @@ const defaultCourses = [
 
 
 export default async function handler(request, response) {
+    // Enable CORS for all origins so local drafts can be pushed to Vercel
+    response.setHeader('Access-Control-Allow-Origin', '*');
+    response.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
+    response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+    if (request.method === 'OPTIONS') {
+        return response.status(200).end();
+    }
+
     if (request.method !== 'POST' && request.method !== 'GET' && request.method !== 'DELETE') {
         return response.status(405).json({ success: false, message: 'Method not allowed.' });
     }

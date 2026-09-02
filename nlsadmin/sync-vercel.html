@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sync Lokal ke Server Vercel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 p-8">
+    <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-md p-6">
+        <h1 class="text-2xl font-black mb-4">Sync Data Lokal ke Server Vercel</h1>
+        <p class="mb-4">Halaman ini akan mengunggah semua draft kursus yang ada di laptop Anda ke database utama (Vercel) sehingga bisa diakses dari perangkat manapun.</p>
+        
+        <button id="syncBtn" class="bg-indigo-600 text-white px-4 py-2 rounded font-bold hover:bg-indigo-700">Mulai Upload ke Vercel</button>
+        
+        <div id="log" class="mt-6 p-4 bg-slate-900 text-slate-100 rounded font-mono text-sm h-64 overflow-y-auto">
+            Menunggu...
+        </div>
+    </div>
+
+    <script>
+        const btn = document.getElementById('syncBtn');
+        const logEl = document.getElementById('log');
+        
+        function log(msg) {
+            logEl.innerHTML += '<div>' + msg + '</div>';
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        btn.addEventListener('click', async () => {
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+            log('Memulai sinkronisasi...');
+            
+            // Sync nls_lms_courses_v1
+            let courses = [];
+            try {
+                const raw = localStorage.getItem('nls_lms_courses_v1');
+                if (raw) courses = JSON.parse(raw);
+            } catch(e) { log('Gagal membaca nls_lms_courses_v1'); }
+            
+            if (courses.length > 0) {
+                log('Ditemukan ' + courses.length + ' kursus lokal. Mengunggah ke Vercel...');
+                for (const course of courses) {
+                    try {
+                        log('- Mengunggah: ' + (course.title || course.id));
+                        const res = await fetch('https://nls-belajar.vercel.app/api/pg-lms', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ action: 'admin_save_course', course: course })
+                        });
+                        if (res.ok) {
+                            log('  ✅ Berhasil');
+                        } else {
+                            log('  ❌ Gagal (Status: ' + res.status + ')');
+                        }
+                    } catch(e) {
+                        log('  ❌ Error: ' + e.message);
+                    }
+                }
+            } else {
+                log('Tidak ada kursus lokal di nls_lms_courses_v1.');
+            }
+            
+            // Sync lms_builder_draft
+            try {
+                const babsRaw = localStorage.getItem('lms_builder_draft');
+                if (babsRaw) {
+                    const babs = JSON.parse(babsRaw);
+                    if (babs.length > 0) {
+                        log('Ditemukan draft builder yang belum disimpan. (Abaikan jika kosong)');
+                    }
+                }
+            } catch(e) {}
+            
+            log('<b>Selesai!</b> Semua data lokal sudah diunggah. Silakan buka aplikasi dari perangkat lain.');
+        });
+    </script>
+</body>
+</html>
