@@ -155,6 +155,44 @@ export default async function handler(request, response) {
             return response.status(200).json({ success: true, data: result.rows });
         }
 
+        // --- 8. SYNC DAPODIK ---
+        if (action === 'sync_dapodik') {
+            const { isAdmin } = request.body;
+            if (!isAdmin) return response.status(403).json({ success: false, message: 'Admin access required.' });
+            
+            const page = request.body.page || 1;
+            
+            const publicRes = await fetch(`https://api-sekolah-indonesia.vercel.app/sekolah?page=${page}&perPage=100`);
+            const data = await publicRes.json();
+            
+            if (!data || !data.dataSekolah) {
+                return response.status(500).json({ success: false, message: 'Failed to fetch from public API' });
+            }
+            
+            let inserted = 0;
+            for (const school of data.dataSekolah) {
+                const check = await sql`SELECT id FROM lms_schools WHERE npsn = ${school.npsn} OR name = ${school.sekolah} LIMIT 1`;
+                if (check.rowCount === 0) {
+                    try {
+                        await sql`
+                            INSERT INTO lms_schools (npsn, name, level, city, province, country)
+                            VALUES (${school.npsn || null}, ${school.sekolah}, ${school.bentuk || 'Lainnya'}, ${school.kabupaten_kota || ''}, ${school.propinsi || ''}, 'Indonesia')
+                        `;
+                        inserted++;
+                    } catch(e) {
+                        console.error('Error inserting school:', e);
+                    }
+                }
+            }
+            
+            return response.status(200).json({ 
+                success: true, 
+                message: `Berhasil sinkronisasi ${inserted} sekolah baru dari Dapodik (Halaman ${page}).`,
+                inserted,
+                nextPage: page + 1
+            });
+        }
+
         return response.status(400).json({ success: false, message: 'Invalid action specified.' });
 
     } catch (error) {

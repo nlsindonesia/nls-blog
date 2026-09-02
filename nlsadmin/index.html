@@ -4355,11 +4355,19 @@
                                 Kelola daftar sekolah dan lihat jumlah siswa yang mendaftar dari tiap sekolah.
                             </p>
                         </div>
-                        <button type="button" @click="openSchoolModal()"
-                            class="px-4 py-2.5 rounded-xl bg-fuchsia-600 hover:bg-fuchsia-700 text-white text-xs font-bold transition-all shadow-xs shrink-0 flex items-center justify-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
-                            <span>Tambah Sekolah</span>
-                        </button>
+                        <div class="flex flex-col sm:flex-row gap-2 shrink-0">
+                            <button type="button" @click="syncDapodik()" :disabled="isSyncingDapodik"
+                                class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-2">
+                                <svg x-show="!isSyncingDapodik" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                <span x-show="isSyncingDapodik" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                                <span>Tarik Data Dapodik</span>
+                            </button>
+                            <button type="button" @click="openSchoolModal()"
+                                class="px-4 py-2.5 rounded-xl bg-fuchsia-600 hover:bg-fuchsia-700 text-white text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                                <span>Tambah Sekolah</span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Filter Area -->
@@ -5492,6 +5500,8 @@
                 // SCHOOL MANAGEMENT STATE
                 schools: [],
                 isSchoolsLoading: false,
+                isSyncingDapodik: false,
+                syncPage: 1,
                 schoolModal: {
                     isOpen: false,
                     isEdit: false,
@@ -7605,6 +7615,31 @@
                 },
 
                 // SCHOOL MANAGEMENT METHODS
+                async syncDapodik() {
+                    if (this.isSyncingDapodik) return;
+                    this.isSyncingDapodik = true;
+                    try {
+                        const res = await fetch('/api/pg-auth', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ action: 'sync_dapodik', isAdmin: true, page: this.syncPage })
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            alert(data.message);
+                            this.syncPage = data.nextPage || (this.syncPage + 1);
+                            await this.fetchSchools(); // refresh data
+                        } else {
+                            alert('Gagal sinkronisasi: ' + data.message);
+                        }
+                    } catch(e) {
+                        console.error('Gagal sync Dapodik:', e);
+                        alert('Terjadi kesalahan jaringan.');
+                    } finally {
+                        this.isSyncingDapodik = false;
+                    }
+                },
+
                 async fetchSchools() {
                     this.isSchoolsLoading = true;
                     try {
