@@ -1358,7 +1358,7 @@
                             </button>
 
                             <!-- Submenu 3: Daftar Sekolah -->
-                            <button type="button" @click="activeTab = 'users'; userView = 'schools'"
+                            <button type="button" @click="openSchoolsView()"
                                 :class="activeTab === 'users' && userView === 'schools' ? 'submenu-users-active' : 'submenu-btn-inactive'"
                                 class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
                                 <div class="flex items-center gap-2.5 min-w-0">
@@ -5947,7 +5947,7 @@
                         this.isPengajarDropdownOpen = true;
                     } else if (section === 'users') {
                         this.activeTab = 'users';
-                        if (['add', 'present', 'trash'].includes(sub)) this.userView = sub;
+                        if (['add', 'present', 'trash', 'schools'].includes(sub)) this.userView = sub;
                         this.closeAllSubmenus('users');
                         this.isUserDropdownOpen = true;
                     } else if (section === 'lms') {
@@ -7225,6 +7225,15 @@
                 openTrashUserView() {
                     this.activeTab = 'users';
                     this.userView = 'trash';
+                    this.closeAllSubmenus('users');
+                    this.isUserDropdownOpen = true;
+                    if (this.isMobile) this.isSidebarOpen = false;
+                    this.syncUrlRoute(true);
+                },
+
+                openSchoolsView() {
+                    this.activeTab = 'users';
+                    this.userView = 'schools';
                     this.closeAllSubmenus('users');
                     this.isUserDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
