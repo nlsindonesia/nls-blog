@@ -1438,37 +1438,138 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
                 copyGDocsTemplate() {
                     const html = `
 <table border="1" style="border-collapse: collapse; width: 100%;">
-    <tr>
+    <tr style="background-color: #f1f5f9;">
         <th>Tipe Soal</th>
         <th>Pertanyaan</th>
         <th>Pilihan Ganda (Khusus PG)</th>
         <th>Kunci Jawaban</th>
-        <th>Poin</th>
+        <th>Poin Benar</th>
         <th>Pembahasan</th>
+    </tr>
+    <!-- 1. Pilihan Ganda (PG) -->
+    <tr>
+        <td>PG</td>
+        <td>Apa ibu kota Indonesia saat ini?</td>
+        <td>A. Bandung<br>B. Jakarta<br>C. Surabaya<br>D. Semarang</td>
+        <td>B</td>
+        <td>10</td>
+        <td>Berdasarkan sejarah, Jakarta adalah ibu kota negara.</td>
     </tr>
     <tr>
         <td>PG</td>
-        <td>Siapa penemu gaya gravitasi?</td>
-        <td>A. Newton<br>B. Einstein<br>C. Tesla</td>
-        <td>A</td>
+        <td>Siapa penemu bola lampu pijar?</td>
+        <td>A. Albert Einstein<br>B. Isaac Newton<br>C. Thomas Edison<br>D. Nikola Tesla</td>
+        <td>C</td>
         <td>10</td>
-        <td>Newton menemukannya setelah kejatuhan apel.</td>
+        <td>Thomas Edison dikenal luas sebagai penemu bola lampu pijar yang praktis.</td>
+    </tr>
+    <tr>
+        <td>PG</td>
+        <td>Hasil dari perhitungan 5 + 7 x 2 adalah...</td>
+        <td>A. 24<br>B. 19<br>C. 14<br>D. 35</td>
+        <td>B</td>
+        <td>10</td>
+        <td>Aturan operasi hitung (KaBaTaKu), perkalian dikerjakan terlebih dahulu: 7x2 = 14, lalu ditambah 5 = 19.</td>
+    </tr>
+    <!-- 2. Pilihan Ganda Kompleks (PG Kompleks) -->
+    <tr>
+        <td>PG Kompleks</td>
+        <td>Manakah di bawah ini yang termasuk hewan mamalia? (Pilih 2)</td>
+        <td>A. Lumba-lumba<br>B. Hiu<br>C. Paus<br>D. Buaya</td>
+        <td>A, C</td>
+        <td>10</td>
+        <td>Lumba-lumba dan paus adalah mamalia air karena menyusui.</td>
+    </tr>
+    <tr>
+        <td>PG Kompleks</td>
+        <td>Pilihlah yang termasuk dalam warna primer!</td>
+        <td>A. Merah<br>B. Hijau<br>C. Kuning<br>D. Biru</td>
+        <td>A, C, D</td>
+        <td>10</td>
+        <td>Warna primer cahaya (RGB) adalah Merah, Hijau, dan Biru.</td>
+    </tr>
+    <tr>
+        <td>PG Kompleks</td>
+        <td>Siapa sajakah pahlawan nasional dari pulau Sumatera?</td>
+        <td>A. Cut Nyak Dien<br>B. Pangeran Diponegoro<br>C. Tuanku Imam Bonjol<br>D. Kapitan Pattimura</td>
+        <td>A, C</td>
+        <td>10</td>
+        <td>Cut Nyak Dien (Aceh) dan Tuanku Imam Bonjol (Sumbar).</td>
+    </tr>
+    <!-- 3. Pernyataan (Benar/Salah Majemuk) -->
+    <tr>
+        <td>Pernyataan</td>
+        <td>Tentukan status Benar atau Salah dari pernyataan astronomi berikut ini:</td>
+        <td>Matahari berputar mengelilingi Bumi.<br>Bulan adalah satelit alami Bumi.<br>Bumi itu datar.</td>
+        <td>Salah, Benar, Salah</td>
+        <td>15</td>
+        <td>Bumi yang mengelilingi matahari, dan bumi berbentuk bulat.</td>
     </tr>
     <tr>
         <td>Pernyataan</td>
-        <td>Tentukan kebenaran dari pernyataan sains berikut:</td>
-        <td>Matahari berputar mengelilingi Bumi.<br>Bulan adalah satelit Bumi.<br>Bumi itu datar.</td>
-        <td>Salah, Benar, Salah</td>
+        <td>Analisis pernyataan geografi di bawah ini:</td>
+        <td>Gunung tertinggi di dunia adalah Gunung Everest.<br>Gurun Sahara terletak di Benua Asia.<br>Indonesia memiliki dua musim.</td>
+        <td>Benar, Salah, Benar</td>
         <td>15</td>
-        <td>Bumi mengelilingi matahari, dan bumi berbentuk bulat.</td>
+        <td>Gurun Sahara terletak di Benua Afrika.</td>
     </tr>
     <tr>
-        <td>Essai</td>
-        <td>Jelaskan rumus E=mc^2!</td>
+        <td>Pernyataan</td>
+        <td>Tentukan Benar/Salah pada fakta sejarah Indonesia berikut:</td>
+        <td>Soekarno adalah presiden pertama RI.<br>Sumpah Pemuda dicetuskan tahun 1928.<br>Belanda menjajah Indonesia selama 10 tahun.</td>
+        <td>Benar, Benar, Salah</td>
+        <td>15</td>
+        <td>Belanda berkuasa selama ratusan tahun di nusantara.</td>
+    </tr>
+    <!-- 4. Isian Singkat -->
+    <tr>
+        <td>Isian Singkat</td>
+        <td>Ibu kota dari provinsi Jawa Timur adalah kota...</td>
+        <td></td>
+        <td>Surabaya</td>
+        <td>10</td>
+        <td>Surabaya dikenal sebagai Kota Pahlawan.</td>
+    </tr>
+    <tr>
+        <td>Isian Singkat</td>
+        <td>Hasil dari akar pangkat dua angka 144 adalah...</td>
+        <td></td>
+        <td>12</td>
+        <td>10</td>
+        <td>Karena 12 x 12 = 144.</td>
+    </tr>
+    <tr>
+        <td>Isian Singkat</td>
+        <td>Sebutan untuk dasar negara Republik Indonesia adalah...</td>
+        <td></td>
+        <td>Pancasila</td>
+        <td>10</td>
+        <td>Pancasila adalah pilar ideologis negara Indonesia.</td>
+    </tr>
+    <!-- 5. Esai / Uraian -->
+    <tr>
+        <td>Esai</td>
+        <td>Jelaskan secara rinci mengapa kita perlu melestarikan hutan lindung!</td>
         <td></td>
         <td></td>
         <td>20</td>
-        <td>Rumus dari Einstein tentang massa dan energi.</td>
+        <td>Hutan adalah paru-paru dunia yang menjaga keseimbangan karbon dan mencegah banjir.</td>
+    </tr>
+    <tr>
+        <td>Esai</td>
+        <td>Sebutkan dan jelaskan 3 dampak negatif dari pemanasan global!</td>
+        <td></td>
+        <td></td>
+        <td>20</td>
+        <td>1. Es kutub mencair. 2. Cuaca ekstrem. 3. Naiknya permukaan air laut.</td>
+    </tr>
+    <tr>
+        <td>Esai</td>
+        <td>Uraikan secara singkat proses fotosintesis pada tumbuhan!</td>
+        <td></td>
+        <td></td>
+        <td>20</td>
+        <td>Tumbuhan menggunakan sinar matahari, karbon dioksida, dan air untuk menghasilkan glukosa.</td>
     </tr>
 </table>`;
                     
@@ -1501,6 +1602,7 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
         <th>Poin Benar</th>
         <th>Pembahasan</th>
     </tr>
+    <!-- 1. Pilihan Ganda (PG) -->
     <tr>
         <td>PG</td>
         <td>Apa ibu kota Indonesia saat ini?</td>
@@ -1511,63 +1613,74 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
     </tr>
     <tr>
         <td>PG</td>
-        <td>Siapa presiden pertama RI?</td>
-        <td>A. Soeharto<br>B. BJ Habibie<br>C. Soekarno<br>D. Megawati</td>
+        <td>Siapa penemu bola lampu pijar?</td>
+        <td>A. Albert Einstein<br>B. Isaac Newton<br>C. Thomas Edison<br>D. Nikola Tesla</td>
         <td>C</td>
         <td>10</td>
-        <td>Soekarno dan Hatta adalah proklamator kemerdekaan RI.</td>
-    </tr>
-    <tr>
-        <td>Pernyataan</td>
-        <td>Tentukan kebenaran dari pernyataan sains berikut:</td>
-        <td>Matahari berputar mengelilingi Bumi.<br>Bulan adalah satelit Bumi.<br>Bumi itu datar.</td>
-        <td>Salah, Benar, Salah</td>
-        <td>15</td>
-        <td>Bumi mengelilingi matahari, dan bumi berbentuk bulat.</td>
+        <td>Thomas Edison dikenal luas sebagai penemu bola lampu pijar yang praktis.</td>
     </tr>
     <tr>
         <td>PG</td>
-        <td>5 + 7 x 2 = ...</td>
+        <td>Hasil dari perhitungan 5 + 7 x 2 adalah...</td>
         <td>A. 24<br>B. 19<br>C. 14<br>D. 35</td>
         <td>B</td>
         <td>10</td>
-        <td>Sesuai aturan KaBaTaKu, perkalian didahulukan. 7x2 = 14, lalu ditambah 5 = 19.</td>
+        <td>Aturan operasi hitung (KaBaTaKu), perkalian dikerjakan terlebih dahulu: 7x2 = 14, lalu ditambah 5 = 19.</td>
+    </tr>
+    <!-- 2. Pilihan Ganda Kompleks (PG Kompleks) -->
+    <tr>
+        <td>PG Kompleks</td>
+        <td>Manakah di bawah ini yang termasuk hewan mamalia? (Pilih 2)</td>
+        <td>A. Lumba-lumba<br>B. Hiu<br>C. Paus<br>D. Buaya</td>
+        <td>A, C</td>
+        <td>10</td>
+        <td>Lumba-lumba dan paus adalah mamalia air karena menyusui.</td>
+    </tr>
+    <tr>
+        <td>PG Kompleks</td>
+        <td>Pilihlah yang termasuk dalam warna primer!</td>
+        <td>A. Merah<br>B. Hijau<br>C. Kuning<br>D. Biru</td>
+        <td>A, C, D</td>
+        <td>10</td>
+        <td>Warna primer cahaya (RGB) adalah Merah, Hijau, dan Biru.</td>
+    </tr>
+    <tr>
+        <td>PG Kompleks</td>
+        <td>Siapa sajakah pahlawan nasional dari pulau Sumatera?</td>
+        <td>A. Cut Nyak Dien<br>B. Pangeran Diponegoro<br>C. Tuanku Imam Bonjol<br>D. Kapitan Pattimura</td>
+        <td>A, C</td>
+        <td>10</td>
+        <td>Cut Nyak Dien (Aceh) dan Tuanku Imam Bonjol (Sumbar).</td>
+    </tr>
+    <!-- 3. Pernyataan (Benar/Salah Majemuk) -->
+    <tr>
+        <td>Pernyataan</td>
+        <td>Tentukan status Benar atau Salah dari pernyataan astronomi berikut ini:</td>
+        <td>Matahari berputar mengelilingi Bumi.<br>Bulan adalah satelit alami Bumi.<br>Bumi itu datar.</td>
+        <td>Salah, Benar, Salah</td>
+        <td>15</td>
+        <td>Bumi yang mengelilingi matahari, dan bumi berbentuk bulat.</td>
     </tr>
     <tr>
         <td>Pernyataan</td>
-        <td>Tentukan kebenaran dari pernyataan sains berikut:</td>
-        <td>Matahari berputar mengelilingi Bumi.<br>Bulan adalah satelit alami Bumi.<br>Bumi memiliki cincin seperti Saturnus.</td>
-        <td>Salah, Benar, Salah</td>
+        <td>Analisis pernyataan geografi di bawah ini:</td>
+        <td>Gunung tertinggi di dunia adalah Gunung Everest.<br>Gurun Sahara terletak di Benua Asia.<br>Indonesia memiliki dua musim.</td>
+        <td>Benar, Salah, Benar</td>
         <td>15</td>
-        <td>Bumi yang mengelilingi matahari dan tidak memiliki cincin.</td>
+        <td>Gurun Sahara terletak di Benua Afrika.</td>
     </tr>
     <tr>
-        <td>PG Kompleks</td>
-        <td>Manakah di bawah ini yang merupakan hewan mamalia? (Pilih 2)</td>
-        <td>A. Lumba-lumba<br>B. Hiu<br>C. Paus<br>D. Buaya</td>
-        <td>A, C</td>
+        <td>Pernyataan</td>
+        <td>Tentukan Benar/Salah pada fakta sejarah Indonesia berikut:</td>
+        <td>Soekarno adalah presiden pertama RI.<br>Sumpah Pemuda dicetuskan tahun 1928.<br>Belanda menjajah Indonesia selama 10 tahun.</td>
+        <td>Benar, Benar, Salah</td>
         <td>15</td>
-        <td>Lumba-lumba dan Paus berkembang biak dengan melahirkan dan menyusui.</td>
+        <td>Belanda berkuasa selama ratusan tahun di nusantara.</td>
     </tr>
-    <tr>
-        <td>PG Kompleks</td>
-        <td>Siapa saja pahlawan kemerdekaan dari Sumatera?</td>
-        <td>A. Cut Nyak Dien<br>B. Pangeran Diponegoro<br>C. Tuanku Imam Bonjol<br>D. Kapitan Pattimura</td>
-        <td>A, C</td>
-        <td>15</td>
-        <td>Cut Nyak Dien dari Aceh dan Tuanku Imam Bonjol dari Sumbar.</td>
-    </tr>
-    <tr>
-        <td>PG Kompleks</td>
-        <td>Warna primer penyusun cahaya (RGB) adalah...</td>
-        <td>A. Red<br>B. Yellow<br>C. Green<br>D. Blue</td>
-        <td>A, C, D</td>
-        <td>15</td>
-        <td>RGB adalah Red, Green, Blue.</td>
-    </tr>
+    <!-- 4. Isian Singkat -->
     <tr>
         <td>Isian Singkat</td>
-        <td>Ibukota provinsi Jawa Timur adalah...</td>
+        <td>Ibu kota dari provinsi Jawa Timur adalah kota...</td>
         <td></td>
         <td>Surabaya</td>
         <td>10</td>
@@ -1575,27 +1688,44 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
     </tr>
     <tr>
         <td>Isian Singkat</td>
-        <td>Nilai dari akar pangkat dua 144 adalah...</td>
+        <td>Hasil dari akar pangkat dua angka 144 adalah...</td>
         <td></td>
         <td>12</td>
         <td>10</td>
-        <td>12 x 12 = 144</td>
+        <td>Karena 12 x 12 = 144.</td>
+    </tr>
+    <tr>
+        <td>Isian Singkat</td>
+        <td>Sebutan untuk dasar negara Republik Indonesia adalah...</td>
+        <td></td>
+        <td>Pancasila</td>
+        <td>10</td>
+        <td>Pancasila adalah pilar ideologis negara Indonesia.</td>
+    </tr>
+    <!-- 5. Esai / Uraian -->
+    <tr>
+        <td>Esai</td>
+        <td>Jelaskan secara rinci mengapa kita perlu melestarikan hutan lindung!</td>
+        <td></td>
+        <td></td>
+        <td>20</td>
+        <td>Hutan adalah paru-paru dunia yang menjaga keseimbangan karbon dan mencegah banjir.</td>
     </tr>
     <tr>
         <td>Esai</td>
-        <td>Jelaskan secara singkat mengapa kita perlu melestarikan hutan!</td>
+        <td>Sebutkan dan jelaskan 3 dampak negatif dari pemanasan global!</td>
         <td></td>
         <td></td>
-        <td>25</td>
-        <td>Hutan adalah paru-paru dunia yang menjaga siklus oksigen dan mencegah banjir.</td>
+        <td>20</td>
+        <td>1. Es kutub mencair. 2. Cuaca ekstrem. 3. Naiknya permukaan air laut.</td>
     </tr>
     <tr>
-        <td>Uraian</td>
-        <td>Sebutkan 3 dampak pemanasan global bagi kehidupan manusia!</td>
+        <td>Esai</td>
+        <td>Uraikan secara singkat proses fotosintesis pada tumbuhan!</td>
         <td></td>
         <td></td>
-        <td>25</td>
-        <td>1. Es kutub mencair<br>2. Cuaca ekstrem<br>3. Naiknya permukaan air laut.</td>
+        <td>20</td>
+        <td>Tumbuhan menggunakan sinar matahari, karbon dioksida, dan air untuk menghasilkan glukosa.</td>
     </tr>
 </table>
 </body></html>`;
