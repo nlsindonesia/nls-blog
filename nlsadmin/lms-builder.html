@@ -2055,15 +2055,15 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
                         const cols = rows[i].querySelectorAll('td');
                         if (cols.length < 6) continue;
                         
-                        const typeRaw = cols[0].textContent.trim().toLowerCase();
+                        const typeRaw = cols[0].textContent.trim().toLowerCase().replace(/\s+/g, '');
                         let qType = 'pg';
                         if (typeRaw.includes('essai') || typeRaw.includes('esai') || typeRaw.includes('uraian')) qType = 'essai';
                         else if (typeRaw.includes('isian') || typeRaw.includes('singkat')) qType = 'isian';
-                        else if (typeRaw.includes('kompleks') || typeRaw.includes('ganda kompleks')) qType = 'pg_kompleks';
+                        else if (typeRaw.includes('kompleks') || typeRaw.includes('gandakompleks')) qType = 'pg_kompleks';
                         else if (typeRaw.includes('majemuk') || typeRaw.includes('pernyataan') || typeRaw.includes('benar') || typeRaw.includes('salah')) qType = 'pg_majemuk';
                         else if (typeRaw.includes('osn') || typeRaw.includes('biologi')) qType = 'osn_biologi';
                         else if (typeRaw.includes('graph') || typeRaw.includes('grafik') || typeRaw.includes('koordinat')) qType = 'graph';
-                        else if (typeRaw.includes('puzzle') || typeRaw.includes('susun gambar')) qType = 'puzzle';
+                        else if (typeRaw.includes('puzzle') || typeRaw.includes('susungambar')) qType = 'puzzle';
                         else if (typeRaw.includes('blank') || typeRaw.includes('rumpang') || typeRaw.includes('titik')) qType = 'blank';
                         else if (typeRaw.includes('jodoh') || typeRaw.includes('pasang')) qType = 'jodoh';
                         
