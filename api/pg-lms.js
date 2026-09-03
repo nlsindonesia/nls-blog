@@ -1036,7 +1036,7 @@ export default async function handler(request, response) {
                 SELECT 
                     q.id, q.course_id, q.module_index, q.score, q.answers_json, q.submitted_at as date,
                     u.name as studentName, u.email as studentEmail, u.nisn, u.school,
-                    c.title as courseTitle, c.category
+                    c.title as courseTitle, c.category, c.level
                 FROM lms_quiz_results q
                 LEFT JOIN users u ON q.user_id = u.id::varchar
                 LEFT JOIN lms_courses c ON q.course_id = c.id
@@ -1053,6 +1053,7 @@ export default async function handler(request, response) {
                 courseTitle: r.coursetitle || 'Program NLS',
                 moduleTitle: `Modul ID: ${r.module_index} (Paket ${r.paket || 1})`,
                 category: r.category || 'School',
+                level: r.level || '',
                 score: r.score,
                 answers: r.answers_json || {},
                 date: r.date

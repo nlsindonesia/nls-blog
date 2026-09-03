@@ -4517,7 +4517,7 @@
 
                         <div class="flex items-center gap-2">
                             <!-- Filter Category -->
-                            <select x-model="quizFilterCategory" class="px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200">
+                            <select x-show="activeTab !== 'lms_courses'" x-model="quizFilterCategory" class="px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200">
                                 <option value="all">Semua Kategori</option>
                                 <option value="School">School</option>
                                 <option value="Olimpiade">Olimpiade</option>
@@ -8641,7 +8641,15 @@
 
                 getFilteredQuizSubmissions() {
                     let list = this.quizSubmissions || [];
-                    if (this.quizFilterCategory && this.quizFilterCategory !== 'all') {
+                    
+                    if (this.activeTab === 'lms_courses') {
+                        if (this.lmsCategory) {
+                            list = list.filter(s => s.category === this.lmsCategory);
+                        }
+                        if (this.lmsLevel && this.lmsCategory !== 'Semua') {
+                            list = list.filter(s => s.level === this.lmsLevel);
+                        }
+                    } else if (this.quizFilterCategory && this.quizFilterCategory !== 'all') {
                         list = list.filter(s => s.category === this.quizFilterCategory);
                     }
                     const q = (this.quizSearchQuery || '').toLowerCase().trim();
