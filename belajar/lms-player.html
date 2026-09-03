@@ -1846,6 +1846,17 @@
                         });
                         return parts.join('\n');
                     }
+                    if (q.type === 'blank') {
+                        if (typeof answer !== 'object' || Object.keys(answer).length === 0) return '- Belum Dijawab -';
+                        let text = q.blankText ? q.blankText.replace(/<[^>]*>?/gm, '') : '';
+                        const parts = text.split('{dash}');
+                        let result = parts[0];
+                        for(let i=1; i<parts.length; i++) {
+                            let userVal = answer[i-1] || '_____';
+                            result += `[ ${userVal} ]` + parts[i];
+                        }
+                        return result;
+                    }
                     if (typeof answer === 'object') return JSON.stringify(answer);
                     return answer.toString();
                 },
@@ -1892,6 +1903,17 @@
                             parts.push(`${left}... ➔ ${right}`);
                         });
                         return parts.join('\n');
+                    }
+                    if (q.type === 'blank') {
+                        let text = q.blankText ? q.blankText.replace(/<[^>]*>?/gm, '') : '';
+                        const parts = text.split('{dash}');
+                        const keys = q.blankAnswers ? q.blankAnswers.split(',').map(s => s.trim()) : [];
+                        let result = parts[0];
+                        for(let i=1; i<parts.length; i++) {
+                            let correctVal = keys[i-1] || '_____';
+                            result += `[ ${correctVal} ]` + parts[i];
+                        }
+                        return result;
                     }
                     if (q.type === 'isian') return q.shortAnswerKeys || '-';
                     if (q.type === 'essai') return 'Dikoreksi Manual oleh Guru';
