@@ -847,7 +847,7 @@
                                                         <svg class="w-5 h-5 text-sky-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                                         <div>
                                                             <div class="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">Jawaban Anda</div>
-                                                            <div class="text-sm font-bold text-slate-700 break-all" x-text="JSON.stringify(quizAnswers[q.id]) || '- Belum Dijawab -'"></div>
+                                                            <div class="text-sm font-bold text-slate-700 break-all" x-text="formatAnswerText(q, quizAnswers[q.id])"></div>
                                                         </div>
                                                     </div>
                                                     
@@ -855,7 +855,7 @@
                                                         <svg class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                                         <div>
                                                             <div class="text-[10px] font-black uppercase tracking-wider text-emerald-700/60 mb-1">Kunci Jawaban Benar</div>
-                                                            <div class="text-sm font-bold text-emerald-800 break-all" x-text="q.type === 'pg' ? q.correctAnswers : (q.type === 'isian' ? q.shortAnswerKeys : (q.type === 'pg_kompleks' ? JSON.stringify(q.correctAnswersArray) : 'Sistem Penilaian Kompleks'))"></div>
+                                                            <div class="text-sm font-bold text-emerald-800 break-all" x-text="formatCorrectAnswerText(q)"></div>
                                                         </div>
                                                     </div>
 
@@ -1705,6 +1705,45 @@
                             }
                         } catch(e) {}
                     }, 2000); // 2 second fake queue loading
+                },
+                formatAnswerText(q, answer) {
+                    if (answer === undefined || answer === null || answer === '') return '- Belum Dijawab -';
+                    if (q.type === 'pg') {
+                        let idx = parseInt(answer);
+                        if (!isNaN(idx) && q.options && q.options[idx]) return q.options[idx].replace(/<[^>]*>?/gm, '').substring(0, 80);
+                        return answer;
+                    }
+                    if (q.type === 'pg_kompleks') {
+                        if (Array.isArray(answer)) {
+                            if (answer.length === 0) return '- Belum Dijawab -';
+                            return answer.map(idx => {
+                                let i = parseInt(idx);
+                                if (!isNaN(i) && q.options && q.options[i]) return q.options[i].replace(/<[^>]*>?/gm, '').substring(0, 80);
+                                return idx;
+                            }).join(' | ');
+                        }
+                    }
+                    if (typeof answer === 'object') return JSON.stringify(answer);
+                    return answer.toString();
+                },
+                formatCorrectAnswerText(q) {
+                    if (q.type === 'pg') {
+                        let idx = parseInt(q.correctAnswers);
+                        if (!isNaN(idx) && q.options && q.options[idx]) return q.options[idx].replace(/<[^>]*>?/gm, '').substring(0, 80);
+                        return q.correctAnswers || '-';
+                    }
+                    if (q.type === 'pg_kompleks') {
+                        if (Array.isArray(q.correctAnswersArray)) {
+                            return q.correctAnswersArray.map(idx => {
+                                let i = parseInt(idx);
+                                if (!isNaN(i) && q.options && q.options[i]) return q.options[i].replace(/<[^>]*>?/gm, '').substring(0, 80);
+                                return idx;
+                            }).join(' | ');
+                        }
+                    }
+                    if (q.type === 'isian') return q.shortAnswerKeys || '-';
+                    if (q.type === 'essai') return 'Dikoreksi Manual oleh Guru';
+                    return 'Sistem Penilaian Kompleks (Grafik/Puzzle/OSN/Range)';
                 }
             }
         }
