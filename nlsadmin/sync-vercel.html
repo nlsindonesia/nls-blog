@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -56,7 +56,7 @@
                         // (Asumsi draft terbaru adalah milik kursus yang baru saja dibuat/diedit)
                         if (latestDraftBabs && latestDraftBabs.length > 0) {
                             if (!course.babs || course.babs.length === 0 || course.updated_at >= new Date().toISOString().split('T')[0]) {
-                                log(' ⚠️ Menggabungkan Draft Builder terbaru ke dalam kursus: ' + course.title);
+                                log(' ?? Menggabungkan Draft Builder terbaru ke dalam kursus: ' + course.title);
                                 course.babs = latestDraftBabs;
                                 course.content = latestDraftBabs;
                             }
@@ -73,16 +73,16 @@
                         });
                         
                         if (res.ok) {
-                            log('  ✅ Berhasil tersimpan di Database Cloud!');
+                            log('  ? Berhasil tersimpan di Database Cloud!');
                         } else {
                             if (res.status === 413) {
-                                log('  ❌ GAGAL (413): Ukuran materi TERLALU BESAR (Lebih dari 4.5MB). Kurangi jumlah gambar/hapus gambar besar!');
+                                log('  ? GAGAL (413): Ukuran materi TERLALU BESAR (Lebih dari 4.5MB). Kurangi jumlah gambar/hapus gambar besar!');
                             } else {
-                                log('  ❌ Gagal (Status: ' + res.status + ')');
+                                log('  ? Gagal (Status: ' + res.status + ')');
                             }
                         }
                     } catch(e) {
-                        log('  ❌ Error Koneksi: ' + e.message);
+                        log('  ? Error Koneksi: ' + e.message);
                     }
                 }
             } else {
