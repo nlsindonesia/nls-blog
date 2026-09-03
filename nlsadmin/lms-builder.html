@@ -50,6 +50,12 @@
         <div class="flex items-center gap-4 relative z-10">
             <span x-show="isSaving" class="text-xs font-bold text-amber-500 animate-pulse bg-amber-50 px-3 py-1 rounded-full">Menyimpan...</span>
             <span x-show="!isSaving && lastSaved" class="text-xs font-bold text-indigo-400 bg-indigo-50/50 px-3 py-1 rounded-full border border-indigo-100/50" x-text="'Tersimpan ' + lastSaved"></span>
+            
+            <button @click="forceSyncToVercel()" class="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-black text-xs rounded-xl shadow-[0_4px_12px_rgba(16,185,129,0.3)] transition-all active:scale-95 flex items-center gap-2 border border-emerald-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                Sync to Vercel
+            </button>
+
             <button @click="saveAll()" class="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-black text-xs rounded-xl shadow-[0_4px_12px_rgba(79,70,229,0.3)] transition-all active:scale-95 flex items-center gap-2 border border-indigo-500">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
                 Simpan Modul
