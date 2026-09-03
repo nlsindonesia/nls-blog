@@ -10,6 +10,12 @@
         },
         {
             "source": "/belajar/:path*",
+            "has": [ { "type": "host", "value": "nls-blog-plum.vercel.app" } ],
+            "destination": "https://nls-belajar.vercel.app/belajar/:path*",
+            "permanent": true
+        },
+        {
+            "source": "/belajar/:path*",
             "has": [ { "type": "host", "value": "admin.next-level-study.com" } ],
             "destination": "https://belajar.next-level-study.com/belajar/:path*",
             "permanent": true
@@ -17,6 +23,12 @@
         {
             "source": "/nlsadmin/:path*",
             "has": [ { "type": "host", "value": "nls-belajar.vercel.app" } ],
+            "destination": "https://nls-superadmin.vercel.app/nlsadmin/:path*",
+            "permanent": true
+        },
+        {
+            "source": "/nlsadmin/:path*",
+            "has": [ { "type": "host", "value": "nls-blog-plum.vercel.app" } ],
             "destination": "https://nls-superadmin.vercel.app/nlsadmin/:path*",
             "permanent": true
         },
