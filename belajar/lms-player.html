@@ -132,7 +132,7 @@
             <div class="flex-1 overflow-y-auto player-scroll p-5 space-y-8">
                 <template x-if="babs.length === 0">
                     <div class="text-center p-8 text-indigo-300 text-xs font-bold bg-indigo-50/50 rounded-3xl border border-indigo-100/50 border-dashed">Modul belum tersedia.</div>
-                </tem
+                </template>
                 
                 <template x-for="(bab, bIdx) in babs" :key="bab.id">
                     <div class="relative">
@@ -193,11 +193,11 @@
                                             </div>
                                         </button>
                                     </div>
-                                </tem
+                                </template>
                             </div>
                         </div>
                     </div>
-                </tem
+                </template>
             </div>
         </aside>
 
@@ -212,7 +212,7 @@
                     <h2 class="text-3xl font-black text-indigo-950 mb-3 tracking-tight">Pilih Materi Perjalananmu</h2>
                     <p class="text-sm font-bold text-indigo-800/60 max-w-sm">Pilih kartu misi di sebelah kiri untuk mulai mengumpulkan pengetahuan dan XP!</p>
                 </div>
-            </tem
+            </template>
 
             <template x-if="activeNode">
                 <div class="w-full max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
@@ -255,25 +255,25 @@
                                     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 to-indigo-500 z-10"></div>
                                     <iframe :src="formatGdrivePreview(activeNode.pdfUrl)" class="w-full h-full border-0 relative z-0"></iframe>
                                 </div>
-                            </tem
+                            </template>
                             <template x-if="activeNode.materiFormat === 'ckeditor' || activeNode.materiFormat === 'html'">
                                 <div class="p-8 sm:p-12 lg:p-16 prose prose-lg prose-slate max-w-none prose-headings:font-black prose-headings:tracking-tight prose-a:text-indigo-600 prose-img:rounded-3xl prose-img:shadow-xl" x-html="activeNode.rawHtml"></div>
-                            </tem
+                            </template>
                         </div>
-                    </tem
+                    </template>
 
                     <!-- Video Content -->
                     <template x-if="activeNode.type === 'video'">
                         <div class="bg-slate-950 rounded-[2.5rem] shadow-[0_24px_64px_-12px_rgba(0,0,0,0.2)] overflow-hidden aspect-video relative flex flex-col items-center justify-center border-[6px] border-white/90 ring-1 ring-slate-200" x-init="initYoutubePlayer()">
                             <template x-if="activeNode.videoUrl">
                                 <div id="yt-player-container" class="w-full h-full absolute inset-0 rounded-[2rem] overflow-hidden"></div>
-                            </tem
+                            </template>
                             <template x-if="!activeNode.videoUrl">
                                 <div class="text-slate-500 text-sm font-bold flex flex-col items-center gap-3">
                                     <svg class="w-12 h-12 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                                     Link Video Belum Tersedia
                                 </div>
-                            </tem
+                            </template>
 
                             <!-- Interactive Quiz Overlay -->
                             <template x-if="interactiveQuiz.active">
@@ -301,16 +301,16 @@
                                                         <input type="radio" :name="'iq_' + interactiveQuiz.currentQ.id" :value="oIdx" x-model.number="interactiveQuiz.answer" class="mt-1 w-5 h-5 text-indigo-600 border-slate-300 focus:ring-indigo-600 cursor-pointer">
                                                         <span class="text-base text-slate-700 font-bold" x-text="opt"></span>
                                                     </label>
-                                                </tem
+                                                </template>
                                             </div>
-                                        </tem
+                                        </template>
 
                                         <template x-if="interactiveQuiz.currentQ.type !== 'pg'">
                                             <div class="p-6 bg-amber-50 rounded-2xl border border-amber-200 text-amber-800 text-sm font-bold flex gap-4 items-center">
                                                 <svg class="w-8 h-8 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                                 Tipe soal ini belum didukung di Pop-up Interactive Video. Silakan gunakan Pilihan Ganda Sederhana.
                                             </div>
-                                        </tem
+                                        </template>
 
                                         <div class="mt-10 flex flex-col sm:flex-row justify-end gap-4">
                                             <button @click="skipInteractiveQuiz()" class="px-6 py-4 rounded-2xl font-black text-slate-500 hover:bg-slate-100 hover:text-slate-700 text-sm transition-colors">Lewati Kuis</button>
@@ -321,9 +321,9 @@
                                         </div>
                                     </div>
                                 </div>
-                            </tem
+                            </template>
                         </div>
-                    </tem
+                    </template>
 
                     <!-- CBT DOM START -->
                     <!-- Quiz Content -->
@@ -345,7 +345,7 @@
                                                 <svg class="w-5 h-5 inline-block mr-2 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                                                 Kuis ini belum memiliki soal.
                                             </div>
-                                        </tem
+                                        </template>
                                         <button @click="startQuiz()" 
                                             :disabled="!activeNode.questions || activeNode.questions.length === 0"
                                             :class="(!activeNode.questions || activeNode.questions.length === 0) ? 'opacity-50 cursor-not-allowed saturate-0' : 'hover:from-indigo-600 hover:to-sky-600 shadow-xl shadow-indigo-500/30 active:scale-95 hover:shadow-indigo-500/40'"
@@ -356,7 +356,7 @@
                                         </button>
                                     </div>
                                 </div>
-                            </tem
+                            </template>
 
                             <!-- CBT Interface (Saat Kuis Berjalan) -->
                             <template x-if="quizState.inProgress && !quizState.submitted">
@@ -398,9 +398,9 @@
                                                                     <input type="radio" :name="'q_' + q.id" :value="oIdx" x-model.number="quizAnswers[q.id]" class="hidden">
                                                                     <div class="text-base text-slate-700 font-medium pt-1" x-text="q.options[oIdx]"></div>
                                                                 </label>
-                                                            </tem
+                                                            </template>
                                                         </div>
-                                                    </tem
+                                                    </template>
 
                                                     <!-- PG Kompleks -->
                                                     <template x-if="q.type === 'pg_kompleks'">
@@ -415,9 +415,9 @@
                                                                             class="mt-1 w-5 h-5 text-indigo-600 border-slate-300 focus:ring-indigo-600 cursor-pointer rounded">
                                                                         <span class="text-base text-slate-700 font-medium pt-0.5" x-text="q.options[oIdx]"></span>
                                                                     </label>
-                                                            </tem
+                                                            </template>
                                                         </div>
-                                                    </tem
+                                                    </template>
 
                                                     <!-- PG Majemuk -->
                                                     <template x-if="q.type === 'pg_majemuk'">
@@ -438,9 +438,9 @@
                                                                          <input type="radio" :name="'qm_' + q.id + '_' + sIdx" value="false" x-model="quizAnswers[q.id][sIdx]" @change="debounceAutosave()" class="w-5 h-5 text-rose-500 cursor-pointer focus:ring-rose-500 border-slate-300">
                                                                      </div>
                                                                  </div>
-                                                             </tem
+                                                             </template>
                                                         </div>
-                                                    </tem
+                                                    </template>
 
                                                     <!-- Menjodohkan -->
                                                     <template x-if="q.type === 'jodoh'">
@@ -457,19 +457,19 @@
                                                                             <option value="" disabled selected>Pilih Pasangan...</option>
                                                                             <template x-for="(rightOpt, rIdx) in q._shuffledRights" :key="rIdx">
                                                                                 <option :value="rightOpt" x-text="rightOpt"></option>
-                                                                            </tem
+                                                                            </template>
                                                                         </select>
                                                                 </div>
-                                                            </tem
+                                                            </template>
                                                         </div>
-                                                    </tem
+                                                    </template>
 
                                                     <!-- Isian Singkat -->
                                                     <template x-if="q.type === 'isian'">
                                                         <div class="mt-4">
                                                             <input type="text" x-model="quizAnswers[q.id]" @input.debounce.1000ms="debounceAutosave()" placeholder="Ketik jawaban singkat Anda di sini..." class="w-full px-6 py-5 rounded-2xl border-2 border-slate-200 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 text-lg font-bold bg-slate-50 focus:bg-white transition-all">
                                                         </div>
-                                                    </tem
+                                                    </template>
 
                                                     <!-- Essay -->
                                                     <template x-if="q.type === 'essai'">
@@ -483,7 +483,7 @@
                                                                 <p class="text-base font-black text-indigo-900" x-text="quizAnswers[q.id + '_file'] ? 'File Terpilih: ' + quizAnswers[q.id + '_file'] : 'Klik atau Tarik dokumen ke sini'"></p>
                                                             </div>
                                                         </div>
-                                                    </tem
+                                                    </template>
 
                                                     <!-- Fill in the Blanks -->
                                                     <template x-if="q.type === 'blank'">
@@ -494,12 +494,12 @@
                                                                         <span x-html="part"></span>
                                                                         <template x-if="idx < (q.blankText || '').split('{dash}').length - 1">
                                                                             <input type="text" x-model="quizAnswers[q.id][idx]" @input.debounce.1000ms="debounceAutosave()" class="mx-2 w-32 px-3 py-1 text-center font-bold text-indigo-700 bg-white border-b-2 border-indigo-300 focus:border-indigo-600 focus:outline-none transition-colors shadow-sm rounded-t-md" placeholder="...">
-                                                                        </tem
+                                                                        </template>
                                                                     </div>
-                                                                </tem
+                                                                </template>
                                                             </div>
                                                         </div>
-                                                    </tem
+                                                    </template>
 
                                                     <!-- OSN Biologi (4 Pernyataan) -->
                                                     <template x-if="q.type === 'osn_biologi'">
@@ -518,9 +518,9 @@
                                                                         </label>
                                                                     </div>
                                                                 </div>
-                                                            </tem
+                                                            </template>
                                                         </div>
-                                                    </tem
+                                                    </template>
 
                                                     <!-- Range Slider -->
                                                     <template x-if="q.type === 'range'">
@@ -537,7 +537,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </tem
+                                                    </template>
 
                                                     <!-- Interactive Graph -->
                                                     <template x-if="q.type === 'graph'">
@@ -572,10 +572,10 @@
                                                                          :style="`left: ${(pt.x + 10) * 20}px; top: ${(10 - pt.y) * 20}px;`"
                                                                          @click.stop="quizAnswers[q.id].splice(i, 1); debounceAutosave()">
                                                                     </div>
-                                                                </tem
+                                                                </template>
                                                             </div>
                                                         </div>
-                                                    </tem
+                                                    </template>
 
                                                     <!-- Jigsaw Puzzle -->
                                                     <template x-if="q.type === 'puzzle'">
@@ -608,12 +608,12 @@
                                                                                   :style="`background-image: url('${q.puzzleImage || 'https://via.placeholder.com/400'}'); background-size: ${(parseInt(q.puzzleDifficulty)||4)*100}% ${(parseInt(q.puzzleDifficulty)||4)*100}%; background-position: ${(tileIdx % (parseInt(q.puzzleDifficulty)||4)) * (100/(((parseInt(q.puzzleDifficulty)||4)-1) || 1))}% ${Math.floor(tileIdx / (parseInt(q.puzzleDifficulty)||4)) * (100/(((parseInt(q.puzzleDifficulty)||4)-1) || 1))}%;`">
                                                                              </div>
                                                                         </div>
-                                                                    </tem
+                                                                    </template>
                                                                 </div>
                                                                 <p class="text-center text-xs text-slate-500 mt-4 font-bold bg-slate-100 py-2 rounded-lg border border-slate-200 shadow-sm">Klik kotak pertama, lalu klik kotak kedua untuk menukar posisinya.</p>
                                                             </div>
                                                         </div>
-                                                    </tem
+                                                    </template>
 
                                                 </div>
 
@@ -636,7 +636,7 @@
                                                 </div>
 
                                             </div>
-                                        </tem
+                                        </template>
                                     </div>
 
                                     <!-- Area Kanan: Grid Navigasi CBT & Timer -->
@@ -675,7 +675,7 @@
                                                         }">
                                                         <span x-text="qIdx + 1"></span>
                                                     </button>
-                                                </tem
+                                                </template>
                                             </div>
 
                                             <!-- Legenda -->
@@ -694,7 +694,7 @@
                                     </div>
 
                                 </div>
-                            </tem
+                            </template>
 
                             <!-- Queue Loading UI -->
                             <template x-if="quizState.isSubmitting">
@@ -714,17 +714,17 @@
                                         <p class="text-slate-500 font-medium">Jawaban sedang dienkripsi & dikirim ke antrean server.<br>Mohon tunggu sebentar.</p>
                                     </div>
                                 </div>
-                            </tem
+                            </template>
 
                             <!-- Quiz Result -->
                             <template x-if="quizState.submitted && !quizState.showDiscussion">
                                 <div class="bg-white rounded-[2.5rem] p-10 sm:p-16 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-slate-100 text-center relative overflow-hidden">
                                     <template x-if="!quizState.hasEssay">
                                         <div class="absolute top-0 left-0 w-full h-3" :class="quizState.score > 70 ? 'bg-emerald-400' : 'bg-rose-400'"></div>
-                                    </tem
+                                    </template>
                                     <template x-if="quizState.hasEssay">
                                         <div class="absolute top-0 left-0 w-full h-3 bg-amber-400"></div>
-                                    </tem
+                                    </template>
                                     
                                     <div class="relative z-10">
                                         
@@ -782,13 +782,13 @@
                                                                             <span class="inline-flex px-2 py-1 rounded-lg text-xs font-bold" :class="attempt.score >= 70 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'" x-text="attempt.score >= 70 ? 'Lulus' : 'Gagal'"></span>
                                                                         </td>
                                                                     </tr>
-                                                                </tem
+                                                                </template>
                                                             </tbody>
                                                         </table>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </tem
+                                        </template>
 
                                         <!-- Has Essay: Show Manual Grading Notice -->
                                         <template x-if="quizState.hasEssay">
@@ -803,7 +803,7 @@
                                                     Nilai akhir Anda akan muncul setelah Guru melakukan koreksi manual.
                                                 </div>
                                             </div>
-                                        </tem
+                                        </template>
                                         
                                         <div class="flex flex-col sm:flex-row justify-center gap-4">
                                             <button @click="quizState.submitted = false; quizState.inProgress = false; quizAnswers = {}" class="px-8 py-4 rounded-2xl bg-white border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-black text-sm transition-all shadow-sm">
@@ -818,7 +818,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </tem
+                            </template>
 
                             <!-- Pembahasan (Discussion View) -->
                             <template x-if="quizState.showDiscussion">
@@ -868,17 +868,17 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </tem
+                                        </template>
                                     </div>
                                 </div>
-                            </tem
+                            </template>
                         </div>
-                    </tem
+                    </template>
 <!-- CBT DOM END -->
 
 
                 </div>
-            </tem
+            </template>
         </main>
     </div>
 
