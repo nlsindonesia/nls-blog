@@ -477,47 +477,65 @@
                 isCorrectAnswer(q, answers) {
                     if (!answers) return false;
                     const ans = answers[q.id];
-                    if (ans === undefined) return false;
-                    if (q.type === 'pg') {
-                        return q.answer && q.answer.toString() === ans.toString();
-                    }
-                    if (q.type === 'pg_kompleks') {
-                        if (!Array.isArray(q.answer) || !Array.isArray(ans)) return false;
-                        const sortedExpected = [...q.answer].sort();
-                        const sortedGiven = [...ans].sort();
-                        return JSON.stringify(sortedExpected) === JSON.stringify(sortedGiven);
-                    }
-                    if (q.type === 'tf') {
-                        return q.answer !== undefined && q.answer.toString() === ans.toString();
-                    }
-                    if (q.type === 'blank') {
-                        let expected = Array.isArray(q.answer) ? q.answer : [q.answer];
-                        let cleanAns = ans.toString().toLowerCase().trim();
-                        return expected.some(ex => ex.toString().toLowerCase().trim() === cleanAns);
-                    }
-                    if (q.type === 'osn_biologi') {
-                        if (!Array.isArray(q.answer) || !Array.isArray(ans)) return false;
-                        let correctCount = 0;
-                        for (let i = 0; i < 4; i++) {
-                            if (q.answer[i] === ans[i]) correctCount++;
+                    if (ans === undefined || ans === null) return false;
+                    try {
+                        if (q.type === 'pg') {
+                            return q.answer !== undefined && q.answer !== null && q.answer.toString() === ans.toString();
                         }
-                        return correctCount === 4; // Basic check for full score for simplicity in UI display
+                        if (q.type === 'pg_kompleks') {
+                            if (!Array.isArray(q.answer) || !Array.isArray(ans)) return false;
+                            const sortedExpected = [...q.answer].sort();
+                            const sortedGiven = [...ans].sort();
+                            return JSON.stringify(sortedExpected) === JSON.stringify(sortedGiven);
+                        }
+                        if (q.type === 'tf') {
+                            return q.answer !== undefined && q.answer !== null && q.answer.toString() === ans.toString();
+                        }
+                        if (q.type === 'blank') {
+                            if (q.answer === undefined || q.answer === null) return false;
+                            let expected = Array.isArray(q.answer) ? q.answer : [q.answer];
+                            let cleanAns = ans.toString().toLowerCase().trim();
+                            return expected.some(ex => ex !== undefined && ex !== null && ex.toString().toLowerCase().trim() === cleanAns);
+                        }
+                        if (q.type === 'osn_biologi') {
+                            if (!Array.isArray(q.answer) || !Array.isArray(ans)) return false;
+                            let correctCount = 0;
+                            for (let i = 0; i < 4; i++) {
+                                if (q.answer[i] === ans[i]) correctCount++;
+                            }
+                            return correctCount === 4;
+                        }
+                        if (q.type === 'range') {
+                            let given = parseFloat(ans);
+                            if (isNaN(given)) return false;
+                            if (Array.isArray(q.answer)) return given >= q.answer[0] && given <= q.answer[1];
+                            return given === parseFloat(q.answer);
+                        }
+                        if (q.type === 'graph') {
+                            if (!q.answer || !ans) return false;
+                            return parseFloat(ans.x) === parseFloat(q.answer.x) && parseFloat(ans.y) === parseFloat(q.answer.y);
+                        }
+                        if (q.type === 'puzzle') {
+                            if (!Array.isArray(q.answer) || !Array.isArray(ans)) return false;
+                            return JSON.stringify(q.answer) === JSON.stringify(ans);
+                        }
+                        if (q.type === 'match') {
+                            if (!q.answer || typeof q.answer !== 'object') return false;
+                            if (!ans || typeof ans !== 'object') return false;
+                            let isAllCorrect = true;
+                            for (let key in q.answer) {
+                                if (ans[key] !== q.answer[key]) {
+                                    isAllCorrect = false;
+                                    break;
+                                }
+                            }
+                            return isAllCorrect;
+                        }
+                        return false;
+                    } catch (e) {
+                        console.error('Error checking answer', e);
+                        return false;
                     }
-                    if (q.type === 'range') {
-                        let given = parseFloat(ans);
-                        if (isNaN(given)) return false;
-                        if (Array.isArray(q.answer)) return given >= q.answer[0] && given <= q.answer[1];
-                        return given === parseFloat(q.answer);
-                    }
-                    if (q.type === 'graph') {
-                        if (!q.answer || !ans) return false;
-                        return parseFloat(ans.x) === parseFloat(q.answer.x) && parseFloat(ans.y) === parseFloat(q.answer.y);
-                    }
-                    if (q.type === 'puzzle') {
-                        if (!Array.isArray(q.answer) || !Array.isArray(ans)) return false;
-                        return JSON.stringify(q.answer) === JSON.stringify(ans);
-                    }
-                    return false; // Essai defaults to false for auto-check
                 },
                 
                 getStudentAnswerText(q, answers) {
