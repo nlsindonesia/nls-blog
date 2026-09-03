@@ -1368,6 +1368,10 @@
                         this.quizAnswers = {};
                     }
                     
+                    if (node && node.type === 'kuis') {
+                        this.initQuestionsState();
+                    }
+                    
                     // Allow Alpine to update DOM, then init player if video
                     this.$nextTick(() => {
                         if (this.activeNode.type === 'video') {
@@ -1426,6 +1430,42 @@
                 },
 
                 
+                initQuestionsState() {
+                    if (this.quizState.activeQuestions) {
+                        this.quizState.activeQuestions.forEach(q => {
+                            if ((q.type === 'pg' || q.type === 'pg_kompleks') && q.options) {
+                                q._shuffledIndices = this.activeNode.quizShuffleOptions !== false 
+                                    ? q.options.map((_, i) => i).sort(() => Math.random() - 0.5) 
+                                    : q.options.map((_, i) => i);
+                                if (q.type === 'pg_kompleks' && !Array.isArray(this.quizAnswers[q.id])) this.quizAnswers[q.id] = [];
+                            }
+                            else if (q.type === 'pg_majemuk' && q.statements) {
+                                q._shuffledStmts = this.activeNode.quizShuffleOptions !== false
+                                    ? q.statements.map((_, i) => i).sort(() => Math.random() - 0.5)
+                                    : q.statements.map((_, i) => i);
+                                if (typeof this.quizAnswers[q.id] !== 'object' || Array.isArray(this.quizAnswers[q.id])) this.quizAnswers[q.id] = {};
+                            }
+                            else if (q.type === 'jodoh' && q.pairs) {
+                                q._shuffledRights = this.activeNode.quizShuffleOptions !== false
+                                    ? [...q.pairs.map(p => p.right)].sort(() => Math.random() - 0.5)
+                                    : [...q.pairs.map(p => p.right)];
+                                if (typeof this.quizAnswers[q.id] !== 'object' || Array.isArray(this.quizAnswers[q.id])) this.quizAnswers[q.id] = {};
+                            }
+                            else if (q.type === 'isian' || q.type === 'blank') {
+                                if (typeof this.quizAnswers[q.id] !== 'object' || Array.isArray(this.quizAnswers[q.id])) this.quizAnswers[q.id] = {};
+                            }
+                            else if (q.type === 'range') {
+                                if (typeof this.quizAnswers[q.id] === 'undefined' || Array.isArray(this.quizAnswers[q.id]) || typeof this.quizAnswers[q.id] === 'object') {
+                                    this.quizAnswers[q.id] = ((parseFloat(q.minRange)||0) + (parseFloat(q.maxRange)||100))/2;
+                                }
+                            }
+                            else if (q.type === 'graph' || q.type === 'puzzle') {
+                                if (!Array.isArray(this.quizAnswers[q.id])) this.quizAnswers[q.id] = [];
+                            }
+                        });
+                    }
+                },
+                
                 async startQuiz() {
                     this.quizState.inProgress = true;
                     this.quizState.currentQIdx = 0;
@@ -1449,16 +1489,7 @@
                         this.quizState.activeQuestions = baseQuestions;
                     }
                     
-                    // Initialize shuffle indices for all applicable active questions
-                    if (this.quizState.activeQuestions) {
-                        this.quizState.activeQuestions.forEach(q => {
-                            if ((q.type === 'pg' || q.type === 'pg_kompleks') && q.options) {
-                                q._shuffledIndices = this.activeNode.quizShuffleOptions !== false 
-                                    ? q.options.map((_, i) => i).sort(() => Math.random() - 0.5) 
-                                    : q.options.map((_, i) => i);
-                            }
-                        });
-                    }
+                    this.initQuestionsState();
                     
                     let durationStr = this.activeNode.quizDuration ? this.activeNode.quizDuration.toString() : (this.activeNode.duration || '15');
                     let mins = parseInt(durationStr.replace(/\D/g, ''));
