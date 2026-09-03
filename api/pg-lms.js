@@ -1030,7 +1030,7 @@ export default async function handler(request, response) {
                     u.name as studentName, u.email as studentEmail, u.nisn, u.school,
                     c.title as courseTitle, c.category
                 FROM lms_quiz_results q
-                LEFT JOIN users u ON q.user_id = u.id
+                LEFT JOIN users u ON q.user_id = u.id::varchar
                 LEFT JOIN lms_courses c ON q.course_id = c.id
                 ORDER BY q.submitted_at DESC
             `;
