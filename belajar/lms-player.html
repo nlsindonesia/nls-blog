@@ -380,7 +380,7 @@
 
                                                 <!-- Teks Soal -->
                                                 <div class="prose prose-lg prose-slate max-w-none mb-8 text-slate-800 font-medium">
-                                                    <div x-html="q.text"></div>
+                                                    <div x-html="q.text ? q.text.replace(/{dash}/g, '_____') : ''"></div>
                                                 </div>
 
                                                 <!-- Opsi Jawaban (Render beda tipe) -->
@@ -840,7 +840,7 @@
                                                 <div class="flex justify-between items-start gap-4 mb-4">
                                                     <div class="flex items-start gap-4 w-full">
                                                         <div class="shrink-0 w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-black flex items-center justify-center text-sm" x-text="qIdx + 1"></div>
-                                                        <div class="prose prose-sm prose-slate max-w-none prose-img:rounded-xl prose-img:shadow-md w-full" x-html="q.text"></div>
+                                                        <div class="prose prose-sm prose-slate max-w-none prose-img:rounded-xl prose-img:shadow-md w-full" x-html="q.text ? q.text.replace(/{dash}/g, '_____') : ''"></div>
                                                     </div>
                                                     <div class="shrink-0 mt-1" x-show="q.type !== 'essai'">
                                                         <template x-if="isAnswerCorrect(q, quizAnswers[q.id])">
@@ -1846,14 +1846,15 @@
                     }
                     if (q.type === 'blank') {
                         if (typeof answer !== 'object' || Object.keys(answer).length === 0) return '- Belum Dijawab -';
-                        let text = q.blankText ? q.blankText.replace(/<[^>]*>?/gm, '') : '';
-                        const parts = text.split('{dash}');
-                        let result = parts[0];
-                        for(let i=1; i<parts.length; i++) {
-                            let userVal = answer[i-1] || '_____';
-                            result += `[ ${userVal} ]` + parts[i];
+                        const parts = (q.blankText || '').split('{dash}');
+                        const totalParts = parts.length > 1 ? parts.length - 1 : 0;
+                        let result = [];
+                        for(let i=0; i<totalParts; i++) {
+                            let userVal = answer[i] || '-';
+                            result.push(`Titik ${i+1}: ${userVal}`);
                         }
-                        return result;
+                        if (result.length === 0) return '- Belum Dijawab -';
+                        return result.join('\n');
                     }
                     if (typeof answer === 'object') return JSON.stringify(answer);
                     return answer.toString();
@@ -1903,15 +1904,15 @@
                         return parts.join('\n');
                     }
                     if (q.type === 'blank') {
-                        let text = q.blankText ? q.blankText.replace(/<[^>]*>?/gm, '') : '';
-                        const parts = text.split('{dash}');
                         const keys = q.blankAnswers ? q.blankAnswers.split(',').map(s => s.trim()) : [];
-                        let result = parts[0];
-                        for(let i=1; i<parts.length; i++) {
-                            let correctVal = keys[i-1] || '_____';
-                            result += `[ ${correctVal} ]` + parts[i];
+                        const parts = (q.blankText || '').split('{dash}');
+                        const totalParts = parts.length > 1 ? parts.length - 1 : 0;
+                        let result = [];
+                        for(let i=0; i<Math.max(keys.length, totalParts); i++) {
+                            let correctVal = keys[i] || '-';
+                            result.push(`Titik ${i+1}: ${correctVal}`);
                         }
-                        return result;
+                        return result.join('\n');
                     }
                     if (q.type === 'isian') return q.shortAnswerKeys || '-';
                     if (q.type === 'essai') return 'Dikoreksi Manual oleh Guru';
