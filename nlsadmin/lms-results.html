@@ -525,9 +525,10 @@
                             const userObj = ans || {};
                             let correctParts = 0;
                             const totalParts = (q.blankText.match(/{dash}/g) || []).length;
-                            const keys = (q.blankAnswers || '').split(',').map(s => s.trim().toLowerCase());
+                            const keys = (q.blankAnswers || '').split('|').map(s => s.trim().toLowerCase());
                             for(let i=0; i<totalParts; i++) {
-                                if (userObj[i] && keys.includes(userObj[i].trim().toLowerCase())) correctParts++;
+                                let expected = keys[i] ? keys[i].split(',').map(s => s.trim()) : [];
+                                if (userObj[i] && expected.includes(userObj[i].trim().toLowerCase())) correctParts++;
                             }
                             return totalParts > 0 && correctParts === totalParts;
                         }

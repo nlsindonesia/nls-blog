@@ -1698,9 +1698,10 @@
                             const ans = this.quizAnswers[q.id] || {};
                             let correctParts = 0;
                             const totalParts = (q.blankText.match(/{dash}/g) || []).length;
-                            const keys = q.blankAnswers.split(',').map(s => s.trim().toLowerCase());
+                            const keys = q.blankAnswers.split('|').map(s => s.trim().toLowerCase());
                             for(let i=0; i<totalParts; i++) {
-                                if (ans[i] && keys.includes(ans[i].trim().toLowerCase())) correctParts++;
+                                let expected = keys[i] ? keys[i].split(',').map(s => s.trim()) : [];
+                                if (ans[i] && expected.includes(ans[i].trim().toLowerCase())) correctParts++;
                             }
                             if(totalParts > 0) qScore = (correctParts / totalParts) * q.points;
                         }
@@ -1904,7 +1905,7 @@
                         return parts.join('\n');
                     }
                     if (q.type === 'blank') {
-                        const keys = q.blankAnswers ? q.blankAnswers.split(',').map(s => s.trim()) : [];
+                        const keys = q.blankAnswers ? q.blankAnswers.split('|').map(s => s.trim()) : [];
                         const parts = (q.blankText || '').split('{dash}');
                         const totalParts = parts.length > 1 ? parts.length - 1 : 0;
                         let result = [];
@@ -1953,9 +1954,10 @@
                     else if (q.type === 'blank') {
                         let correctParts = 0;
                         const totalParts = (q.blankText.match(/{dash}/g) || []).length;
-                        const keys = q.blankAnswers.split(',').map(s => s.trim().toLowerCase());
+                        const keys = q.blankAnswers.split('|').map(s => s.trim().toLowerCase());
                         for(let i=0; i<totalParts; i++) {
-                            if (ans[i] && keys.includes(ans[i].trim().toLowerCase())) correctParts++;
+                            let expected = keys[i] ? keys[i].split(',').map(s => s.trim()) : [];
+                            if (ans[i] && expected.includes(ans[i].trim().toLowerCase())) correctParts++;
                         }
                         return correctParts === totalParts && totalParts > 0;
                     }
