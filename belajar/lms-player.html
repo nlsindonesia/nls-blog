@@ -863,7 +863,24 @@
                                                         <svg class="w-5 h-5 text-sky-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                                         <div>
                                                             <div class="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">Jawaban Anda</div>
-                                                            <div class="text-sm font-bold text-slate-700 break-words whitespace-pre-line" x-text="formatAnswerText(q, quizAnswers[q.id])"></div>
+                                                            <template x-if="q.type !== 'puzzle'">
+                                                                <div class="text-sm font-bold text-slate-700 break-words whitespace-pre-line" x-text="formatAnswerText(q, quizAnswers[q.id])"></div>
+                                                            </template>
+                                                            <template x-if="q.type === 'puzzle' && quizAnswers[q.id] && Array.isArray(quizAnswers[q.id]) && quizAnswers[q.id].length > 0">
+                                                                <div class="mt-2 w-32 md:w-40 aspect-square relative grid border-2 border-slate-200 rounded-lg overflow-hidden bg-slate-100 shadow-sm"
+                                                                     :style="`grid-template-columns: repeat(${parseInt(q.puzzleDifficulty) || 4}, 1fr); grid-template-rows: repeat(${parseInt(q.puzzleDifficulty) || 4}, 1fr);`">
+                                                                    <template x-for="(tileIdx, currentPos) in quizAnswers[q.id]" :key="currentPos">
+                                                                        <div class="relative border-[0.5px] border-white/20">
+                                                                             <div class="absolute inset-0 bg-cover bg-no-repeat"
+                                                                                  :style="`background-image: url('${q.puzzleImage || 'https://via.placeholder.com/400'}'); background-size: ${(parseInt(q.puzzleDifficulty)||4)*100}% ${(parseInt(q.puzzleDifficulty)||4)*100}%; background-position: ${(tileIdx % (parseInt(q.puzzleDifficulty)||4)) * (100/(((parseInt(q.puzzleDifficulty)||4)-1) || 1))}% ${Math.floor(tileIdx / (parseInt(q.puzzleDifficulty)||4)) * (100/(((parseInt(q.puzzleDifficulty)||4)-1) || 1))}%;`">
+                                                                             </div>
+                                                                        </div>
+                                                                    </template>
+                                                                </div>
+                                                            </template>
+                                                            <template x-if="q.type === 'puzzle' && (!quizAnswers[q.id] || !Array.isArray(quizAnswers[q.id]) || quizAnswers[q.id].length === 0)">
+                                                                <div class="text-sm font-bold text-slate-700">- Belum Dijawab -</div>
+                                                            </template>
                                                         </div>
                                                     </div>
                                                     
@@ -871,7 +888,21 @@
                                                         <svg class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                                         <div>
                                                             <div class="text-[10px] font-black uppercase tracking-wider text-emerald-700/60 mb-1">Kunci Jawaban Benar</div>
-                                                            <div class="text-sm font-bold text-emerald-800 break-words whitespace-pre-line" x-text="formatCorrectAnswerText(q)"></div>
+                                                            <template x-if="q.type !== 'puzzle'">
+                                                                <div class="text-sm font-bold text-emerald-800 break-words whitespace-pre-line" x-text="formatCorrectAnswerText(q)"></div>
+                                                            </template>
+                                                            <template x-if="q.type === 'puzzle'">
+                                                                <div class="mt-2 w-32 md:w-40 aspect-square relative grid border-2 border-emerald-200 rounded-lg overflow-hidden bg-emerald-50 shadow-sm"
+                                                                     :style="`grid-template-columns: repeat(${parseInt(q.puzzleDifficulty) || 4}, 1fr); grid-template-rows: repeat(${parseInt(q.puzzleDifficulty) || 4}, 1fr);`">
+                                                                    <template x-for="i in Math.pow(parseInt(q.puzzleDifficulty) || 4, 2)">
+                                                                        <div class="relative border-[0.5px] border-white/20">
+                                                                             <div class="absolute inset-0 bg-cover bg-no-repeat"
+                                                                                  :style="`background-image: url('${q.puzzleImage || 'https://via.placeholder.com/400'}'); background-size: ${(parseInt(q.puzzleDifficulty)||4)*100}% ${(parseInt(q.puzzleDifficulty)||4)*100}%; background-position: ${((i-1) % (parseInt(q.puzzleDifficulty)||4)) * (100/(((parseInt(q.puzzleDifficulty)||4)-1) || 1))}% ${Math.floor((i-1) / (parseInt(q.puzzleDifficulty)||4)) * (100/(((parseInt(q.puzzleDifficulty)||4)-1) || 1))}%;`">
+                                                                             </div>
+                                                                        </div>
+                                                                    </template>
+                                                                </div>
+                                                            </template>
                                                         </div>
                                                     </div>
 
