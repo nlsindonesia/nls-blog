@@ -798,17 +798,24 @@ export default async function handler(request, response) {
 
             const progressRes = await sql`SELECT course_id, progress, completed_modules FROM lms_enrollments WHERE user_id = ${userId}`;
             
-            const quizRes = await sql`SELECT course_id, module_index, score, paket, submitted_at as date FROM lms_quiz_results WHERE user_id = ${userId} ORDER BY submitted_at DESC`;
+            const quizRes = await sql`SELECT course_id, module_index, score, paket, submitted_at as date, answers_json FROM lms_quiz_results WHERE user_id = ${userId} ORDER BY submitted_at DESC`;
             
             // Format quiz results for frontend
-            const quizResults = quizRes.rows.map(q => ({
-                courseId: q.course_id,
-                moduleIndex: q.module_index,
-                score: q.score,
-                paket: q.paket || 1,
-                date: new Date(q.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
-                datetime: new Date(q.date).toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
-            }));
+            const quizResults = quizRes.rows.map(q => {
+                let isGraded = false;
+                if (q.answers_json && q.answers_json._meta && q.answers_json._meta.gradedScores) {
+                    isGraded = true;
+                }
+                return {
+                    courseId: q.course_id,
+                    moduleIndex: q.module_index,
+                    score: q.score,
+                    paket: q.paket || 1,
+                    isGraded: isGraded,
+                    date: new Date(q.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
+                    datetime: new Date(q.date).toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+                };
+            });
 
             // Format progress map
             const progressMap = {};

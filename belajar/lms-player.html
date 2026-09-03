@@ -1267,7 +1267,8 @@
                         this.quizState.submitted = true;
                         this.quizState.score = this.pastScores[node.id][0].score;
                         this.quizState.total = '?'; // mark as loaded from history
-                        this.quizState.hasEssay = node.questions && node.questions.some(q => q.type === 'essai');
+                        let isGraded = this.pastScores[node.id][0].isGraded;
+                        this.quizState.hasEssay = !isGraded && node.questions && node.questions.some(q => q.type === 'essai');
                         this.quizState.inProgress = false;
                         
                         this.quizState.assignedPaket = this.pastScores[node.id][0].paket || 1;
