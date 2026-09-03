@@ -1669,6 +1669,75 @@
                         </div>
                     </div>
 
+                    <!-- 5. LMS: LANGUAGE -->
+                    <div>
+                        <button type="button" @click="toggleLanguageDropdown()"
+                            :class="activeTab === 'lms_courses' && lmsCategory === 'Language' ? 'bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 font-bold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/80'"
+                            class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all relative overflow-hidden group">
+                            
+                            <div class="flex items-center gap-3">
+                                <span class="relative flex items-center justify-center p-1.5 rounded-lg"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'Language' ? 'bg-teal-100 text-teal-600 dark:bg-teal-900 dark:text-teal-400' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 group-hover:bg-teal-50 group-hover:text-teal-500 dark:group-hover:bg-teal-950/50'">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
+                                </span>
+                                <span class="text-xs font-bold whitespace-nowrap">Language</span>
+                            </div>
+                            
+                            <div class="flex items-center gap-2">
+                                <span x-show="countCoursesByCategory('Language') > 0" 
+                                      x-text="countCoursesByCategory('Language')"
+                                      class="px-2 py-0.5 rounded-full text-[10px] font-black bg-teal-100 text-teal-600 dark:bg-teal-900 dark:text-teal-400"></span>
+                                <svg class="w-3.5 h-3.5 transition-transform duration-300"
+                                    :class="isLanguageDropdownOpen ? 'rotate-180 text-teal-600' : ''"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </button>
+
+                        <div x-show="isLanguageDropdownOpen" x-cloak class="border-l-2 border-teal-300 dark:border-teal-800 ml-4 pl-2.5 pt-1 space-y-1.5">
+                            <button type="button" @click="openLmsCategory('Language', 'IELTS')"
+                                :class="activeTab === 'lms_courses' && lmsCategory === 'Language' && lmsLevel === 'IELTS' ? 'submenu-item-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                          :class="activeTab === 'lms_courses' && lmsCategory === 'Language' && lmsLevel === 'IELTS' ? 'bg-teal-500 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate font-semibold tracking-wide">IELTS</span>
+                                </div>
+                                <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500" x-text="countCoursesByLevel('Language', 'IELTS') || ''"></span>
+                            </button>
+                            <button type="button" @click="openLmsCategory('Language', 'JLPT')"
+                                :class="activeTab === 'lms_courses' && lmsCategory === 'Language' && lmsLevel === 'JLPT' ? 'submenu-item-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                          :class="activeTab === 'lms_courses' && lmsCategory === 'Language' && lmsLevel === 'JLPT' ? 'bg-teal-500 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate font-semibold tracking-wide">JLPT</span>
+                                </div>
+                                <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500" x-text="countCoursesByLevel('Language', 'JLPT') || ''"></span>
+                            </button>
+                            <button type="button" @click="openLmsCategory('Language', 'Goethe-Zertifikat')"
+                                :class="activeTab === 'lms_courses' && lmsCategory === 'Language' && lmsLevel === 'Goethe-Zertifikat' ? 'submenu-item-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                          :class="activeTab === 'lms_courses' && lmsCategory === 'Language' && lmsLevel === 'Goethe-Zertifikat' ? 'bg-teal-500 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate font-semibold tracking-wide">Goethe-Zertifikat</span>
+                                </div>
+                                <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500" x-text="countCoursesByLevel('Language', 'Goethe-Zertifikat') || ''"></span>
+                            </button>
+                            <button type="button" @click="openLmsCategory('Language', 'Hanyu Shuiping Kaoshi')"
+                                :class="activeTab === 'lms_courses' && lmsCategory === 'Language' && lmsLevel === 'Hanyu Shuiping Kaoshi' ? 'submenu-item-active' : 'submenu-btn-inactive'"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                          :class="activeTab === 'lms_courses' && lmsCategory === 'Language' && lmsLevel === 'Hanyu Shuiping Kaoshi' ? 'bg-teal-500 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span class="truncate font-semibold tracking-wide">HSK</span>
+                                </div>
+                                <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500" x-text="countCoursesByLevel('Language', 'Hanyu Shuiping Kaoshi') || ''"></span>
+                            </button>
+                        </div>
+                    </div>
+    
+
                 </nav>
 
                 <!-- Vue 3 Database Explorer Hub -->
@@ -5095,6 +5164,7 @@
                 isOlimpiadeDropdownOpen: false,
                 isTkaDropdownOpen: false,
                 isCollegeDropdownOpen: false,
+                isLanguageDropdownOpen: false,
 
                 lmsCategory: 'School',
                 lmsLevel: 'SMA',
@@ -5714,6 +5784,7 @@
                     if (except !== 'olimpiade') this.isOlimpiadeDropdownOpen = false;
                     if (except !== 'tka') this.isTkaDropdownOpen = false;
                     if (except !== 'college') this.isCollegeDropdownOpen = false;
+                    if (except !== 'language') this.isLanguageDropdownOpen = false;
                 },
 
                 toggleKalenderDropdown() {
@@ -8273,11 +8344,13 @@
                     else if (category === 'Olimpiade') menuKey = 'olimpiade';
                     else if (category === 'TKA') menuKey = 'tka';
                     else if (category === 'Collage Preparation') menuKey = 'college';
+                    else if (category === 'Language') menuKey = 'language';
                     this.closeAllSubmenus(menuKey);
                     if (category === 'School') this.isSchoolDropdownOpen = true;
                     if (category === 'Olimpiade') this.isOlimpiadeDropdownOpen = true;
                     if (category === 'TKA') this.isTkaDropdownOpen = true;
                     if (category === 'Collage Preparation') this.isCollegeDropdownOpen = true;
+                    if (category === 'Language') this.isLanguageDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
                 },
 
@@ -8328,6 +8401,7 @@
                     if (this.lmsCategory === 'Olimpiade') return 'Rancang masterclass pembinaan olimpiade sains, bank soal kompetisi, dan bedah teori bersama mentor medalis.';
                     if (this.lmsCategory === 'TKA') return 'Kelola modul Tes Kemampuan Akademik (TKA) dan materi pemantapan ujian sekolah standar.';
                     if (this.lmsCategory === 'Collage Preparation') return 'Susun modul persiapan UTBK SNBT, Ujian Mandiri PTN Top 3, dan SKD Sekolah Kedinasan.';
+                    if (this.lmsCategory === 'Language') return 'Kelola modul sertifikasi bahasa internasional (IELTS, TOEFL, JLPT, HSK).';
                     return 'Kelola modul pembelajaran, kuis latihan, dan video interaktif.';
                 },
 
@@ -8336,6 +8410,7 @@
                     if (this.lmsCategory === 'Olimpiade') return 'bg-gradient-to-r from-amber-700 via-orange-800 to-slate-950';
                     if (this.lmsCategory === 'TKA') return 'bg-gradient-to-r from-emerald-700 via-teal-800 to-slate-950';
                     if (this.lmsCategory === 'Collage Preparation') return 'bg-gradient-to-r from-rose-700 via-purple-800 to-slate-950';
+                    if (this.lmsCategory === 'Language') return 'bg-gradient-to-r from-teal-700 via-emerald-800 to-slate-950';
                     return 'bg-gradient-to-r from-indigo-700 via-indigo-900 to-slate-950';
                 },
 
