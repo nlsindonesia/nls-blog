@@ -542,34 +542,34 @@
                                                     <!-- Interactive Graph -->
                                                     <template x-if="q.type === 'graph'">
                                                         <div class="mt-4 flex justify-center" x-init="if(!Array.isArray(quizAnswers[q.id])) quizAnswers[q.id] = []">
-                                                            <div class="relative bg-white border border-slate-300 rounded-lg shadow-inner overflow-hidden cursor-crosshair w-[400px] h-[400px]" 
+                                                            <div class="relative bg-white border border-slate-300 rounded-lg shadow-inner overflow-hidden cursor-crosshair w-full max-w-[500px] aspect-square" 
                                                                  @click="(e) => { 
                                                                      const rect = $el.getBoundingClientRect(); 
                                                                      const clickX = e.clientX - rect.left; 
                                                                      const clickY = e.clientY - rect.top; 
-                                                                     const gridX = Math.round((clickX / 400) * 20 - 10); 
-                                                                     const gridY = Math.round(10 - (clickY / 400) * 20); 
+                                                                     const gridX = Math.round((clickX / rect.width) * 20 - 10); 
+                                                                     const gridY = Math.round(10 - (clickY / rect.height) * 20); 
                                                                      const existing = quizAnswers[q.id].findIndex(p => p.x === gridX && p.y === gridY);
                                                                      if(existing > -1) quizAnswers[q.id].splice(existing, 1);
                                                                      else quizAnswers[q.id].push({x: gridX, y: gridY});
                                                                      debounceAutosave();
                                                                  }">
                                                                 <!-- Grid Lines -->
-                                                                <svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+                                                                <svg width="100%" height="100%" viewBox="0 0 400 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
                                                                     <defs>
                                                                         <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                                                                            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f1f5f9" stroke-width="1"/>
+                                                                            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#cbd5e1" stroke-width="1"/>
                                                                         </pattern>
                                                                     </defs>
                                                                     <rect width="400" height="400" fill="url(#grid)" />
                                                                     <!-- Axes -->
-                                                                    <line x1="200" y1="0" x2="200" y2="400" stroke="#94a3b8" stroke-width="2" />
-                                                                    <line x1="0" y1="200" x2="400" y2="200" stroke="#94a3b8" stroke-width="2" />
+                                                                    <line x1="200" y1="0" x2="200" y2="400" stroke="#475569" stroke-width="2" />
+                                                                    <line x1="0" y1="200" x2="400" y2="200" stroke="#475569" stroke-width="2" />
                                                                 </svg>
                                                                 <!-- Points -->
                                                                 <template x-for="(pt, i) in quizAnswers[q.id]" :key="i">
                                                                     <div class="absolute w-4 h-4 bg-indigo-500 rounded-full shadow transform -translate-x-1/2 -translate-y-1/2 transition-all hover:bg-rose-500 hover:scale-125"
-                                                                         :style="`left: ${(pt.x + 10) * 20}px; top: ${(10 - pt.y) * 20}px;`"
+                                                                         :style="`left: ${(pt.x + 10) * 5}%; top: ${(10 - pt.y) * 5}%;`"
                                                                          @click.stop="quizAnswers[q.id].splice(i, 1); debounceAutosave()">
                                                                     </div>
                                                                 </template>
@@ -926,20 +926,20 @@
                                                                 </div>
                                                             </template>
                                                             <template x-if="q.type === 'graph' && q.graphCoordinates && Array.isArray(q.graphCoordinates) && q.graphCoordinates.length > 0">
-                                                                <div class="mt-2 relative w-[200px] h-[200px] border border-emerald-200 rounded overflow-hidden bg-white shadow-sm">
-                                                                    <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+                                                                <div class="mt-2 relative w-full max-w-[300px] aspect-square border border-emerald-200 rounded overflow-hidden bg-white shadow-sm">
+                                                                    <svg width="100%" height="100%" viewBox="0 0 200 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
                                                                         <defs>
                                                                             <pattern id="grid_s_correct" width="10" height="10" patternUnits="userSpaceOnUse">
-                                                                                <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#f1f5f9" stroke-width="1"/>
+                                                                                <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#cbd5e1" stroke-width="1"/>
                                                                             </pattern>
                                                                         </defs>
                                                                         <rect width="200" height="200" fill="url(#grid_s_correct)" />
-                                                                        <line x1="100" y1="0" x2="100" y2="200" stroke="#94a3b8" stroke-width="1" />
-                                                                        <line x1="0" y1="100" x2="200" y2="100" stroke="#94a3b8" stroke-width="1" />
+                                                                        <line x1="100" y1="0" x2="100" y2="200" stroke="#475569" stroke-width="1" />
+                                                                        <line x1="0" y1="100" x2="200" y2="100" stroke="#475569" stroke-width="1" />
                                                                     </svg>
                                                                     <template x-for="(pt, i) in q.graphCoordinates" :key="i">
                                                                         <div class="absolute w-2 h-2 bg-emerald-500 rounded-full shadow transform -translate-x-1/2 -translate-y-1/2"
-                                                                             :style="`left: ${(parseFloat(pt.x) + 10) * 10}px; top: ${(10 - parseFloat(pt.y)) * 10}px;`">
+                                                                             :style="`left: ${(parseFloat(pt.x) + 10) * 5}%; top: ${(10 - parseFloat(pt.y)) * 5}%;`">
                                                                         </div>
                                                                     </template>
                                                                 </div>
