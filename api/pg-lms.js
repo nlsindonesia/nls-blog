@@ -1004,6 +1004,25 @@ export default async function handler(request, response) {
         }
 
         // --- 11. ADMIN: GET QUIZ RESULTS ---
+        
+        // --- ADMIN: UPDATE QUIZ RESULT (GRADING) ---
+        if (action === 'admin_update_quiz_result') {
+            const { resultId, newScore, updatedAnswers } = request.body;
+            if (!resultId || newScore === undefined) return response.status(400).json({ success: false, message: 'Missing parameters.' });
+            
+            try {
+                await sql`
+                    UPDATE lms_quiz_results 
+                    SET score = ${newScore}, answers_json = ${JSON.stringify(updatedAnswers || {})}
+                    WHERE id = ${resultId}
+                `;
+                return response.status(200).json({ success: true, message: 'Result updated successfully.' });
+            } catch (err) {
+                console.error(err);
+                return response.status(500).json({ success: false, message: 'Database error.', error: err.message });
+            }
+        }
+        
         if (action === 'admin_get_quiz_results') {
             const res = await sql`
                 SELECT 

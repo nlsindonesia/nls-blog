@@ -203,25 +203,76 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                 </div>
-                <div class="px-6 py-5 bg-slate-50/30 max-h-[60vh] overflow-y-auto results-scroll">
-                    <div class="space-y-4">
-                        <template x-if="selectedDetail && selectedDetail.answers && Object.keys(selectedDetail.answers).length > 0">
-                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-sm font-medium text-slate-700 whitespace-pre-wrap overflow-x-auto">
-                                <pre x-text="JSON.stringify(selectedDetail.answers, null, 2)" class="text-xs text-indigo-900 font-mono"></pre>
+                
+                    <div class="px-6 py-5 bg-slate-50/30 max-h-[60vh] overflow-y-auto results-scroll">
+                        <template x-if="selectedDetail && getOriginalNode(selectedDetail) && getOriginalNode(selectedDetail).questions">
+                            <div class="space-y-6">
+                                <template x-for="(q, index) in getOriginalNode(selectedDetail).questions" :key="q.id">
+                                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group">
+                                        <!-- Header Soal -->
+                                        <div class="flex justify-between items-start mb-3 pb-3 border-b border-slate-100">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-700 font-black text-xs flex items-center justify-center border border-indigo-100" x-text="index + 1"></div>
+                                                <div class="text-xs font-bold text-slate-500 uppercase tracking-wider" x-text="'Tipe: ' + (q.type || 'Pilihan Ganda')"></div>
+                                            </div>
+                                            <!-- Badge Status -->
+                                            <div x-show="q.type !== 'essai'" class="text-[10px] font-bold px-2 py-1 rounded-md border"
+                                                :class="isCorrectAnswer(q, selectedDetail.answers) ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'">
+                                                <span x-text="isCorrectAnswer(q, selectedDetail.answers) ? 'Benar (' + (q.bobot || 10) + ' poin)' : 'Salah (0 poin)'"></span>
+                                            </div>
+                                            <div x-show="q.type === 'essai'" class="text-[10px] font-bold px-2 py-1 rounded-md border bg-amber-50 text-amber-700 border-amber-200 animate-pulse">
+                                                Butuh Koreksi Manual
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Teks Soal -->
+                                        <div class="text-sm font-medium text-slate-700 mb-4 prose prose-sm max-w-none" x-html="q.text"></div>
+                                        
+                                        <!-- Jawaban Siswa -->
+                                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-4">
+                                            <div class="text-[11px] font-bold text-slate-500 mb-2">Jawaban Siswa:</div>
+                                            <div class="text-sm font-medium text-indigo-900 whitespace-pre-wrap" x-text="getStudentAnswerText(q, selectedDetail.answers)"></div>
+                                        </div>
+                                        
+                                        <!-- Input Koreksi (HANYA UNTUK ESSAI) -->
+                                        <div x-show="q.type === 'essai'" class="bg-amber-50/50 p-4 rounded-xl border border-amber-200/60 mt-4">
+                                            <div class="flex flex-col md:flex-row gap-4 items-start md:items-center">
+                                                <div class="flex-1 w-full">
+                                                    <label class="block text-xs font-bold text-slate-600 mb-1">Berikan Nilai (Maks: <span x-text="q.bobot || 10"></span>)</label>
+                                                    <input type="number" min="0" :max="q.bobot || 10" x-model.number="gradingScores[q.id]" class="w-full md:w-32 p-2 rounded-lg border border-slate-300 text-sm font-bold focus:ring-2 focus:ring-amber-400 focus:border-amber-400">
+                                                </div>
+                                                <div class="flex-2 w-full">
+                                                    <label class="block text-xs font-bold text-slate-600 mb-1">Catatan / Umpan Balik (Opsional)</label>
+                                                    <input type="text" x-model="gradingFeedback[q.id]" placeholder="Ketik catatan untuk siswa..." class="w-full p-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-amber-400 focus:border-amber-400">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
                             </div>
                         </template>
-                        <template x-if="!selectedDetail || !selectedDetail.answers || Object.keys(selectedDetail.answers).length === 0">
-                            <div class="text-center text-slate-500 font-medium text-sm py-4">
-                                Tidak ada data jawaban yang tersedia (hanya berisi nilai mentah).
+                        
+                        <!-- Fallback for Legacy Raw JSON -->
+                        <template x-if="!selectedDetail || !getOriginalNode(selectedDetail) || !getOriginalNode(selectedDetail).questions">
+                            <div class="space-y-4">
+                                <template x-if="selectedDetail && selectedDetail.answers && Object.keys(selectedDetail.answers).length > 0">
+                                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-sm font-medium text-slate-700 whitespace-pre-wrap overflow-x-auto">
+                                        <pre x-text="JSON.stringify(selectedDetail.answers, null, 2)" class="text-xs text-indigo-900 font-mono"></pre>
+                                    </div>
+                                </template>
+                                <template x-if="!selectedDetail || !selectedDetail.answers || Object.keys(selectedDetail.answers).length === 0">
+                                    <div class="text-center text-slate-500 font-medium text-sm py-4">
+                                        Tidak ada data jawaban yang tersedia.
+                                    </div>
+                                </template>
+                                <div class="mt-4 p-4 rounded-xl bg-sky-50 border border-sky-200">
+                                    <p class="text-xs font-bold text-sky-800">Mode Tampilan Mentah</p>
+                                    <p class="text-[11px] text-sky-700 mt-1">Data master soal tidak ditemukan (kemungkinan kuis lawas yang dihapus). Anda hanya melihat raw JSON ID soal dan jawaban.</p>
+                                </div>
                             </div>
                         </template>
-                        <div class="mt-4 p-4 rounded-xl bg-sky-50 border border-sky-200">
-                            <p class="text-xs font-bold text-sky-800">Bantuan:</p>
-                            <p class="text-[11px] text-sky-700 mt-1">Data JSON ini berisi rekaman ID soal dan jawaban yang diinput siswa (berupa huruf PG atau string). Berguna untuk audit/koreksi manual soal essai.</p>
-                        </div>
                     </div>
-                </div>
-                <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end">
+<div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end">
                     <button @click="showDetailModal = false" class="px-5 py-2.5 bg-white border-2 border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all text-sm shadow-sm active:scale-95">
                         Tutup
                     </button>
@@ -234,6 +285,23 @@
         document.addEventListener('alpine:init', () => {
             Alpine.data('lmsResults', () => ({
                 isLoading: true,
+                
+                coursesData: {},
+                async fetchCourses() {
+                    try {
+                        const res = await fetch('/api/pg-lms', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ action: 'admin_get_courses' })
+                        });
+                        const data = await res.json();
+                        if (data.success && data.data) {
+                            data.data.forEach(course => {
+                                this.coursesData[course.id] = course;
+                            });
+                        }
+                    } catch(e) { console.error(e); }
+                },
                 results: [],
                 searchQuery: '',
                 selectedCourse: '',
@@ -255,6 +323,7 @@
                     this.targetCourseId = params.get('courseId');
                     this.targetCourseTitle = params.get('courseTitle');
 
+                    this.fetchCourses();
                     this.fetchResults();
                     
                     // Reset pagination on filter change
@@ -291,6 +360,184 @@
                     }
                 },
 
+                
+                getOriginalNode(r) {
+                    if (!r) return null;
+                    const course = this.coursesData[r.courseId];
+                    if (!course || !course.content) return null;
+                    let foundNode = null;
+                    course.content.forEach(ch => {
+                        if (ch.nodes) {
+                            ch.nodes.forEach(node => {
+                                if (node.title === r.moduleTitle || node.id === r.moduleTitle) {
+                                    foundNode = node;
+                                }
+                            });
+                        }
+                    });
+                    return foundNode;
+                },
+                
+                openGrading(r) {
+                    this.selectedDetail = r;
+                    this.gradingScores = {};
+                    this.gradingFeedback = {};
+                    
+                    const node = this.getOriginalNode(r);
+                    if (node && node.questions && r.answers) {
+                        // Pre-fill grading scores based on existing metadata or calculated values
+                        node.questions.forEach(q => {
+                            if (q.type !== 'essai') {
+                                this.gradingScores[q.id] = this.isCorrectAnswer(q, r.answers) ? (q.bobot || 10) : 0;
+                            } else {
+                                // If already graded previously, load it
+                                if (r.answers._meta && r.answers._meta.gradedScores && r.answers._meta.gradedScores[q.id] !== undefined) {
+                                    this.gradingScores[q.id] = r.answers._meta.gradedScores[q.id];
+                                } else {
+                                    this.gradingScores[q.id] = 0; // Default needs grading
+                                }
+                                if (r.answers._meta && r.answers._meta.feedback && r.answers._meta.feedback[q.id]) {
+                                    this.gradingFeedback[q.id] = r.answers._meta.feedback[q.id];
+                                }
+                            }
+                        });
+                    }
+                    this.showDetailModal = true;
+                },
+                
+                get liveTotalScore() {
+                    const node = this.getOriginalNode(this.selectedDetail);
+                    if (!node || !node.questions) return this.selectedDetail ? this.selectedDetail.score : 0;
+                    
+                    let totalEarned = 0;
+                    let totalMax = 0;
+                    
+                    node.questions.forEach(q => {
+                        totalMax += (q.bobot || 10);
+                        if (this.gradingScores[q.id] !== undefined) {
+                            totalEarned += Number(this.gradingScores[q.id]);
+                        }
+                    });
+                    
+                    if (totalMax === 0) return 0;
+                    return Math.round((totalEarned / totalMax) * 100);
+                },
+                
+                async saveGrading() {
+                    if (!this.selectedDetail) return;
+                    this.isSavingGrade = true;
+                    try {
+                        const newScore = this.liveTotalScore;
+                        
+                        // Inject feedback and graded scores into answers
+                        let updatedAnswers = JSON.parse(JSON.stringify(this.selectedDetail.answers));
+                        if (!updatedAnswers._meta) updatedAnswers._meta = {};
+                        updatedAnswers._meta.gradedScores = this.gradingScores;
+                        updatedAnswers._meta.feedback = this.gradingFeedback;
+                        
+                        const res = await fetch('/api/pg-lms', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ 
+                                action: 'admin_update_quiz_result',
+                                resultId: this.selectedDetail.id,
+                                newScore: newScore,
+                                updatedAnswers: updatedAnswers
+                            })
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            // Update local data
+                            this.selectedDetail.score = newScore;
+                            this.selectedDetail.answers = updatedAnswers;
+                            this.showDetailModal = false;
+                        } else {
+                            alert('Gagal menyimpan nilai: ' + data.message);
+                        }
+                    } catch(e) {
+                        console.error(e);
+                        alert('Terjadi kesalahan jaringan.');
+                    } finally {
+                        this.isSavingGrade = false;
+                    }
+                },
+                
+                isCorrectAnswer(q, answers) {
+                    if (!answers) return false;
+                    const ans = answers[q.id];
+                    if (ans === undefined) return false;
+                    if (q.type === 'pg') {
+                        return q.answer && q.answer.toString() === ans.toString();
+                    }
+                    if (q.type === 'pg_kompleks') {
+                        if (!Array.isArray(q.answer) || !Array.isArray(ans)) return false;
+                        const sortedExpected = [...q.answer].sort();
+                        const sortedGiven = [...ans].sort();
+                        return JSON.stringify(sortedExpected) === JSON.stringify(sortedGiven);
+                    }
+                    if (q.type === 'tf') {
+                        return q.answer !== undefined && q.answer.toString() === ans.toString();
+                    }
+                    if (q.type === 'blank') {
+                        let expected = Array.isArray(q.answer) ? q.answer : [q.answer];
+                        let cleanAns = ans.toString().toLowerCase().trim();
+                        return expected.some(ex => ex.toString().toLowerCase().trim() === cleanAns);
+                    }
+                    if (q.type === 'osn_biologi') {
+                        if (!Array.isArray(q.answer) || !Array.isArray(ans)) return false;
+                        let correctCount = 0;
+                        for (let i = 0; i < 4; i++) {
+                            if (q.answer[i] === ans[i]) correctCount++;
+                        }
+                        return correctCount === 4; // Basic check for full score for simplicity in UI display
+                    }
+                    if (q.type === 'range') {
+                        let given = parseFloat(ans);
+                        if (isNaN(given)) return false;
+                        if (Array.isArray(q.answer)) return given >= q.answer[0] && given <= q.answer[1];
+                        return given === parseFloat(q.answer);
+                    }
+                    if (q.type === 'graph') {
+                        if (!q.answer || !ans) return false;
+                        return parseFloat(ans.x) === parseFloat(q.answer.x) && parseFloat(ans.y) === parseFloat(q.answer.y);
+                    }
+                    if (q.type === 'puzzle') {
+                        if (!Array.isArray(q.answer) || !Array.isArray(ans)) return false;
+                        return JSON.stringify(q.answer) === JSON.stringify(ans);
+                    }
+                    return false; // Essai defaults to false for auto-check
+                },
+                
+                getStudentAnswerText(q, answers) {
+                    if (!answers || answers[q.id] === undefined) return '(Kosong)';
+                    const ans = answers[q.id];
+                    
+                    if (q.type === 'pg' && q.options && q.options[ans]) {
+                        return `[${String.fromCharCode(65 + parseInt(ans))}] ${q.options[ans]}`;
+                    }
+                    if (q.type === 'pg_kompleks' && Array.isArray(ans) && q.options) {
+                        return ans.map(a => `[${String.fromCharCode(65 + parseInt(a))}] ${q.options[a]}`).join('\n');
+                    }
+                    if (q.type === 'tf') {
+                        return ans.toString() === '1' ? 'Benar (T)' : 'Salah (F)';
+                    }
+                    if (q.type === 'osn_biologi' && Array.isArray(ans)) {
+                        return ans.map((a, i) => `Pernyataan ${i+1}: ${a === 1 ? 'Benar' : (a === 0 ? 'Salah' : 'Kosong')}`).join('\n');
+                    }
+                    if (q.type === 'graph' && ans.x !== undefined) {
+                        return `Titik Koordinat: X = ${ans.x}, Y = ${ans.y}`;
+                    }
+                    if (q.type === 'puzzle') {
+                        return Array.isArray(ans) ? 'Susunan: ' + ans.join(', ') : ans;
+                    }
+                    return ans.toString();
+                },
+                
+                needsGrading(r) {
+                    const node = this.getOriginalNode(r);
+                    if (!node || !node.questions) return false;
+                    return node.questions.some(q => q.type === 'essai');
+                },
                 get averageScore() {
                     if (this.filteredResults.length === 0) return 0;
                     const sum = this.filteredResults.reduce((acc, curr) => acc + (parseFloat(curr.score) || 0), 0);
