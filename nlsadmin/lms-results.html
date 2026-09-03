@@ -305,8 +305,10 @@
                         const data = await res.json();
                         if (data.success && data.data) {
                             data.data.forEach(course => {
-                                course.content = course.content_json ? (typeof course.content_json === 'string' ? JSON.parse(course.content_json) : course.content_json) : [];
-                                this.coursesData[course.id] = course;
+                                // If course is stringified inside content_json, parse it.
+                                // But Vercel postgres might return the JSON directly, so 'course' is the object.
+                                let parsedCourse = typeof course === 'string' ? JSON.parse(course) : course;
+                                this.coursesData[parsedCourse.id] = parsedCourse;
                             });
                         }
                     } catch(e) { console.error(e); }
@@ -376,8 +378,9 @@
                     if (!course || !course.content) return null;
                     let foundNode = null;
                     course.content.forEach(ch => {
-                        if (ch.nodes) {
-                            ch.nodes.forEach(node => {
+                        const nodesArr = ch.nodes || ch.subBabs;
+                        if (nodesArr) {
+                            nodesArr.forEach(node => {
                                 if (node.title === r.moduleTitle || r.moduleTitle.includes(node.id)) {
                                     foundNode = node;
                                 }
