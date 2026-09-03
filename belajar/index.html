@@ -514,6 +514,43 @@
                     </div>
                 </div>
 
+                
+                <!-- NEW MENU: LANGUAGE -->
+                <div>
+                    <button type="button" @click="toggleMenu('language')"
+                        class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all"
+                        :class="activeTab === 'language' ? 'bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 font-bold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/80'">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-4 h-4 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
+                            <span>Language</span>
+                        </div>
+                        <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="openMenus.language ? 'rotate-180 text-teal-600' : 'text-slate-400'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+
+                    <div x-show="openMenus.language" x-collapse class="pl-7 pr-1 py-1 space-y-1">
+                        <button type="button" @click="openLanguageView('ielts')"
+                            class="w-full text-left px-3 py-2 rounded-lg text-[11px] transition-all flex items-center justify-between"
+                            :class="activeTab === 'language' && languageType === 'ielts' ? 'submenu-item-active' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'">
+                            <span>IELTS</span>
+                        </button>
+                        <button type="button" @click="openLanguageView('jlpt')"
+                            class="w-full text-left px-3 py-2 rounded-lg text-[11px] transition-all flex items-center justify-between"
+                            :class="activeTab === 'language' && languageType === 'jlpt' ? 'submenu-item-active' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'">
+                            <span>JLPT</span>
+                        </button>
+                        <button type="button" @click="openLanguageView('goethe-zertifikat')"
+                            class="w-full text-left px-3 py-2 rounded-lg text-[11px] transition-all flex items-center justify-between"
+                            :class="activeTab === 'language' && languageType === 'goethe-zertifikat' ? 'submenu-item-active' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'">
+                            <span>Goethe-Zertifikat</span>
+                        </button>
+                        <button type="button" @click="openLanguageView('hanyu shuiping kaoshi')"
+                            class="w-full text-left px-3 py-2 rounded-lg text-[11px] transition-all flex items-center justify-between"
+                            :class="activeTab === 'language' && languageType === 'hanyu shuiping kaoshi' ? 'submenu-item-active' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'">
+                            <span>HSK</span>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- 7. MY CLASS (PREMIUM SPECIAL MENU) -->
                 <div class="pt-2">
                     <div class="p-1 rounded-2xl bg-gradient-to-r from-violet-600/20 via-fuchsia-600/20 to-indigo-600/20 border border-violet-500/30 dark:border-violet-500/40 shadow-xs">
@@ -2891,6 +2928,7 @@
                 olimpiadeType: 'osn_sma', // 'osn_sd', 'osn_smp', 'osn_sma', 'onmipa', 'internasional'
                 tkaLevel: 'tka_sma', // 'tka_sd', 'tka_smp', 'tka_sma'
                 collegeType: 'snbt', // 'snbt', 'mandiri', 'kedinasan'
+                languageType: 'ielts', // 'ielts', 'jlpt', 'goethe-zertifikat', 'hanyu shuiping kaoshi'
                 myclassView: 'actived', // 'actived', 'quiz_result'
 
                 openMenus: {
@@ -2899,6 +2937,7 @@
                     olimpiade: false,
                     tka: false,
                     college: false,
+                    language: false,
                     myclass: false
                 },
 
@@ -2990,6 +3029,10 @@
 
                 // Database of Courses Opened by Admin
                 courses: [
+                    // Language
+                    { id: 'c-lang-1', category: 'Language', level: 'IELTS', title: 'IELTS 7.5+ Masterclass: Reading & Listening Strategy', description: 'Metode intensif menguasai seluruh tipe soal IELTS Reading & Listening dengan akurasi 90%+. Lengkap dengan latihan simulasi.', mentor: 'Miss Jessica Aurelia, B.Ed.', totalModules: 12, completedModules: 3, progress: 25 },
+                    { id: 'c-lang-2', category: 'Language', level: 'JLPT', title: 'Intensif Lulus JLPT N3: Moji, Goi, Bunpou & Dokkai', description: 'Materi lengkap Kanji dan Grammar level N3. Trik menjawab soal reading Jepang dengan cepat dan akurat.', mentor: 'Tim Bahasa Asing NLS', totalModules: 10, completedModules: 0, progress: 0 },
+
                     // School SD (Kelas 1-6)
                     { id: 'c-sch-1', category: 'School', level: 'SD', title: 'Matematika Dasar & Logika Sains SD', description: 'Penguasaan konsep bilangan bulat, pecahan, geometri, dan penalaran logika untuk siswa SD kelas 4-6.', mentor: 'Kak Raditya Pratama, S.Si.', totalModules: 8, completedModules: 4, progress: 50 },
                     { id: 'c-sch-1b', category: 'School', level: 'SD', title: 'IPA & Eksplorasi Sains Alam SD', description: 'Pemahaman sains tematik, makhluk hidup, energi, lingkungan hidup, dan metode eksperimen sederhana.', mentor: 'Dr. Sarah Kartika, M.Sc.', totalModules: 8, completedModules: 0, progress: 0 },
@@ -3410,6 +3453,14 @@
                     this.syncUrlRoute(true);
                 },
 
+                openLanguageView(type) {
+                    this.activeTab = 'language';
+                    this.languageType = type;
+                    this.setExclusiveOpenMenu('language');
+                    if (this.isMobile) this.isSidebarOpen = false;
+                    this.syncUrlRoute(true);
+                },
+
                 openMyClassView(view) {
                     this.activeTab = 'myclass';
                     this.myclassView = view;
@@ -3425,6 +3476,7 @@
                     if (this.activeTab === 'olimpiade') return 'Olimpiade / ' + this.olimpiadeType.replace('_', ' ').toUpperCase();
                     if (this.activeTab === 'tka') return 'TKA / ' + this.tkaLevel.replace('_', ' ').toUpperCase();
                     if (this.activeTab === 'college') return 'Collage Preparation / ' + this.collegeType.toUpperCase();
+                    if (this.activeTab === 'language') return 'Language / ' + this.languageType.toUpperCase();
                     if (this.activeTab === 'myclass') return 'My Class / ' + (this.myclassView === 'actived' ? 'Actived Class' : 'Quiz Result');
                     if (this.activeTab === 'study_room') return 'Ruang Belajar / ' + (this.studyRoom.course ? this.studyRoom.course.title : 'Modul');
                     return this.activeTab;
@@ -3435,6 +3487,7 @@
                     if (this.activeTab === 'olimpiade') return 'Pusat Pembinaan ' + this.olimpiadeType.replace('_', ' ').toUpperCase();
                     if (this.activeTab === 'tka') return 'Pemantapan Tes Kemampuan Akademik (' + this.tkaLevel.replace('_', ' ').toUpperCase() + ')';
                     if (this.activeTab === 'college') return 'Intensif Persiapan Masuk PTN & Kedinasan (' + this.collegeType.toUpperCase() + ')';
+                    if (this.activeTab === 'language') return 'Sertifikasi Bahasa Asing (' + this.languageType.toUpperCase() + ')';
                     return 'Katalog Kelas';
                 },
 
@@ -3443,6 +3496,7 @@
                     if (this.activeTab === 'olimpiade') return 'Bimbingan intensif soal kompetisi bersama mentor medalis nasional dan pelatnas.';
                     if (this.activeTab === 'tka') return 'Penguatan konsep dasar dan latihan soal tes skolastik / seleksi masuk sekolah unggulan.';
                     if (this.activeTab === 'college') return 'Strategi kilat penakluk UTBK SNBT, Ujian Mandiri PTN Top 3, dan SKD Kedinasan.';
+                    if (this.activeTab === 'language') return 'Persiapan tes TOEFL, IELTS, JLPT, HSK, dan sertifikasi bahasa lainnya.';
                     return '';
                 },
 
@@ -3468,6 +3522,7 @@
                         case 'Olimpiade': return 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300';
                         case 'TKA': return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300';
                         case 'Collage Preparation': return 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300';
+                        case 'Language': return 'bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-300';
                         default: return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300';
                     }
                 },
@@ -3488,6 +3543,9 @@
                         list = list.filter(c => c.category === 'TKA' && c.level.toLowerCase().replace(/\s+/g, '_') === this.tkaLevel);
                     } else if (this.activeTab === 'college') {
                         list = list.filter(c => c.category === 'Collage Preparation' && c.level.toLowerCase() === this.collegeType);
+                    }
+                    if (this.activeTab === 'language') {
+                        list = list.filter(c => c.category === 'Language' && c.level.toLowerCase() === this.languageType);
                     }
 
                     if (q) {
