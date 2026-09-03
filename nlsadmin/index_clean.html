@@ -5163,7 +5163,11 @@
                         mentor: 'Kak Raditya Pratama, S.Si.',
                         mentor_id: 't-1',
                         coverImage: '/images/stitch/pillar-study.jpg',
-                        status: 'published'
+                        status: 'published',
+                        scheduleEnabled: false,
+                        scheduleDate: '',
+                        scheduleTime: '',
+                        scheduleComingSoon: false
                     }
                 },
 
@@ -8345,6 +8349,10 @@
                         mentor_id: (this.teachers && this.teachers[0]) ? this.teachers[0].id : 't-1',
                         coverImage: '/images/stitch/pillar-study.jpg',
                         status: 'published',
+                        scheduleEnabled: false,
+                        scheduleDate: '',
+                        scheduleTime: '',
+                        scheduleComingSoon: false,
                         modules: []
                     };
                     this.courseModal.isOpen = true;

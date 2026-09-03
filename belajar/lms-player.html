@@ -204,15 +204,27 @@
         <!-- Main Content Area -->
         <main class="flex-1 relative overflow-y-auto player-scroll flex flex-col z-0">
             
+            
             <template x-if="!activeNode">
-                <div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
-                    <div class="w-32 h-32 rounded-[2rem] bg-indigo-100/50 shadow-inner flex items-center justify-center mb-8 rotate-3">
-                        <svg class="w-16 h-16 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-                    </div>
-                    <h2 class="text-3xl font-black text-indigo-950 mb-3 tracking-tight">Pilih Materi Perjalananmu</h2>
-                    <p class="text-sm font-bold text-indigo-800/60 max-w-sm">Pilih kartu misi di sebelah kiri untuk mulai mengumpulkan pengetahuan dan XP!</p>
+                <div class="flex-1 flex flex-col items-center justify-center p-8 text-center max-w-4xl mx-auto w-full">
+                    
+                    <template x-if="courseData && (courseData.introVideo || courseData.introVideoUrl)">
+                        <div class="w-full mb-10 bg-black rounded-3xl overflow-hidden shadow-2xl aspect-video relative border-4 border-indigo-50">
+                            <video x-show="courseData.introVideo && !courseData.introVideoUrl" :src="courseData.introVideo" class="w-full h-full object-contain" controls preload="metadata"></video>
+                            <iframe x-show="courseData.introVideoUrl" :src="courseData.introVideoUrl" class="w-full h-full" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                    </template>
+                    <template x-if="!courseData || (!courseData.introVideo && !courseData.introVideoUrl)">
+                        <div class="w-32 h-32 rounded-[2rem] bg-indigo-100/50 shadow-inner flex items-center justify-center mb-8 rotate-3">
+                            <svg class="w-16 h-16 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                        </div>
+                    </template>
+                    
+                    <h2 class="text-3xl font-black text-indigo-950 mb-3 tracking-tight" x-text="(courseData && (courseData.introVideo || courseData.introVideoUrl)) ? 'Selamat Datang di Kelas!' : 'Pilih Materi Perjalananmu'"></h2>
+                    <p class="text-sm font-bold text-indigo-800/60 max-w-sm" x-text="(courseData && (courseData.introVideo || courseData.introVideoUrl)) ? 'Tonton video pengantar di atas, lalu pilih kartu misi di sebelah kiri untuk mulai belajar.' : 'Pilih kartu misi di sebelah kiri untuk mulai mengumpulkan pengetahuan dan XP!'"></p>
                 </div>
             </template>
+
 
             <template x-if="activeNode">
                 <div class="w-full max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
@@ -422,7 +434,7 @@
                                                     <!-- PG Majemuk -->
                                                     <template x-if="q.type === 'pg_majemuk'">
                                                         <div class="space-y-4">
-                                                             <div x-init="if(!quizAnswers[q.id]) quizAnswers[q.id] = {}; if(!q._shuffledStmts) q._shuffledStmts = activeNode.quizShuffleOptions !== false ? q.statements.map((_, i) => i).sort(() => Math.random() - 0.5) : q.statements.map((_, i) => i)"></div>
+                                                             <div x-init="if(!quizAnswers[q.id]) quizAnswers[q.id] = {}; if(!q._shuffledStmts) q._shuffledStmts = activeNode.quizShuffleOptions !== false ? shuffleArray(q.statements.map((_, i) => i)) : q.statements.map((_, i) => i)"></div>
                                                              <div class="grid grid-cols-12 gap-3 text-[11px] font-black uppercase tracking-wider text-slate-400 border-b-2 border-slate-100 pb-3">
                                                                  <div class="col-span-8">Pernyataan</div>
                                                                  <div class="col-span-2 text-center text-emerald-500">Benar</div>
@@ -445,7 +457,7 @@
                                                     <!-- Menjodohkan -->
                                                     <template x-if="q.type === 'jodoh'">
                                                         <div class="space-y-4">
-                                                            <div x-init="if(!quizAnswers[q.id]) quizAnswers[q.id] = {}; if(!q._shuffledRights) q._shuffledRights = activeNode.quizShuffleOptions !== false ? [...q.pairs.map(p => p.right)].sort(() => Math.random() - 0.5) : [...q.pairs.map(p => p.right)];"></div>
+                                                            <div x-init="if(!quizAnswers[q.id]) quizAnswers[q.id] = {}; if(!q._shuffledRights) q._shuffledRights = activeNode.quizShuffleOptions !== false ? shuffleArray([...q.pairs.map(p => p.right)]) : [...q.pairs.map(p => p.right)];"></div>
                                                             <template x-for="(pair, pIdx) in q.pairs" :key="pIdx">
                                                                 <div class="flex flex-col md:flex-row md:items-center gap-4 bg-slate-50/80 p-5 rounded-2xl border border-slate-100">
                                                                     <div class="flex-1 font-medium text-slate-800 text-base" x-text="pair.left"></div>
@@ -583,7 +595,7 @@
                                                             const diff = parseInt(q.puzzleDifficulty) || 4;
                                                             const total = diff * diff;
                                                             if (!Array.isArray(quizAnswers[q.id]) || quizAnswers[q.id].length !== total) {
-                                                                quizAnswers[q.id] = Array.from({length: total}, (_, i) => i).sort(() => Math.random() - 0.5);
+                                                                quizAnswers[q.id] = shuffleArray(Array.from({length: total}, (_, i) => i));
                                                             }
                                                             $data.selectedPuzzleTile = null;
                                                         ">
@@ -973,6 +985,19 @@
     <script>
         function lmsPlayer() {
             return {
+                
+                shuffleArray(array) {
+                    let curId = array.length;
+                    while (0 !== curId) {
+                        let randId = Math.floor(Math.random() * curId);
+                        curId -= 1;
+                        let tmp = array[curId];
+                        array[curId] = array[randId];
+                        array[randId] = tmp;
+                    }
+                    return array;
+                },
+
                 showPasswordPrompt: false,
                 coursePassword: '',
                 lockedCourseData: null,
@@ -1042,10 +1067,32 @@
                             if (data.success && data.data) {
                                 const course = data.data.find(c => c.id === courseId);
                                 if (course) {
+                                    
+                                    if (course.scheduleEnabled && course.scheduleDate) {
+                                        try {
+                                            const schedStr = course.scheduleDate + (course.scheduleTime ? 'T' + course.scheduleTime : 'T00:00:00');
+                                            if (new Date(schedStr) > new Date()) {
+                                                alert('Akses Ditolak: Kelas ini belum dibuka. Jadwal buka: ' + course.scheduleDate + ' ' + (course.scheduleTime || ''));
+                                                window.location.href = '/belajar';
+                                                return;
+                                            }
+                                        } catch(e) {}
+                                    }
                                     if (course.isLocked) {
                                         this.lockedCourseData = course;
                                         this.showPasswordPrompt = true;
                                         return; // Wait for password input
+                                    }
+                                    
+                                    if (course.scheduleEnabled && course.scheduleDate) {
+                                        try {
+                                            const schedStr = course.scheduleDate + (course.scheduleTime ? 'T' + course.scheduleTime : 'T00:00:00');
+                                            if (new Date(schedStr) > new Date()) {
+                                                alert('Akses Ditolak: Kelas ini belum dibuka. Jadwal buka: ' + course.scheduleDate + ' ' + (course.scheduleTime || ''));
+                                                window.location.href = '/belajar';
+                                                return;
+                                            }
+                                        } catch(e) {}
                                     }
                                     this.courseData = course;
                                     let rawBabs = (course.babs && course.babs.length > 0) ? course.babs : 
@@ -1123,7 +1170,18 @@
                             if (course && !course.isLocked) {
                                 localStorage.setItem('unlocked_' + courseId, this.coursePassword);
                                 this.showPasswordPrompt = false;
-                                this.courseData = course;
+                                
+                                    if (course.scheduleEnabled && course.scheduleDate) {
+                                        try {
+                                            const schedStr = course.scheduleDate + (course.scheduleTime ? 'T' + course.scheduleTime : 'T00:00:00');
+                                            if (new Date(schedStr) > new Date()) {
+                                                alert('Akses Ditolak: Kelas ini belum dibuka. Jadwal buka: ' + course.scheduleDate + ' ' + (course.scheduleTime || ''));
+                                                window.location.href = '/belajar';
+                                                return;
+                                            }
+                                        } catch(e) {}
+                                    }
+                                    this.courseData = course;
                                 let rawBabs = (course.babs && course.babs.length > 0) ? course.babs : ((course.content && course.content.length > 0) ? course.content : (course.modules || []));
                                 if (rawBabs.length > 0 && rawBabs[0].subBabs === undefined) {
                                     this.babs = [{ id: 'b1', title: 'Bab 1 (Semua Modul)', expanded: true, subBabs: rawBabs }];
@@ -1181,6 +1239,17 @@
                                 const savedCourses = JSON.parse(savedCoursesStr);
                                 const course = savedCourses.find(c => c.id === courseId);
                                 if (course) {
+                                    
+                                    if (course.scheduleEnabled && course.scheduleDate) {
+                                        try {
+                                            const schedStr = course.scheduleDate + (course.scheduleTime ? 'T' + course.scheduleTime : 'T00:00:00');
+                                            if (new Date(schedStr) > new Date()) {
+                                                alert('Akses Ditolak: Kelas ini belum dibuka. Jadwal buka: ' + course.scheduleDate + ' ' + (course.scheduleTime || ''));
+                                                window.location.href = '/belajar';
+                                                return;
+                                            }
+                                        } catch(e) {}
+                                    }
                                     this.courseData = course;
                                     let rawBabs = (course.babs && course.babs.length > 0) ? course.babs : 
                                                   ((course.content && course.content.length > 0) ? course.content : (course.modules || []));
@@ -1435,19 +1504,19 @@
                         this.quizState.activeQuestions.forEach(q => {
                             if ((q.type === 'pg' || q.type === 'pg_kompleks') && q.options) {
                                 q._shuffledIndices = this.activeNode.quizShuffleOptions !== false 
-                                    ? q.options.map((_, i) => i).sort(() => Math.random() - 0.5) 
+                                    ? shuffleArray(q.options.map((_, i) => i)) 
                                     : q.options.map((_, i) => i);
                                 if (q.type === 'pg_kompleks' && !Array.isArray(this.quizAnswers[q.id])) this.quizAnswers[q.id] = [];
                             }
                             else if (q.type === 'pg_majemuk' && q.statements) {
                                 q._shuffledStmts = this.activeNode.quizShuffleOptions !== false
-                                    ? q.statements.map((_, i) => i).sort(() => Math.random() - 0.5)
+                                    ? shuffleArray(q.statements.map((_, i) => i))
                                     : q.statements.map((_, i) => i);
                                 if (typeof this.quizAnswers[q.id] !== 'object' || Array.isArray(this.quizAnswers[q.id])) this.quizAnswers[q.id] = {};
                             }
                             else if (q.type === 'jodoh' && q.pairs) {
                                 q._shuffledRights = this.activeNode.quizShuffleOptions !== false
-                                    ? [...q.pairs.map(p => p.right)].sort(() => Math.random() - 0.5)
+                                    ? shuffleArray([...q.pairs.map(p => p.right)])
                                     : [...q.pairs.map(p => p.right)];
                                 if (typeof this.quizAnswers[q.id] !== 'object' || Array.isArray(this.quizAnswers[q.id])) this.quizAnswers[q.id] = {};
                             }
@@ -1484,7 +1553,7 @@
                     
                     let baseQuestions = this.activeNode.questions ? this.activeNode.questions.filter(q => (q.paket || 1) === this.quizState.assignedPaket) : [];
                     if (this.activeNode.quizShuffle) {
-                        this.quizState.activeQuestions = [...baseQuestions].sort(() => Math.random() - 0.5);
+                        this.quizState.activeQuestions = this.shuffleArray([...baseQuestions]);
                     } else {
                         this.quizState.activeQuestions = baseQuestions;
                     }
@@ -1881,17 +1950,19 @@
                         });
                         return parts.join('\n');
                     }
-                    if (q.type === 'blank') {
+                                        if (q.type === 'blank') {
                         if (typeof answer !== 'object' || Object.keys(answer).length === 0) return '- Belum Dijawab -';
                         const parts = (q.blankText || '').split('{dash}');
-                        const totalParts = parts.length > 1 ? parts.length - 1 : 0;
-                        let result = [];
-                        for(let i=0; i<totalParts; i++) {
-                            let userVal = answer[i] || '-';
-                            result.push(`Titik ${i+1}: ${userVal}`);
+                        let reconstructed = '';
+                        for(let i=0; i<parts.length; i++) {
+                            reconstructed += parts[i];
+                            if (i < parts.length - 1) {
+                                let userVal = answer[i] || '_____';
+                                reconstructed += ` [ ${userVal} ] `;
+                            }
                         }
-                        if (result.length === 0) return '- Belum Dijawab -';
-                        return result.join('\n');
+                        if (reconstructed.trim() === '') return '- Belum Dijawab -';
+                        return reconstructed;
                     }
                     if (typeof answer === 'object') return JSON.stringify(answer);
                     return answer.toString();
@@ -1940,16 +2011,17 @@
                         });
                         return parts.join('\n');
                     }
-                    if (q.type === 'blank') {
+                                        if (q.type === 'blank') {
                         const keys = q.blankAnswers ? q.blankAnswers.split('|').map(s => s.trim()) : [];
                         const parts = (q.blankText || '').split('{dash}');
-                        const totalParts = parts.length > 1 ? parts.length - 1 : 0;
-                        let result = [];
-                        for(let i=0; i<Math.max(keys.length, totalParts); i++) {
-                            let correctVal = keys[i] || '-';
-                            result.push(`Titik ${i+1}: ${correctVal}`);
+                        let reconstructed = '';
+                        for(let i=0; i<parts.length; i++) {
+                            reconstructed += parts[i];
+                            if (i < parts.length - 1) {
+                                reconstructed += (keys[i] ? ` [ ${keys[i]} ] ` : ` [ _____ ] `);
+                            }
                         }
-                        return result.join('\n');
+                        return reconstructed;
                     }
                     if (q.type === 'isian') return q.shortAnswerKeys || '-';
                     if (q.type === 'essai') return 'Dikoreksi Manual oleh Guru';
