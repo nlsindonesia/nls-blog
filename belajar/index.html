@@ -551,6 +551,33 @@
                     </div>
                 </div>
 
+                
+                <!-- 6. PEMROGRAMAN MENU -->
+                <div class="pt-2">
+                    <button type="button" @click="toggleMenu('pemrograman')"
+                        class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all relative overflow-hidden group cursor-pointer"
+                        :class="openMenus.pemrograman ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'">
+                        <div class="flex items-center gap-3">
+                            <span class="p-1.5 rounded-lg flex items-center justify-center transition-colors"
+                                :class="openMenus.pemrograman ? 'bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-200' : 'bg-slate-100 dark:bg-slate-800 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/50'">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                            </span>
+                            <span class="text-xs font-black">Pemrograman</span>
+                        </div>
+                        <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="openMenus.pemrograman ? 'rotate-180 text-blue-600' : 'text-slate-400'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+
+                    <div x-show="openMenus.pemrograman" x-collapse class="pl-7 pr-1 py-1 space-y-1">
+                        <template x-for="lvl in ['OSN', 'Python', 'Cyber Security', 'SEO', 'Data Analyst']" :key="lvl">
+                            <button type="button" @click="openPemrogramanView(lvl.toLowerCase())"
+                                class="w-full text-left px-3 py-2 rounded-lg text-[11px] transition-all flex items-center justify-between"
+                                :class="activeTab === 'pemrograman' && pemrogramanType === lvl.toLowerCase() ? 'submenu-item-active' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'">
+                                <span x-text="lvl"></span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+
                 <!-- 7. MY CLASS (PREMIUM SPECIAL MENU) -->
                 <div class="pt-2">
                     <div class="p-1 rounded-2xl bg-gradient-to-r from-violet-600/20 via-fuchsia-600/20 to-indigo-600/20 border border-violet-500/30 dark:border-violet-500/40 shadow-xs">
@@ -1493,7 +1520,7 @@
                 <!-- =========================================================================
                      3, 4, 5, 6. VIEW: CATALOG COURSES (SCHOOL, OLIMPIADE, TKA, COLLEGE)
                      ========================================================================= -->
-                <div x-show="['school', 'olimpiade', 'tka', 'college', 'language'].includes(activeTab)" x-cloak class="flex-1 flex flex-col">
+                <div x-show="['school', 'olimpiade', 'tka', 'college', 'language', 'pemrograman'].includes(activeTab)" x-cloak class="flex-1 flex flex-col">
                     
                     <!-- Dynamic Hero Header for Each Category -->
                     <div class="relative overflow-hidden rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-indigo-950/20"
@@ -2928,7 +2955,8 @@
                 olimpiadeType: 'osn_sma', // 'osn_sd', 'osn_smp', 'osn_sma', 'onmipa', 'internasional'
                 tkaLevel: 'tka_sma', // 'tka_sd', 'tka_smp', 'tka_sma'
                 collegeType: 'snbt', // 'snbt', 'mandiri', 'kedinasan'
-                languageType: 'ielts', // 'ielts', 'jlpt', 'goethe-zertifikat', 'hanyu shuiping kaoshi'
+                languageType: 'ielts',
+                pemrogramanType: 'osn', // 'ielts', 'jlpt', 'goethe-zertifikat', 'hanyu shuiping kaoshi'
                 myclassView: 'actived', // 'actived', 'quiz_result'
 
                 openMenus: {
@@ -2938,6 +2966,7 @@
                     tka: false,
                     college: false,
                     language: false,
+                    pemrograman: false,
                     myclass: false
                 },
 
@@ -3461,6 +3490,13 @@
                     this.syncUrlRoute(true);
                 },
 
+                openPemrogramanView(type) {
+                    this.activeTab = 'pemrograman';
+                    this.pemrogramanType = type;
+                    this.syncUrlRoute();
+                    if (window.innerWidth < 1024) this.isSidebarOpen = false;
+                },
+
                 openMyClassView(view) {
                     this.activeTab = 'myclass';
                     this.myclassView = view;
@@ -3477,6 +3513,7 @@
                     if (this.activeTab === 'tka') return 'TKA / ' + this.tkaLevel.replace('_', ' ').toUpperCase();
                     if (this.activeTab === 'college') return 'Collage Preparation / ' + this.collegeType.toUpperCase();
                     if (this.activeTab === 'language') return 'Language / ' + this.languageType.toUpperCase();
+                    if (this.activeTab === 'pemrograman') return 'Pemrograman / ' + this.pemrogramanType.toUpperCase();
                     if (this.activeTab === 'myclass') return 'My Class / ' + (this.myclassView === 'actived' ? 'Actived Class' : 'Quiz Result');
                     if (this.activeTab === 'study_room') return 'Ruang Belajar / ' + (this.studyRoom.course ? this.studyRoom.course.title : 'Modul');
                     return this.activeTab;
@@ -3488,6 +3525,7 @@
                     if (this.activeTab === 'tka') return 'Pemantapan Tes Kemampuan Akademik (' + this.tkaLevel.replace('_', ' ').toUpperCase() + ')';
                     if (this.activeTab === 'college') return 'Intensif Persiapan Masuk PTN & Kedinasan (' + this.collegeType.toUpperCase() + ')';
                     if (this.activeTab === 'language') return 'Sertifikasi Bahasa Asing (' + this.languageType.toUpperCase() + ')';
+                    if (this.activeTab === 'pemrograman') return 'Keterampilan Digital (' + this.pemrogramanType.toUpperCase() + ')';
                     return 'Katalog Kelas';
                 },
 
@@ -3497,6 +3535,7 @@
                     if (this.activeTab === 'tka') return 'Penguatan konsep dasar dan latihan soal tes skolastik / seleksi masuk sekolah unggulan.';
                     if (this.activeTab === 'college') return 'Strategi kilat penakluk UTBK SNBT, Ujian Mandiri PTN Top 3, dan SKD Kedinasan.';
                     if (this.activeTab === 'language') return 'Persiapan tes TOEFL, IELTS, JLPT, HSK, dan sertifikasi bahasa lainnya.';
+                    if (this.activeTab === 'pemrograman') return 'Pelajari programming, data analysis, security, hingga SEO terkini.';
                     return '';
                 },
 
@@ -3505,6 +3544,7 @@
                     if (this.activeTab === 'olimpiade') return 'bg-gradient-to-r from-amber-600 via-orange-600 to-red-700';
                     if (this.activeTab === 'tka') return 'bg-gradient-to-r from-emerald-600 via-teal-700 to-cyan-800';
                     if (this.activeTab === 'college') return 'bg-gradient-to-r from-rose-600 via-pink-700 to-purple-800';
+                    if (this.activeTab === 'pemrograman') return 'bg-gradient-to-r from-blue-600 via-cyan-700 to-indigo-800';
                     return 'bg-gradient-to-r from-indigo-600 to-indigo-900';
                 },
 
@@ -3546,6 +3586,10 @@
                     }
                     if (this.activeTab === 'language') {
                         list = list.filter(c => c.category === 'Language' && c.level.toLowerCase() === this.languageType);
+                    }
+
+                    if (this.activeTab === 'pemrograman') {
+                        list = list.filter(c => c.category === 'Pemrograman' && c.level.toLowerCase() === this.pemrogramanType);
                     }
 
                     if (q) {

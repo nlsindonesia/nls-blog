@@ -1736,6 +1736,47 @@
                             </button>
                         </div>
                     </div>
+
+                    <!-- 6. LMS: PEMROGRAMAN -->
+                    <div>
+                        <button type="button" @click="togglePemrogramanDropdown()"
+                            :class="activeTab === 'lms_courses' && lmsCategory === 'Pemrograman' ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-bold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/80'"
+                            class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all relative overflow-hidden group">
+                            
+                            <div class="flex items-center gap-3">
+                                <span class="relative flex items-center justify-center p-1.5 rounded-lg"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'Pemrograman' ? 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-400' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-500 dark:group-hover:bg-blue-950/50'">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                                </span>
+                                <span class="text-xs font-bold whitespace-nowrap">Pemrograman</span>
+                            </div>
+                            
+                            <div class="flex items-center gap-2">
+                                <span x-show="countCoursesByCategory('Pemrograman') > 0" 
+                                      x-text="countCoursesByCategory('Pemrograman')"
+                                      class="px-2 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-400"></span>
+                                <svg class="w-3.5 h-3.5 transition-transform duration-300"
+                                    :class="isPemrogramanDropdownOpen ? 'rotate-180 text-blue-600' : ''"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </button>
+
+                        <div x-show="isPemrogramanDropdownOpen" x-cloak class="border-l-2 border-blue-300 dark:border-blue-800 ml-4 pl-2.5 pt-1 space-y-1.5">
+                            <template x-for="lvl in ['OSN', 'Python', 'Cyber Security', 'SEO', 'Data Analyst']" :key="lvl">
+                                <button type="button" @click="openLmsCategory('Pemrograman', lvl)"
+                                    :class="activeTab === 'lms_courses' && lmsCategory === 'Pemrograman' && lmsLevel === lvl ? 'submenu-item-active' : 'submenu-btn-inactive'"
+                                    class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer text-left">
+                                    <div class="flex items-center gap-2.5 min-w-0">
+                                        <span class="w-2 h-2 rounded-full shrink-0 transition-all"
+                                            :class="activeTab === 'lms_courses' && lmsCategory === 'Pemrograman' && lmsLevel === lvl ? 'bg-blue-500 scale-110' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                        <span class="truncate font-semibold tracking-wide" x-text="lvl"></span>
+                                    </div>
+                                    <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500" x-text="countCoursesByLevel('Pemrograman', lvl) || ''"></span>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+    
     
 
                 </nav>
@@ -5165,6 +5206,7 @@
                 isTkaDropdownOpen: false,
                 isCollegeDropdownOpen: false,
                 isLanguageDropdownOpen: false,
+                isPemrogramanDropdownOpen: false,
 
                 lmsCategory: 'School',
                 lmsLevel: 'SMA',
@@ -5223,6 +5265,13 @@
                         "JLPT": ["N5", "N4", "N3", "N2", "N1"],
                         "Goethe-Zertifikat": ["A1", "A2", "B1", "B2", "C1", "C2"],
                         "Hanyu Shuiping Kaoshi": ["HSK 1", "HSK 2", "HSK 3", "HSK 4", "HSK 5", "HSK 6"]
+                    },
+                    "Pemrograman": {
+                        "OSN": ["Pemrograman Dasar", "Algoritma & Struktur Data"],
+                        "Python": ["Python Dasar", "Python Lanjutan", "Data Science"],
+                        "Cyber Security": ["Networking", "Ethical Hacking", "Web Security"],
+                        "SEO": ["SEO Dasar", "Technical SEO", "Content Optimization"],
+                        "Data Analyst": ["Excel", "SQL", "Tableau / Power BI"]
                     }
                 },
 
@@ -5785,6 +5834,7 @@
                     if (except !== 'tka') this.isTkaDropdownOpen = false;
                     if (except !== 'college') this.isCollegeDropdownOpen = false;
                     if (except !== 'language') this.isLanguageDropdownOpen = false;
+                    if (except !== 'pemrograman') this.isPemrogramanDropdownOpen = false;
                 },
 
                 toggleKalenderDropdown() {
@@ -8348,6 +8398,18 @@
                     this.syncUrlRoute(true);
                 },
 
+                togglePemrogramanDropdown() {
+                    const nextState = !this.isPemrogramanDropdownOpen;
+                    this.closeAllSubmenus(nextState ? 'pemrograman' : '');
+                    this.isPemrogramanDropdownOpen = nextState;
+                    if (this.isPemrogramanDropdownOpen) {
+                        this.activeTab = 'lms_courses';
+                        this.lmsCategory = 'Pemrograman';
+                        if (!this.lmsLevel) this.lmsLevel = 'OSN';
+                    }
+                    this.syncUrlRoute(true);
+                },
+
                 openLmsCategory(category, level) {
                     this.activeTab = 'lms_courses';
                     this.lmsCategory = category;
@@ -8358,12 +8420,14 @@
                     else if (category === 'TKA') menuKey = 'tka';
                     else if (category === 'Collage Preparation') menuKey = 'college';
                     else if (category === 'Language') menuKey = 'language';
+                    else if (category === 'Pemrograman') menuKey = 'pemrograman';
                     this.closeAllSubmenus(menuKey);
                     if (category === 'School') this.isSchoolDropdownOpen = true;
                     if (category === 'Olimpiade') this.isOlimpiadeDropdownOpen = true;
                     if (category === 'TKA') this.isTkaDropdownOpen = true;
                     if (category === 'Collage Preparation') this.isCollegeDropdownOpen = true;
                     if (category === 'Language') this.isLanguageDropdownOpen = true;
+                    if (category === 'Pemrograman') this.isPemrogramanDropdownOpen = true;
                     if (this.isMobile) this.isSidebarOpen = false;
                 },
 
@@ -8415,6 +8479,7 @@
                     if (this.lmsCategory === 'TKA') return 'Kelola modul Tes Kemampuan Akademik (TKA) dan materi pemantapan ujian sekolah standar.';
                     if (this.lmsCategory === 'Collage Preparation') return 'Susun modul persiapan UTBK SNBT, Ujian Mandiri PTN Top 3, dan SKD Sekolah Kedinasan.';
                     if (this.lmsCategory === 'Language') return 'Kelola modul sertifikasi bahasa internasional (IELTS, TOEFL, JLPT, HSK).';
+                    if (this.lmsCategory === 'Pemrograman') return 'Kelola modul pemrograman, OSN komputer, cyber security, dan data analysis.';
                     return 'Kelola modul pembelajaran, kuis latihan, dan video interaktif.';
                 },
 
