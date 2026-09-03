@@ -1273,13 +1273,14 @@
                         
                         this.quizState.assignedPaket = this.pastScores[node.id][0].paket || 1;
                         this.quizState.activeQuestions = node.questions ? node.questions.filter(q => (q.paket || 1) === this.quizState.assignedPaket) : [];
+                        this.quizAnswers = this.pastScores[node.id][0].answers || {};
                     } else {
                         this.quizState.submitted = false;
                         this.quizState.inProgress = false;
                         if (this.quizState.timerInterval) clearInterval(this.quizState.timerInterval);
                         if (this.quizState.autosaveInterval) clearInterval(this.quizState.autosaveInterval);
+                        this.quizAnswers = {};
                     }
-                    this.quizAnswers = {};
                     
                     // Allow Alpine to update DOM, then init player if video
                     this.$nextTick(() => {
