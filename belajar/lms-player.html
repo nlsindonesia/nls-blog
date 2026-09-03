@@ -837,9 +837,25 @@
                                     <div class="space-y-8">
                                         <template x-for="(q, qIdx) in quizState.activeQuestions" :key="q.id">
                                             <div class="p-6 sm:p-8 rounded-2xl border-2 border-slate-100 bg-slate-50/50">
-                                                <div class="flex items-start gap-4 mb-4">
-                                                    <div class="shrink-0 w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-black flex items-center justify-center text-sm" x-text="qIdx + 1"></div>
-                                                    <div class="prose prose-sm prose-slate max-w-none prose-img:rounded-xl prose-img:shadow-md" x-html="q.text"></div>
+                                                <div class="flex justify-between items-start gap-4 mb-4">
+                                                    <div class="flex items-start gap-4 w-full">
+                                                        <div class="shrink-0 w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-black flex items-center justify-center text-sm" x-text="qIdx + 1"></div>
+                                                        <div class="prose prose-sm prose-slate max-w-none prose-img:rounded-xl prose-img:shadow-md w-full" x-html="q.text"></div>
+                                                    </div>
+                                                    <div class="shrink-0 mt-1" x-show="q.type !== 'essai'">
+                                                        <template x-if="isAnswerCorrect(q, quizAnswers[q.id])">
+                                                            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-black shadow-sm border border-emerald-200 uppercase tracking-wider">
+                                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                                                Benar
+                                                            </div>
+                                                        </template>
+                                                        <template x-if="!isAnswerCorrect(q, quizAnswers[q.id])">
+                                                            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-100 text-rose-700 text-[10px] font-black shadow-sm border border-rose-200 uppercase tracking-wider">
+                                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                                Salah
+                                                            </div>
+                                                        </template>
+                                                    </div>
                                                 </div>
                                                 
                                                 <div class="ml-12 mt-6 space-y-4">
@@ -1745,6 +1761,85 @@
                     if (q.type === 'isian') return q.shortAnswerKeys || '-';
                     if (q.type === 'essai') return 'Dikoreksi Manual oleh Guru';
                     return 'Sistem Penilaian Kompleks (Grafik/Puzzle/OSN/Range)';
+                },
+                isAnswerCorrect(q, ans) {
+                    if (ans === undefined || ans === null || ans === '') return false;
+                    
+                    if (q.type === 'pg') {
+                        return ans == q.correctAnswers;
+                    } 
+                    else if (q.type === 'pg_kompleks') {
+                        const correctArr = q.correctAnswersArray || [];
+                        const userArr = ans || [];
+                        return (correctArr.length === userArr.length && correctArr.every(val => userArr.includes(val)));
+                    }
+                    else if (q.type === 'pg_majemuk') {
+                        let allMatch = true;
+                        const userObj = ans || {};
+                        q.statements.forEach((stmt, sIdx) => {
+                            if (userObj[sIdx] !== stmt.isCorrect) allMatch = false;
+                        });
+                        return allMatch && q.statements.length > 0;
+                    }
+                    else if (q.type === 'jodoh') {
+                        let allMatch = true;
+                        const userObj = ans || {};
+                        q.pairs.forEach((pair, pIdx) => {
+                            if (userObj[pIdx] !== pair.right) allMatch = false;
+                        });
+                        return allMatch && q.pairs.length > 0;
+                    }
+                    else if (q.type === 'isian') {
+                        if (!q.shortAnswerKeys) return false;
+                        const keys = q.shortAnswerKeys.toLowerCase().split(',').map(k => k.trim());
+                        return keys.includes(ans.toString().toLowerCase().trim());
+                    }
+                    else if (q.type === 'blank') {
+                        let correctParts = 0;
+                        const totalParts = (q.blankText.match(/{dash}/g) || []).length;
+                        const keys = q.blankAnswers.split(',').map(s => s.trim().toLowerCase());
+                        for(let i=0; i<totalParts; i++) {
+                            if (ans[i] && keys.includes(ans[i].trim().toLowerCase())) correctParts++;
+                        }
+                        return correctParts === totalParts && totalParts > 0;
+                    }
+                    else if (q.type === 'osn_biologi') {
+                        let correctStmts = 0;
+                        if (Array.isArray(q.osnStatements)) {
+                            q.osnStatements.forEach((stmt, idx) => {
+                                if (ans[idx] === stmt.isTrue.toString()) correctStmts++;
+                            });
+                        }
+                        return correctStmts === 4;
+                    }
+                    else if (q.type === 'range') {
+                        return parseFloat(ans) === parseFloat(q.correctRange);
+                    }
+                    else if (q.type === 'graph') {
+                        let allCorrect = true;
+                        if (!q.graphCoordinates || ans.length !== q.graphCoordinates.length) allCorrect = false;
+                        else {
+                            q.graphCoordinates.forEach(gc => {
+                                const match = ans.find(a => parseFloat(a.x) === parseFloat(gc.x) && parseFloat(a.y) === parseFloat(gc.y));
+                                if (!match) allCorrect = false;
+                            });
+                        }
+                        return allCorrect;
+                    }
+                    else if (q.type === 'puzzle') {
+                        const totalPieces = Math.pow(parseInt(q.puzzleDifficulty) || 4, 2);
+                        let allCorrect = ans.length === totalPieces;
+                        if (allCorrect) {
+                            for(let i=0; i<totalPieces; i++) {
+                                if (ans[i] !== i) { allCorrect = false; break; }
+                            }
+                        }
+                        return allCorrect;
+                    }
+                    else if (q.type === 'essai') {
+                        return null; // Not applicable
+                    }
+                    return false;
                 }
             }
         }
