@@ -1131,9 +1131,7 @@
                                     this.babs = rawBabs;
                                 }
                                 await this.loadProgress();
-                                if (this.babs && this.babs.length > 0 && this.babs[0].subBabs && this.babs[0].subBabs.length > 0) {
-                                    this.openNode(this.babs[0].subBabs[0], true);
-                                }
+                                this.handleInitialNode();
                             } else {
                                 alert('Password salah. Silakan coba lagi.');
                             }
