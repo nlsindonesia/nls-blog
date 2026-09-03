@@ -10,6 +10,16 @@ export default async function handler(request, response) {
 
         // --- 1. SETUP DATABASE SCHEMA ---
         if (action === 'setup') {
+            
+            try {
+                await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS nisn VARCHAR(50);`;
+                await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS school VARCHAR(150);`;
+                await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS name VARCHAR(100);`;
+                await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS phone VARCHAR(50);`;
+                await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS level VARCHAR(100);`;
+                await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS grade VARCHAR(255);`;
+            } catch (e) { console.log('Alter table users failed:', e); }
+            
             const usersTable = await sql`
                 CREATE TABLE IF NOT EXISTS users (
                     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
