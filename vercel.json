@@ -1,6 +1,32 @@
 {
     "cleanUrls":  true,
     "trailingSlash":  false,
+        "redirects": [
+        {
+            "source": "/belajar/:path*",
+            "has": [ { "type": "host", "value": "nls-superadmin.vercel.app" } ],
+            "destination": "https://nls-belajar.vercel.app/belajar/:path*",
+            "permanent": true
+        },
+        {
+            "source": "/belajar/:path*",
+            "has": [ { "type": "host", "value": "admin.next-level-study.com" } ],
+            "destination": "https://belajar.next-level-study.com/belajar/:path*",
+            "permanent": true
+        },
+        {
+            "source": "/nlsadmin/:path*",
+            "has": [ { "type": "host", "value": "nls-belajar.vercel.app" } ],
+            "destination": "https://nls-superadmin.vercel.app/nlsadmin/:path*",
+            "permanent": true
+        },
+        {
+            "source": "/nlsadmin/:path*",
+            "has": [ { "type": "host", "value": "belajar.next-level-study.com" } ],
+            "destination": "https://admin.next-level-study.com/nlsadmin/:path*",
+            "permanent": true
+        }
+    ],
     "rewrites":  [
                      {
                          "source":  "/api/(.*)",
