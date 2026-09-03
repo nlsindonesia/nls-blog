@@ -8335,6 +8335,19 @@
                     }
                 },
 
+                
+                toggleLanguageDropdown() {
+                    const nextState = !this.isLanguageDropdownOpen;
+                    this.closeAllSubmenus(nextState ? 'language' : '');
+                    this.isLanguageDropdownOpen = nextState;
+                    if (this.isLanguageDropdownOpen) {
+                        this.activeTab = 'lms_courses';
+                        this.lmsCategory = 'Language';
+                        if (!this.lmsLevel) this.lmsLevel = 'IELTS';
+                    }
+                    this.syncUrlRoute(true);
+                },
+
                 openLmsCategory(category, level) {
                     this.activeTab = 'lms_courses';
                     this.lmsCategory = category;
