@@ -1442,7 +1442,12 @@
                     }
                     this.quizState.assignedPaket = parseInt(storedPaket);
                     
-                    this.quizState.activeQuestions = this.activeNode.questions ? this.activeNode.questions.filter(q => (q.paket || 1) === this.quizState.assignedPaket) : [];
+                    let baseQuestions = this.activeNode.questions ? this.activeNode.questions.filter(q => (q.paket || 1) === this.quizState.assignedPaket) : [];
+                    if (this.activeNode.quizShuffle) {
+                        this.quizState.activeQuestions = [...baseQuestions].sort(() => Math.random() - 0.5);
+                    } else {
+                        this.quizState.activeQuestions = baseQuestions;
+                    }
                     
                     // Initialize shuffle indices for all applicable active questions
                     if (this.quizState.activeQuestions) {
