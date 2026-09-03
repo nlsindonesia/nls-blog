@@ -485,7 +485,96 @@
                     }
                 },
                 
-                $newFn
+                isCorrectAnswer(q, answers) {
+                    if (!answers) return false;
+                    const ans = answers[q.id];
+                    if (ans === undefined || ans === null) return false;
+                    try {
+                        if (q.type === 'pg') {
+                            return ans == q.correctAnswers;
+                        } 
+                        else if (q.type === 'pg_kompleks') {
+                            const correctArr = q.correctAnswersArray || [];
+                            const userArr = ans || [];
+                            return correctArr.length === userArr.length && correctArr.every(val => userArr.includes(val));
+                        }
+                        else if (q.type === 'pg_majemuk') {
+                            let allMatch = true;
+                            const userObj = ans || {};
+                            if (!q.statements || q.statements.length === 0) return false;
+                            q.statements.forEach((stmt, sIdx) => {
+                                if (userObj[sIdx] !== stmt.isCorrect && userObj[sIdx] !== String(stmt.isCorrect)) allMatch = false;
+                            });
+                            return allMatch;
+                        }
+                        else if (q.type === 'jodoh') {
+                            let allMatch = true;
+                            const userObj = ans || {};
+                            if (!q.pairs || q.pairs.length === 0) return false;
+                            q.pairs.forEach((pair, pIdx) => {
+                                if (userObj[pIdx] !== pair.right) allMatch = false;
+                            });
+                            return allMatch;
+                        }
+                        else if (q.type === 'isian') {
+                            if (!q.shortAnswerKeys) return false;
+                            const keys = q.shortAnswerKeys.toLowerCase().split(',').map(k => k.trim());
+                            return ans && keys.includes(ans.toString().toLowerCase().trim());
+                        }
+                        else if (q.type === 'blank') {
+                            const userObj = ans || {};
+                            let correctParts = 0;
+                            const totalParts = (q.blankText.match(/{dash}/g) || []).length;
+                            const keys = (q.blankAnswers || '').split(',').map(s => s.trim().toLowerCase());
+                            for(let i=0; i<totalParts; i++) {
+                                if (userObj[i] && keys.includes(userObj[i].trim().toLowerCase())) correctParts++;
+                            }
+                            return totalParts > 0 && correctParts === totalParts;
+                        }
+                        else if (q.type === 'osn_biologi') {
+                            const userObj = ans || {};
+                            let correctStmts = 0;
+                            if (Array.isArray(q.osnStatements)) {
+                                q.osnStatements.forEach((stmt, idx) => {
+                                    if (userObj[idx] === stmt.isTrue.toString()) correctStmts++;
+                                });
+                                return correctStmts === 4; // strictly fully correct
+                            }
+                            return false;
+                        }
+                        else if (q.type === 'range') {
+                            if (!ans || isNaN(parseFloat(ans))) return false;
+                            return parseFloat(ans) === parseFloat(q.correctRange);
+                        }
+                        else if (q.type === 'graph') {
+                            const userArr = ans || [];
+                            let allCorrect = true;
+                            if (!q.graphCoordinates || userArr.length !== q.graphCoordinates.length) allCorrect = false;
+                            else {
+                                q.graphCoordinates.forEach(gc => {
+                                    const match = userArr.find(a => parseFloat(a.x) === parseFloat(gc.x) && parseFloat(a.y) === parseFloat(gc.y));
+                                    if (!match) allCorrect = false;
+                                });
+                            }
+                            return allCorrect;
+                        }
+                        else if (q.type === 'puzzle') {
+                            const userArr = ans || [];
+                            const totalPieces = Math.pow(parseInt(q.puzzleDifficulty) || 4, 2);
+                            let allCorrect = userArr.length === totalPieces;
+                            if (allCorrect) {
+                                for(let i=0; i<totalPieces; i++) {
+                                    if (userArr[i] !== i) { allCorrect = false; break; }
+                                }
+                            }
+                            return allCorrect;
+                        }
+                        return false;
+                    } catch (e) {
+                        console.error('Error checking answer', e);
+                        return false;
+                    }
+                },
                 
                 getStudentAnswerText(q, answers) {
                     if (!answers || answers[q.id] === undefined) return '(Kosong)';
