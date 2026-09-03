@@ -1391,6 +1391,15 @@
                                         // Load answers for pause and realtime
                                         if (data.attempt.answers_json) {
                                             this.quizAnswers = typeof data.attempt.answers_json === 'string' ? JSON.parse(data.attempt.answers_json) : data.attempt.answers_json;
+                                            if (this.quizAnswers && this.quizAnswers._meta) {
+                                                if (this.quizAnswers._meta.currentQIdx !== undefined) {
+                                                    this.quizState.currentQIdx = parseInt(this.quizAnswers._meta.currentQIdx) || 0;
+                                                }
+                                                if (Array.isArray(this.quizAnswers._meta.doubtful)) {
+                                                    this.quizState.doubtful = this.quizAnswers._meta.doubtful;
+                                                }
+                                            }
+
                                         }
                                         
                                         if (method === 'realtime') {
@@ -1461,7 +1470,7 @@
                                         courseId: this.courseData.id,
                                         moduleId: this.activeNode.id,
                                         elapsedSeconds: this.quizState.elapsedSeconds,
-                                        answers: this.quizAnswers,
+                                        answers: { ...this.quizAnswers, _meta: { currentQIdx: this.quizState.currentQIdx, doubtful: this.quizState.doubtful } },
                                         isReset: isReset
                                     })
                                 }).catch(e => {});
@@ -1486,7 +1495,7 @@
                             courseId: this.courseData.id,
                             moduleId: this.activeNode.id,
                             elapsedSeconds: this.quizState.elapsedSeconds,
-                            answers: this.quizAnswers
+                            answers: { ...this.quizAnswers, _meta: { currentQIdx: this.quizState.currentQIdx, doubtful: this.quizState.doubtful } }
                         });
                         
                         navigator.sendBeacon(url, payload);
@@ -1688,7 +1697,7 @@
                                             moduleId: this.activeNode.id,
                                             score: this.quizState.score,
                                             paket: this.quizState.assignedPaket,
-                                            answers: this.quizAnswers
+                                            answers: { ...this.quizAnswers, _meta: { currentQIdx: this.quizState.currentQIdx, doubtful: this.quizState.doubtful } }
                                         })
                                     }).catch(e => {});
                                 }
