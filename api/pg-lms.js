@@ -977,38 +977,37 @@ export default async function handler(request, response) {
                 return c;
             });
 
-            // If database has 0 courses or less, merge with defaultCourses and cloudStore.courses!
-            let fallbackList = [...defaultCourses];
-            try {
-                const store = await getCloudStore();
-                if (Array.isArray(store.courses) && store.courses.length > 0) {
-                    store.courses.forEach(c => {
-                        if (!fallbackList.some(existing => existing.id === c.id)) {
-                            fallbackList.unshift(c);
-                        }
-                    });
-                }
-            } catch(e) {}
-
+            // High-Availability Fallback: If Postgres returned 0 courses, load from Cloud Store!
             if (courses.length === 0) {
-                if (category && level) {
-                    fallbackList = fallbackList.filter(c => c.category && c.category.toLowerCase() === category.toLowerCase() && c.level && c.level.toLowerCase() === level.toLowerCase());
-                } else if (category) {
-                    fallbackList = fallbackList.filter(c => c.category && c.category.toLowerCase() === category.toLowerCase());
-                } else if (level) {
-                    fallbackList = fallbackList.filter(c => c.level && c.level.toLowerCase() === level.toLowerCase());
-                }
-                courses = fallbackList.map(c => {
-                    const { modules, babs, ...summary } = c;
-                    return wantFull ? c : summary;
-                });
-            } else {
-                fallbackList.forEach(c => {
-                    if (!courses.some(existing => existing.id === c.id)) {
-                        const { modules, babs, ...summary } = c;
-                        courses.push(wantFull ? c : summary);
+                try {
+                    const store = await getCloudStore();
+                    if (Array.isArray(store.courses) && store.courses.length > 0) {
+                        let cloudList = store.courses
+                            .filter(c => c && c.status !== 'draft' && c.status !== 'trashed')
+                            .filter(c => c.visibility !== 'private');
+
+                        if (category && level) {
+                            cloudList = cloudList.filter(c => c.category && c.category.toLowerCase() === category.toLowerCase() && c.level && c.level.toLowerCase() === level.toLowerCase());
+                        } else if (category) {
+                            cloudList = cloudList.filter(c => c.category && c.category.toLowerCase() === category.toLowerCase());
+                        } else if (level) {
+                            cloudList = cloudList.filter(c => c.level && c.level.toLowerCase() === level.toLowerCase());
+                        }
+
+                        courses = cloudList.map(c => {
+                            let copy = { ...c };
+                            delete copy.password;
+                            if (copy.visibility === 'password_protected') {
+                                copy.isLocked = true;
+                                copy.modules = [];
+                                copy.babs = [];
+                                copy.content = [];
+                            }
+                            const { modules, babs, ...summary } = copy;
+                            return wantFull ? copy : summary;
+                        });
                     }
-                });
+                } catch(e) {}
             }
 
             return response.status(200).json({ success: true, data: courses });
@@ -1282,8 +1281,30 @@ export default async function handler(request, response) {
 
         // --- 8. ADMIN: GET ALL COURSES ---
         if (action === 'admin_get_courses' || (!action && request.method === 'GET' && request.url.includes('/api/pg-lms'))) { // fallback
-            const res = await sql`SELECT content_json FROM lms_courses ORDER BY created_at DESC`;
-            const courses = res.rows.map(r => r.content_json);
+            let courses = [];
+            try {
+                const res = await sql`SELECT content_json FROM lms_courses ORDER BY created_at DESC`;
+                courses = res.rows.map(r => {
+                    let c = r.content_json;
+                    if (typeof c === 'string') {
+                        try { c = JSON.parse(c); } catch(e) {}
+                    }
+                    return c;
+                }).filter(Boolean);
+            } catch(err) {
+                courses = [];
+            }
+
+            // High-Availability Fallback: If Postgres failed or returned 0, load from Cloud Store
+            if (courses.length === 0) {
+                try {
+                    const store = await getCloudStore();
+                    if (Array.isArray(store.courses) && store.courses.length > 0) {
+                        courses = store.courses;
+                    }
+                } catch(e) {}
+            }
+
             return response.status(200).json({ success: true, data: courses });
         }
 
@@ -1310,16 +1331,18 @@ export default async function handler(request, response) {
                         content_json = EXCLUDED.content_json
                 `;
             } catch(err) {
-                await sql`
-                    INSERT INTO lms_courses (id, category, level, title, description, content_json)
-                    VALUES (${course.id}, ${course.category || ''}, ${course.level || ''}, ${course.title || ''}, ${course.description || ''}, ${JSON.stringify(course)})
-                    ON CONFLICT (id) DO UPDATE SET
-                        category = EXCLUDED.category,
-                        level = EXCLUDED.level,
-                        title = EXCLUDED.title,
-                        description = EXCLUDED.description,
-                        content_json = EXCLUDED.content_json
-                `;
+                try {
+                    await sql`
+                        INSERT INTO lms_courses (id, category, level, title, description, content_json)
+                        VALUES (${course.id}, ${course.category || ''}, ${course.level || ''}, ${course.title || ''}, ${course.description || ''}, ${JSON.stringify(course)})
+                        ON CONFLICT (id) DO UPDATE SET
+                            category = EXCLUDED.category,
+                            level = EXCLUDED.level,
+                            title = EXCLUDED.title,
+                            description = EXCLUDED.description,
+                            content_json = EXCLUDED.content_json
+                    `;
+                } catch(e) {}
             }
 
             // Also sync to Cloud Store so courses are resilient against Postgres issues
@@ -1340,8 +1363,23 @@ export default async function handler(request, response) {
             const courseId = request.query.id || request.body.id;
             if (!courseId) return response.status(400).json({ success: false, message: 'Missing course id.' });
             
-            // Soft delete by updating content_json status to 'trashed'
-            await sql`UPDATE lms_courses SET content_json = jsonb_set(content_json, '{status}', '"trashed"') WHERE id = ${courseId}`;
+            // 1. Soft delete in Postgres
+            try {
+                await sql`UPDATE lms_courses SET content_json = jsonb_set(content_json, '{status}', '"trashed"') WHERE id = ${courseId}`;
+            } catch(e) {}
+
+            // 2. Soft delete in Universal Cloud Store
+            try {
+                const store = await getCloudStore();
+                const courses = Array.isArray(store.courses) ? store.courses : [];
+                const target = courses.find(c => c.id === courseId);
+                if (target) {
+                    target.status = 'trashed';
+                    target.deletedAt = new Date().toISOString();
+                    await saveCloudStore({ courses });
+                }
+            } catch(e) {}
+
             return response.status(200).json({ success: true, message: 'Course moved to trash.' });
         }
 
@@ -1349,18 +1387,48 @@ export default async function handler(request, response) {
         if (action === 'admin_permanent_delete_course') {
             const courseId = request.query.id || request.body.id;
             if (!courseId) return response.status(400).json({ success: false, message: 'Missing course id.' });
-            await sql`DELETE FROM lms_courses WHERE id = ${courseId}`;
+
+            // 1. Permanent delete in Postgres
+            try {
+                await sql`DELETE FROM lms_courses WHERE id = ${courseId}`;
+            } catch(e) {}
+
+            // 2. Permanent delete in Universal Cloud Store
+            try {
+                const store = await getCloudStore();
+                let courses = Array.isArray(store.courses) ? store.courses : [];
+                courses = courses.filter(c => c.id !== courseId);
+                await saveCloudStore({ courses });
+            } catch(e) {}
+
             return response.status(200).json({ success: true, message: 'Course permanently deleted.' });
         }
 
         // --- 10b. ADMIN: EMPTY TRASH ---
         if (action === 'admin_empty_trash') {
             const cat = request.query.category || request.body?.category;
-            if (cat) {
-                await sql`DELETE FROM lms_courses WHERE content_json->>'status' = 'trashed' AND content_json->>'category' = ${cat}`;
-            } else {
-                await sql`DELETE FROM lms_courses WHERE content_json->>'status' = 'trashed'`;
-            }
+
+            // 1. Delete trashed in Postgres
+            try {
+                if (cat) {
+                    await sql`DELETE FROM lms_courses WHERE content_json->>'status' = 'trashed' AND (content_json->>'category' = ${cat} OR category = ${cat})`;
+                } else {
+                    await sql`DELETE FROM lms_courses WHERE content_json->>'status' = 'trashed'`;
+                }
+            } catch(e) {}
+
+            // 2. Delete trashed in Universal Cloud Store
+            try {
+                const store = await getCloudStore();
+                let courses = Array.isArray(store.courses) ? store.courses : [];
+                if (cat) {
+                    courses = courses.filter(c => !(c.status === 'trashed' && (c.category === cat || !c.category)));
+                } else {
+                    courses = courses.filter(c => c.status !== 'trashed');
+                }
+                await saveCloudStore({ courses });
+            } catch(e) {}
+
             return response.status(200).json({ success: true, message: 'Trash emptied.' });
         }
 
@@ -1368,8 +1436,24 @@ export default async function handler(request, response) {
         if (action === 'admin_restore_course') {
             const courseId = request.query.id || request.body.id;
             if (!courseId) return response.status(400).json({ success: false, message: 'Missing course id.' });
-            // Restore by updating content_json status back to 'published' (or draft)
-            await sql`UPDATE lms_courses SET content_json = jsonb_set(content_json, '{status}', '"published"') WHERE id = ${courseId}`;
+
+            // 1. Restore in Postgres
+            try {
+                await sql`UPDATE lms_courses SET content_json = jsonb_set(content_json, '{status}', '"published"') WHERE id = ${courseId}`;
+            } catch(e) {}
+
+            // 2. Restore in Universal Cloud Store
+            try {
+                const store = await getCloudStore();
+                const courses = Array.isArray(store.courses) ? store.courses : [];
+                const target = courses.find(c => c.id === courseId);
+                if (target) {
+                    target.status = 'published';
+                    delete target.deletedAt;
+                    await saveCloudStore({ courses });
+                }
+            } catch(e) {}
+
             return response.status(200).json({ success: true, message: 'Course restored.' });
         }
 
@@ -1394,36 +1478,90 @@ export default async function handler(request, response) {
         }
         
         if (action === 'admin_get_quiz_results') {
-            const res = await sql`
-                SELECT 
-                    q.id, q.course_id, q.module_index, q.score, q.answers_json, q.submitted_at as date,
-                    u.name as studentName, u.email as studentEmail, u.nisn, u.school,
-                    c.title as courseTitle, c.category, c.level,
-                    c.content_json->>'subject' as subject,
-                    c.content_json->>'grade' as grade
-                FROM lms_quiz_results q
-                LEFT JOIN users u ON q.user_id = u.id::varchar
-                LEFT JOIN lms_courses c ON q.course_id = c.id
-                ORDER BY q.submitted_at DESC
-            `;
-            
-            const results = res.rows.map(r => ({
-                id: r.id,
-                studentName: r.studentname || 'Siswa NLS',
-                studentEmail: r.studentemail || '',
-                nisn: r.nisn || '',
-                school: r.school || '',
-                courseId: r.course_id,
-                courseTitle: r.coursetitle || 'Program NLS',
-                moduleTitle: `Modul ID: ${r.module_index} (Paket ${r.paket || 1})`,
-                category: r.category || 'School',
-                level: r.level || '',
-                subject: r.subject || '',
-                grade: r.grade || '',
-                score: r.score,
-                answers: r.answers_json || {},
-                date: r.date
-            }));
+            let results = [];
+            try {
+                const res = await sql`
+                    SELECT 
+                        q.id, q.course_id, q.module_index, q.score, q.answers_json, q.submitted_at as date,
+                        u.name as studentName, u.email as studentEmail, u.nisn, u.school,
+                        c.title as courseTitle, c.category, c.level,
+                        c.content_json->>'subject' as subject,
+                        c.content_json->>'grade' as grade
+                    FROM lms_quiz_results q
+                    LEFT JOIN users u ON q.user_id = u.id::varchar
+                    LEFT JOIN lms_courses c ON q.course_id = c.id
+                    ORDER BY q.submitted_at DESC
+                `;
+                
+                results = res.rows.map(r => ({
+                    id: r.id,
+                    studentName: r.studentname || 'Siswa NLS',
+                    studentEmail: r.studentemail || '',
+                    nisn: r.nisn || '',
+                    school: r.school || '',
+                    courseId: r.course_id,
+                    courseTitle: r.coursetitle || 'Program NLS',
+                    moduleTitle: `Modul ID: ${r.module_index} (Paket ${r.paket || 1})`,
+                    category: r.category || 'School',
+                    level: r.level || '',
+                    subject: r.subject || '',
+                    grade: r.grade || '',
+                    score: r.score,
+                    answers: r.answers_json || {},
+                    date: r.date
+                }));
+            } catch(e) {
+                // Postgres failed / 402 quota. Fallback to Cloud Store quiz submissions & user lmsData
+                try {
+                    const store = await getCloudStore();
+                    const courses = Array.isArray(store.courses) ? store.courses : [];
+                    const users = Array.isArray(store.users) ? store.users : [];
+                    const directSubmissions = Array.isArray(store.quizSubmissions) ? store.quizSubmissions : [];
+
+                    const allSubmissions = [...directSubmissions];
+                    users.forEach(u => {
+                        if (u.lmsData && Array.isArray(u.lmsData.quizResults)) {
+                            u.lmsData.quizResults.forEach(qr => {
+                                if (!allSubmissions.some(s => s.id === qr.id || (s.courseId === qr.courseId && String(s.moduleIndex) === String(qr.moduleIndex) && s.studentEmail === u.email))) {
+                                    allSubmissions.push({
+                                        id: qr.id || `qr-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+                                        studentName: u.name || 'Siswa NLS',
+                                        studentEmail: u.email || '',
+                                        nisn: u.nisn || '',
+                                        school: u.school || '',
+                                        courseId: qr.courseId,
+                                        moduleIndex: qr.moduleIndex,
+                                        score: qr.score,
+                                        date: qr.date || qr.datetime || new Date().toISOString(),
+                                        answers: qr.answers || {}
+                                    });
+                                }
+                            });
+                        }
+                    });
+
+                    results = allSubmissions.map(s => {
+                        const matchedCourse = courses.find(c => c.id === s.courseId) || {};
+                        return {
+                            id: s.id,
+                            studentName: s.studentName || 'Siswa NLS',
+                            studentEmail: s.studentEmail || '',
+                            nisn: s.nisn || '',
+                            school: s.school || '',
+                            courseId: s.courseId,
+                            courseTitle: s.courseTitle || matchedCourse.title || 'Program NLS',
+                            moduleTitle: `Modul ID: ${s.moduleIndex}`,
+                            category: s.category || matchedCourse.category || 'School',
+                            level: s.level || matchedCourse.level || '',
+                            subject: s.subject || matchedCourse.subject || '',
+                            grade: s.grade || matchedCourse.grade || '',
+                            score: s.score,
+                            answers: s.answers || {},
+                            date: s.date
+                        };
+                    });
+                } catch(cloudErr) {}
+            }
             
             return response.status(200).json({ success: true, data: results });
         }

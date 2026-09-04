@@ -3435,7 +3435,7 @@
                             if (json && Array.isArray(json.data) && json.data.length > 0) {
                                 this.courses = json.data.filter(c => c && c.status !== 'trashed');
                                 try {
-                                    localStorage.setItem('nls_lms_courses_v1', JSON.stringify(json.data));
+                                    localStorage.setItem('nls_lms_courses_v1', JSON.stringify(this.courses));
                                 } catch(e) {}
                             }
                         }

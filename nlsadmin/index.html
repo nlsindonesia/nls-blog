@@ -6401,13 +6401,13 @@
                         }
                     });
 
-                    // 3. Continuous Real-time Background Polling (Every 5 seconds)
+                    // 3. Relaxed Heartbeat Polling (Every 2 minutes to conserve database quota)
                     if (window._nlsAutoSyncInterval) clearInterval(window._nlsAutoSyncInterval);
                     window._nlsAutoSyncInterval = setInterval(() => {
                         if (!document.hidden && this.isAuthenticated) {
                             this.syncAllFromCloud(false);
                         }
-                    }, 5000);
+                    }, 120000);
                 },
 
                 // RBAC & ROLE VERIFICATION
@@ -9874,30 +9874,17 @@
                 async syncCoursesFromCloud(showNotice = false) {
                     if (typeof fetch === 'undefined') return;
                     try {
-                        // Segera hapus cache courses di lokal sesuai permintaan
-                        localStorage.removeItem('nls_lms_courses_v1');
-                        localStorage.removeItem('lms_builder_draft');
-
                         const res = await fetch('/api/pg-lms?action=admin_get_courses');
                         if (res.ok) {
                             const json = await res.json();
-                            if (json && Array.isArray(json.data) && json.data.length > 0) {
+                            if (json && Array.isArray(json.data)) {
                                 const serverActive = json.data.filter(c => c && c.status !== 'trashed');
                                 const serverTrashed = json.data.filter(c => c && c.status === 'trashed');
 
-                                if (serverActive.length > 0) {
-                                    this.courses = serverActive;
-                                    this.saveCoursesToStorage();
-                                } else {
-                                    this.courses = [];
-                                }
-                                if (serverTrashed.length > 0) {
-                                    this.trashCourses = serverTrashed;
-                                } else {
-                                    this.trashCourses = [];
-                                }
-                                localStorage.setItem("nls_lms_courses_trash_v1", JSON.stringify(this.trashCourses));
-                                if (showNotice) this.showToast(`Data Courses tersinkronisasi (${this.courses.length} kelas aktif).`);
+                                this.courses = serverActive;
+                                this.trashCourses = serverTrashed;
+                                this.saveCoursesToStorage();
+                                if (showNotice) this.showToast(`Data Courses tersinkronisasi (${this.courses.length} kelas aktif, ${this.trashCourses.length} di sampah).`);
                             }
                         }
                     } catch(e) {}
