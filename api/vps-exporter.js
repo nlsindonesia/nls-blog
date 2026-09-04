@@ -304,13 +304,4 @@ ON CONFLICT (id) DO UPDATE SET
     return sql;
 }
 
-export default async function handler(req, res) {
-    try {
-        const sql = await generateVpsSqlDump();
-        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-        return res.status(200).send(sql);
-    } catch(err) {
-        return res.status(500).json({ success: false, message: err.message });
-    }
-}
 

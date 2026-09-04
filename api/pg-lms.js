@@ -1,6 +1,6 @@
 import { getCloudStore, saveCloudStore } from './cloud-db.js';
 import { generateVpsSqlDump } from './vps-exporter.js';
-import { fetchExternalProblem } from './oj-crawler.js';
+import { fetchExternalProblem } from '../lib/oj-crawler.js';
 
 const defaultCourses = [
     // School SD (Kelas 1-6)
