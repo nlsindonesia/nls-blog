@@ -1104,7 +1104,7 @@
                                                     <span class="w-1.5 h-3.5 bg-indigo-600 rounded-full"></span>
                                                     Deskripsi
                                                 </h3>
-                                                <div class="prose prose-slate max-w-none text-slate-800 leading-relaxed font-normal text-sm" x-html="activeNode.rawHtml || 'Deskripsi soal belum tersedia.'"></div>
+                                                <div class="prose prose-slate max-w-none text-slate-800 leading-relaxed font-normal text-sm" x-html="activeNode.problemDescription || activeNode.rawHtml || 'Deskripsi soal belum tersedia.'"></div>
                                             </div>
 
                                             <!-- Format Masukan -->
@@ -1113,7 +1113,7 @@
                                                     <span class="w-1.5 h-3.5 bg-sky-600 rounded-full"></span>
                                                     Format Masukan
                                                 </h3>
-                                                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 text-sm text-slate-700 whitespace-pre-line font-medium" x-text="activeNode.inputFormat"></div>
+                                                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 text-sm text-slate-700 whitespace-pre-line font-medium" x-html="activeNode.inputFormat"></div>
                                             </div>
 
                                             <!-- Format Keluaran -->
@@ -1122,7 +1122,7 @@
                                                     <span class="w-1.5 h-3.5 bg-emerald-600 rounded-full"></span>
                                                     Format Keluaran
                                                 </h3>
-                                                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 text-sm text-slate-700 whitespace-pre-line font-medium" x-text="activeNode.outputFormat"></div>
+                                                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 text-sm text-slate-700 whitespace-pre-line font-medium" x-html="activeNode.outputFormat"></div>
                                             </div>
 
                                             <!-- Batasan / Constraints -->
@@ -1131,7 +1131,7 @@
                                                     <span class="w-1.5 h-3.5 bg-amber-600 rounded-full"></span>
                                                     Batasan
                                                 </h3>
-                                                <div class="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/70 text-sm text-amber-900 whitespace-pre-line font-medium" x-text="activeNode.constraints"></div>
+                                                <div class="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/70 text-sm text-amber-900 whitespace-pre-line font-medium" x-html="activeNode.constraints"></div>
                                             </div>
 
                                             <!-- Contoh Masukan & Keluaran -->
