@@ -286,9 +286,11 @@
 
                     <!-- Video Content -->
                     <template x-if="activeNode.type === 'video'">
-                        <div class="bg-slate-950 rounded-[2.5rem] shadow-[0_24px_64px_-12px_rgba(0,0,0,0.2)] overflow-hidden aspect-video relative flex flex-col items-center justify-center border-[6px] border-white/90 ring-1 ring-slate-200" x-init="initYoutubePlayer()">
+                        <div class="bg-slate-950 rounded-[2.5rem] shadow-[0_24px_64px_-12px_rgba(0,0,0,0.2)] overflow-hidden aspect-video relative flex flex-col items-center justify-center border-[6px] border-white/90 ring-1 ring-slate-200" x-init="$nextTick(() => initYoutubePlayer())">
                             <template x-if="activeNode.videoUrl">
-                                <div id="yt-player-container" class="w-full h-full absolute inset-0 rounded-[2rem] overflow-hidden"></div>
+                                <div id="yt-player-wrapper" class="w-full h-full absolute inset-0 rounded-[2rem] overflow-hidden">
+                                    <div id="yt-player-container" class="w-full h-full"></div>
+                                </div>
                             </template>
                             <template x-if="!activeNode.videoUrl">
                                 <div class="text-slate-500 text-sm font-bold flex flex-col items-center gap-3">
@@ -1733,15 +1735,30 @@
                     if (courseId) {
                         try {
                             const savedPassword = localStorage.getItem('unlocked_' + courseId) || '';
-                            const res = await fetch('/api/pg-lms', {
+                            const res = await fetch('/api/pg-lms?_t=' + Date.now(), {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
+                                cache: 'no-store',
                                 body: JSON.stringify({ action: 'get_courses', targetCourseId: courseId, targetPassword: savedPassword })
                             });
                             const data = await res.json();
                             if (data.success && data.data) {
                                 const course = data.data.find(c => c.id === courseId);
                                 if (course) {
+                                    // Update local storage so stale local drafts do not conflict with fresh server data
+                                    try {
+                                        const storedStr = localStorage.getItem('nls_lms_courses_v1');
+                                        if (storedStr) {
+                                            let stored = JSON.parse(storedStr);
+                                            if (Array.isArray(stored)) {
+                                                const idx = stored.findIndex(c => c.id === course.id);
+                                                if (idx >= 0) stored[idx] = course;
+                                                else stored.unshift(course);
+                                                localStorage.setItem('nls_lms_courses_v1', JSON.stringify(stored));
+                                            }
+                                        }
+                                        localStorage.setItem('nls_lms_draft_' + course.id, JSON.stringify(course));
+                                    } catch(e) {}
                                     
                                     if (course.scheduleEnabled && course.scheduleDate) {
                                         try {
@@ -1986,10 +2003,6 @@
                 },
 
                 initYoutubePlayer() {
-                    if (this.ytPlayer) {
-                        this.ytPlayer.destroy();
-                        this.ytPlayer = null;
-                    }
                     if (this.ytPollInterval) {
                         clearInterval(this.ytPollInterval);
                     }
@@ -2002,20 +2015,53 @@
                     const videoId = this.extractYoutubeId(this.activeNode.videoUrl);
                     if (!videoId) return;
 
+                    // If existing player is still valid, load the new video ID without destroying DOM
+                    if (this.ytPlayer && typeof this.ytPlayer.loadVideoById === 'function' && document.getElementById('yt-player-container')) {
+                        try {
+                            this.ytPlayer.loadVideoById(videoId);
+                            return;
+                        } catch(e) {
+                            this.ytPlayer = null;
+                        }
+                    }
+
+                    if (this.ytPlayer) {
+                        try { this.ytPlayer.destroy(); } catch(e) {}
+                        this.ytPlayer = null;
+                    }
+
                     const setupPlayer = () => {
-                        this.ytPlayer = new YT.Player('yt-player-container', {
-                            videoId: videoId,
-                            playerVars: { 'playsinline': 1 },
-                            events: {
-                                'onStateChange': this.onPlayerStateChange.bind(this)
+                        let el = document.getElementById('yt-player-container');
+                        if (!el) {
+                            const wrapper = document.getElementById('yt-player-wrapper');
+                            if (wrapper) {
+                                wrapper.innerHTML = '<div id="yt-player-container" class="w-full h-full"></div>';
+                                el = document.getElementById('yt-player-container');
                             }
-                        });
+                        }
+                        if (!el) {
+                            setTimeout(() => setupPlayer(), 80);
+                            return;
+                        }
+                        try {
+                            this.ytPlayer = new YT.Player('yt-player-container', {
+                                videoId: videoId,
+                                playerVars: { 'playsinline': 1 },
+                                events: {
+                                    'onStateChange': this.onPlayerStateChange.bind(this)
+                                }
+                            });
+                        } catch(e) {
+                            console.warn('YT Player init error:', e);
+                        }
                     };
 
                     if (window.YT && window.YT.Player) {
-                        setupPlayer();
+                        setTimeout(setupPlayer, 50);
                     } else {
+                        const prevReady = window.onYouTubeIframeAPIReady;
                         window.onYouTubeIframeAPIReady = () => {
+                            if (prevReady) prevReady();
                             setupPlayer();
                         };
                     }
@@ -2078,11 +2124,11 @@
                 },
 
                 openNode(node, skipPush = false) {
-                    if (this.ytPlayer) {
-                        this.ytPlayer.destroy();
+                    if (this.ytPollInterval) clearInterval(this.ytPollInterval);
+                    if (node && node.type !== 'video' && this.ytPlayer) {
+                        try { this.ytPlayer.destroy(); } catch(e) {}
                         this.ytPlayer = null;
                     }
-                    if (this.ytPollInterval) clearInterval(this.ytPollInterval);
                     
                     this.activeNode = node;
                     this.sidebarOpen = false;

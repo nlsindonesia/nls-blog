@@ -238,10 +238,22 @@ export async function saveCloudStore(updatedFields) {
 
         // Sync Courses / Quiz Submissions / Quiz Attempts
         if (updatedFields.courses || updatedFields.quizSubmissions || updatedFields.quizAttempts) {
+            const rawCourses = updatedFields.courses || localMemoryCache.courses || [];
+            // Streamline each course: prevent payload bloat by removing duplicate content/modules fields
+            const streamlinedCourses = rawCourses.map(c => {
+                if (!c) return c;
+                const clean = { ...c };
+                delete clean.content;
+                delete clean.modules;
+                return clean;
+            });
+            const submissions = (updatedFields.quizSubmissions || localMemoryCache.quizSubmissions || []).slice(0, 30);
+            const attempts = (updatedFields.quizAttempts || localMemoryCache.quizAttempts || []).slice(0, 30);
+
             syncPromises.push(httpsRequest(CLOUD_BINS.courses, 'PUT', {
-                courses: updatedFields.courses || localMemoryCache.courses,
-                quizSubmissions: updatedFields.quizSubmissions || localMemoryCache.quizSubmissions,
-                quizAttempts: updatedFields.quizAttempts || localMemoryCache.quizAttempts || [],
+                courses: streamlinedCourses,
+                quizSubmissions: submissions,
+                quizAttempts: attempts,
                 lastUpdated: new Date().toISOString()
             }));
         }

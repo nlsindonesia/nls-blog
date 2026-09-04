@@ -821,6 +821,10 @@ export default async function handler(request, response) {
 
             // A. Single course requested (e.g. LMS player)
             if (targetCourseId) {
+                response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+                response.setHeader('Pragma', 'no-cache');
+                response.setHeader('Expires', '0');
+
                 let course = null;
                 
                 // 1. Check Cloud Store (newest custom courses and edits)
@@ -839,6 +843,9 @@ export default async function handler(request, response) {
                 if (!course) {
                     return response.status(404).json({ success: false, message: 'Course not found.' });
                 }
+
+                // Deep copy so we don't mutate cache
+                course = JSON.parse(JSON.stringify(course));
 
                 const realPassword = course.password;
                 delete course.password; // Never send password to client
@@ -1202,6 +1209,12 @@ export default async function handler(request, response) {
 
             if (!course.updated_at) {
                 course.updated_at = new Date().toISOString();
+            }
+
+            // Clean up duplicate trees to prevent 413 Payload Too Large
+            if (course.babs) {
+                delete course.content;
+                delete course.modules;
             }
 
             // Persist to Universal Cloud Store directly

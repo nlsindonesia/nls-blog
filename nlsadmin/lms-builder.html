@@ -236,7 +236,7 @@
 
                         <div x-show="activeNode.materiFormat === 'pdf'" class="space-y-3 relative z-10">
                             <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider">Link Google Drive (File PDF, pastikan akses Publik)</label>
-                            <input type="url" x-model="activeNode.pdfUrl" class="w-full p-4 rounded-2xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-slate-50 shadow-inner" placeholder="https://drive.google.com/file/d/xxxxxx/view">
+                            <input type="url" x-model="activeNode.pdfUrl" @input="saveLocalDraft(); debounceSave()" @change="saveLocalDraft(); debounceSave()" class="w-full p-4 rounded-2xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-slate-50 shadow-inner" placeholder="https://drive.google.com/file/d/xxxxxx/view">
                             <p class="text-[10px] text-slate-400 font-medium">Sistem otomatis mengubah link <code class="bg-slate-100 text-indigo-600 px-1 py-0.5 rounded">/view</code> menjadi <code class="bg-slate-100 text-indigo-600 px-1 py-0.5 rounded">/preview</code> untuk di-embed tanpa border.</p>
                             
                             <!-- PDF Preview -->
@@ -263,7 +263,7 @@
 
                         <div x-show="activeNode.materiFormat === 'html'" class="space-y-3 relative z-10">
                             <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider">Kode HTML Raw</label>
-                            <textarea x-model="activeNode.rawHtml" rows="12" class="w-full p-5 rounded-2xl border border-slate-800 focus:ring-2 focus:ring-indigo-500 font-mono text-xs text-sky-300 bg-slate-900 shadow-inner" placeholder="<div class='p-5 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white'>\n  <h2 class='font-bold'>Judul Custom</h2>\n</div>"></textarea>
+                            <textarea x-model="activeNode.rawHtml" @input="saveLocalDraft(); debounceSave()" @change="saveLocalDraft(); debounceSave()" rows="12" class="w-full p-5 rounded-2xl border border-slate-800 focus:ring-2 focus:ring-indigo-500 font-mono text-xs text-sky-300 bg-slate-900 shadow-inner" placeholder="<div class='p-5 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white'>\n  <h2 class='font-bold'>Judul Custom</h2>\n</div>"></textarea>
                             <p class="text-[10px] text-slate-400 font-medium">Gunakan Tailwind CSS classes. HTML akan dibungkus dalam container sandboxed <code class="bg-slate-100 text-indigo-600 px-1 py-0.5 rounded">div.prose</code> saat dirender di halaman siswa.</p>
                         </div>
                     </div>
@@ -277,7 +277,7 @@
                             </div>
                             <div class="flex-1 space-y-3">
                                 <label class="block text-[11px] font-black uppercase text-rose-400 tracking-wider">Link YouTube Video</label>
-                                <input type="url" x-model="activeNode.videoUrl" class="w-full p-4 rounded-2xl border border-slate-200 text-sm focus:ring-2 focus:ring-rose-500 focus:border-rose-500 bg-slate-50 shadow-inner" placeholder="https://www.youtube.com/watch?v=xxxxxx">
+                                <input type="url" x-model="activeNode.videoUrl" @input="saveLocalDraft(); debounceSave()" @change="saveLocalDraft(); debounceSave()" class="w-full p-4 rounded-2xl border border-slate-200 text-sm focus:ring-2 focus:ring-rose-500 focus:border-rose-500 bg-slate-50 shadow-inner" placeholder="https://www.youtube.com/watch?v=xxxxxx">
                                 <p class="text-xs text-slate-500 leading-relaxed font-medium">
                                     Video ini akan diputar menggunakan YouTube Iframe API. <br>
                                     Untuk membuat kuis pop-up di tengah video (Interactive Video), silakan tambahkan soal kuis di bawah ini dan isi kolom <strong class="text-rose-600">Video Timestamp (Detik)</strong>. Video akan otomatis berhenti dan memunculkan soal tersebut.
@@ -2752,8 +2752,8 @@
                     this.courseData.id = this.courseId;
                     this.courseData.title = this.courseTitle || this.courseData.title || 'Course';
                     this.courseData.babs = JSON.parse(JSON.stringify(this.babs));
-                    this.courseData.content = this.courseData.babs;
-                    this.courseData.modules = this.courseData.babs;
+                    delete this.courseData.content;
+                    delete this.courseData.modules;
                     this.courseData.updated_at = new Date().toISOString();
 
                     // Re-save draft after point distribution and timestamp update
@@ -2772,6 +2772,19 @@
                         if (res.ok && json.success) {
                             success = true;
                             this.isDirty = false;
+                            // Update local storage courses cache so player on same browser also sees newest version immediately
+                            try {
+                                const storedStr = localStorage.getItem('nls_lms_courses_v1');
+                                if (storedStr) {
+                                    let stored = JSON.parse(storedStr);
+                                    if (Array.isArray(stored)) {
+                                        const idx = stored.findIndex(c => c.id === this.courseData.id);
+                                        if (idx >= 0) stored[idx] = this.courseData;
+                                        else stored.unshift(this.courseData);
+                                        localStorage.setItem('nls_lms_courses_v1', JSON.stringify(stored));
+                                    }
+                                }
+                            } catch(e) {}
                         } else if (res.status === 413) {
                             errorMsg = 'Gagal: Ukuran materi terlalu besar! (Max 4MB). Kurangi resolusi gambar.';
                         } else {
