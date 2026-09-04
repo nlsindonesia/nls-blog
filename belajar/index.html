@@ -3825,7 +3825,7 @@
 
                         this.showToast(`Berhasil mendaftar kelas "${course.title}"!`);
                         
-                        // Save to Cloud DB (Postgres & Universal Cloud Store)
+                        // Save to Universal Persistent Cloud Store
                         try {
                             await fetch('/api/pg-lms', {
                                 method: 'POST',
@@ -4165,7 +4165,7 @@
                     // Mark module completed
                     this.getActiveModule().completed = true;
 
-                    // Send live submission to Postgres Unified Schema
+                    // Send live submission to Universal Cloud Store
                     if (typeof fetch !== 'undefined') {
                         fetch('/api/pg-lms', {
                             method: 'POST',

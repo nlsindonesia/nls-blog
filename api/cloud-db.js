@@ -24,6 +24,8 @@ let localMemoryCache = {
     teacherApplications: [],
     courses: [],
     quizSubmissions: [],
+    quizAttempts: [],
+    schools: [],
     activeSession: null
 };
 
@@ -100,7 +102,10 @@ export async function getCloudStore() {
             const data = results[0].value.data;
             const items = extractItems(data);
             if (Array.isArray(items) && items.length > 0) {
-                localMemoryCache.users = items;
+                // Smart merge with pending local memory users so recently registered users aren't overwritten
+                const remoteIds = new Set(items.map(u => String(u.id)));
+                const pendingLocalUsers = (localMemoryCache.users || []).filter(u => u && !remoteIds.has(String(u.id)));
+                localMemoryCache.users = [...pendingLocalUsers, ...items];
             }
             let parsedData = data;
             if (typeof data === 'string') {
@@ -113,6 +118,9 @@ export async function getCloudStore() {
                 if (inner && inner.deviceSessions) {
                     localMemoryCache.deviceSessions = inner.deviceSessions;
                 }
+            }
+            if (parsedData && Array.isArray(parsedData.schools)) {
+                localMemoryCache.schools = parsedData.schools;
             }
         }
 
@@ -145,7 +153,7 @@ export async function getCloudStore() {
             }
         }
 
-        // 5. Courses & Quiz Submissions
+        // 5. Courses & Quiz Submissions & Quiz Attempts
         if (results[4].status === 'fulfilled' && results[4].value.status === 200) {
             let d = results[4].value.data;
             if (typeof d === 'string') {
@@ -156,11 +164,19 @@ export async function getCloudStore() {
             }
             if (d) {
                 if (Array.isArray(d.courses)) {
-                    localMemoryCache.courses = d.courses;
+                    const remoteCourseIds = new Set(d.courses.map(c => c.id));
+                    const pendingCourses = (localMemoryCache.courses || []).filter(c => c && !remoteCourseIds.has(c.id));
+                    localMemoryCache.courses = [...pendingCourses, ...d.courses];
                 }
                 if (Array.isArray(d.quizSubmissions)) {
-                    localMemoryCache.quizSubmissions = d.quizSubmissions;
+                    const remoteSubIds = new Set(d.quizSubmissions.map(s => s.id));
+                    const pendingSubs = (localMemoryCache.quizSubmissions || []).filter(s => s && !remoteSubIds.has(s.id));
+                    localMemoryCache.quizSubmissions = [...pendingSubs, ...d.quizSubmissions];
                 }
+                const remoteAttempts = Array.isArray(d.quizAttempts) ? d.quizAttempts : [];
+                const remoteAttemptKeys = new Set(remoteAttempts.map(a => `${a.user_id}_${a.course_id}_${a.module_id}`));
+                const pendingAttempts = (localMemoryCache.quizAttempts || []).filter(a => a && !remoteAttemptKeys.has(`${a.user_id}_${a.course_id}_${a.module_id}`));
+                localMemoryCache.quizAttempts = [...pendingAttempts, ...remoteAttempts];
             }
         }
 
@@ -185,11 +201,12 @@ export async function saveCloudStore(updatedFields) {
 
         const syncPromises = [];
 
-        // Sync Users & Device Sessions
-        if (updatedFields.users || updatedFields.deviceSessions) {
+        // Sync Users & Device Sessions & Schools
+        if (updatedFields.users || updatedFields.deviceSessions || updatedFields.schools) {
             syncPromises.push(httpsRequest(CLOUD_BINS.users, 'PUT', {
                 items: updatedFields.users || localMemoryCache.users,
                 deviceSessions: updatedFields.deviceSessions || localMemoryCache.deviceSessions || {},
+                schools: updatedFields.schools || localMemoryCache.schools || [],
                 lastUpdated: new Date().toISOString()
             }));
         }
@@ -219,11 +236,12 @@ export async function saveCloudStore(updatedFields) {
             }));
         }
 
-        // Sync Courses / Quiz Submissions
-        if (updatedFields.courses || updatedFields.quizSubmissions) {
+        // Sync Courses / Quiz Submissions / Quiz Attempts
+        if (updatedFields.courses || updatedFields.quizSubmissions || updatedFields.quizAttempts) {
             syncPromises.push(httpsRequest(CLOUD_BINS.courses, 'PUT', {
                 courses: updatedFields.courses || localMemoryCache.courses,
                 quizSubmissions: updatedFields.quizSubmissions || localMemoryCache.quizSubmissions,
+                quizAttempts: updatedFields.quizAttempts || localMemoryCache.quizAttempts || [],
                 lastUpdated: new Date().toISOString()
             }));
         }

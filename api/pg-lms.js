@@ -1,5 +1,5 @@
-import { sql } from '@vercel/postgres';
 import { getCloudStore, saveCloudStore } from './cloud-db.js';
+import { generateVpsSqlDump } from './vps-exporter.js';
 
 ﻿
 
@@ -762,7 +762,7 @@ const defaultCourses = [
 
 
 export default async function handler(request, response) {
-    // Enable CORS for all origins so local drafts can be pushed to Vercel
+    // Enable CORS for all origins
     response.setHeader('Access-Control-Allow-Origin', '*');
     response.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
     response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -778,147 +778,60 @@ export default async function handler(request, response) {
     try {
         const action = request.method === 'POST' ? request.body.action : request.query.action;
 
-        // --- 1. SETUP LMS TABLES ---
+        // --- 0. EXPORT VPS SQL (1-Click Database Dump for Migration) ---
+        if (action === 'export_vps_sql') {
+            const sqlDump = await generateVpsSqlDump();
+            if (request.query?.format === 'json') {
+                return response.status(200).json({ success: true, sql: sqlDump });
+            }
+            response.setHeader('Content-Type', 'text/plain; charset=utf-8');
+            response.setHeader('Content-Disposition', 'attachment; filename="vps_migration.sql"');
+            return response.status(200).send(sqlDump);
+        }
+
+        // --- 1. SETUP LMS TABLES / STATUS ---
         if (action === 'setup_lms') {
-            try {
-                await sql`ALTER TABLE IF EXISTS lms_enrollments DROP CONSTRAINT IF EXISTS lms_enrollments_user_id_fkey;`;
-                await sql`ALTER TABLE IF EXISTS lms_quiz_results DROP CONSTRAINT IF EXISTS lms_quiz_results_user_id_fkey;`;
-                await sql`ALTER TABLE IF EXISTS lms_enrollments DROP CONSTRAINT IF EXISTS lms_enrollments_course_id_fkey;`;
-                await sql`ALTER TABLE IF EXISTS lms_quiz_results DROP CONSTRAINT IF EXISTS lms_quiz_results_course_id_fkey;`;
-                await sql`ALTER TABLE IF EXISTS lms_quiz_attempts DROP CONSTRAINT IF EXISTS lms_quiz_attempts_course_id_fkey;`;
-                await sql`ALTER TABLE IF EXISTS lms_enrollments ALTER COLUMN user_id TYPE VARCHAR(255) USING user_id::VARCHAR;`;
-                await sql`ALTER TABLE IF EXISTS lms_quiz_results ALTER COLUMN user_id TYPE VARCHAR(255) USING user_id::VARCHAR;`;
-                await sql`ALTER TABLE IF EXISTS lms_quiz_results ALTER COLUMN module_index TYPE VARCHAR(100) USING module_index::VARCHAR;`;
-                await sql`ALTER TABLE IF EXISTS lms_quiz_results ADD COLUMN IF NOT EXISTS paket INTEGER DEFAULT 1;`;
-                await sql`ALTER TABLE IF EXISTS lms_courses ADD COLUMN IF NOT EXISTS subject VARCHAR(100);`;
-                await sql`ALTER TABLE IF EXISTS lms_courses ADD COLUMN IF NOT EXISTS grade VARCHAR(50);`;
-            } catch(e) {}
-
-            await sql`
-                CREATE TABLE IF NOT EXISTS lms_courses (
-                    id VARCHAR(100) PRIMARY KEY,
-                    category VARCHAR(50),
-                    level VARCHAR(50),
-                    subject VARCHAR(100),
-                    grade VARCHAR(50),
-                    title VARCHAR(255),
-                    description TEXT,
-                    content_json JSONB,
-                    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-                );
-            `;
-
-            try {
-                await sql`CREATE INDEX IF NOT EXISTS idx_lms_courses_cat_lvl ON lms_courses(category, level);`;
-                await sql`CREATE INDEX IF NOT EXISTS idx_lms_courses_subject ON lms_courses(subject);`;
-                await sql`CREATE INDEX IF NOT EXISTS idx_lms_courses_grade ON lms_courses(grade);`;
-                await sql`CREATE INDEX IF NOT EXISTS idx_lms_courses_status ON lms_courses((content_json->>'status'));`;
-                await sql`CREATE INDEX IF NOT EXISTS idx_lms_courses_visibility ON lms_courses((content_json->>'visibility'));`;
-                await sql`CREATE INDEX IF NOT EXISTS idx_lms_courses_content_json_gin ON lms_courses USING gin (content_json);`;
-                await sql`CREATE INDEX IF NOT EXISTS idx_lms_enrollments_user ON lms_enrollments(user_id);`;
-                await sql`CREATE INDEX IF NOT EXISTS idx_lms_enrollments_course ON lms_enrollments(course_id);`;
-                await sql`CREATE INDEX IF NOT EXISTS idx_lms_quiz_results_user ON lms_quiz_results(user_id, submitted_at DESC);`;
-                await sql`CREATE INDEX IF NOT EXISTS idx_lms_quiz_results_course ON lms_quiz_results(course_id);`;
-                await sql`CREATE INDEX IF NOT EXISTS idx_lms_quiz_attempts_lookup ON lms_quiz_attempts(user_id, course_id, module_id);`;
-            } catch(e) {}
-
-            await sql`
-                CREATE TABLE IF NOT EXISTS lms_enrollments (
-                    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-                    user_id VARCHAR(255),
-                    course_id VARCHAR(100) REFERENCES lms_courses(id) ON DELETE CASCADE,
-                    progress INTEGER DEFAULT 0,
-                    completed_modules JSONB DEFAULT '[]'::jsonb,
-                    enrolled_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-                    last_accessed TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-                    UNIQUE(user_id, course_id)
-                );
-            `;
-
-            await sql`
-                CREATE TABLE IF NOT EXISTS lms_quiz_results (
-                    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-                    user_id VARCHAR(255),
-                    course_id VARCHAR(100) REFERENCES lms_courses(id) ON DELETE CASCADE,
-                    module_index VARCHAR(100),
-                    score NUMERIC(5,2),
-                    paket INTEGER DEFAULT 1,
-                    answers_json JSONB,
-                    submitted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-                );
-            `;
-
-            await sql`
-                CREATE TABLE IF NOT EXISTS lms_quiz_attempts (
-                    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-                    user_id VARCHAR(255),
-                    course_id VARCHAR(100) REFERENCES lms_courses(id) ON DELETE CASCADE,
-                    module_id VARCHAR(100),
-                    status VARCHAR(50) DEFAULT 'in_progress',
-                    started_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-                    last_saved_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-                    elapsed_seconds INTEGER DEFAULT 0,
-                    answers_json JSONB DEFAULT '{}'::jsonb,
-                    UNIQUE(user_id, course_id, module_id)
-                );
-            `;
-
-            return response.status(200).json({ success: true, message: 'LMS tables created successfully.' });
+            return response.status(200).json({ 
+                success: true, 
+                mode: 'Universal Cloud DB',
+                message: 'LMS Cloud Database active. Vercel Postgres completely decoupled.' 
+            });
         }
 
         // --- 2. IMPORT DEFAULT COURSES ---
         if (action === 'import_courses') {
+            const store = await getCloudStore();
+            let courses = Array.isArray(store.courses) ? store.courses : [];
             let importedCount = 0;
             for (const course of defaultCourses) {
-                // Check if exists
-                const existing = await sql`SELECT id FROM lms_courses WHERE id = ${course.id}`;
-                if (existing.rows.length === 0) {
-                    // Insert
-                    await sql`
-                        INSERT INTO lms_courses (id, category, level, title, description, content_json)
-                        VALUES (${course.id}, ${course.category}, ${course.level}, ${course.title}, ${course.description}, ${JSON.stringify(course)})
-                    `;
+                if (!courses.some(c => c.id === course.id)) {
+                    courses.push(course);
                     importedCount++;
-                } else {
-                    // Update
-                    await sql`
-                        UPDATE lms_courses 
-                        SET category = ${course.category}, level = ${course.level}, title = ${course.title}, description = ${course.description}, content_json = ${JSON.stringify(course)}
-                        WHERE id = ${course.id}
-                    `;
                 }
             }
-            return response.status(200).json({ success: true, message: `Successfully imported/updated ${defaultCourses.length} courses. (${importedCount} new)` });
+            if (importedCount > 0) {
+                await saveCloudStore({ courses });
+            }
+            return response.status(200).json({ success: true, message: `Successfully verified/imported ${defaultCourses.length} courses. (${importedCount} new)` });
         }
 
-        // --- 3. GET COURSES CATALOG ---
+        // --- 3. GET COURSES CATALOG (100% Cloud DB) ---
         if (action === 'get_courses') {
             const { category, level, targetCourseId, targetPassword, full } = request.body || request.query || {};
 
-            // Single course requested (e.g. LMS player) -> Fetch exact row with full modules via O(1) indexed primary key seek
+            // A. Single course requested (e.g. LMS player)
             if (targetCourseId) {
                 let course = null;
+                
+                // 1. Check Cloud Store (newest custom courses and edits)
                 try {
-                    const res = await sql`SELECT content_json FROM lms_courses WHERE id = ${targetCourseId} LIMIT 1`;
-                    if (res.rows.length > 0) {
-                        course = res.rows[0].content_json;
-                        if (typeof course === 'string') {
-                            try { course = JSON.parse(course); } catch(e) {}
-                        }
+                    const store = await getCloudStore();
+                    if (Array.isArray(store.courses)) {
+                        course = store.courses.find(c => c && c.id === targetCourseId);
                     }
                 } catch(e) {}
 
-                // Fallback to Cloud Store if not found in Postgres
-                if (!course) {
-                    try {
-                        const store = await getCloudStore();
-                        if (Array.isArray(store.courses)) {
-                            course = store.courses.find(c => c && c.id === targetCourseId);
-                        }
-                    } catch(e) {}
-                }
-
-                // Fallback to defaultCourses
+                // 2. Check defaultCourses
                 if (!course) {
                     course = defaultCourses.find(c => c.id === targetCourseId);
                 }
@@ -943,103 +856,56 @@ export default async function handler(request, response) {
                 return response.status(200).json({ success: true, data: [course] });
             }
 
-            // Public Catalog Listing -> Lightweight projection (strip heavy modules/quiz questions)
-            // Edge caching header: Cache response at CDN edge for 60s, stale-while-revalidate 300s
+            // B. Public Catalog Listing
             if (request.method === 'GET') {
                 response.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
                 response.setHeader('Vary', 'Accept-Encoding');
             }
 
-            let res = { rows: [] };
             const wantFull = full === true || full === 'true';
+            const store = await getCloudStore();
+            const cloudCourses = Array.isArray(store.courses) ? store.courses : [];
 
-            try {
-                if (wantFull) {
-                    if (category && level) {
-                        res = await sql`SELECT content_json FROM lms_courses WHERE COALESCE(content_json->>'status', 'published') NOT IN ('draft', 'trashed') AND category = ${category} AND level = ${level} ORDER BY created_at DESC`;
-                    } else if (category) {
-                        res = await sql`SELECT content_json FROM lms_courses WHERE COALESCE(content_json->>'status', 'published') NOT IN ('draft', 'trashed') AND category = ${category} ORDER BY created_at DESC`;
-                    } else if (level) {
-                        res = await sql`SELECT content_json FROM lms_courses WHERE COALESCE(content_json->>'status', 'published') NOT IN ('draft', 'trashed') AND level = ${level} ORDER BY created_at DESC`;
-                    } else {
-                        res = await sql`SELECT content_json FROM lms_courses WHERE COALESCE(content_json->>'status', 'published') NOT IN ('draft', 'trashed') ORDER BY created_at DESC`;
-                    }
-                } else {
-                    if (category && level) {
-                        res = await sql`SELECT id, category, level, subject, grade, title, description, (content_json::jsonb - 'modules' - 'babs') AS catalog_json FROM lms_courses WHERE COALESCE(content_json->>'status', 'published') NOT IN ('draft', 'trashed') AND category = ${category} AND level = ${level} ORDER BY created_at DESC`;
-                    } else if (category) {
-                        res = await sql`SELECT id, category, level, subject, grade, title, description, (content_json::jsonb - 'modules' - 'babs') AS catalog_json FROM lms_courses WHERE COALESCE(content_json->>'status', 'published') NOT IN ('draft', 'trashed') AND category = ${category} ORDER BY created_at DESC`;
-                    } else if (level) {
-                        res = await sql`SELECT id, category, level, subject, grade, title, description, (content_json::jsonb - 'modules' - 'babs') AS catalog_json FROM lms_courses WHERE COALESCE(content_json->>'status', 'published') NOT IN ('draft', 'trashed') AND level = ${level} ORDER BY created_at DESC`;
-                    } else {
-                        res = await sql`SELECT id, category, level, subject, grade, title, description, (content_json::jsonb - 'modules' - 'babs') AS catalog_json FROM lms_courses WHERE COALESCE(content_json->>'status', 'published') NOT IN ('draft', 'trashed') ORDER BY created_at DESC`;
-                    }
+            // Combine defaultCourses with cloudCourses (cloudCourses takes priority)
+            const courseMap = new Map();
+            defaultCourses.forEach(c => { if (c && c.id) courseMap.set(c.id, c); });
+            cloudCourses.forEach(c => {
+                if (c && c.id) {
+                    courseMap.set(c.id, c);
                 }
-            } catch(e) {
-                res = { rows: [] };
-            }
-
-            let courses = res.rows.map(r => {
-                let c = r.catalog_json || r.content_json;
-                if (typeof c === 'string') {
-                    try { c = JSON.parse(c); } catch(e) {}
-                }
-                return c;
-            })
-            .filter(c => c && c.status !== 'draft' && c.status !== 'trashed')
-            .filter(c => c.visibility !== 'private')
-            .map(c => {
-                delete c.password;
-                if (c.visibility === 'password_protected') {
-                    c.isLocked = true;
-                    c.modules = [];
-                    c.babs = [];
-                    c.content = [];
-                }
-                return c;
             });
 
-            // High-Availability Multi-Source Sync: Merge Cloud Store courses (e.g. user-created courses)
-            try {
-                const store = await getCloudStore();
-                if (Array.isArray(store.courses) && store.courses.length > 0) {
-                    let cloudList = store.courses
-                        .filter(c => c && c.status !== 'draft' && c.status !== 'trashed')
-                        .filter(c => c.visibility !== 'private');
+            let list = Array.from(courseMap.values())
+                .filter(c => c && c.status !== 'draft' && c.status !== 'trashed' && c.visibility !== 'private');
 
-                    if (category && level) {
-                        cloudList = cloudList.filter(c => c.category && c.category.toLowerCase() === category.toLowerCase() && c.level && c.level.toLowerCase() === level.toLowerCase());
-                    } else if (category) {
-                        cloudList = cloudList.filter(c => c.category && c.category.toLowerCase() === category.toLowerCase());
-                    } else if (level) {
-                        cloudList = cloudList.filter(c => c.level && c.level.toLowerCase() === level.toLowerCase());
-                    }
+            if (category && level) {
+                list = list.filter(c => c.category && c.category.toLowerCase() === category.toLowerCase() && c.level && c.level.toLowerCase() === level.toLowerCase());
+            } else if (category) {
+                list = list.filter(c => c.category && c.category.toLowerCase() === category.toLowerCase());
+            } else if (level) {
+                list = list.filter(c => c.level && c.level.toLowerCase() === level.toLowerCase());
+            }
 
-                    cloudList.forEach(c => {
-                        let copy = { ...c };
-                        delete copy.password;
-                        if (copy.visibility === 'password_protected') {
-                            copy.isLocked = true;
-                            copy.modules = [];
-                            copy.babs = [];
-                            copy.content = [];
-                        }
-                        const { modules, babs, ...summary } = copy;
-                        const item = wantFull ? copy : summary;
-                        const existingIdx = courses.findIndex(existing => existing.id === item.id);
-                        if (existingIdx >= 0) {
-                            courses[existingIdx] = item;
-                        } else {
-                            courses.unshift(item);
-                        }
-                    });
+            const processedList = list.map(c => {
+                let copy = { ...c };
+                delete copy.password;
+                if (copy.visibility === 'password_protected') {
+                    copy.isLocked = true;
+                    copy.modules = [];
+                    copy.babs = [];
+                    copy.content = [];
                 }
-            } catch(e) {}
+                if (!wantFull) {
+                    const { modules, babs, content, ...summary } = copy;
+                    return summary;
+                }
+                return copy;
+            });
 
-            return response.status(200).json({ success: true, data: courses });
+            return response.status(200).json({ success: true, data: processedList });
         }
 
-        // --- 4. GET LMS DATA (User Progress) ---
+        // --- 4. GET LMS DATA (User Progress & Quiz History) ---
         if (action === 'get_lms_data') {
             const { userId, email, username, name } = request.body || request.query || {};
             const uid = userId || request.body?.userId || request.query?.userId || email || username || name || '';
@@ -1050,7 +916,7 @@ export default async function handler(request, response) {
             if (username && !userList.includes(String(username).trim())) userList.push(String(username).trim());
             if (name && !userList.includes(String(name).trim())) userList.push(String(name).trim());
 
-            // Resilience alias expansion (for mama / maman / maman5 / maman@gmail.com / usr-1788068718590)
+            // Resilience alias expansion
             const lowerList = userList.map(u => u.toLowerCase());
             if (lowerList.some(u => u.includes('mama') || u.includes('maman'))) {
                 ['mama', 'maman', 'maman5', 'maman@gmail.com', 'usr-1788068718590'].forEach(alias => {
@@ -1058,284 +924,259 @@ export default async function handler(request, response) {
                 });
             }
 
-            let progressRows = [];
-            let quizRows = [];
+            const store = await getCloudStore();
+            const users = Array.isArray(store.users) ? store.users : [];
+            const searchKeys = userList.map(k => String(k).toLowerCase());
 
-            try {
-                const [progressRes, quizRes] = await Promise.all([
-                    sql`SELECT course_id, progress, completed_modules FROM lms_enrollments WHERE user_id = ANY(${userList}::text[])`,
-                    sql`SELECT course_id, module_index, score, paket, submitted_at as date, answers_json FROM lms_quiz_results WHERE user_id = ANY(${userList}::text[]) ORDER BY submitted_at DESC`
-                ]);
-                progressRows = progressRes.rows;
-                quizRows = quizRes.rows;
-            } catch(err) {
-                // Postgres quota limit or connection issue
+            const targetUser = users.find(u => {
+                if (!u) return false;
+                const uId = String(u.id || '').toLowerCase();
+                const uEmail = String(u.email || '').toLowerCase();
+                const uName = String(u.name || '').toLowerCase();
+                const uUsername = String(u.username || '').toLowerCase();
+                return searchKeys.includes(uId) || searchKeys.includes(uEmail) || searchKeys.includes(uName) || searchKeys.includes(uUsername);
+            });
+
+            let enrolledIds = [];
+            let quizResults = [];
+            let progressMap = {};
+
+            if (targetUser && targetUser.lmsData) {
+                enrolledIds = Array.isArray(targetUser.lmsData.enrolledIds) ? [...targetUser.lmsData.enrolledIds] : [];
+                progressMap = targetUser.lmsData.progressMap || {};
+                if (Array.isArray(targetUser.lmsData.quizResults)) {
+                    quizResults = targetUser.lmsData.quizResults.map(q => ({
+                        ...q,
+                        isGraded: !!(q.answers && q.answers._meta && q.answers._meta.gradedScores),
+                        date: q.date ? new Date(q.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
+                        datetime: q.date ? new Date(q.date).toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''
+                    }));
+                }
             }
 
-            const enrolledIds = Array.from(new Set(progressRows.map(r => r.course_id)));
-
-            // Format quiz results for frontend
-            const quizResults = quizRows.map(q => {
-                let isGraded = false;
-                if (q.answers_json && q.answers_json._meta && q.answers_json._meta.gradedScores) {
-                    isGraded = true;
-                }
-                return {
-                    courseId: q.course_id,
-                    moduleIndex: q.module_index,
-                    score: q.score,
-                    paket: q.paket || 1,
-                    isGraded: isGraded,
-                    answers: q.answers_json || {},
-                    date: new Date(q.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
-                    datetime: new Date(q.date).toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
-                };
-            });
-
-            // Format progress map
-            const progressMap = {};
-            progressRows.forEach(r => {
-                let parsedModules = [];
-                if (Array.isArray(r.completed_modules)) {
-                    parsedModules = r.completed_modules;
-                } else if (typeof r.completed_modules === 'string') {
-                    try { parsedModules = JSON.parse(r.completed_modules); } catch(e) {}
-                }
-
-                progressMap[r.course_id] = {
-                    progress: r.progress,
-                    completedModules: parsedModules
-                };
-            });
-
-            // DUAL-ENGINE RESILIENCE: Always check Universal Cloud Store to restore existing student courses
-            try {
-                const store = await getCloudStore();
-                const users = Array.isArray(store.users) ? store.users : [];
-                const searchKeys = userList.map(k => String(k).toLowerCase());
-
-                const cloudUser = users.find(u => {
-                    if (!u) return false;
-                    const uId = String(u.id || '').toLowerCase();
-                    const uEmail = String(u.email || '').toLowerCase();
-                    const uName = String(u.name || '').toLowerCase();
-                    const uUsername = String(u.username || '').toLowerCase();
-                    return searchKeys.includes(uId) ||
-                           searchKeys.includes(uEmail) ||
-                           searchKeys.includes(uName) ||
-                           searchKeys.includes(uUsername) ||
-                           (searchKeys.some(k => k.includes('mama') || k.includes('maman')) && (uName.includes('mama') || uUsername.includes('mama') || uEmail.includes('maman')));
-                });
-
-                if (cloudUser && cloudUser.lmsData) {
-                    const cEnrolled = cloudUser.lmsData.enrolledIds || [];
-                    cEnrolled.forEach(cId => {
-                        if (!enrolledIds.includes(cId)) enrolledIds.push(cId);
-                        if (!progressMap[cId]) {
-                            progressMap[cId] = { progress: 0, completedModules: [] };
-                        }
+            // Also check direct submissions in Cloud DB
+            const directSubmissions = Array.isArray(store.quizSubmissions) ? store.quizSubmissions : [];
+            directSubmissions.forEach(ds => {
+                const isMatch = searchKeys.includes(String(ds.userId || '').toLowerCase()) || 
+                                searchKeys.includes(String(ds.studentEmail || '').toLowerCase());
+                if (isMatch && !quizResults.some(q => q.id === ds.id)) {
+                    quizResults.push({
+                        ...ds,
+                        isGraded: !!(ds.answers && ds.answers._meta && ds.answers._meta.gradedScores),
+                        date: ds.date ? new Date(ds.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
+                        datetime: ds.date ? new Date(ds.date).toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''
                     });
-
-                    if (Array.isArray(cloudUser.lmsData.quizResults)) {
-                        cloudUser.lmsData.quizResults.forEach(qr => {
-                            if (!quizResults.some(existing => existing.courseId === qr.courseId && String(existing.moduleIndex) === String(qr.moduleIndex))) {
-                                quizResults.push(qr);
-                            }
-                        });
-                    }
                 }
-            } catch(cloudErr) {
-                console.warn('Cloud store user lookup fallback warning:', cloudErr.message);
-            }
+            });
 
             return response.status(200).json({ 
                 success: true, 
                 lmsData: {
-                    enrolledIds,
+                    enrolledIds: Array.from(new Set(enrolledIds)),
                     quizResults,
                     progressMap
                 }
             });
         }
 
-        // --- 5. ENROLL COURSE ---
+        // --- 5. ENROLL COURSE (100% Cloud DB) ---
         if (action === 'enroll') {
             const { userId, email, username, courseId } = request.body || {};
             const finalUserId = userId || email || username;
             if (!finalUserId || !courseId) return response.status(400).json({ success: false, message: 'Missing userId or courseId.' });
 
-            // 1. Try PostgreSQL
-            try {
-                await sql`
-                    INSERT INTO lms_enrollments (user_id, course_id)
-                    VALUES (${finalUserId}, ${courseId})
-                    ON CONFLICT (user_id, course_id) DO NOTHING
-                `;
-            } catch(e) {
-                try {
-                    await sql`ALTER TABLE IF EXISTS lms_enrollments DROP CONSTRAINT IF EXISTS lms_enrollments_course_id_fkey;`;
-                    await sql`
-                        INSERT INTO lms_enrollments (user_id, course_id)
-                        VALUES (${finalUserId}, ${courseId})
-                        ON CONFLICT (user_id, course_id) DO NOTHING
-                    `;
-                } catch(err) {}
+            const store = await getCloudStore();
+            const users = Array.isArray(store.users) ? store.users : [];
+            const searchKeys = [String(finalUserId).toLowerCase()];
+            if (email) searchKeys.push(String(email).toLowerCase());
+            if (username) searchKeys.push(String(username).toLowerCase());
+            if (searchKeys.some(k => k.includes('mama') || k.includes('maman'))) {
+                searchKeys.push('mama', 'maman', 'maman5', 'maman@gmail.com', 'usr-1788068718590');
             }
 
-            // 2. ALWAYS PERSIST TO UNIVERSAL CLOUD STORE (Zero-loss Guarantee)
-            try {
-                const store = await getCloudStore();
-                const users = Array.isArray(store.users) ? store.users : [];
-                const searchKeys = [String(finalUserId).toLowerCase()];
-                if (email) searchKeys.push(String(email).toLowerCase());
-                if (username) searchKeys.push(String(username).toLowerCase());
-                if (searchKeys.some(k => k.includes('mama') || k.includes('maman'))) {
-                    searchKeys.push('mama', 'maman', 'maman5', 'maman@gmail.com', 'usr-1788068718590');
-                }
+            let targetUser = users.find(u => {
+                if (!u) return false;
+                const uId = String(u.id || '').toLowerCase();
+                const uEmail = String(u.email || '').toLowerCase();
+                const uName = String(u.name || '').toLowerCase();
+                const uUsername = String(u.username || '').toLowerCase();
+                return searchKeys.includes(uId) || searchKeys.includes(uEmail) || searchKeys.includes(uName) || searchKeys.includes(uUsername);
+            });
 
-                let targetUser = users.find(u => {
-                    if (!u) return false;
-                    const uId = String(u.id || '').toLowerCase();
-                    const uEmail = String(u.email || '').toLowerCase();
-                    const uName = String(u.name || '').toLowerCase();
-                    const uUsername = String(u.username || '').toLowerCase();
-                    return searchKeys.includes(uId) || searchKeys.includes(uEmail) || searchKeys.includes(uName) || searchKeys.includes(uUsername);
-                });
-
-                if (targetUser) {
-                    if (!targetUser.lmsData) targetUser.lmsData = { enrolledIds: [], quizResults: [] };
-                    if (!Array.isArray(targetUser.lmsData.enrolledIds)) targetUser.lmsData.enrolledIds = [];
-                    if (!targetUser.lmsData.enrolledIds.includes(courseId)) {
-                        targetUser.lmsData.enrolledIds.push(courseId);
-                        targetUser.updatedAt = new Date().toISOString();
-                        await saveCloudStore({ users });
-                    }
+            if (targetUser) {
+                if (!targetUser.lmsData) targetUser.lmsData = { enrolledIds: [], quizResults: [], progressMap: {} };
+                if (!Array.isArray(targetUser.lmsData.enrolledIds)) targetUser.lmsData.enrolledIds = [];
+                if (!targetUser.lmsData.enrolledIds.includes(courseId)) {
+                    targetUser.lmsData.enrolledIds.push(courseId);
+                    targetUser.updatedAt = new Date().toISOString();
+                    await saveCloudStore({ users });
                 }
-            } catch(cloudErr) {
-                console.warn('Cloud store enroll sync warning:', cloudErr.message);
             }
             
             return response.status(200).json({ success: true, message: 'Enrolled successfully.' });
         }
 
-        // --- 6. UPDATE PROGRESS ---
+        // --- 6. UPDATE PROGRESS (100% Cloud DB) ---
         if (action === 'update_progress') {
             const { userId, courseId, progress, completedModules } = request.body;
             if (!userId || !courseId) return response.status(400).json({ success: false, message: 'Missing userId or courseId.' });
 
-            await sql`
-                INSERT INTO lms_enrollments (user_id, course_id, progress, completed_modules, last_accessed)
-                VALUES (${userId}, ${courseId}, ${progress || 0}, ${JSON.stringify(completedModules || [])}::jsonb, CURRENT_TIMESTAMP)
-                ON CONFLICT (user_id, course_id) DO UPDATE SET
-                    progress = EXCLUDED.progress,
-                    completed_modules = EXCLUDED.completed_modules,
-                    last_accessed = EXCLUDED.last_accessed
-            `;
+            const store = await getCloudStore();
+            const users = Array.isArray(store.users) ? store.users : [];
+            const uid = String(userId).toLowerCase();
+            const targetUser = users.find(u => 
+                (u.id && String(u.id).toLowerCase() === uid) ||
+                (u.email && u.email.toLowerCase() === uid) ||
+                (u.username && u.username.toLowerCase() === uid)
+            );
+
+            if (targetUser) {
+                if (!targetUser.lmsData) targetUser.lmsData = { enrolledIds: [], quizResults: [], progressMap: {} };
+                if (!targetUser.lmsData.progressMap) targetUser.lmsData.progressMap = {};
+                targetUser.lmsData.progressMap[courseId] = {
+                    progress: progress || 0,
+                    completedModules: completedModules || [],
+                    lastAccessed: new Date().toISOString()
+                };
+                targetUser.updatedAt = new Date().toISOString();
+                await saveCloudStore({ users });
+            }
             
             return response.status(200).json({ success: true, message: 'Progress updated.' });
         }
 
-        // --- 7. SUBMIT QUIZ ---
+        // --- 7. SUBMIT QUIZ (100% Cloud DB) ---
         if (action === 'submit_quiz') {
             const { userId, courseId, moduleIndex, moduleId, score, answers, paket } = request.body;
             if (!userId || !courseId || score === undefined) return response.status(400).json({ success: false, message: 'Missing required quiz data.' });
 
-            const result = await sql`
-                INSERT INTO lms_quiz_results (user_id, course_id, module_index, score, answers_json, paket)
-                VALUES (${userId}, ${courseId}, ${moduleIndex}, ${score}, ${JSON.stringify(answers || {})}, ${paket || 1})
-                RETURNING id
-            `;
-            
-            if (moduleId) {
-                await sql`
-                    UPDATE lms_quiz_attempts
-                    SET status = 'submitted', last_saved_at = CURRENT_TIMESTAMP
-                    WHERE user_id = ${userId} AND course_id = ${courseId} AND module_id = ${moduleId}
-                `;
+            const store = await getCloudStore();
+            const users = Array.isArray(store.users) ? store.users : [];
+            const courses = Array.isArray(store.courses) ? store.courses : [];
+            const u = users.find(user => String(user.id) === String(userId) || String(user.email) === String(userId) || String(user.username) === String(userId));
+            const c = courses.find(crs => crs.id === courseId) || defaultCourses.find(crs => crs.id === courseId);
+
+            const submissionId = `qr-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+            const newSubmission = {
+                id: submissionId,
+                userId: userId,
+                studentName: u ? u.name : 'Siswa NLS',
+                studentEmail: u ? u.email : '',
+                nisn: u ? u.nisn : '',
+                school: u ? u.school : '',
+                courseId: courseId,
+                courseTitle: c ? c.title : 'Program NLS',
+                moduleIndex: moduleIndex,
+                score: Number(score),
+                paket: paket || 1,
+                answers: answers || {},
+                date: new Date().toISOString()
+            };
+
+            let quizSubmissions = Array.isArray(store.quizSubmissions) ? store.quizSubmissions : [];
+            quizSubmissions.unshift(newSubmission);
+
+            if (u) {
+                if (!u.lmsData) u.lmsData = { enrolledIds: [], quizResults: [] };
+                if (!Array.isArray(u.lmsData.quizResults)) u.lmsData.quizResults = [];
+                u.lmsData.quizResults.unshift({
+                    id: submissionId,
+                    courseId: courseId,
+                    moduleIndex: moduleIndex,
+                    score: Number(score),
+                    paket: paket || 1,
+                    answers: answers || {},
+                    date: new Date().toISOString()
+                });
             }
-            
-            return response.status(200).json({ success: true, message: 'Quiz submitted.', id: result.rows[0].id });
+
+            let quizAttempts = Array.isArray(store.quizAttempts) ? store.quizAttempts : [];
+            if (moduleId) {
+                const att = quizAttempts.find(a => a.user_id === userId && a.course_id === courseId && a.module_id === moduleId);
+                if (att) {
+                    att.status = 'submitted';
+                    att.last_saved_at = new Date().toISOString();
+                }
+            }
+
+            await saveCloudStore({ quizSubmissions, users, quizAttempts });
+
+            return response.status(200).json({ success: true, message: 'Quiz submitted.', id: submissionId });
         }
 
-        // --- 7.a. GET QUIZ PROGRESS ---
+        // --- 7.a. GET QUIZ PROGRESS (100% Cloud DB) ---
         if (action === 'get_quiz_progress') {
             const { userId, courseId, moduleId } = request.body || request.query || {};
             if (!userId || !courseId || !moduleId) return response.status(400).json({ success: false, message: 'Missing parameters.' });
 
-            const attemptRes = await sql`
-                SELECT * FROM lms_quiz_attempts 
-                WHERE user_id = ${userId} AND course_id = ${courseId} AND module_id = ${moduleId}
-            `;
-            
-            if (attemptRes.rows.length > 0) {
-                return response.status(200).json({ success: true, attempt: attemptRes.rows[0], server_now: new Date().toISOString() });
-            } else {
-                return response.status(200).json({ success: true, attempt: null, server_now: new Date().toISOString() });
-            }
+            const store = await getCloudStore();
+            const attempts = Array.isArray(store.quizAttempts) ? store.quizAttempts : [];
+            const attempt = attempts.find(a => a.user_id === userId && a.course_id === courseId && a.module_id === moduleId) || null;
+
+            return response.status(200).json({ success: true, attempt: attempt, server_now: new Date().toISOString() });
         }
 
-        // --- 7.b. START OR SAVE QUIZ PROGRESS ---
+        // --- 7.b. START OR SAVE QUIZ PROGRESS (100% Cloud DB) ---
         if (action === 'save_quiz_progress') {
-            const { userId, courseId, moduleId, elapsedSeconds, answers } = request.body;
+            const { userId, courseId, moduleId, elapsedSeconds, answers, isReset } = request.body;
             if (!userId || !courseId || !moduleId) return response.status(400).json({ success: false, message: 'Missing parameters.' });
 
-            const existing = await sql`SELECT id, status FROM lms_quiz_attempts WHERE user_id = ${userId} AND course_id = ${courseId} AND module_id = ${moduleId}`;
-            
-            if (existing.rows.length === 0) {
-                // Insert new attempt
-                await sql`
-                    INSERT INTO lms_quiz_attempts (user_id, course_id, module_id, elapsed_seconds, answers_json, status, started_at, last_saved_at)
-                    VALUES (${userId}, ${courseId}, ${moduleId}, ${elapsedSeconds || 0}, ${JSON.stringify(answers || {})}, 'in_progress', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-                `;
+            const store = await getCloudStore();
+            let attempts = Array.isArray(store.quizAttempts) ? store.quizAttempts : [];
+            let attempt = attempts.find(a => a.user_id === userId && a.course_id === courseId && a.module_id === moduleId);
+            const now = new Date().toISOString();
+
+            if (!attempt) {
+                attempt = {
+                    id: `att-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+                    user_id: userId,
+                    course_id: courseId,
+                    module_id: moduleId,
+                    elapsed_seconds: elapsedSeconds || 0,
+                    answers_json: answers || {},
+                    status: 'in_progress',
+                    started_at: now,
+                    last_saved_at: now
+                };
+                attempts.push(attempt);
             } else {
-                if (request.body.isReset) {
-                    await sql`
-                        UPDATE lms_quiz_attempts
-                        SET elapsed_seconds = ${elapsedSeconds || 0}, answers_json = ${JSON.stringify(answers || {})}, last_saved_at = CURRENT_TIMESTAMP, status = 'in_progress', started_at = CURRENT_TIMESTAMP
-                        WHERE user_id = ${userId} AND course_id = ${courseId} AND module_id = ${moduleId}
-                    `;
-                } else {
-                    await sql`
-                        UPDATE lms_quiz_attempts
-                        SET elapsed_seconds = ${elapsedSeconds || 0}, answers_json = ${JSON.stringify(answers || {})}, last_saved_at = CURRENT_TIMESTAMP, status = 'in_progress'
-                        WHERE user_id = ${userId} AND course_id = ${courseId} AND module_id = ${moduleId}
-                    `;
-                }
+                attempt.elapsed_seconds = elapsedSeconds || 0;
+                attempt.answers_json = answers || {};
+                attempt.last_saved_at = now;
+                attempt.status = 'in_progress';
+                if (isReset) attempt.started_at = now;
             }
+
+            await saveCloudStore({ quizAttempts: attempts });
+
             return response.status(200).json({ success: true, message: 'Progress saved.' });
         }
 
-        // --- 8. ADMIN: GET ALL COURSES ---
-        if (action === 'admin_get_courses' || (!action && request.method === 'GET' && request.url.includes('/api/pg-lms'))) { // fallback
-            let pgCourses = [];
-            try {
-                const res = await sql`SELECT content_json FROM lms_courses ORDER BY created_at DESC`;
-                pgCourses = res.rows.map(r => {
-                    let c = r.content_json;
-                    if (typeof c === 'string') {
-                        try { c = JSON.parse(c); } catch(e) {}
-                    }
-                    return c;
-                }).filter(Boolean);
-            } catch(err) {
-                pgCourses = [];
-            }
-
-            let cloudCourses = [];
-            try {
-                const store = await getCloudStore();
-                if (Array.isArray(store.courses) && store.courses.length > 0) {
-                    cloudCourses = store.courses;
-                }
-            } catch(e) {}
+        // --- 8. ADMIN: GET ALL COURSES (100% Cloud DB) ---
+        if (action === 'admin_get_courses' || (!action && request.method === 'GET' && request.url.includes('/api/pg-lms'))) {
+            const store = await getCloudStore();
+            const cloudCourses = Array.isArray(store.courses) ? store.courses : [];
 
             const courseMap = new Map();
             // 1. Default boilerplate courses
             defaultCourses.forEach(c => { if (c && c.id) courseMap.set(c.id, c); });
-            // 2. Postgres courses
-            pgCourses.forEach(c => { if (c && c.id) courseMap.set(c.id, c); });
-            // 3. Cloud Store courses (custom user courses take priority)
-            cloudCourses.forEach(c => { if (c && c.id) courseMap.set(c.id, c); });
+            // 2. Cloud Store courses (custom user courses and newest updates take priority)
+            cloudCourses.forEach(c => { 
+                if (c && c.id) {
+                    const existing = courseMap.get(c.id);
+                    if (!existing) {
+                        courseMap.set(c.id, c);
+                    } else {
+                        const dateC = new Date(c.updated_at || c.created_at || 0).getTime();
+                        const dateEx = new Date(existing.updated_at || existing.created_at || 0).getTime();
+                        const cHasBabs = (c.babs && c.babs.length > 0) || (c.modules && c.modules.length > 0);
+                        const exHasBabs = (existing.babs && existing.babs.length > 0) || (existing.modules && existing.modules.length > 0);
+                        if (dateC >= dateEx || (cHasBabs && !exHasBabs)) {
+                            courseMap.set(c.id, c);
+                        }
+                    }
+                }
+            });
 
             // Sort so user-created courses and updated courses appear at the top
             const allCourses = Array.from(courseMap.values()).sort((a, b) => {
@@ -1350,52 +1191,18 @@ export default async function handler(request, response) {
             return response.status(200).json({ success: true, data: allCourses });
         }
 
-        // --- 9. ADMIN: SAVE COURSE ---
+        // --- 9. ADMIN: SAVE COURSE (100% Cloud DB) ---
         if (action === 'admin_save_course' || request.method === 'PUT') {
             let course = request.body.course || request.body;
             if (!course || !course.id) return response.status(400).json({ success: false, message: 'Invalid course data.' });
 
-            const subj = course.subject || '';
-            const grd = course.grade || '';
-
-            // Atomic Single-Roundtrip UPSERT (Laravel/Postgres standard)
-            try {
-                await sql`
-                    INSERT INTO lms_courses (id, category, level, subject, grade, title, description, content_json)
-                    VALUES (${course.id}, ${course.category || ''}, ${course.level || ''}, ${subj}, ${grd}, ${course.title || ''}, ${course.description || ''}, ${JSON.stringify(course)})
-                    ON CONFLICT (id) DO UPDATE SET
-                        category = EXCLUDED.category,
-                        level = EXCLUDED.level,
-                        subject = EXCLUDED.subject,
-                        grade = EXCLUDED.grade,
-                        title = EXCLUDED.title,
-                        description = EXCLUDED.description,
-                        content_json = EXCLUDED.content_json
-                `;
-            } catch(err) {
-                try {
-                    await sql`
-                        INSERT INTO lms_courses (id, category, level, title, description, content_json)
-                        VALUES (${course.id}, ${course.category || ''}, ${course.level || ''}, ${course.title || ''}, ${course.description || ''}, ${JSON.stringify(course)})
-                        ON CONFLICT (id) DO UPDATE SET
-                            category = EXCLUDED.category,
-                            level = EXCLUDED.level,
-                            title = EXCLUDED.title,
-                            description = EXCLUDED.description,
-                            content_json = EXCLUDED.content_json
-                    `;
-                } catch(e) {}
-            }
-
-            // Also sync to Cloud Store so courses are resilient against Postgres issues
-            try {
-                const store = await getCloudStore();
-                const courses = Array.isArray(store.courses) ? store.courses : [];
-                const idx = courses.findIndex(c => c.id === course.id);
-                if (idx >= 0) courses[idx] = course;
-                else courses.unshift(course);
-                await saveCloudStore({ courses });
-            } catch(e) {}
+            // Persist to Universal Cloud Store directly
+            const store = await getCloudStore();
+            const courses = Array.isArray(store.courses) ? store.courses : [];
+            const idx = courses.findIndex(c => c.id === course.id);
+            if (idx >= 0) courses[idx] = course;
+            else courses.unshift(course);
+            await saveCloudStore({ courses });
 
             return response.status(200).json({ success: true, message: 'Course saved successfully.' });
         }
@@ -1405,22 +1212,14 @@ export default async function handler(request, response) {
             const courseId = request.query.id || request.body.id;
             if (!courseId) return response.status(400).json({ success: false, message: 'Missing course id.' });
             
-            // 1. Soft delete in Postgres
-            try {
-                await sql`UPDATE lms_courses SET content_json = jsonb_set(content_json, '{status}', '"trashed"') WHERE id = ${courseId}`;
-            } catch(e) {}
-
-            // 2. Soft delete in Universal Cloud Store
-            try {
-                const store = await getCloudStore();
-                const courses = Array.isArray(store.courses) ? store.courses : [];
-                const target = courses.find(c => c.id === courseId);
-                if (target) {
-                    target.status = 'trashed';
-                    target.deletedAt = new Date().toISOString();
-                    await saveCloudStore({ courses });
-                }
-            } catch(e) {}
+            const store = await getCloudStore();
+            const courses = Array.isArray(store.courses) ? store.courses : [];
+            const target = courses.find(c => c.id === courseId);
+            if (target) {
+                target.status = 'trashed';
+                target.deletedAt = new Date().toISOString();
+                await saveCloudStore({ courses });
+            }
 
             return response.status(200).json({ success: true, message: 'Course moved to trash.' });
         }
@@ -1430,18 +1229,10 @@ export default async function handler(request, response) {
             const courseId = request.query.id || request.body.id;
             if (!courseId) return response.status(400).json({ success: false, message: 'Missing course id.' });
 
-            // 1. Permanent delete in Postgres
-            try {
-                await sql`DELETE FROM lms_courses WHERE id = ${courseId}`;
-            } catch(e) {}
-
-            // 2. Permanent delete in Universal Cloud Store
-            try {
-                const store = await getCloudStore();
-                let courses = Array.isArray(store.courses) ? store.courses : [];
-                courses = courses.filter(c => c.id !== courseId);
-                await saveCloudStore({ courses });
-            } catch(e) {}
+            const store = await getCloudStore();
+            let courses = Array.isArray(store.courses) ? store.courses : [];
+            courses = courses.filter(c => c.id !== courseId);
+            await saveCloudStore({ courses });
 
             return response.status(200).json({ success: true, message: 'Course permanently deleted.' });
         }
@@ -1450,26 +1241,14 @@ export default async function handler(request, response) {
         if (action === 'admin_empty_trash') {
             const cat = request.query.category || request.body?.category;
 
-            // 1. Delete trashed in Postgres
-            try {
-                if (cat) {
-                    await sql`DELETE FROM lms_courses WHERE content_json->>'status' = 'trashed' AND (content_json->>'category' = ${cat} OR category = ${cat})`;
-                } else {
-                    await sql`DELETE FROM lms_courses WHERE content_json->>'status' = 'trashed'`;
-                }
-            } catch(e) {}
-
-            // 2. Delete trashed in Universal Cloud Store
-            try {
-                const store = await getCloudStore();
-                let courses = Array.isArray(store.courses) ? store.courses : [];
-                if (cat) {
-                    courses = courses.filter(c => !(c.status === 'trashed' && (c.category === cat || !c.category)));
-                } else {
-                    courses = courses.filter(c => c.status !== 'trashed');
-                }
-                await saveCloudStore({ courses });
-            } catch(e) {}
+            const store = await getCloudStore();
+            let courses = Array.isArray(store.courses) ? store.courses : [];
+            if (cat) {
+                courses = courses.filter(c => !(c.status === 'trashed' && (c.category === cat || !c.category)));
+            } else {
+                courses = courses.filter(c => c.status !== 'trashed');
+            }
+            await saveCloudStore({ courses });
 
             return response.status(200).json({ success: true, message: 'Trash emptied.' });
         }
@@ -1479,131 +1258,98 @@ export default async function handler(request, response) {
             const courseId = request.query.id || request.body.id;
             if (!courseId) return response.status(400).json({ success: false, message: 'Missing course id.' });
 
-            // 1. Restore in Postgres
-            try {
-                await sql`UPDATE lms_courses SET content_json = jsonb_set(content_json, '{status}', '"published"') WHERE id = ${courseId}`;
-            } catch(e) {}
-
-            // 2. Restore in Universal Cloud Store
-            try {
-                const store = await getCloudStore();
-                const courses = Array.isArray(store.courses) ? store.courses : [];
-                const target = courses.find(c => c.id === courseId);
-                if (target) {
-                    target.status = 'published';
-                    delete target.deletedAt;
-                    await saveCloudStore({ courses });
-                }
-            } catch(e) {}
+            const store = await getCloudStore();
+            const courses = Array.isArray(store.courses) ? store.courses : [];
+            const target = courses.find(c => c.id === courseId);
+            if (target) {
+                target.status = 'published';
+                delete target.deletedAt;
+                await saveCloudStore({ courses });
+            }
 
             return response.status(200).json({ success: true, message: 'Course restored.' });
         }
 
-        // --- 11. ADMIN: GET QUIZ RESULTS ---
-        
-        // --- ADMIN: UPDATE QUIZ RESULT (GRADING) ---
+        // --- 11. ADMIN: GET QUIZ RESULTS & UPDATE QUIZ RESULT (GRADING) ---
         if (action === 'admin_update_quiz_result') {
             const { resultId, newScore, updatedAnswers } = request.body;
             if (!resultId || newScore === undefined) return response.status(400).json({ success: false, message: 'Missing parameters.' });
             
-            try {
-                await sql`
-                    UPDATE lms_quiz_results 
-                    SET score = ${newScore}, answers_json = ${JSON.stringify(updatedAnswers || {})}
-                    WHERE id = ${resultId}
-                `;
-                return response.status(200).json({ success: true, message: 'Result updated successfully.' });
-            } catch (err) {
-                console.error(err);
-                return response.status(500).json({ success: false, message: 'Database error.', error: err.message });
+            const store = await getCloudStore();
+            const quizSubmissions = Array.isArray(store.quizSubmissions) ? store.quizSubmissions : [];
+            const target = quizSubmissions.find(q => q.id === resultId);
+            if (target) {
+                target.score = Number(newScore);
+                if (updatedAnswers) target.answers = updatedAnswers;
+                target.updatedAt = new Date().toISOString();
             }
+
+            // Also check users lmsData
+            const users = Array.isArray(store.users) ? store.users : [];
+            users.forEach(u => {
+                if (u.lmsData && Array.isArray(u.lmsData.quizResults)) {
+                    const uTarget = u.lmsData.quizResults.find(q => q.id === resultId);
+                    if (uTarget) {
+                        uTarget.score = Number(newScore);
+                        if (updatedAnswers) uTarget.answers = updatedAnswers;
+                        uTarget.updatedAt = new Date().toISOString();
+                    }
+                }
+            });
+
+            await saveCloudStore({ quizSubmissions, users });
+
+            return response.status(200).json({ success: true, message: 'Result updated successfully.' });
         }
         
         if (action === 'admin_get_quiz_results') {
-            let results = [];
-            try {
-                const res = await sql`
-                    SELECT 
-                        q.id, q.course_id, q.module_index, q.score, q.answers_json, q.submitted_at as date,
-                        u.name as studentName, u.email as studentEmail, u.nisn, u.school,
-                        c.title as courseTitle, c.category, c.level,
-                        c.content_json->>'subject' as subject,
-                        c.content_json->>'grade' as grade
-                    FROM lms_quiz_results q
-                    LEFT JOIN users u ON q.user_id = u.id::varchar
-                    LEFT JOIN lms_courses c ON q.course_id = c.id
-                    ORDER BY q.submitted_at DESC
-                `;
-                
-                results = res.rows.map(r => ({
-                    id: r.id,
-                    studentName: r.studentname || 'Siswa NLS',
-                    studentEmail: r.studentemail || '',
-                    nisn: r.nisn || '',
-                    school: r.school || '',
-                    courseId: r.course_id,
-                    courseTitle: r.coursetitle || 'Program NLS',
-                    moduleTitle: `Modul ID: ${r.module_index} (Paket ${r.paket || 1})`,
-                    category: r.category || 'School',
-                    level: r.level || '',
-                    subject: r.subject || '',
-                    grade: r.grade || '',
-                    score: r.score,
-                    answers: r.answers_json || {},
-                    date: r.date
-                }));
-            } catch(e) {
-                // Postgres failed / 402 quota. Fallback to Cloud Store quiz submissions & user lmsData
-                try {
-                    const store = await getCloudStore();
-                    const courses = Array.isArray(store.courses) ? store.courses : [];
-                    const users = Array.isArray(store.users) ? store.users : [];
-                    const directSubmissions = Array.isArray(store.quizSubmissions) ? store.quizSubmissions : [];
+            const store = await getCloudStore();
+            const courses = Array.isArray(store.courses) ? store.courses : [];
+            const users = Array.isArray(store.users) ? store.users : [];
+            const directSubmissions = Array.isArray(store.quizSubmissions) ? store.quizSubmissions : [];
 
-                    const allSubmissions = [...directSubmissions];
-                    users.forEach(u => {
-                        if (u.lmsData && Array.isArray(u.lmsData.quizResults)) {
-                            u.lmsData.quizResults.forEach(qr => {
-                                if (!allSubmissions.some(s => s.id === qr.id || (s.courseId === qr.courseId && String(s.moduleIndex) === String(qr.moduleIndex) && s.studentEmail === u.email))) {
-                                    allSubmissions.push({
-                                        id: qr.id || `qr-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
-                                        studentName: u.name || 'Siswa NLS',
-                                        studentEmail: u.email || '',
-                                        nisn: u.nisn || '',
-                                        school: u.school || '',
-                                        courseId: qr.courseId,
-                                        moduleIndex: qr.moduleIndex,
-                                        score: qr.score,
-                                        date: qr.date || qr.datetime || new Date().toISOString(),
-                                        answers: qr.answers || {}
-                                    });
-                                }
+            const allSubmissions = [...directSubmissions];
+            users.forEach(u => {
+                if (u.lmsData && Array.isArray(u.lmsData.quizResults)) {
+                    u.lmsData.quizResults.forEach(qr => {
+                        if (!allSubmissions.some(s => s.id === qr.id || (s.courseId === qr.courseId && String(s.moduleIndex) === String(qr.moduleIndex) && s.studentEmail === u.email))) {
+                            allSubmissions.push({
+                                id: qr.id || `qr-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+                                studentName: u.name || 'Siswa NLS',
+                                studentEmail: u.email || '',
+                                nisn: u.nisn || '',
+                                school: u.school || '',
+                                courseId: qr.courseId,
+                                moduleIndex: qr.moduleIndex,
+                                score: qr.score,
+                                date: qr.date || qr.datetime || new Date().toISOString(),
+                                answers: qr.answers || {}
                             });
                         }
                     });
+                }
+            });
 
-                    results = allSubmissions.map(s => {
-                        const matchedCourse = courses.find(c => c.id === s.courseId) || {};
-                        return {
-                            id: s.id,
-                            studentName: s.studentName || 'Siswa NLS',
-                            studentEmail: s.studentEmail || '',
-                            nisn: s.nisn || '',
-                            school: s.school || '',
-                            courseId: s.courseId,
-                            courseTitle: s.courseTitle || matchedCourse.title || 'Program NLS',
-                            moduleTitle: `Modul ID: ${s.moduleIndex}`,
-                            category: s.category || matchedCourse.category || 'School',
-                            level: s.level || matchedCourse.level || '',
-                            subject: s.subject || matchedCourse.subject || '',
-                            grade: s.grade || matchedCourse.grade || '',
-                            score: s.score,
-                            answers: s.answers || {},
-                            date: s.date
-                        };
-                    });
-                } catch(cloudErr) {}
-            }
+            const results = allSubmissions.map(s => {
+                const matchedCourse = courses.find(c => c.id === s.courseId) || defaultCourses.find(c => c.id === s.courseId) || {};
+                return {
+                    id: s.id,
+                    studentName: s.studentName || 'Siswa NLS',
+                    studentEmail: s.studentEmail || '',
+                    nisn: s.nisn || '',
+                    school: s.school || '',
+                    courseId: s.courseId,
+                    courseTitle: s.courseTitle || matchedCourse.title || 'Program NLS',
+                    moduleTitle: `Modul ID: ${s.moduleIndex}`,
+                    category: s.category || matchedCourse.category || 'School',
+                    level: s.level || matchedCourse.level || '',
+                    subject: s.subject || matchedCourse.subject || '',
+                    grade: s.grade || matchedCourse.grade || '',
+                    score: s.score,
+                    answers: s.answers || {},
+                    date: s.date
+                };
+            });
             
             return response.status(200).json({ success: true, data: results });
         }

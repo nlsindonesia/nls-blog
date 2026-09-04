@@ -80,7 +80,7 @@
     </div>
 
     <!-- Main Workspace -->
-    <main class="flex-1 flex overflow-hidden">
+    <main class="flex-1 flex overflow-hidden" @input="saveLocalDraft(); debounceSave()" @change="saveLocalDraft(); debounceSave()">
         
         <!-- Sidebar: Module & Lesson Tree -->
         <aside class="w-72 bg-slate-50/50 border-r border-indigo-100/60 flex flex-col shrink-0 relative z-10">
@@ -99,7 +99,7 @@
                                 <button @click="bab.expanded = !bab.expanded" class="w-6 h-6 flex items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 transition-colors shrink-0">
                                     <svg class="w-4 h-4 transition-transform duration-300" :class="bab.expanded ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
                                 </button>
-                                <input type="text" x-model="bab.title" @change="saveAll(true)" class="flex-1 bg-transparent border-none p-0 text-xs font-black text-slate-800 focus:ring-0 truncate" placeholder="Judul Bab...">
+                                <input type="text" x-model="bab.title" @input="saveLocalDraft(); debounceSave()" @change="saveLocalDraft(); debounceSave()" class="flex-1 bg-transparent border-none p-0 text-xs font-black text-slate-800 focus:ring-0 truncate" placeholder="Judul Bab...">
                             </div>
                             <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button @click.stop="addSubBab(bab)" class="text-indigo-600 hover:bg-indigo-50 p-1.5 rounded-lg transition-colors shadow-sm border border-transparent hover:border-indigo-100" title="Tambah Materi/Kuis">
@@ -138,35 +138,28 @@
                         </div>
                     </div>
                 </template>
-                <div x-show="babs.length === 0" class="text-center p-6 bg-white rounded-2xl border border-dashed border-indigo-200 shadow-sm">
-                    <div class="w-12 h-12 mx-auto bg-indigo-50 rounded-full flex items-center justify-center text-indigo-400 mb-3">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-                    </div>
-                    <p class="text-xs font-bold text-slate-500 mb-1">Modul Masih Kosong</p>
-                    <p class="text-[10px] text-slate-400">Mulai dengan menambahkan bab pertama Anda.</p>
+                <div x-show="babs.length === 0" class="text-center p-6 border-2 border-dashed border-slate-200 rounded-2xl bg-white/50">
+                    <p class="text-xs text-slate-400 font-medium">Belum ada Bab dibuat.</p>
+                    <button @click="addBab()" class="mt-2 text-xs font-black text-indigo-600 hover:underline">+ Tambah Bab Pertama</button>
                 </div>
             </div>
         </aside>
 
         <!-- Content Area -->
-        <section class="flex-1 bg-slate-50/50 overflow-y-auto builder-scroll p-6 relative">
+        <section class="flex-1 flex flex-col bg-slate-50/30 overflow-y-auto builder-scroll p-6 lg:p-8">
             
             <template x-if="!activeNode">
-                <div class="absolute inset-0 flex flex-col items-center justify-center">
-                    <div class="w-72 h-72 mb-8 relative animate-[bounce_3s_ease-in-out_infinite]" x-data="{ currentMascot: 1 }" x-init="setInterval(() => currentMascot = currentMascot === 3 ? 1 : currentMascot + 1, 5000)">
-                        <img :src="currentMascot === 1 ? '/images/mascot.jpg' : (currentMascot === 2 ? '/images/mascot2.jpg' : '/images/mascot3.jpg')" alt="Anime Mascot" class="w-full h-full object-cover rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.15)] border-[6px] border-white bg-white transition-opacity duration-500">
-                        <div class="absolute -top-2 -right-6 bg-white px-6 py-3 rounded-2xl shadow-xl border border-indigo-50 animate-[pulse_2s_ease-in-out_infinite] z-10">
-                            <p class="text-sm font-black text-indigo-600 uppercase tracking-wider">Semangat!</p>
-                            <div class="absolute -bottom-2 left-8 w-5 h-5 bg-white border-b border-r border-indigo-50 transform rotate-45"></div>
-                        </div>
+                <div class="h-full flex flex-col items-center justify-center text-center p-8">
+                    <div class="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-500 mb-4 shadow-sm">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                     </div>
-                    <h2 class="font-black text-indigo-950 text-2xl mb-2 text-center" x-html="'Mulai Menyusun <span>' + (courseTitle || 'Modul') + '</span>'"></h2>
-                    <p class="text-sm text-slate-500 max-w-sm text-center">Pilih bab, materi, atau kuis di sebelah kiri untuk mulai meracik kelas yang luar biasa!</p>
+                    <h3 class="text-lg font-black text-indigo-950">Pilih Sub Bab untuk Diedit</h3>
+                    <p class="text-xs text-slate-500 max-w-sm mt-1">Pilih salah satu materi atau kuis di panel kiri, atau buat Bab & Sub Bab baru untuk mulai mengisi materi pembelajaran.</p>
                 </div>
             </template>
 
             <template x-if="activeNode">
-                <div class="max-w-4xl mx-auto space-y-6 pb-20">
+                <div class="max-w-4xl mx-auto w-full space-y-6">
                     
                     <!-- Title Editor -->
                     <div class="bg-white p-7 rounded-3xl border border-indigo-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] relative overflow-hidden">
@@ -175,11 +168,11 @@
                         
                         <div class="relative z-10 pl-2">
                             <label class="block text-[10px] font-black uppercase text-indigo-400 mb-1 tracking-wider">Judul Node / Halaman</label>
-                            <input type="text" x-model="activeNode.title" @change="saveAll(true)" class="w-full text-2xl font-black text-indigo-950 border-none p-0 focus:ring-0 bg-transparent placeholder-slate-300" placeholder="Masukkan judul materi/kuis...">
+                            <input type="text" x-model="activeNode.title" @input="saveLocalDraft(); debounceSave()" @change="saveLocalDraft(); debounceSave()" class="w-full text-2xl font-black text-indigo-950 border-none p-0 focus:ring-0 bg-transparent placeholder-slate-300" placeholder="Masukkan judul materi/kuis...">
                             
                             <div class="mt-6 flex flex-wrap gap-3">
                                 <label class="cursor-pointer group">
-                                    <input type="radio" x-model="activeNode.type" value="materi" class="hidden">
+                                    <input type="radio" x-model="activeNode.type" value="materi" @change="changeNodeType('materi')" class="hidden">
                                     <div class="flex items-center gap-2 px-4 py-2 rounded-xl border transition-all"
                                          :class="activeNode.type === 'materi' ? 'border-sky-200 bg-sky-50 shadow-[0_2px_8px_rgba(14,165,233,0.1)]' : 'border-slate-200 bg-white hover:bg-slate-50'">
                                         <div class="w-4 h-4 rounded-full border flex items-center justify-center transition-colors" :class="activeNode.type === 'materi' ? 'border-sky-500' : 'border-slate-300 group-hover:border-sky-400'">
@@ -190,7 +183,7 @@
                                 </label>
 
                                 <label class="cursor-pointer group">
-                                    <input type="radio" x-model="activeNode.type" value="kuis" class="hidden">
+                                    <input type="radio" x-model="activeNode.type" value="kuis" @change="changeNodeType('kuis')" class="hidden">
                                     <div class="flex items-center gap-2 px-4 py-2 rounded-xl border transition-all"
                                          :class="activeNode.type === 'kuis' ? 'border-amber-200 bg-amber-50 shadow-[0_2px_8px_rgba(245,158,11,0.1)]' : 'border-slate-200 bg-white hover:bg-slate-50'">
                                         <div class="w-4 h-4 rounded-full border flex items-center justify-center transition-colors" :class="activeNode.type === 'kuis' ? 'border-amber-500' : 'border-slate-300 group-hover:border-amber-400'">
@@ -201,7 +194,7 @@
                                 </label>
 
                                 <label class="cursor-pointer group">
-                                    <input type="radio" x-model="activeNode.type" value="video" class="hidden">
+                                    <input type="radio" x-model="activeNode.type" value="video" @change="changeNodeType('video')" class="hidden">
                                     <div class="flex items-center gap-2 px-4 py-2 rounded-xl border transition-all"
                                          :class="activeNode.type === 'video' ? 'border-rose-200 bg-rose-50 shadow-[0_2px_8px_rgba(244,63,94,0.1)]' : 'border-slate-200 bg-white hover:bg-slate-50'">
                                         <div class="w-4 h-4 rounded-full border flex items-center justify-center transition-colors" :class="activeNode.type === 'video' ? 'border-rose-500' : 'border-slate-300 group-hover:border-rose-400'">
@@ -1372,6 +1365,7 @@
                 coursesList: [],
                 isSaving: false,
                 lastSaved: '',
+                saveTimer: null,
                 showBulkModal: false,
                 showGDocsModal: false,
                 showPreviewModal: false,
@@ -1384,11 +1378,97 @@
                 activePaketTab: 'all',
                 editorInstance: null,
 
+                normalizeBabs(data) {
+                    if (!data || !Array.isArray(data) || data.length === 0) {
+                        return [{
+                            id: 'bab_' + Date.now(),
+                            title: 'Bab 1: Modul Pembelajaran',
+                            expanded: true,
+                            subBabs: []
+                        }];
+                    }
+                    // Already an array of babs
+                    if (data[0] && Array.isArray(data[0].subBabs)) {
+                        return data.map((bab, idx) => ({
+                            id: bab.id || ('bab_' + (idx + 1)),
+                            title: bab.title || ('Bab ' + (idx + 1)),
+                            expanded: bab.expanded !== undefined ? bab.expanded : true,
+                            subBabs: Array.isArray(bab.subBabs) ? bab.subBabs.map(s => this.normalizeNode(s)).filter(Boolean) : []
+                        }));
+                    }
+                    // Flat modules array -> wrap into Bab 1
+                    return [{
+                        id: 'bab_' + Date.now(),
+                        title: 'Bab 1: Modul Pembelajaran',
+                        expanded: true,
+                        subBabs: data.map(m => this.normalizeNode(m)).filter(Boolean)
+                    }];
+                },
+
+                normalizeNode(node) {
+                    if (!node) return null;
+                    return {
+                        id: node.id || ('sub_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4)),
+                        title: node.title || 'Sub Bab Baru',
+                        type: node.type || 'materi',
+                        materiFormat: node.materiFormat || 'ckeditor',
+                        pdfUrl: node.pdfUrl || '',
+                        rawHtml: node.rawHtml || node.content || '',
+                        videoUrl: node.videoUrl || '',
+                        quizDuration: node.quizDuration !== undefined ? node.quizDuration : 30,
+                        quizPassingGrade: node.quizPassingGrade !== undefined ? node.quizPassingGrade : 70,
+                        quizPackageCount: node.quizPackageCount !== undefined ? node.quizPackageCount : 1,
+                        quizShuffle: node.quizShuffle !== undefined ? node.quizShuffle : true,
+                        quizShuffleOptions: node.quizShuffleOptions !== undefined ? node.quizShuffleOptions : true,
+                        quizShufflePackage: node.quizShufflePackage !== undefined ? node.quizShufflePackage : true,
+                        quizTimeMethod: node.quizTimeMethod || 'pause',
+                        quizAutoScore: node.quizAutoScore !== undefined ? node.quizAutoScore : true,
+                        questions: Array.isArray(node.questions) ? node.questions.map(q => this.normalizeQuestion(q)).filter(Boolean) : []
+                    };
+                },
+
+                normalizeQuestion(q) {
+                    if (!q) return null;
+                    return {
+                        id: q.id || ('q_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4)),
+                        paket: q.paket !== undefined ? q.paket : 1,
+                        type: q.type || 'pg',
+                        points: q.points !== undefined ? q.points : 10,
+                        videoTimestamp: q.videoTimestamp || null,
+                        text: q.text || q.question || '',
+                        options: Array.isArray(q.options) ? q.options : ['', '', '', ''],
+                        correctAnswers: q.correctAnswers !== undefined ? q.correctAnswers : (q.correctAnswer !== undefined ? q.correctAnswer : 0),
+                        correctAnswersArray: Array.isArray(q.correctAnswersArray) ? q.correctAnswersArray : [],
+                        shortAnswerKeys: q.shortAnswerKeys || '',
+                        statements: Array.isArray(q.statements) && q.statements.length > 0 ? q.statements : [{text: '', isCorrect: 'true'}],
+                        pairs: Array.isArray(q.pairs) && q.pairs.length > 0 ? q.pairs : [{left: '', right: ''}],
+                        rangeMin: q.rangeMin !== undefined ? q.rangeMin : 0,
+                        rangeMax: q.rangeMax !== undefined ? q.rangeMax : 100,
+                        rangeStep: q.rangeStep !== undefined ? q.rangeStep : 10,
+                        rangeCorrect: q.rangeCorrect !== undefined ? q.rangeCorrect : 50,
+                        graphCoordinates: Array.isArray(q.graphCoordinates) && q.graphCoordinates.length > 0 ? q.graphCoordinates : [{x: 0, y: 0}],
+                        puzzleImage: q.puzzleImage || '',
+                        puzzleDifficulty: q.puzzleDifficulty || 4,
+                        blankText: q.blankText || '',
+                        blankAnswers: q.blankAnswers || '',
+                        osnStatements: Array.isArray(q.osnStatements) && q.osnStatements.length === 4 ? q.osnStatements : [
+                            { text: '', isTrue: true },
+                            { text: '', isTrue: true },
+                            { text: '', isTrue: true },
+                            { text: '', isTrue: true }
+                        ],
+                        discussion: q.discussion || q.explanation || ''
+                    };
+                },
+
                 findNodeById(nodeId) {
+                    if (!this.babs || !Array.isArray(this.babs)) return null;
                     for (let bab of this.babs) {
-                        const found = bab.subBabs.find(s => s.id === nodeId);
-                        if (found) {
-                            return { bab, node: found };
+                        if (bab && Array.isArray(bab.subBabs)) {
+                            const found = bab.subBabs.find(s => s && s.id === nodeId);
+                            if (found) {
+                                return { bab, node: found };
+                            }
                         }
                     }
                     return null;
@@ -1402,26 +1482,145 @@
                         if (found) {
                             found.bab.expanded = true;
                             this.selectNode(found.node, true);
+                            return;
                         }
                     }
+                    // Auto select first subBab if activeNode is not set
+                    if (!this.activeNode && this.babs && this.babs.length > 0) {
+                        for (let bab of this.babs) {
+                            if (bab.subBabs && bab.subBabs.length > 0) {
+                                bab.expanded = true;
+                                this.selectNode(bab.subBabs[0], true);
+                                break;
+                            }
+                        }
+                    }
+                },
+
+                saveLocalDraft() {
+                    if (!this.courseId) return;
+
+                    // Safely flush active CKEditor text if materi
+                    if (this.activeNode && this.activeNode.type === 'materi' && this.editorInstance && this.editorInstance.status === 'ready') {
+                        try {
+                            this.activeNode.rawHtml = this.editorInstance.getData();
+                        } catch(e) {}
+                    }
+
+                    if (!this.courseData) {
+                        this.courseData = { id: this.courseId, title: this.courseTitle || 'Course' };
+                    }
+
+                    this.courseData.id = this.courseId;
+                    this.courseData.title = this.courseTitle || this.courseData.title || 'Course';
+                    this.courseData.babs = this.babs;
+                    this.courseData.content = this.babs;
+                    this.courseData.modules = this.babs;
+                    this.courseData.updated_at = new Date().toISOString();
+
+                    // 1. Course-specific local storage draft
+                    try {
+                        localStorage.setItem('nls_lms_draft_' + this.courseId, JSON.stringify(this.courseData));
+                    } catch(e) {}
+
+                    // 2. Global legacy draft fallback
+                    try {
+                        localStorage.setItem('lms_builder_draft', JSON.stringify(this.babs));
+                    } catch(e) {}
+
+                    // 3. Keep local courses list updated
+                    try {
+                        const raw = localStorage.getItem('nls_lms_courses_v1');
+                        let localCourses = raw ? JSON.parse(raw) : [];
+                        if (Array.isArray(localCourses)) {
+                            const idx = localCourses.findIndex(c => c && c.id === this.courseId);
+                            if (idx >= 0) localCourses[idx] = this.courseData;
+                            else localCourses.unshift(this.courseData);
+                            localStorage.setItem('nls_lms_courses_v1', JSON.stringify(localCourses));
+                        }
+                    } catch(e) {}
+
+                    // 4. Update in-memory coursesList
+                    if (this.coursesList) {
+                        const cIdx = this.coursesList.findIndex(c => c && c.id === this.courseId);
+                        if (cIdx >= 0) {
+                            this.coursesList[cIdx] = JSON.parse(JSON.stringify(this.courseData));
+                        }
+                    }
+
+                    const now = new Date();
+                    this.lastSaved = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+                },
+
+                debounceSave() {
+                    this.saveLocalDraft();
+                    if (this.saveTimer) clearTimeout(this.saveTimer);
+                    this.saveTimer = setTimeout(() => {
+                        this.saveAll(true);
+                    }, 1500);
+                },
+
+                flushAllSync() {
+                    if (this.saveTimer) clearTimeout(this.saveTimer);
+                    this.saveLocalDraft();
+                    if (this.courseData && typeof navigator !== 'undefined' && navigator.sendBeacon) {
+                        try {
+                            const payload = JSON.stringify({ action: 'admin_save_course', course: this.courseData });
+                            navigator.sendBeacon('/api/pg-lms', new Blob([payload], { type: 'application/json' }));
+                        } catch(e) {}
+                    }
+                },
+
+                changeNodeType(newType) {
+                    if (!this.activeNode) return;
+                    if (this.activeNode.type === 'materi' && this.editorInstance && this.editorInstance.status === 'ready') {
+                        try {
+                            this.activeNode.rawHtml = this.editorInstance.getData();
+                        } catch(e) {}
+                    }
+                    this.activeNode.type = newType;
+                    if (newType === 'kuis') {
+                        if (this.activeNode.quizAutoScore === undefined) this.activeNode.quizAutoScore = true;
+                        if (this.activeNode.quizShuffle === undefined) this.activeNode.quizShuffle = true;
+                        if (this.activeNode.quizShuffleOptions === undefined) this.activeNode.quizShuffleOptions = true;
+                        if (this.activeNode.quizShufflePackage === undefined) this.activeNode.quizShufflePackage = true;
+                        if (this.activeNode.quizPackageCount === undefined) this.activeNode.quizPackageCount = 1;
+                        if (!Array.isArray(this.activeNode.questions)) this.activeNode.questions = [];
+                    } else if (newType === 'materi') {
+                        this.activeNode.materiFormat = this.activeNode.materiFormat || 'ckeditor';
+                        if (this.editorInstance && this.editorInstance.status === 'ready') {
+                            this.editorInstance.setData(this.activeNode.rawHtml || '');
+                        }
+                    }
+                    this.saveLocalDraft();
+                    this.debounceSave();
                 },
 
                 switchCourse(newCourseId) {
                     if (!newCourseId) return;
                     if (this.courseId === newCourseId) return;
 
-                    // Backup current draft
-                    if (this.babs && this.babs.length > 0) {
-                        localStorage.setItem('lms_builder_draft', JSON.stringify(this.babs));
+                    // 1. Flush & save current course before switching
+                    this.saveLocalDraft();
+                    this.saveAll(true);
+
+                    // 2. Switch courseId
+                    this.courseId = newCourseId;
+
+                    // 3. Check for local draft of new course
+                    let target = null;
+                    const draftRaw = localStorage.getItem('nls_lms_draft_' + newCourseId);
+                    if (draftRaw) {
+                        try { target = JSON.parse(draftRaw); } catch(e) {}
+                    }
+                    if (!target) {
+                        target = this.coursesList.find(c => c && c.id === newCourseId);
                     }
 
-                    const target = this.coursesList.find(c => c && c.id === newCourseId);
                     if (target) {
-                        this.courseId = target.id;
                         this.courseData = target;
                         this.courseTitle = target.title || 'Course';
-                        this.babs = (target.babs && target.babs.length > 0) ? target.babs : 
-                                    ((target.content && target.content.length > 0) ? target.content : (target.modules || []));
+                        this.babs = this.normalizeBabs(target.babs || target.content || target.modules);
                         this.activeNode = null;
 
                         const url = new URL(window.location);
@@ -1429,49 +1628,23 @@
                         url.searchParams.delete('node');
                         window.history.pushState({ courseId: target.id }, '', url);
                         this.showToast('Memuat: ' + (target.title || target.id));
+                        this.handleInitialNode();
                     }
                 },
 
                 async forceSyncToVercel() {
-                    this.isSaving = true;
-                    try {
-                        if (this.activeNode && this.editorInstance) {
-                            this.activeNode.rawHtml = this.editorInstance.getData();
-                        }
-                        if (this.courseData) {
-                            this.courseData.babs = this.babs;
-                            this.courseData.content = this.babs;
-                            this.courseData.modules = this.babs;
-                            this.courseData.updated_at = new Date().toISOString();
-
-                            const res = await fetch('/api/pg-lms', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ action: 'admin_save_course', course: this.courseData })
-                            });
-
-                            if (res.ok) {
-                                localStorage.setItem('lms_builder_draft', JSON.stringify(this.babs));
-                                const now = new Date();
-                                this.lastSaved = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
-                                this.showToast('✓ Berhasil disinkronisasi ke Vercel & Cloud Database!');
-                            } else {
-                                this.showToast('Sinkronisasi gagal (Status ' + res.status + ')', true);
-                            }
-                        } else {
-                            this.showToast('Pilih modul course terlebih dahulu.', true);
-                        }
-                    } catch(e) {
-                        this.showToast('Gagal terhubung ke server Vercel: ' + e.message, true);
-                    } finally {
-                        this.isSaving = false;
-                    }
+                    await this.saveAll(false);
                 },
 
                 async init() {
                     const urlParams = new URLSearchParams(window.location.search);
                     this.courseId = urlParams.get('course');
-                    
+
+                    // Synchronous emergency backup when user refreshes (F5) or navigates away
+                    window.addEventListener('beforeunload', () => {
+                        this.flushAllSync();
+                    });
+
                     window.addEventListener('popstate', (e) => {
                         const params = new URLSearchParams(window.location.search);
                         const courseParam = params.get('course');
@@ -1490,92 +1663,154 @@
                         }
                     });
 
-                    // 1. Fetch courses catalog for the dropdown and loader
+                    // 1. Instant local load: Pre-populate from localStorage immediately
+                    try {
+                        const localCoursesRaw = localStorage.getItem('nls_lms_courses_v1');
+                        if (localCoursesRaw) {
+                            const list = JSON.parse(localCoursesRaw);
+                            if (Array.isArray(list) && list.length > 0) {
+                                this.coursesList = list.filter(c => c && c.status !== 'trashed');
+                            }
+                        }
+                    } catch(e) {}
+
+                    // Determine target courseId if not provided in URL
+                    if (!this.courseId && this.coursesList.length > 0) {
+                        const foundAsam = this.coursesList.find(c => c.id === 'c-1788097425590');
+                        this.courseId = (foundAsam || this.coursesList[0]).id;
+                        const url = new URL(window.location);
+                        url.searchParams.set('course', this.courseId);
+                        window.history.replaceState({ courseId: this.courseId }, '', url);
+                    } else if (!this.courseId) {
+                        this.courseId = 'c-1788097425590';
+                    }
+
+                    // Try to load dedicated draft for this course immediately (Zero Milliseconds)
+                    let loadedLocally = false;
+                    try {
+                        const draftRaw = localStorage.getItem('nls_lms_draft_' + this.courseId);
+                        if (draftRaw) {
+                            const draft = JSON.parse(draftRaw);
+                            if (draft && draft.id === this.courseId) {
+                                this.courseData = draft;
+                                this.courseTitle = draft.title || 'Course';
+                                this.babs = this.normalizeBabs(draft.babs || draft.content || draft.modules);
+                                loadedLocally = true;
+                                this.handleInitialNode();
+                            }
+                        }
+                    } catch(e) {}
+
+                    if (!loadedLocally && this.coursesList.length > 0) {
+                        const target = this.coursesList.find(c => c && c.id === this.courseId);
+                        if (target) {
+                            this.courseData = target;
+                            this.courseTitle = target.title || 'Course';
+                            this.babs = this.normalizeBabs(target.babs || target.content || target.modules);
+                            loadedLocally = true;
+                            this.handleInitialNode();
+                        }
+                    }
+
+                    // 2. Fetch courses catalog from server and merge intelligently
                     try {
                         const res = await fetch('/api/pg-lms?action=admin_get_courses');
                         if (res.ok) {
                             const json = await res.json();
-                            const list = (json.data || []).filter(c => c && c.status !== 'trashed');
-                            if (list.length > 0) {
-                                this.coursesList = list;
-                            }
-                        }
-                    } catch(e) {}
+                            const serverList = (json.data || []).filter(c => c && c.status !== 'trashed');
+                            
+                            const mergedMap = new Map();
+                            // First add server courses
+                            serverList.forEach(sc => {
+                                if (sc && sc.id) mergedMap.set(sc.id, sc);
+                            });
 
-                    // Merge any locally saved courses in browser storage
-                    try {
-                        const localRaw = localStorage.getItem('nls_lms_courses_v1');
-                        if (localRaw) {
-                            const locals = JSON.parse(localRaw);
-                            if (Array.isArray(locals)) {
-                                locals.forEach(lc => {
-                                    if (lc && lc.id && !this.coursesList.some(c => c.id === lc.id)) {
-                                        this.coursesList.push(lc);
+                            // Merge with local courses (local wins if updated_at >= server or has babs when server doesn't)
+                            if (this.coursesList && Array.isArray(this.coursesList)) {
+                                this.coursesList.forEach(lc => {
+                                    if (lc && lc.id) {
+                                        const existing = mergedMap.get(lc.id);
+                                        if (!existing) {
+                                            mergedMap.set(lc.id, lc);
+                                        } else {
+                                            const localDate = new Date(lc.updated_at || 0).getTime();
+                                            const serverDate = new Date(existing.updated_at || 0).getTime();
+                                            const localHasBabs = Array.isArray(lc.babs) && lc.babs.length > 0;
+                                            const serverHasBabs = Array.isArray(existing.babs) && existing.babs.length > 0;
+
+                                            if (localDate >= serverDate || (localHasBabs && !serverHasBabs)) {
+                                                mergedMap.set(lc.id, lc);
+                                            }
+                                        }
                                     }
                                 });
                             }
+
+                            // Also merge any local drafts
+                            const currentDraftRaw = localStorage.getItem('nls_lms_draft_' + this.courseId);
+                            if (currentDraftRaw) {
+                                try {
+                                    const cd = JSON.parse(currentDraftRaw);
+                                    if (cd && cd.id) {
+                                        mergedMap.set(cd.id, cd);
+                                    }
+                                } catch(e) {}
+                            }
+
+                            this.coursesList = Array.from(mergedMap.values());
+
+                            // If we didn't load locally or the server has a fresher copy
+                            const activeCourse = mergedMap.get(this.courseId);
+                            if (activeCourse) {
+                                const activeBabs = this.normalizeBabs(activeCourse.babs || activeCourse.content || activeCourse.modules);
+                                if (!loadedLocally || !this.babs || this.babs.length === 0 || !this.babs.some(b => b.subBabs && b.subBabs.length > 0)) {
+                                    this.courseData = activeCourse;
+                                    this.courseTitle = activeCourse.title || 'Course';
+                                    this.babs = activeBabs;
+                                    this.handleInitialNode();
+                                }
+                            }
                         }
                     } catch(e) {}
 
-                    // 2. Select course
-                    let targetCourse = null;
-                    if (this.courseId) {
-                        targetCourse = this.coursesList.find(c => c && c.id === this.courseId);
-                    }
-
-                    // If not found or not in URL, select PENGARUH ASAM BASA or first course
-                    if (!targetCourse && this.coursesList.length > 0) {
-                        targetCourse = this.coursesList.find(c => c.id === 'c-1788097425590') || this.coursesList[0];
-                        if (targetCourse) {
-                            this.courseId = targetCourse.id;
-                            const url = new URL(window.location);
-                            url.searchParams.set('course', targetCourse.id);
-                            window.history.replaceState({ courseId: targetCourse.id }, '', url);
-                        }
-                    }
-
-                    if (targetCourse) {
-                        this.courseData = targetCourse;
-                        this.courseTitle = targetCourse.title || 'Course';
-                        this.babs = (targetCourse.babs && targetCourse.babs.length > 0) ? targetCourse.babs : 
-                                    ((targetCourse.content && targetCourse.content.length > 0) ? targetCourse.content : (targetCourse.modules || []));
-                        this.handleInitialNode();
-                        return;
-                    }
-
-                    this.courseTitle = 'Course Baru';
-                    this.tryLoadDraft();
+                    // Final fallback: Ensure babs is always valid
+                    this.babs = this.normalizeBabs(this.babs);
+                    this.saveLocalDraft();
                     this.handleInitialNode();
                 },
+
                 tryLoadDraft() {
-                    const saved = localStorage.getItem('lms_builder_draft');
+                    const saved = localStorage.getItem('nls_lms_draft_' + this.courseId) || localStorage.getItem('lms_builder_draft');
                     if (saved) {
                         try {
                             const parsed = JSON.parse(saved);
-                            if (parsed.length > 0 && parsed[0].subBabs !== undefined) {
-                                this.babs = parsed;
-                            } else {
-                                // migrate old data
-                                this.babs = [{ id: 'b1', title: 'Bab 1', expanded: true, subBabs: parsed }];
+                            if (parsed.babs) {
+                                this.babs = this.normalizeBabs(parsed.babs);
+                            } else if (Array.isArray(parsed)) {
+                                this.babs = this.normalizeBabs(parsed);
                             }
                         } catch(e) {}
                     }
-                    if (this.babs.length === 0) {
-                        this.babs = [];
-                    }
-                    this.saveAll(true);
+                    this.saveLocalDraft();
+                    this.debounceSave();
                 },
 
                 selectNode(node, skipPush = false) {
-                    if (this.activeNode && this.editorInstance) {
-                        this.activeNode.rawHtml = this.editorInstance.getData(); 
+                    // 1. Flush previous node HTML if it was materi
+                    if (this.activeNode && this.activeNode.type === 'materi' && this.editorInstance && this.editorInstance.status === 'ready') {
+                        try {
+                            this.activeNode.rawHtml = this.editorInstance.getData();
+                        } catch(e) {}
                     }
+                    
+                    // 2. Set new active node
                     if (node && node.type === 'kuis') {
                         if (node.quizAutoScore === undefined) node.quizAutoScore = true;
                         if (node.quizShuffle === undefined) node.quizShuffle = true;
                         if (node.quizShuffleOptions === undefined) node.quizShuffleOptions = true;
                         if (node.quizShufflePackage === undefined) node.quizShufflePackage = true;
                         if (node.quizPackageCount === undefined) node.quizPackageCount = 1;
+                        if (!Array.isArray(node.questions)) node.questions = [];
                     }
                     this.activeNode = node;
                     
@@ -1585,10 +1820,16 @@
                         window.history.pushState({ nodeId: node.id }, '', url);
                     }
                     
-                    if (this.activeNode && this.editorInstance) {
-                        setTimeout(() => {
-                            this.editorInstance.setData(this.activeNode.rawHtml || '');
-                        }, 50);
+                    // 3. Populate CKEditor if new node is materi
+                    if (this.activeNode && this.activeNode.type === 'materi' && this.editorInstance) {
+                        const content = this.activeNode.rawHtml || '';
+                        if (this.editorInstance.status === 'ready') {
+                            this.editorInstance.setData(content);
+                        } else {
+                            setTimeout(() => {
+                                if (this.editorInstance) this.editorInstance.setData(content);
+                            }, 80);
+                        }
                     }
                 },
 
@@ -1618,17 +1859,19 @@
                 },
 
                 addBab() {
-                    this.babs.push({
+                    const newBab = {
                         id: 'bab_' + Date.now(),
                         title: 'Bab Baru',
                         expanded: true,
                         subBabs: []
-                    });
-                    this.saveAll();
+                    };
+                    this.babs.push(newBab);
+                    this.saveLocalDraft();
+                    this.debounceSave();
                 },
 
                 addSubBab(bab) {
-                    const newNode = {
+                    const newNode = this.normalizeNode({
                         id: 'sub_' + Date.now(),
                         title: 'Sub Bab Baru',
                         type: 'materi',
@@ -1636,82 +1879,59 @@
                         pdfUrl: '',
                         rawHtml: '',
                         videoUrl: '',
-                        quizDuration: 30,
-                        quizPassingGrade: 70,
-                        quizPackageCount: 1,
-                        quizShuffle: true,
-                        quizShuffleOptions: true,
-                        quizShufflePackage: true,
-                        quizTimeMethod: 'pause',
-                        quizAutoScore: true,
                         questions: []
-                    };
+                    });
+                    if (!bab.subBabs) bab.subBabs = [];
                     bab.subBabs.push(newNode);
                     bab.expanded = true;
                     this.selectNode(newNode);
-                    this.saveAll();
+                    this.saveLocalDraft();
+                    this.debounceSave();
                 },
 
                 removeBab(idx) {
                     if (confirm('Hapus Bab ini beserta seluruh isinya?')) {
-                        // clear active if inside
                         const bab = this.babs[idx];
-                        if (this.activeNode && bab.subBabs.find(s => s.id === this.activeNode.id)) {
+                        if (this.activeNode && bab && bab.subBabs && bab.subBabs.find(s => s.id === this.activeNode.id)) {
                             this.activeNode = null;
                             const url = new URL(window.location);
                             url.searchParams.delete('node');
                             window.history.pushState(null, '', url);
                         }
                         this.babs.splice(idx, 1);
-                        this.saveAll();
+                        this.saveLocalDraft();
+                        this.debounceSave();
                     }
                 },
 
                 removeSubBab(bab, idx) {
                     if (confirm('Hapus Sub Bab ini?')) {
-                        if (this.activeNode && this.activeNode.id === bab.subBabs[idx].id) {
+                        if (this.activeNode && bab.subBabs[idx] && this.activeNode.id === bab.subBabs[idx].id) {
                             this.activeNode = null;
                             const url = new URL(window.location);
                             url.searchParams.delete('node');
                             window.history.pushState(null, '', url);
                         }
                         bab.subBabs.splice(idx, 1);
-                        this.saveAll();
+                        this.saveLocalDraft();
+                        this.debounceSave();
                     }
                 },
 
                 addQuestion() {
                     if (!this.activeNode) return;
-                    this.activeNode.questions.push({
-                        id: 'q_' + Date.now(),
+                    if (!Array.isArray(this.activeNode.questions)) this.activeNode.questions = [];
+                    const newQ = this.normalizeQuestion({
+                        id: 'q_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
                         paket: this.activePaketTab !== 'all' ? this.activePaketTab : 1,
                         type: 'pg',
                         points: 10,
-                        videoTimestamp: null,
-                        text: '',
-                        options: ['', '', '', ''],
-                        correctAnswers: 0,
-                        correctAnswersArray: [], // for pg_kompleks
-                        shortAnswerKeys: '',
-                        statements: [{text: '', isCorrect: 'true'}],
-                        pairs: [{left: '', right: ''}],
-                        rangeMin: 0,
-                        rangeMax: 100,
-                        rangeStep: 10,
-                        rangeCorrect: 50,
-                        graphCoordinates: [{x: 0, y: 0}],
-                        puzzleImage: '',
-                        puzzleDifficulty: 4,
-                        blankText: '',
-                        blankAnswers: '',
-                        osnStatements: [
-                            { text: '', isTrue: true },
-                            { text: '', isTrue: true },
-                            { text: '', isTrue: true },
-                            { text: '', isTrue: true }
-                        ],
-                        discussion: ''
+                        options: ['', '', '', '']
                     });
+                    this.activeNode.questions.push(newQ);
+                    this.updateAutoScores();
+                    this.saveLocalDraft();
+                    this.debounceSave();
                 },
 
                 previewQuestion(qOrIdx) {
@@ -1744,7 +1964,9 @@
                                 if (CKEDITOR.instances['cke_qdisc_' + qId]) CKEDITOR.instances['cke_qdisc_' + qId].destroy(true);
                             }
                             this.activeNode.questions.splice(idx, 1);
-                            this.saveAll();
+                            this.updateAutoScores();
+                            this.saveLocalDraft();
+                            this.debounceSave();
                         }
                     }
                 },
@@ -1759,17 +1981,20 @@
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         q.puzzleImage = e.target.result; // Base64
+                        this.saveLocalDraft();
+                        this.debounceSave();
                     };
                     reader.readAsDataURL(file);
                 },
 
                 async saveAll(silent = false) {
+                    if (this.saveTimer) clearTimeout(this.saveTimer);
                     if (!silent) this.isSaving = true;
-                    if (this.activeNode && this.editorInstance) {
-                        this.activeNode.rawHtml = this.editorInstance.getData();
-                    }
 
-                    // Auto-Score Distribution before saving!
+                    // 1. Immediately persist locally (synchronous, 0ms)
+                    this.saveLocalDraft();
+
+                    // 2. Auto-Score Distribution before saving
                     if (this.babs) {
                         this.babs.forEach(bab => {
                             if (bab.subBabs) {
@@ -1786,58 +2011,37 @@
                         });
                     }
 
-                    // Backup locally
-                    localStorage.setItem('lms_builder_draft', JSON.stringify(this.babs));
+                    // Re-save draft after point distribution
+                    this.saveLocalDraft();
 
-                    if (this.courseId && this.courseData) {
-                        this.courseData.babs = this.babs;
-                        this.courseData.content = this.babs;
-                        this.courseData.modules = this.babs;
-                        this.courseData.updated_at = new Date().toISOString();
-
-                        // Keep local coursesList updated
-                        const cIdx = this.coursesList.findIndex(c => c && c.id === this.courseId);
-                        if (cIdx >= 0) {
-                            this.coursesList[cIdx] = JSON.parse(JSON.stringify(this.courseData));
+                    // 3. Remote Server & Cloud Database Sync
+                    let success = false;
+                    try {
+                        const res = await fetch('/api/pg-lms', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ action: 'admin_save_course', course: this.courseData })
+                        });
+                        if (res.ok) {
+                            success = true;
+                        } else if (res.status === 413) {
+                            if (!silent) this.showToast('Gagal: Ukuran materi terlalu besar! (Max 4MB). Kurangi resolusi gambar.', true);
+                        } else {
+                            if (!silent) this.showToast('Tersimpan di draft lokal (status server: ' + res.status + ')', true);
                         }
-
-                        // Keep browser localStorage courses updated
-                        try {
-                            const raw = localStorage.getItem('nls_lms_courses_v1');
-                            let localCourses = raw ? JSON.parse(raw) : [];
-                            if (Array.isArray(localCourses)) {
-                                const lIdx = localCourses.findIndex(c => c && c.id === this.courseId);
-                                if (lIdx >= 0) localCourses[lIdx] = this.courseData;
-                                else localCourses.unshift(this.courseData);
-                                localStorage.setItem('nls_lms_courses_v1', JSON.stringify(localCourses));
-                            }
-                        } catch(e) {}
-
-                        try {
-                            const res = await fetch('/api/pg-lms', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ action: 'admin_save_course', course: this.courseData })
-                            });
-                            if (!res.ok) {
-                                if (res.status === 413) {
-                                    this.showToast('Gagal: Ukuran materi terlalu besar! (Max 4MB). Kurangi resolusi gambar.', true);
-                                } else {
-                                    this.showToast('Gagal menyimpan ke server!', true);
-                                }
-                            }
-                        } catch(e) {
-                            this.showToast('Koneksi terputus! Gagal menyimpan.', true);
-                        }
+                    } catch(e) {
+                        if (!silent) this.showToast('Tersimpan di draft lokal (offline dari Cloud).', false);
                     }
 
                     this.isSaving = false;
                     const now = new Date();
                     this.lastSaved = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
-                    if (!silent) this.showToast('Perubahan berhasil disimpan & disinkronisasi ke Cloud!');
+                    if (!silent && success) {
+                        this.showToast('✓ Perubahan berhasil disimpan & disinkronisasi ke Cloud!');
+                    }
                 },
 
-                showToast(msg) {
+                showToast(msg, isError = false) {
                     this.toast.message = msg;
                     this.toast.show = true;
                     setTimeout(() => this.toast.show = false, 3000);
@@ -2910,6 +3114,8 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
 
                     editor.on('change', () => {
                         qObj[propName] = editor.getData();
+                        this.saveLocalDraft();
+                        this.debounceSave();
                     });
 
                     if (qObj[propName]) {
@@ -2948,14 +3154,16 @@ Buatkan 5 soal dengan format tersebut mengenai topik: [MASUKKAN TOPIK ANDA]`;
                     });
 
                     this.editorInstance.on('instanceReady', () => {
-                        if (this.activeNode) {
+                        if (this.activeNode && this.activeNode.type === 'materi') {
                             this.editorInstance.setData(this.activeNode.rawHtml || '');
                         }
                     });
 
                     this.editorInstance.on('change', () => {
-                        if (this.activeNode) {
+                        if (this.activeNode && this.activeNode.type === 'materi') {
                             this.activeNode.rawHtml = this.editorInstance.getData();
+                            this.saveLocalDraft();
+                            this.debounceSave();
                         }
                     });
                 }

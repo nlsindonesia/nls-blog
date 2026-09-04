@@ -316,8 +316,7 @@
                         const data = await res.json();
                         if (data.success && data.data) {
                             data.data.forEach(course => {
-                                // If course is stringified inside content_json, parse it.
-                                // But Vercel postgres might return the JSON directly, so 'course' is the object.
+                                // Ensure course is properly parsed as an object
                                 let parsedCourse = typeof course === 'string' ? JSON.parse(course) : course;
                                 this.coursesData[parsedCourse.id] = parsedCourse;
                             });
