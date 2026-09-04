@@ -876,7 +876,12 @@
                                                 <textarea x-model="sample.input" @input="saveLocalDraft(); debounceSave()" rows="3" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl font-mono text-xs text-slate-900 focus:ring-2 focus:ring-emerald-500" placeholder="174"></textarea>
                                             </div>
                                             <div>
-                                                <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Contoh Keluaran (stdout)</label>
+                                                <div class="flex items-center justify-between mb-1">
+                                                    <label class="block text-[10px] font-black uppercase text-slate-400">Contoh Keluaran (stdout)</label>
+                                                    <button type="button" @click="runGeneratorForSingleTestCase(sample)" :disabled="isGeneratingOutputs" class="text-[10px] font-bold text-sky-600 hover:text-sky-800 flex items-center gap-1 hover:underline cursor-pointer disabled:opacity-50">
+                                                        <span>⚡ Hitung dari Kode</span>
+                                                    </button>
+                                                </div>
                                                 <textarea x-model="sample.output" @input="saveLocalDraft(); debounceSave()" rows="3" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl font-mono text-xs text-slate-900 focus:ring-2 focus:ring-emerald-500" placeholder="174&#10;4002&#10;92046"></textarea>
                                             </div>
                                         </div>
@@ -897,13 +902,15 @@
                                     <h4 class="font-black text-xs text-indigo-950 uppercase tracking-wider flex items-center gap-2">
                                         <span class="text-base">⚙️</span> Kode Jawaban Benar (Test Case Generator)
                                     </h4>
-                                    <p class="text-[11px] text-slate-500 mt-1.5 max-w-2xl leading-relaxed">Tuliskan kode program yang benar (contoh C++) di bawah ini. Kode ini <span class="font-bold text-rose-600">bukan untuk dicocokkan ke siswa</span>, melainkan digunakan oleh sistem untuk men-generate <span class="font-bold text-sky-600">Expected Output</span> secara otomatis berdasarkan <span class="font-bold text-emerald-600">Input</span> acak yang Anda tentukan.</p>
+                                    <p class="text-[11px] text-slate-500 mt-1.5 max-w-2xl leading-relaxed">Tuliskan kode program yang benar di bawah ini. Kode ini <span class="font-bold text-rose-600">bukan untuk dicocokkan ke siswa</span>, melainkan dijalankan oleh engine backend untuk menghasilkan <span class="font-bold text-sky-600">Expected Output</span> secara otomatis berdasarkan <span class="font-bold text-emerald-600">Input</span> acak.</p>
                                 </div>
                                 <div class="flex items-center gap-2 shrink-0">
                                     <select x-model="activeNode.generatorLang" @change="saveLocalDraft(); debounceSave()" class="py-1.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-indigo-950 focus:ring-2 focus:ring-sky-500 cursor-pointer">
-                                        <option value="cpp">C++ (GCC)</option>
-                                        <option value="python">Python 3</option>
-                                        <option value="java">Java</option>
+                                        <option value="cpp">C++ (GCC 13.2)</option>
+                                        <option value="python">Python 3.12</option>
+                                        <option value="pascal">Free Pascal 3.2</option>
+                                        <option value="c">C (GCC 13.2)</option>
+                                        <option value="java">Java 21</option>
                                     </select>
                                 </div>
                             </div>
@@ -911,17 +918,55 @@
                             <div class="relative z-10 pt-1" x-init="if(!activeNode.referenceSolution) activeNode.referenceSolution = ''; if(!activeNode.generatorLang) activeNode.generatorLang = 'cpp';">
                                 <textarea x-model="activeNode.referenceSolution" @input="saveLocalDraft(); debounceSave()" rows="8" class="w-full p-4 bg-slate-900 text-sky-400 font-mono text-xs rounded-2xl focus:ring-2 focus:ring-sky-500 border border-slate-800 shadow-inner" placeholder="Tuliskan kode solusi yang benar di sini...&#10;&#10;Contoh C++:&#10;#include <iostream>&#10;using namespace std;&#10;&#10;int main() {&#10;    int a, b; cin >> a >> b;&#10;    cout << a + b << endl;&#10;    return 0;&#10;}"></textarea>
                             </div>
+
+                            <!-- COMPILER ERROR CALLOUT -->
+                            <div x-show="generatorCompilerError" class="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-xs space-y-2 relative z-10 animate-shake">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-black text-rose-700 flex items-center gap-1.5">
+                                        <span>⚠️</span> Gagal Kompilasi (Compile Error pada Kode Solusi Referensi)
+                                    </span>
+                                    <button type="button" @click="generatorCompilerError = ''" class="text-rose-400 hover:text-rose-700 font-bold">&times;</button>
+                                </div>
+                                <pre class="p-3 bg-slate-900 text-rose-300 font-mono text-[11px] rounded-xl overflow-x-auto whitespace-pre-wrap leading-tight max-h-40" x-text="generatorCompilerError"></pre>
+                            </div>
+
+                            <!-- RUNNING PROGRESS BAR -->
+                            <div x-show="isGeneratingOutputs" class="p-4 bg-sky-50/80 border border-sky-200 rounded-2xl space-y-2 relative z-10">
+                                <div class="flex items-center justify-between text-xs font-bold text-sky-950">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="animate-spin h-3.5 w-3.5 text-sky-600" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                        <span x-text="generatorStatusText || 'Sedang memproses...'"></span>
+                                    </span>
+                                    <span x-text="generatorProgress.percent + '% (' + generatorProgress.current + '/' + generatorProgress.total + ')'"></span>
+                                </div>
+                                <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                                    <div class="bg-gradient-to-r from-sky-500 to-indigo-600 h-2 rounded-full transition-all duration-300" :style="'width: ' + generatorProgress.percent + '%'"></div>
+                                </div>
+                            </div>
                             
                             <!-- Aksi Generator -->
-                            <div class="flex items-center justify-between gap-2 pt-3 relative z-10 border-t border-slate-100 mt-2">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 relative z-10 border-t border-slate-100 mt-2">
                                 <span class="text-[10px] text-slate-500 font-medium flex items-center gap-1.5">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-sky-500 inline-block animate-pulse"></span>
-                                    Tips: Masukkan Input pada Test Case di bawah, lalu sistem akan memproses Output-nya.
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+                                    Test case output akan dihitung secara otomatis melalui compiler backend.
                                 </span>
-                                <button type="button" @click="alert('Fitur eksekusi auto-generate test case backend dengan C++ sedang dalam tahap penyempurnaan. Output akan segera dapat digenerate otomatis berdasarkan input yang diberikan.')" class="px-5 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:brightness-110 text-white font-black text-xs rounded-xl shadow-[0_4px_15px_rgba(14,165,233,0.3)] transition-all active:scale-95 flex items-center gap-2 cursor-pointer border border-sky-400/50">
-                                    <span class="text-sm">⚡</span>
-                                    <span>Simpan & Aktifkan Generator</span>
-                                </button>
+                                <div class="flex items-center gap-2 shrink-0 flex-wrap">
+                                    <button type="button"
+                                            @click="showRandomGenModal = true"
+                                            :disabled="isGeneratingOutputs"
+                                            class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-black text-xs rounded-xl transition-all active:scale-95 flex items-center gap-2 cursor-pointer disabled:opacity-50 border border-slate-200">
+                                        <span>🎲</span>
+                                        <span>Buat Input Acak</span>
+                                    </button>
+                                    <button type="button"
+                                            @click="runGeneratorForTestCases()"
+                                            :disabled="isGeneratingOutputs || !activeNode.referenceSolution || !activeNode.referenceSolution.trim()"
+                                            class="px-5 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:brightness-110 text-white font-black text-xs rounded-xl shadow-[0_4px_15px_rgba(14,165,233,0.3)] transition-all active:scale-95 flex items-center gap-2 cursor-pointer border border-sky-400/50 disabled:opacity-50">
+                                        <svg x-show="isGeneratingOutputs" class="animate-spin -ml-1 mr-1 h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                        <span x-show="!isGeneratingOutputs">⚡</span>
+                                        <span x-text="isGeneratingOutputs ? 'Menghitung...' : 'Generate Semua Output'"></span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -971,7 +1016,12 @@
                                                 <textarea x-model="tc.input" @input="saveLocalDraft(); debounceSave()" rows="3" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl font-mono text-xs text-slate-900 focus:ring-2 focus:ring-emerald-500" placeholder="Input kasus uji..."></textarea>
                                             </div>
                                             <div>
-                                                <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Keluaran yang Diharapkan (Expected stdout)</label>
+                                                <div class="flex items-center justify-between mb-1">
+                                                    <label class="block text-[10px] font-black uppercase text-slate-400">Keluaran yang Diharapkan (Expected stdout)</label>
+                                                    <button type="button" @click="runGeneratorForSingleTestCase(tc)" :disabled="isGeneratingOutputs" class="text-[10px] font-bold text-sky-600 hover:text-sky-800 flex items-center gap-1 hover:underline cursor-pointer disabled:opacity-50">
+                                                        <span>⚡ Hitung dari Kode</span>
+                                                    </button>
+                                                </div>
                                                 <textarea x-model="tc.output" @input="saveLocalDraft(); debounceSave()" rows="3" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl font-mono text-xs text-slate-900 focus:ring-2 focus:ring-emerald-500" placeholder="Keluaran yang benar..."></textarea>
                                             </div>
                                         </div>
@@ -2295,6 +2345,95 @@
         </div>
     </div>
 
+    <!-- MODAL RANDOM TEST CASE GENERATOR -->
+    <div x-show="showRandomGenModal"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+         x-cloak>
+        <div @click.away="showRandomGenModal = false"
+             class="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-slate-100 space-y-5 animate-scale-up my-8">
+            
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white text-lg shadow-md shadow-sky-500/30">
+                        🎲
+                    </div>
+                    <div>
+                        <h3 class="text-base font-black text-slate-900">Generator Input Test Case Acak</h3>
+                        <p class="text-xs text-slate-400">Buat variasi input acak otomatis & hitung outputnya dari kode solusi</p>
+                    </div>
+                </div>
+                <button type="button" @click="showRandomGenModal = false" class="text-slate-400 hover:text-slate-600 text-xl font-bold p-1">&times;</button>
+            </div>
+
+            <!-- Form Kontrol -->
+            <div class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-black text-slate-700 uppercase tracking-wider text-[10px] mb-1.5">Pola Generator Input</label>
+                    <select x-model="randomGenConfig.type" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-800 focus:ring-2 focus:ring-sky-500 cursor-pointer">
+                        <option value="two_integers">🔢 Dua Bilangan Bulat (A B) — misal: 12 85</option>
+                        <option value="single_integer">🔢 Satu Bilangan Bulat (N) — misal: 174</option>
+                        <option value="three_integers">🔢 Tiga Bilangan Bulat (A B C) — misal: 10 20 30</option>
+                        <option value="array_integers">📊 Array Bilangan (Baris 1: N, Baris 2: N angka)</option>
+                        <option value="custom_lines">📝 Batch Tempel Manual (Paste Banyak Input)</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3" x-show="randomGenConfig.type !== 'custom_lines'">
+                    <div>
+                        <label class="block font-black text-slate-700 uppercase tracking-wider text-[10px] mb-1.5">Jumlah Kasus Uji</label>
+                        <input type="number" min="1" max="30" x-model.number="randomGenConfig.count" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-black text-slate-900 focus:ring-2 focus:ring-sky-500">
+                    </div>
+                    <div x-show="randomGenConfig.type === 'array_integers'">
+                        <label class="block font-black text-slate-700 uppercase tracking-wider text-[10px] mb-1.5">Panjang Array (N)</label>
+                        <input type="number" min="1" max="50" x-model.number="randomGenConfig.arrayLength" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-black text-slate-900 focus:ring-2 focus:ring-sky-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3" x-show="randomGenConfig.type !== 'custom_lines'">
+                    <div>
+                        <label class="block font-black text-slate-700 uppercase tracking-wider text-[10px] mb-1.5">Nilai Minimum (Min)</label>
+                        <input type="number" x-model.number="randomGenConfig.min" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-sky-500">
+                    </div>
+                    <div>
+                        <label class="block font-black text-slate-700 uppercase tracking-wider text-[10px] mb-1.5">Nilai Maksimum (Max)</label>
+                        <input type="number" x-model.number="randomGenConfig.max" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-sky-500">
+                    </div>
+                </div>
+
+                <div x-show="randomGenConfig.type === 'custom_lines'" class="space-y-1.5">
+                    <label class="block font-black text-slate-700 uppercase tracking-wider text-[10px]">Tempel Input (Pisahkan setiap kasus dengan baris kosong atau satu baris per kasus)</label>
+                    <textarea x-model="randomGenConfig.customInputsText" rows="6" class="w-full p-3 bg-slate-900 text-sky-400 font-mono text-xs rounded-xl border border-slate-800 focus:ring-2 focus:ring-sky-500 shadow-inner" placeholder="Contoh:&#10;5 10&#10;&#10;100 200&#10;&#10;45 90"></textarea>
+                </div>
+
+                <div class="pt-2 border-t border-slate-100">
+                    <label class="flex items-center gap-2 cursor-pointer text-slate-600 font-bold">
+                        <input type="checkbox" x-model="randomGenConfig.replaceExisting" class="rounded text-indigo-600 focus:ring-indigo-500">
+                        <span>Ganti seluruh kasus uji yang sudah ada (reset)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Modal Actions -->
+            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
+                <button type="button" @click="showRandomGenModal = false" class="px-4 py-2 font-bold text-slate-500 hover:text-slate-800 transition-colors cursor-pointer">
+                    Batal
+                </button>
+                <button type="button"
+                        @click="generateRandomTestCases()"
+                        :disabled="isGeneratingOutputs"
+                        class="px-6 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:brightness-110 text-white font-black text-xs rounded-xl shadow-lg shadow-sky-500/25 transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
+                    <span>🚀 Buat Input & Hitung Output</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Alert Toast (Simulated) -->
     <div x-show="toast.show" x-transition class="fixed bottom-6 right-6 px-6 py-3 bg-slate-900 text-white font-bold text-sm rounded-2xl shadow-2xl z-50 flex items-center gap-3" x-cloak>
         <span class="text-emerald-400">✓</span>
@@ -2355,6 +2494,21 @@
                 babs: [],
                 activeNode: null,
                 activePaketTab: 'all',
+                // Reference Solution & Test Case Generator State
+                isGeneratingOutputs: false,
+                generatorProgress: { current: 0, total: 0, percent: 0 },
+                generatorStatusText: '',
+                generatorCompilerError: '',
+                showRandomGenModal: false,
+                randomGenConfig: {
+                    count: 5,
+                    type: 'two_integers',
+                    min: 1,
+                    max: 1000,
+                    arrayLength: 5,
+                    customInputsText: '',
+                    replaceExisting: false
+                },
                 editorInstance: null,
                 tagSearchQuery: '',
                 isTagDropdownOpen: false,
@@ -2795,6 +2949,254 @@
                     });
                     this.distributeCpPoints();
                     this.showToast('Contoh berhasil disalin ke Kasus Uji Penilaian!');
+                },
+
+                // ==========================================
+                // REFERENCE SOLUTION & TEST CASE GENERATOR
+                // ==========================================
+                async executeCodeForInput(code, lang, stdin) {
+                    const langKey = (lang || 'cpp').toLowerCase();
+                    let runnerLang = 'cpp17';
+                    if (langKey === 'cpp' || langKey === 'cpp17' || langKey === 'c++') runnerLang = 'cpp17';
+                    else if (langKey === 'python' || langKey === 'python3') runnerLang = 'python3';
+                    else if (langKey === 'pascal') runnerLang = 'pascal';
+                    else if (langKey === 'c') runnerLang = 'c';
+                    else if (langKey === 'java') runnerLang = 'java';
+
+                    try {
+                        const res = await fetch('/api/code-runner', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                action: 'run_custom',
+                                mode: 'custom',
+                                language: runnerLang,
+                                code: code,
+                                stdin: stdin || '',
+                                customInput: stdin || '',
+                                timeLimit: this.activeNode ? (this.activeNode.timeLimit || 2) : 2,
+                                memoryLimit: this.activeNode ? (this.activeNode.memoryLimit || 256) : 256
+                            })
+                        });
+                        const data = await res.json().catch(() => ({}));
+                        if (!res.ok && !data.success) {
+                            return {
+                                success: false,
+                                output: '',
+                                error: data.message || ('Gagal eksekusi: Server status ' + res.status),
+                                isCompileError: false
+                            };
+                        }
+
+                        const compErr = data.compileError || data.compilerError || '';
+                        if (compErr || data.verdictCode === 'CE' || data.verdict === 'Compilation Error') {
+                            return {
+                                success: false,
+                                output: '',
+                                error: compErr || 'Compilation Error',
+                                isCompileError: true
+                            };
+                        }
+
+                        if (data.verdictCode === 'TLE') {
+                            return {
+                                success: false,
+                                output: '',
+                                error: 'Time Limit Exceeded (> 2 detik). Pastikan algoritma tidak mengalami infinite loop.',
+                                isCompileError: false
+                            };
+                        }
+
+                        if (data.verdictCode === 'RTE') {
+                            return {
+                                success: false,
+                                output: data.output || '',
+                                error: 'Runtime Error: ' + (data.stderr || data.errorOutput || 'Program terhenti mendadak (RTE)'),
+                                isCompileError: false
+                            };
+                        }
+
+                        return {
+                            success: true,
+                            output: data.output || '',
+                            error: '',
+                            isCompileError: false
+                        };
+                    } catch (netErr) {
+                        return {
+                            success: false,
+                            output: '',
+                            error: 'Gagal terhubung ke server kompilasi: ' + netErr.message,
+                            isCompileError: false
+                        };
+                    }
+                },
+
+                async runGeneratorForSingleTestCase(tc) {
+                    if (!this.activeNode) return;
+                    const code = (this.activeNode.referenceSolution || '').trim();
+                    if (!code) {
+                        alert('Harap tuliskan kode program jawaban yang benar (Reference Solution) pada kotak generator di atas terlebih dahulu!');
+                        return;
+                    }
+
+                    this.isGeneratingOutputs = true;
+                    this.generatorCompilerError = '';
+                    this.generatorStatusText = 'Menghitung output dari kode solusi...';
+
+                    try {
+                        const res = await this.executeCodeForInput(code, this.activeNode.generatorLang, tc.input || '');
+                        if (res.isCompileError) {
+                            this.generatorCompilerError = res.error;
+                            alert('Gagal Kompilasi (Compile Error pada Kode Jawaban Benar):\n\n' + res.error);
+                        } else if (!res.success) {
+                            alert('Eksekusi gagal:\n' + res.error);
+                        } else {
+                            tc.output = res.output;
+                            this.saveLocalDraft();
+                            this.debounceSave();
+                            this.showToast('✓ Output berhasil dihitung dan diperbarui!');
+                        }
+                    } finally {
+                        this.isGeneratingOutputs = false;
+                        this.generatorStatusText = '';
+                    }
+                },
+
+                async runGeneratorForTestCases() {
+                    if (!this.activeNode) return;
+                    const code = (this.activeNode.referenceSolution || '').trim();
+                    if (!code) {
+                        alert('Harap tuliskan kode program jawaban yang benar (Reference Solution) pada kotak generator di atas terlebih dahulu!');
+                        return;
+                    }
+
+                    const testCases = this.activeNode.testCases || [];
+                    if (testCases.length === 0) {
+                        if (confirm('Belum ada kasus uji penilaian di bawah. Buka generator input acak sekarang?')) {
+                            this.showRandomGenModal = true;
+                        }
+                        return;
+                    }
+
+                    const targets = testCases.filter(t => t && t.input !== undefined && t.input.trim() !== '');
+                    if (targets.length === 0) {
+                        if (confirm('Seluruh kasus uji masukan (stdin) masih kosong. Buka generator input acak untuk mengisi otomatis?')) {
+                            this.showRandomGenModal = true;
+                        }
+                        return;
+                    }
+
+                    this.isGeneratingOutputs = true;
+                    this.generatorCompilerError = '';
+                    this.generatorProgress = { current: 0, total: targets.length, percent: 0 };
+                    this.generatorStatusText = `Meng-compile kode ${this.activeNode.generatorLang || 'cpp'}...`;
+
+                    try {
+                        let completedCount = 0;
+                        for (let i = 0; i < targets.length; i++) {
+                            const tc = targets[i];
+                            this.generatorProgress.current = i + 1;
+                            this.generatorProgress.percent = Math.round(((i + 1) / targets.length) * 100);
+                            this.generatorStatusText = `Menghitung output kasus uji #${i + 1} dari ${targets.length}...`;
+
+                            const res = await this.executeCodeForInput(code, this.activeNode.generatorLang, tc.input || '');
+                            if (res.isCompileError) {
+                                this.generatorCompilerError = res.error;
+                                alert('Gagal Kompilasi (Compile Error pada Kode Solusi):\n\n' + res.error);
+                                return;
+                            }
+                            if (!res.success) {
+                                this.showToast(`Kasus #${i + 1}: ${res.error}`, true);
+                            } else {
+                                tc.output = res.output;
+                                completedCount++;
+                            }
+                        }
+
+                        this.saveLocalDraft();
+                        this.debounceSave();
+                        this.showToast(`✓ Sukses! Berhasil men-generate ${completedCount} output kasus uji.`);
+                    } catch (err) {
+                        alert('Terjadi kesalahan saat generate: ' + err.message);
+                    } finally {
+                        this.isGeneratingOutputs = false;
+                        this.generatorStatusText = '';
+                    }
+                },
+
+                generateRandomTestCases() {
+                    if (!this.activeNode) return;
+                    const cfg = this.randomGenConfig;
+                    const count = Math.min(Math.max(parseInt(cfg.count) || 5, 1), 30);
+                    const min = parseInt(cfg.min) || 1;
+                    const max = parseInt(cfg.max) || 1000;
+                    const arrLen = Math.min(Math.max(parseInt(cfg.arrayLength) || 5, 1), 50);
+
+                    const getRandomInt = (low, high) => Math.floor(Math.random() * (high - low + 1)) + low;
+
+                    let generatedInputs = [];
+
+                    if (cfg.type === 'single_integer') {
+                        for (let i = 0; i < count; i++) {
+                            generatedInputs.push(String(getRandomInt(min, max)));
+                        }
+                    } else if (cfg.type === 'two_integers') {
+                        for (let i = 0; i < count; i++) {
+                            generatedInputs.push(`${getRandomInt(min, max)} ${getRandomInt(min, max)}`);
+                        }
+                    } else if (cfg.type === 'three_integers') {
+                        for (let i = 0; i < count; i++) {
+                            generatedInputs.push(`${getRandomInt(min, max)} ${getRandomInt(min, max)} ${getRandomInt(min, max)}`);
+                        }
+                    } else if (cfg.type === 'array_integers') {
+                        for (let i = 0; i < count; i++) {
+                            const arr = Array.from({ length: arrLen }, () => getRandomInt(min, max));
+                            generatedInputs.push(`${arrLen}\n${arr.join(' ')}`);
+                        }
+                    } else if (cfg.type === 'custom_lines') {
+                        const raw = (cfg.customInputsText || '').trim();
+                        if (!raw) {
+                            alert('Masukkan teks daftar input terlebih dahulu!');
+                            return;
+                        }
+                        let parts = raw.split(/\n\s*---\s*\n|\n\s*\n/).map(s => s.trim()).filter(Boolean);
+                        if (parts.length <= 1 && raw.split('\n').length > 1) {
+                            parts = raw.split('\n').map(s => s.trim()).filter(Boolean);
+                        }
+                        generatedInputs = parts;
+                    }
+
+                    if (generatedInputs.length === 0) {
+                        alert('Tidak ada input yang berhasil dibuat.');
+                        return;
+                    }
+
+                    if (!Array.isArray(this.activeNode.testCases) || cfg.replaceExisting) {
+                        this.activeNode.testCases = [];
+                    }
+
+                    const startIdx = this.activeNode.testCases.length;
+                    generatedInputs.forEach((inVal, idx) => {
+                        this.activeNode.testCases.push({
+                            input: inVal,
+                            output: '',
+                            points: 20,
+                            isHidden: (startIdx + idx) > 0
+                        });
+                    });
+
+                    this.distributeCpPoints();
+                    this.showRandomGenModal = false;
+                    this.saveLocalDraft();
+                    this.debounceSave();
+
+                    const code = (this.activeNode.referenceSolution || '').trim();
+                    if (code) {
+                        this.runGeneratorForTestCases();
+                    } else {
+                        this.showToast(`✓ Berhasil membuat ${generatedInputs.length} input kasus uji! Masukkan kode solusi untuk menghitung output.`);
+                    }
                 },
 
                 applyTlxTemplate() {
