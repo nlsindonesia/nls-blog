@@ -8620,8 +8620,12 @@
                 },
 
                 openModuleBuilder(course) {
-                    // Navigate to the advanced LMS Builder page
-                    window.location.href = `/nlsadmin/lms-builder.html?course=${course.id}`;
+                    // Navigate to the advanced LMS Builder page with return URL preserved
+                    try {
+                        sessionStorage.setItem('nls_admin_lms_return_url', window.location.href);
+                    } catch(e) {}
+                    const returnUrl = encodeURIComponent(window.location.href);
+                    window.location.href = `/nlsadmin/lms-builder.html?course=${course.id}&returnUrl=${returnUrl}`;
                 },
 
                 addQuizQuestionItem() {
