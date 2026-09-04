@@ -304,8 +304,10 @@
                                 </template>
                             </div>
                         </div>
+                    </div>
+
                     <!-- PEMROGRAMAN EDITOR (Competitive Programming / TLX Style) -->
-                    <div x-show="activeNode.type === 'pemrograman'" class="space-y-6 animate-fade-in">
+                    <div x-show="activeNode.type === 'pemrograman'" x-init="if(!activeNode.samples) activeNode.samples = []; if(!activeNode.testCases) activeNode.testCases = []; if(!activeNode.starterCodes) activeNode.starterCodes = { cpp: '', python: '', pascal: '', c: '', java: '' };" class="space-y-6 animate-fade-in">
                         
                         <!-- HEADER & QUICK ACTIONS -->
                         <div class="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 text-white p-6 rounded-3xl shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -478,7 +480,7 @@
                         </div>
 
                         <!-- TEMPLATE STARTER CODE & EDITORIAL -->
-                        <div class="bg-white p-6 rounded-3xl border border-indigo-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-4" x-data="{ codeTab: 'cpp' }">
+                        <div class="bg-white p-6 rounded-3xl border border-indigo-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-4" x-data="{ codeTab: 'cpp' }" x-init="if(!activeNode.starterCodes) activeNode.starterCodes = { cpp: '', python: '', pascal: '', c: '', java: '' };">
                             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                                 <div>
                                     <h4 class="font-black text-xs text-indigo-950 uppercase tracking-wider">Template Kode Awal (Starter Code)</h4>
@@ -1730,6 +1732,24 @@
                         } catch(e) {}
                     }
 
+                    // Ensure CP sampleCases and samples are bidirectionally synchronized
+                    if (this.activeNode && this.activeNode.type === 'pemrograman') {
+                        if (this.activeNode.samples && !this.activeNode.sampleCases) this.activeNode.sampleCases = this.activeNode.samples;
+                        if (this.activeNode.sampleCases && !this.activeNode.samples) this.activeNode.samples = this.activeNode.sampleCases;
+                    }
+                    if (this.babs && Array.isArray(this.babs)) {
+                        this.babs.forEach(b => {
+                            if (b.nodes && Array.isArray(b.nodes)) {
+                                b.nodes.forEach(n => {
+                                    if (n && n.type === 'pemrograman') {
+                                        if (n.samples && !n.sampleCases) n.sampleCases = n.samples;
+                                        if (n.sampleCases && !n.samples) n.samples = n.sampleCases;
+                                    }
+                                });
+                            }
+                        });
+                    }
+
                     if (!this.courseData) {
                         this.courseData = { id: this.courseId, title: this.courseTitle || 'Course' };
                     }
@@ -1820,8 +1840,9 @@
                         if (this.activeNode.difficulty === undefined) this.activeNode.difficulty = 'Sedang';
                         if (this.activeNode.topicTags === undefined) this.activeNode.topicTags = 'Implementasi';
                         if (!Array.isArray(this.activeNode.samples)) {
-                            this.activeNode.samples = [{ input: '174', output: '174\n4002\n92046', explanation: 'Bulan 1: 174. Bulan 2: 174 * 23 = 4002. Bulan 3: 4002 * 23 = 92046.' }];
+                            this.activeNode.samples = Array.isArray(this.activeNode.sampleCases) ? this.activeNode.sampleCases : [{ input: '174', output: '174\n4002\n92046', explanation: 'Bulan 1: 174. Bulan 2: 174 * 23 = 4002. Bulan 3: 4002 * 23 = 92046.' }];
                         }
+                        this.activeNode.sampleCases = this.activeNode.samples;
                         if (!Array.isArray(this.activeNode.testCases)) {
                             this.activeNode.testCases = [
                                 { input: '174', output: '174\n4002\n92046', points: 30, isHidden: false },
@@ -1847,6 +1868,7 @@
                     if (!this.activeNode) return;
                     if (!Array.isArray(this.activeNode.samples)) this.activeNode.samples = [];
                     this.activeNode.samples.push({ input: '', output: '', explanation: '' });
+                    this.activeNode.sampleCases = this.activeNode.samples;
                     this.saveLocalDraft();
                     this.debounceSave();
                 },
@@ -1854,6 +1876,7 @@
                 removeCpSample(idx) {
                     if (!this.activeNode || !Array.isArray(this.activeNode.samples)) return;
                     this.activeNode.samples.splice(idx, 1);
+                    this.activeNode.sampleCases = this.activeNode.samples;
                     this.saveLocalDraft();
                     this.debounceSave();
                 },
@@ -1924,6 +1947,7 @@
                             explanation: 'Bulan 1: 174. Bulan 2: 174 * 23 = 4002. Bulan 3: 4002 * 23 = 92046.'
                         }
                     ];
+                    this.activeNode.sampleCases = this.activeNode.samples;
                     this.activeNode.testCases = [
                         { input: '174', output: '174\n4002\n92046', points: 30, isHidden: false },
                         { input: '1', output: '1\n23\n529', points: 35, isHidden: true },
@@ -2219,6 +2243,22 @@
                         if (node.quizShufflePackage === undefined) node.quizShufflePackage = true;
                         if (node.quizPackageCount === undefined) node.quizPackageCount = 1;
                         if (!Array.isArray(node.questions)) node.questions = [];
+                    }
+                    if (node && node.type === 'pemrograman') {
+                        if (node.timeLimit === undefined) node.timeLimit = 1.0;
+                        if (node.memoryLimit === undefined) node.memoryLimit = 256;
+                        if (node.difficulty === undefined) node.difficulty = 'Sedang';
+                        if (node.topicTags === undefined) node.topicTags = 'Implementasi';
+                        if (!Array.isArray(node.samples)) {
+                            node.samples = Array.isArray(node.sampleCases) ? node.sampleCases : [];
+                        }
+                        if (!Array.isArray(node.sampleCases)) {
+                            node.sampleCases = node.samples;
+                        }
+                        if (!Array.isArray(node.testCases)) node.testCases = [];
+                        if (!node.starterCodes) {
+                            node.starterCodes = { cpp: '', python: '', pascal: '', c: '', java: '' };
+                        }
                     }
                     this.activeNode = node;
                     
