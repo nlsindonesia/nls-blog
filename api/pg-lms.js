@@ -1,5 +1,6 @@
 import { getCloudStore, saveCloudStore } from './cloud-db.js';
 import { generateVpsSqlDump } from './vps-exporter.js';
+import { fetchExternalProblem } from './oj-crawler.js';
 
 ﻿
 
@@ -776,7 +777,11 @@ export default async function handler(request, response) {
     }
 
     try {
-        const action = request.method === 'POST' ? request.body.action : request.query.action;
+        let body = request.body;
+        if (typeof body === 'string') {
+            try { body = JSON.parse(body); } catch(e) {}
+        }
+        const action = request.method === 'POST' ? (body?.action || request.query?.action) : request.query?.action;
 
         // --- 0. EXPORT VPS SQL (1-Click Database Dump for Migration) ---
         if (action === 'export_vps_sql') {
@@ -787,6 +792,17 @@ export default async function handler(request, response) {
             response.setHeader('Content-Type', 'text/plain; charset=utf-8');
             response.setHeader('Content-Disposition', 'attachment; filename="vps_migration.sql"');
             return response.status(200).send(sqlDump);
+        }
+
+        // --- 0.5. VJUDGE ONLINE JUDGE PROBLEM FETCHER & PARSER ---
+        if (action === 'fetch_external_problem') {
+            try {
+                const params = body || request.query || {};
+                const result = await fetchExternalProblem(params);
+                return response.status(200).json({ success: true, problem: result });
+            } catch (err) {
+                return response.status(400).json({ success: false, message: err.message || 'Gagal mengambil soal dari Online Judge.' });
+            }
         }
 
         // --- 1. SETUP LMS TABLES / STATUS ---

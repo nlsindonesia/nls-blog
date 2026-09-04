@@ -322,9 +322,13 @@
                                 <h3 class="text-lg font-black text-white">Soal Competitive Programming</h3>
                                 <p class="text-xs text-slate-300 max-w-xl leading-relaxed">Siswa menulis kode (C++, Python, Pascal, Java, C), menjalankan Custom Input, dan dinilai otomatis dengan verdict resmi (AC, WA, TLE, RTE, CE).</p>
                             </div>
-                            <div class="relative z-10 flex items-center gap-2 shrink-0">
-                                <button type="button" @click="applyTlxTemplate()" class="px-4 py-2.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-xs rounded-xl shadow-lg transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
-                                    <span>✨ Gunakan Template Soal OSN/TLX</span>
+                            <div class="relative z-10 flex items-center gap-2.5 shrink-0 flex-wrap">
+                                <button type="button" @click="openVJudgeModal()" class="px-4 py-2.5 bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400 hover:brightness-110 text-slate-950 font-black text-xs rounded-xl shadow-lg transition-all active:scale-95 flex items-center gap-2 cursor-pointer ring-2 ring-white/30">
+                                    <span class="text-base leading-none">⚡</span>
+                                    <span>Import Online Judge (VJudge)</span>
+                                </button>
+                                <button type="button" @click="applyTlxTemplate()" class="px-3.5 py-2.5 bg-white/10 hover:bg-white/20 text-white font-black text-xs rounded-xl border border-white/20 shadow-sm transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer">
+                                    <span>✨ Template OSN</span>
                                 </button>
                             </div>
                         </div>
@@ -1680,6 +1684,223 @@
         </div>
     </div>
 
+    <!-- =========================================================================
+         MODAL: VJUDGE ONLINE JUDGE PROBLEM IMPORTER
+         ========================================================================= -->
+    <div x-show="showVJudgeModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-3xl w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh] my-auto animate-scale-in"
+             @click.away="showVJudgeModal = false">
+            
+            <!-- Modal Header -->
+            <div class="px-6 py-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex items-center justify-between border-b border-slate-800 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-400 to-emerald-400 flex items-center justify-center text-slate-950 text-xl font-black shadow-lg shadow-sky-500/20 shrink-0">
+                        ⚡
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-black text-base text-white">Import Soal Online Judge (VJudge Mode)</h3>
+                            <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold text-[10px] border border-emerald-500/30">Auto-Crawler</span>
+                        </div>
+                        <p class="text-xs text-slate-300">Ambil soal langsung dari CSES, AtCoder, Codeforces, atau Tempel Teks Mentah.</p>
+                    </div>
+                </div>
+                <button type="button" @click="showVJudgeModal = false" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center transition-colors text-sm font-bold cursor-pointer">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="flex border-b border-slate-100 bg-slate-50/80 px-6 pt-3 gap-2 shrink-0">
+                <button type="button" @click="vjudgeTab = 'link'"
+                        class="px-4 py-2.5 rounded-t-2xl font-black text-xs transition-all border-b-2 flex items-center gap-2 cursor-pointer"
+                        :class="vjudgeTab === 'link' ? 'bg-white border-indigo-600 text-indigo-950 shadow-xs' : 'border-transparent text-slate-500 hover:text-slate-800'">
+                    <span>🔗 Link / ID Soal</span>
+                </button>
+                <button type="button" @click="vjudgeTab = 'presets'"
+                        class="px-4 py-2.5 rounded-t-2xl font-black text-xs transition-all border-b-2 flex items-center gap-2 cursor-pointer"
+                        :class="vjudgeTab === 'presets' ? 'bg-white border-indigo-600 text-indigo-950 shadow-xs' : 'border-transparent text-slate-500 hover:text-slate-800'">
+                    <span>🏆 1-Click Presets Populer</span>
+                    <span class="px-1.5 py-0.2 rounded-full bg-amber-100 text-amber-700 text-[10px] font-black">13 Soal</span>
+                </button>
+                <button type="button" @click="vjudgeTab = 'smart'"
+                        class="px-4 py-2.5 rounded-t-2xl font-black text-xs transition-all border-b-2 flex items-center gap-2 cursor-pointer"
+                        :class="vjudgeTab === 'smart' ? 'bg-white border-indigo-600 text-indigo-950 shadow-xs' : 'border-transparent text-slate-500 hover:text-slate-800'">
+                    <span>📋 Smart Paste (Universal)</span>
+                </button>
+            </div>
+
+            <!-- Modal Body Scrollable -->
+            <div class="p-6 overflow-y-auto space-y-6 flex-1">
+                
+                <!-- TAB 1: LINK / ID SOAL -->
+                <div x-show="vjudgeTab === 'link'" class="space-y-4">
+                    <div class="space-y-2">
+                        <label class="block text-[11px] font-black uppercase text-indigo-400 tracking-wider">Masukkan URL Soal atau Kode Platform</label>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <div class="relative flex-1">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                                </div>
+                                <input type="text"
+                                       x-model="vjudgeInputQuery"
+                                       @keydown.enter.prevent="fetchVJudgeProblem()"
+                                       placeholder="Contoh: https://cses.fi/problemset/task/1068 atau 4A atau abc300_a..."
+                                       class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500 shadow-inner">
+                            </div>
+                            <button type="button"
+                                    @click="fetchVJudgeProblem()"
+                                    :disabled="vjudgeLoading"
+                                    class="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs rounded-2xl shadow-md transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 shrink-0 cursor-pointer">
+                                <svg x-show="vjudgeLoading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                <span x-text="vjudgeLoading ? 'Mengambil Data...' : '⚡ Tarik Soal'"></span>
+                            </button>
+                        </div>
+                        
+                        <!-- Quick Click Chips -->
+                        <div class="flex items-center gap-2 flex-wrap pt-1">
+                            <span class="text-[10px] font-black uppercase text-slate-400">Coba Cepat:</span>
+                            <button type="button" @click="vjudgeInputQuery = '1068'; fetchVJudgeProblem('1068', 'cses')" class="px-2 py-0.5 bg-slate-100 hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 rounded-md text-[11px] font-bold border border-slate-200 transition-colors">CSES 1068 (Weird Algorithm)</button>
+                            <button type="button" @click="vjudgeInputQuery = '1083'; fetchVJudgeProblem('1083', 'cses')" class="px-2 py-0.5 bg-slate-100 hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 rounded-md text-[11px] font-bold border border-slate-200 transition-colors">CSES 1083 (Missing Number)</button>
+                            <button type="button" @click="vjudgeInputQuery = '4A'; fetchVJudgeProblem('4A', 'codeforces')" class="px-2 py-0.5 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-700 rounded-md text-[11px] font-bold border border-slate-200 transition-colors">CF 4A (Watermelon)</button>
+                            <button type="button" @click="vjudgeInputQuery = 'abc300_a'; fetchVJudgeProblem('abc300_a', 'atcoder')" class="px-2 py-0.5 bg-slate-100 hover:bg-purple-50 text-slate-600 hover:text-purple-700 rounded-md text-[11px] font-bold border border-slate-200 transition-colors">AtCoder abc300_a</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: PRESETS POPULER -->
+                <div x-show="vjudgeTab === 'presets'" class="space-y-3">
+                    <p class="text-xs text-slate-500 font-medium">Klik salah satu soal latihan standar internasional di bawah ini untuk langsung memuat seluruh materi, limit, deskripsi, dan contoh test cases secara instan:</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-72 overflow-y-auto p-1">
+                        <template x-for="item in vjudgePresets" :key="item.id">
+                            <button type="button"
+                                    @click="selectVJudgePreset(item)"
+                                    class="p-3.5 rounded-2xl border border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/50 bg-white text-left transition-all active:scale-95 group shadow-xs cursor-pointer flex flex-col justify-between">
+                                <div class="flex items-start justify-between gap-2 mb-1.5">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase text-white bg-gradient-to-r" :class="item.color" x-text="item.platform"></span>
+                                        <span class="text-xs font-black text-slate-900 group-hover:text-emerald-950" x-text="item.code"></span>
+                                    </div>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600" x-text="item.difficulty"></span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-800 line-clamp-1 group-hover:text-emerald-900" x-text="item.name"></h4>
+                                    <span class="text-[10px] text-slate-400 font-medium" x-text="'# ' + item.tag"></span>
+                                </div>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- TAB 3: SMART PASTE -->
+                <div x-show="vjudgeTab === 'smart'" class="space-y-3">
+                    <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs leading-relaxed">
+                        <strong>💡 Fitur Universal:</strong> Salin seluruh teks atau kode HTML soal dari platform apa pun (TLX, LeetCode, HackerRank, SPOJ, PDF lomba OSN), lalu tempelkan di bawah ini. Sistem secara otomatis memecah Judul, Batas Waktu/Memori, Masukan, Keluaran, dan Contoh Soal.
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-black uppercase text-indigo-400 tracking-wider mb-1">Tempel Teks Soal Mentah / HTML</label>
+                        <textarea x-model="vjudgeSmartText" rows="7" placeholder="Tempel teks lengkap soal di sini..." class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-medium text-slate-900 focus:ring-2 focus:ring-emerald-500"></textarea>
+                    </div>
+                    <button type="button"
+                            @click="fetchVJudgeProblem()"
+                            :disabled="vjudgeLoading || !vjudgeSmartText.trim()"
+                            class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-2xl shadow-md transition-all active:scale-95 disabled:opacity-50 flex items-center gap-2 cursor-pointer">
+                        <svg x-show="vjudgeLoading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        <span>⚡ Ekstrak & Parsing Cerdas</span>
+                    </button>
+                </div>
+
+                <!-- ERROR BANNER -->
+                <div x-show="vjudgeError" class="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-xs text-rose-700 font-bold flex items-center gap-2 animate-shake">
+                    <span>⚠️</span>
+                    <span x-text="vjudgeError"></span>
+                </div>
+
+                <!-- LIVE PREVIEW RESULT CARD -->
+                <div x-show="vjudgePreviewProblem" class="border-2 border-emerald-300 rounded-3xl p-5 bg-gradient-to-br from-emerald-50/60 to-white shadow-xl space-y-4 animate-fade-in">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-emerald-100 pb-3">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white font-black text-[10px] uppercase" x-text="vjudgePreviewProblem ? vjudgePreviewProblem.platform : ''"></span>
+                                <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold text-[10px]" x-text="vjudgePreviewProblem ? vjudgePreviewProblem.difficulty : ''"></span>
+                                <span class="text-xs text-slate-400 font-bold" x-text="(vjudgePreviewProblem ? vjudgePreviewProblem.timeLimit : 1) + ' detik • ' + (vjudgePreviewProblem ? vjudgePreviewProblem.memoryLimit : 256) + ' MB'"></span>
+                            </div>
+                            <h3 class="text-base font-black text-slate-900" x-text="vjudgePreviewProblem ? vjudgePreviewProblem.title : ''"></h3>
+                        </div>
+                        <button type="button"
+                                @click="applyVJudgeProblemToActiveNode()"
+                                class="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-xs rounded-2xl shadow-lg shadow-emerald-500/30 transition-all active:scale-95 flex items-center justify-center gap-2 shrink-0 cursor-pointer ring-2 ring-emerald-400/50">
+                            <span>🚀 Terapkan ke Soal Saat Ini</span>
+                        </button>
+                    </div>
+
+                    <!-- Tags Chips -->
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <span class="text-[10px] font-black uppercase text-slate-400">Tag Topik:</span>
+                        <template x-for="tag in ((vjudgePreviewProblem && vjudgePreviewProblem.topicTags) ? vjudgePreviewProblem.topicTags.split(',') : [])" :key="tag">
+                            <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-lg text-[10px] font-black" x-text="'#' + tag.trim()"></span>
+                        </template>
+                    </div>
+
+                    <!-- Problem Snippet Preview -->
+                    <div class="space-y-3 bg-white p-4 rounded-2xl border border-slate-100 text-xs leading-relaxed max-h-56 overflow-y-auto">
+                        <div>
+                            <span class="font-black text-slate-700 block mb-1 text-[11px] uppercase tracking-wider">Deskripsi Soal:</span>
+                            <p class="text-slate-600 whitespace-pre-line" x-text="vjudgePreviewProblem ? vjudgePreviewProblem.problemDescription : ''"></p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-slate-100">
+                            <div>
+                                <span class="font-black text-slate-700 block mb-1 text-[10px] uppercase">Format Masukan:</span>
+                                <p class="text-slate-500" x-text="vjudgePreviewProblem ? vjudgePreviewProblem.inputFormat : ''"></p>
+                            </div>
+                            <div>
+                                <span class="font-black text-slate-700 block mb-1 text-[10px] uppercase">Format Keluaran:</span>
+                                <p class="text-slate-500" x-text="vjudgePreviewProblem ? vjudgePreviewProblem.outputFormat : ''"></p>
+                            </div>
+                        </div>
+                        <template x-if="vjudgePreviewProblem && vjudgePreviewProblem.samples && vjudgePreviewProblem.samples.length > 0">
+                            <div class="pt-2 border-t border-slate-100">
+                                <span class="font-black text-slate-700 block mb-1 text-[10px] uppercase">Contoh Masukan & Keluaran (Tersedia: <span x-text="vjudgePreviewProblem.samples.length"></span> contoh):</span>
+                                <div class="grid grid-cols-2 gap-2 font-mono text-[11px] bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                                    <div>
+                                        <span class="text-slate-400 font-bold block text-[9px] uppercase">Input:</span>
+                                        <pre class="text-slate-900 whitespace-pre-wrap" x-text="vjudgePreviewProblem.samples[0].input"></pre>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-400 font-bold block text-[9px] uppercase">Output:</span>
+                                        <pre class="text-slate-900 whitespace-pre-wrap" x-text="vjudgePreviewProblem.samples[0].output"></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between shrink-0">
+                <div class="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    Mendukung MathJax ($O(N)$, $1 \le N \le 10^5$) & auto-generasi Kasus Uji.
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" @click="showVJudgeModal = false" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-200 rounded-xl transition-colors cursor-pointer">
+                        Batal
+                    </button>
+                    <template x-if="vjudgePreviewProblem">
+                        <button type="button"
+                                @click="applyVJudgeProblemToActiveNode()"
+                                class="px-5 py-2 text-xs font-black bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md transition-all active:scale-95 cursor-pointer">
+                            Terapkan Soal
+                        </button>
+                    </template>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <!-- Alert Toast (Simulated) -->
     <div x-show="toast.show" x-transition class="fixed bottom-6 right-6 px-6 py-3 bg-slate-900 text-white font-bold text-sm rounded-2xl shadow-2xl z-50 flex items-center gap-3" x-cloak>
         <span class="text-emerald-400">✓</span>
@@ -1703,6 +1924,33 @@
                 previewQ: null,
                 bulkText: '',
                 toast: { show: false, message: '' },
+                // VJudge Online Judge Importer State
+                showVJudgeModal: false,
+                vjudgeTab: 'link',
+                vjudgeInputQuery: '',
+                vjudgeSelectedPlatform: 'auto',
+                vjudgeSmartText: '',
+                vjudgeLoading: false,
+                vjudgeError: '',
+                vjudgePreviewProblem: null,
+                vjudgePresets: [
+                    { id: 'cf_4a', platform: 'Codeforces', code: '4A', name: 'Watermelon', tag: 'Math / Brute Force', difficulty: 'Mudah', color: 'from-amber-500 to-rose-500' },
+                    { id: 'cf_71a', platform: 'Codeforces', code: '71A', name: 'Way Too Long Words', tag: 'Strings', difficulty: 'Mudah', color: 'from-blue-500 to-indigo-600' },
+                    { id: 'cf_158a', platform: 'Codeforces', code: '158A', name: 'Next Round', tag: 'Implementation', difficulty: 'Mudah', color: 'from-emerald-500 to-teal-600' },
+                    { id: 'cf_1a', platform: 'Codeforces', code: '1A', name: 'Theatre Square', tag: 'Math 64-bit', difficulty: 'Mudah', color: 'from-purple-500 to-pink-600' },
+                    { id: 'cf_231a', platform: 'Codeforces', code: '231A', name: 'Team', tag: 'Greedy', difficulty: 'Mudah', color: 'from-cyan-500 to-blue-600' },
+                    { id: 'cf_50a', platform: 'Codeforces', code: '50A', name: 'Domino piling', tag: 'Greedy / Math', difficulty: 'Mudah', color: 'from-orange-500 to-red-500' },
+                    { id: 'cf_112a', platform: 'Codeforces', code: '112A', name: 'Petya and Strings', tag: 'Strings', difficulty: 'Mudah', color: 'from-sky-500 to-blue-700' },
+                    { id: 'cf_617a', platform: 'Codeforces', code: '617A', name: 'Elephant', tag: 'Math', difficulty: 'Mudah', color: 'from-teal-500 to-emerald-700' },
+                    { id: 'cf_977a', platform: 'Codeforces', code: '977A', name: 'Wrong Subtraction', tag: 'Implementation', difficulty: 'Mudah', color: 'from-rose-500 to-red-700' },
+                    { id: 'cses_1068', platform: 'CSES', code: '1068', name: 'Weird Algorithm (Collatz)', tag: 'Introductory / Math', difficulty: 'Mudah', color: 'from-emerald-600 to-teal-700' },
+                    { id: 'cses_1083', platform: 'CSES', code: '1083', name: 'Missing Number', tag: 'Introductory / Math', difficulty: 'Mudah', color: 'from-teal-600 to-sky-700' },
+                    { id: 'cses_1069', platform: 'CSES', code: '1069', name: 'Repetitions', tag: 'Strings / Two Pointers', difficulty: 'Mudah', color: 'from-indigo-600 to-violet-700' },
+                    { id: 'cses_1094', platform: 'CSES', code: '1094', name: 'Increasing Array', tag: 'Greedy', difficulty: 'Mudah', color: 'from-amber-600 to-orange-700' },
+                    { id: 'cses_1193', platform: 'CSES', code: '1193', name: 'Labyrinth (BFS Shortest Path)', tag: 'Graph Traversal / BFS', difficulty: 'Sulit', color: 'from-rose-600 to-pink-700' },
+                    { id: 'cses_1633', platform: 'CSES', code: '1633', name: 'Dice Combinations', tag: 'Dynamic Programming', difficulty: 'Sedang', color: 'from-purple-600 to-indigo-700' },
+                    { id: 'atc_abc300_a', platform: 'AtCoder', code: 'abc300_a', name: 'A - N-choice question', tag: 'Basic Math', difficulty: 'Mudah', color: 'from-slate-700 to-slate-900' }
+                ],
                 nodes: [], // fallback variable not used directly in tree anymore
                 babs: [],
                 activeNode: null,
@@ -2249,6 +2497,150 @@
                             }
                         }
                     } catch(e) {}
+                },
+
+                // ==========================================
+                // VJUDGE ONLINE JUDGE IMPORTER METHODS
+                // ==========================================
+                openVJudgeModal() {
+                    this.showVJudgeModal = true;
+                    this.vjudgeError = '';
+                    if (!this.vjudgeTab) this.vjudgeTab = 'link';
+                },
+
+                async fetchVJudgeProblem(customQuery, platform) {
+                    this.vjudgeLoading = true;
+                    this.vjudgeError = '';
+                    this.vjudgePreviewProblem = null;
+
+                    let payload = { action: 'fetch_external_problem' };
+
+                    if (this.vjudgeTab === 'smart') {
+                        if (!this.vjudgeSmartText || !this.vjudgeSmartText.trim()) {
+                            this.vjudgeError = 'Harap tempel teks atau HTML soal terlebih dahulu!';
+                            this.vjudgeLoading = false;
+                            return;
+                        }
+                        payload.rawContent = this.vjudgeSmartText;
+                    } else {
+                        const q = (customQuery || this.vjudgeInputQuery || '').trim();
+                        if (!q) {
+                            this.vjudgeError = 'Harap masukkan URL atau kode soal!';
+                            this.vjudgeLoading = false;
+                            return;
+                        }
+                        payload.url = q;
+                        payload.platform = platform || this.vjudgeSelectedPlatform || 'auto';
+                    }
+
+                    try {
+                        const res = await fetch('/api/pg-lms', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        const data = await res.json().catch(() => ({}));
+                        if (res.ok && data.success && data.problem) {
+                            this.vjudgePreviewProblem = data.problem;
+                            if (window.MathJax && window.MathJax.typesetPromise) {
+                                this.$nextTick(() => {
+                                    try { window.MathJax.typesetPromise(); } catch(e) {}
+                                });
+                            }
+                        } else {
+                            this.vjudgeError = data.message || 'Gagal mengambil soal dari Online Judge. Periksa kembali link/ID atau coba Smart Paste.';
+                        }
+                    } catch (err) {
+                        this.vjudgeError = err.message || 'Terjadi kesalahan jaringan saat mengambil soal.';
+                    } finally {
+                        this.vjudgeLoading = false;
+                    }
+                },
+
+                selectVJudgePreset(preset) {
+                    if (!preset) return;
+                    this.vjudgeInputQuery = preset.code;
+                    this.vjudgeSelectedPlatform = (preset.platform || '').toLowerCase();
+                    this.fetchVJudgeProblem(preset.code, (preset.platform || '').toLowerCase());
+                },
+
+                applyVJudgeProblemToActiveNode() {
+                    if (!this.vjudgePreviewProblem || !this.activeNode) {
+                        this.showToast('Gagal: Modul aktif belum dipilih!', true);
+                        return;
+                    }
+
+                    if (this.activeNode.problemDescription && !confirm(`Ganti konten soal saat ini dengan "${this.vjudgePreviewProblem.title}" (${this.vjudgePreviewProblem.platform})?`)) {
+                        return;
+                    }
+
+                    const prob = this.vjudgePreviewProblem;
+
+                    // Ensure node is of type pemrograman
+                    this.activeNode.type = 'pemrograman';
+
+                    // Update fields
+                    this.activeNode.title = prob.title || this.activeNode.title;
+                    this.activeNode.timeLimit = prob.timeLimit !== undefined ? prob.timeLimit : 1.0;
+                    this.activeNode.memoryLimit = prob.memoryLimit !== undefined ? prob.memoryLimit : 256;
+                    this.activeNode.difficulty = prob.difficulty || 'Sedang';
+                    this.activeNode.topicTags = prob.topicTags || prob.tags || 'implementation';
+                    this.activeNode.tags = this.activeNode.topicTags;
+                    this.activeNode.problemDescription = prob.problemDescription || '';
+                    this.activeNode.inputFormat = prob.inputFormat || '';
+                    this.activeNode.outputFormat = prob.outputFormat || '';
+                    this.activeNode.constraints = prob.constraints || '';
+
+                    // Samples
+                    if (Array.isArray(prob.samples) && prob.samples.length > 0) {
+                        this.activeNode.samples = JSON.parse(JSON.stringify(prob.samples));
+                    } else {
+                        this.activeNode.samples = [];
+                    }
+                    this.activeNode.sampleCases = this.activeNode.samples;
+
+                    // Starter Codes
+                    if (prob.starterCodes && typeof prob.starterCodes === 'object') {
+                        this.activeNode.starterCodes = JSON.parse(JSON.stringify(prob.starterCodes));
+                    } else if (!this.activeNode.starterCodes) {
+                        this.activeNode.starterCodes = {
+                            cpp: '#include <iostream>\\nusing namespace std;\\n\\nint main() {\\n    // Tulis kodemu di sini\\n    return 0;\\n}',
+                            python: '# Tulis kodemu di sini\\n',
+                            pascal: 'var\\nbegin\\n  // Tulis kodemu di sini\\nend.',
+                            c: '#include <stdio.h>\\n\\nint main() {\\n    // Tulis kodemu di sini\\n    return 0;\\n}',
+                            java: 'import java.util.*;\\n\\npublic class Solution {\\n    public static void main(String[] args) {\\n        // Tulis kodemu di sini\\n    }\\n}'
+                        };
+                    }
+
+                    // Editorial
+                    if (prob.editorial) {
+                        this.activeNode.editorial = prob.editorial;
+                    }
+
+                    // Test Cases: if available from parser, use them; otherwise auto-generate from samples
+                    if (Array.isArray(prob.testCases) && prob.testCases.length > 0) {
+                        this.activeNode.testCases = JSON.parse(JSON.stringify(prob.testCases));
+                    } else if (this.activeNode.samples && this.activeNode.samples.length > 0) {
+                        this.activeNode.testCases = this.activeNode.samples.map((s, idx) => ({
+                            input: s.input || '',
+                            output: s.output || '',
+                            points: 20,
+                            isHidden: idx > 0
+                        }));
+                    }
+                    this.distributeCpPoints();
+
+                    // Close modal & save
+                    this.showVJudgeModal = false;
+                    this.saveLocalDraft();
+                    this.debounceSave();
+                    this.showToast(`✓ Soal "${prob.title}" berhasil diimpor dari ${prob.platform}!`);
+
+                    if (window.MathJax && window.MathJax.typesetPromise) {
+                        this.$nextTick(() => {
+                            try { window.MathJax.typesetPromise(); } catch(e) {}
+                        });
+                    }
                 },
 
                 switchCourse(newCourseId) {
