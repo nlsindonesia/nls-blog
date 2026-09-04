@@ -736,3 +736,28 @@ export async function fetchExternalProblem({ url = '', platform = '', problemId 
         return await parseCodeforcesProblem(targetQuery);
     }
 }
+
+/**
+ * Vercel Serverless Function Handler
+ */
+export default async function handler(req, res) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+
+    try {
+        let params = req.body || req.query || {};
+        if (typeof params === 'string') {
+            try { params = JSON.parse(params); } catch(e) {}
+        }
+        const problem = await fetchExternalProblem(params);
+        return res.status(200).json({ success: true, problem });
+    } catch (err) {
+        return res.status(400).json({ success: false, message: err.message || 'Gagal mengambil soal.' });
+    }
+}
+
