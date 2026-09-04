@@ -308,19 +308,19 @@
                         </div>
                     </div>
 
-                    <!-- PEMROGRAMAN EDITOR (Competitive Programming / TLX Style) -->
-                    <div x-show="activeNode.type === 'pemrograman'" x-init="if(!activeNode.samples) activeNode.samples = []; if(!activeNode.testCases) activeNode.testCases = []; if(!activeNode.starterCodes) activeNode.starterCodes = { cpp: '', python: '', pascal: '', c: '', java: '' };" class="space-y-6 animate-fade-in">
+                    <!-- PEMROGRAMAN EDITOR (Competitive Programming / TLX & VJudge Style) -->
+                    <div x-show="activeNode.type === 'pemrograman'" x-init="if(!activeNode.samples) activeNode.samples = []; if(!activeNode.testCases) activeNode.testCases = []; if(!activeNode.starterCodes) activeNode.starterCodes = { cpp: '', python: '', pascal: '', c: '', java: '' }; if(!activeNode.cpMode) activeNode.cpMode = (activeNode.sourcePlatform ? 'vjudge' : 'manual');" class="space-y-6 animate-fade-in">
                         
                         <!-- HEADER & QUICK ACTIONS -->
                         <div class="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 text-white p-6 rounded-3xl shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                             <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
                             <div class="relative z-10 space-y-1">
                                 <div class="flex items-center gap-2">
-                                    <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/30 text-emerald-300 font-black text-[10px] uppercase tracking-wider border border-emerald-500/40">TLX / OSN Format</span>
+                                    <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/30 text-emerald-300 font-black text-[10px] uppercase tracking-wider border border-emerald-500/40">TLX / OSN / VJudge</span>
                                     <span class="text-xs text-slate-400 font-bold">• Online Judge Auto-Grading</span>
                                 </div>
                                 <h3 class="text-lg font-black text-white">Soal Competitive Programming</h3>
-                                <p class="text-xs text-slate-300 max-w-xl leading-relaxed">Siswa menulis kode (C++, Python, Pascal, Java, C), menjalankan Custom Input, dan dinilai otomatis dengan verdict resmi (AC, WA, TLE, RTE, CE).</p>
+                                <p class="text-xs text-slate-300 max-w-xl leading-relaxed">Pilih mode pengerjaan: Buat soal kustom manual atau tarik soal instan dari Online Judge (TLX TOKI, Codeforces, CSES, AtCoder) ala VJudge.</p>
                             </div>
                             <div class="relative z-10 flex items-center gap-2.5 shrink-0 flex-wrap">
                                 <button type="button" @click="openVJudgeModal()" class="px-4 py-2.5 bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400 hover:brightness-110 text-slate-950 font-black text-xs rounded-xl shadow-lg transition-all active:scale-95 flex items-center gap-2 cursor-pointer ring-2 ring-white/30">
@@ -332,6 +332,213 @@
                                 </button>
                             </div>
                         </div>
+
+                        <!-- DUA PILIHAN / MODE SOAL: MANUAL VS VJUDGE -->
+                        <div class="bg-white p-2 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center gap-2">
+                            <button type="button" 
+                                    @click="setCpMode('manual')"
+                                    class="flex-1 w-full py-3 px-4 rounded-xl font-black text-xs transition-all flex items-center justify-center gap-2.5 cursor-pointer border"
+                                    :class="(activeNode.cpMode !== 'vjudge') ? 'bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-md border-emerald-500' : 'bg-slate-50 text-slate-600 hover:bg-slate-100 border-transparent'">
+                                <span class="text-base">✍️</span>
+                                <div class="text-left sm:text-center">
+                                    <div class="leading-tight">Opsi 1: Buat Soal Manual (Kustom)</div>
+                                    <span class="text-[10px] font-medium opacity-80">Rancang deskripsi, batasan & testcase sendiri</span>
+                                </div>
+                            </button>
+                            <button type="button" 
+                                    @click="setCpMode('vjudge')"
+                                    class="flex-1 w-full py-3 px-4 rounded-xl font-black text-xs transition-all flex items-center justify-center gap-2.5 cursor-pointer border"
+                                    :class="(activeNode.cpMode === 'vjudge') ? 'bg-gradient-to-r from-indigo-900 via-sky-800 to-teal-800 text-white shadow-md border-indigo-600' : 'bg-slate-50 text-slate-600 hover:bg-slate-100 border-transparent'">
+                                <span class="text-base">⚡</span>
+                                <div class="text-left sm:text-center">
+                                    <div class="flex items-center justify-center gap-1.5 leading-tight">
+                                        <span>Opsi 2: Mode VJudge (Crawler Otomatis)</span>
+                                        <span class="px-1.5 py-0.2 rounded-md bg-amber-400 text-slate-950 font-black text-[9px] uppercase tracking-wider">Praktis</span>
+                                    </div>
+                                    <span class="text-[10px] font-medium opacity-80">Ambil dari TLX, Codeforces, CSES tanpa repot</span>
+                                </div>
+                            </button>
+                        </div>
+
+                        <!-- ============================================================= -->
+                        <!-- OPSI 2: TAMPILAN MODE VJUDGE (ONLINE JUDGE AUTO-CRAWLER)      -->
+                        <!-- ============================================================= -->
+                        <div x-show="activeNode.cpMode === 'vjudge'" class="space-y-6 animate-fade-in">
+                            
+                            <!-- QUICK FETCH CONTROL BAR -->
+                            <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-6 rounded-3xl shadow-xl border border-slate-800 space-y-4">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                                    <div>
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold text-[10px] border border-emerald-500/30">Auto-Crawler & Parser</span>
+                                            <span class="text-xs text-slate-400 font-medium">• Siap Pakai untuk Siswa</span>
+                                        </div>
+                                        <h4 class="font-black text-sm text-white">Tarik Soal Online Judge Secara Instan</h4>
+                                    </div>
+                                    <button type="button" @click="openVJudgeModal()" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl border border-white/20 transition-all flex items-center gap-1.5 shrink-0 cursor-pointer">
+                                        <span>📋 Buka Modal & Smart Paste</span>
+                                    </button>
+                                </div>
+
+                                <!-- Input Box & Platform Chips -->
+                                <div class="space-y-3">
+                                    <div class="flex flex-col sm:flex-row gap-2">
+                                        <div class="relative flex-1">
+                                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                                            </div>
+                                            <input type="text"
+                                                   x-model="vjudgeInputQuery"
+                                                   @keydown.enter.prevent="fetchAndApplyDirectVJudge()"
+                                                   placeholder="Ketik kode soal (contoh: osn-2014-2c, troc-30-a, 4A, 1068, abc300_a) atau link..."
+                                                   class="w-full pl-10 pr-4 py-3 bg-slate-800/90 border border-slate-700 text-white rounded-2xl text-xs font-bold focus:ring-2 focus:ring-emerald-400 shadow-inner">
+                                        </div>
+                                        <button type="button"
+                                                @click="fetchAndApplyDirectVJudge()"
+                                                :disabled="vjudgeLoading"
+                                                class="px-6 py-3 bg-gradient-to-r from-emerald-500 via-teal-400 to-sky-400 hover:brightness-110 text-slate-950 font-black text-xs rounded-2xl shadow-lg transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 shrink-0 cursor-pointer">
+                                            <svg x-show="vjudgeLoading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-slate-950" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                            <span x-text="vjudgeLoading ? 'Mengambil...' : '⚡ Pasang Soal'"></span>
+                                        </button>
+                                    </div>
+
+                                    <!-- Quick Chips Selection -->
+                                    <div class="flex items-center gap-1.5 flex-wrap pt-1">
+                                        <span class="text-[10px] font-black uppercase text-slate-400">Rekomendasi Cepat:</span>
+                                        <button type="button" @click="fetchAndApplyDirectVJudge('osn-2014-2c', 'tlx')" class="px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 rounded-lg text-[11px] font-black border border-amber-500/40 transition-colors cursor-pointer">TLX: osn-2014-2c (Sang Pelompat)</button>
+                                        <button type="button" @click="fetchAndApplyDirectVJudge('osn-2019-1a', 'tlx')" class="px-2.5 py-1 bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 rounded-lg text-[11px] font-black border border-orange-500/40 transition-colors cursor-pointer">TLX: osn-2019-1a (Mengumpulkan Peserta)</button>
+                                        <button type="button" @click="fetchAndApplyDirectVJudge('troc-30-a', 'tlx')" class="px-2.5 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 rounded-lg text-[11px] font-black border border-emerald-500/40 transition-colors cursor-pointer">TLX: troc-30-a (Membagi Permen)</button>
+                                        <button type="button" @click="fetchAndApplyDirectVJudge('4A', 'codeforces')" class="px-2.5 py-1 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 rounded-lg text-[11px] font-black border border-blue-500/40 transition-colors cursor-pointer">CF: 4A (Watermelon)</button>
+                                        <button type="button" @click="fetchAndApplyDirectVJudge('71A', 'codeforces')" class="px-2.5 py-1 bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 rounded-lg text-[11px] font-black border border-indigo-500/40 transition-colors cursor-pointer">CF: 71A (Way Too Long Words)</button>
+                                        <button type="button" @click="fetchAndApplyDirectVJudge('1068', 'cses')" class="px-2.5 py-1 bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 rounded-lg text-[11px] font-black border border-teal-500/40 transition-colors cursor-pointer">CSES: 1068 (Weird Algorithm)</button>
+                                        <button type="button" @click="fetchAndApplyDirectVJudge('abc300_a', 'atcoder')" class="px-2.5 py-1 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 rounded-lg text-[11px] font-black border border-purple-500/40 transition-colors cursor-pointer">AtCoder: abc300_a</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ACTIVE PROBLEM CARD (VJUDGE CLEAN DISPLAY) -->
+                            <template x-if="activeNode.problemDescription">
+                                <div class="bg-white rounded-3xl border border-indigo-50 shadow-[0_4px_20px_rgba(0,0,0,0.04)] overflow-hidden space-y-5 p-6">
+                                    
+                                    <!-- Header Info Bar -->
+                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                                        <div>
+                                            <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                                                <span class="px-2.5 py-0.5 rounded-full bg-indigo-600 text-white font-black text-[10px] uppercase" x-text="activeNode.sourcePlatform || 'Online Judge'"></span>
+                                                <template x-if="activeNode.sourceContest">
+                                                    <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold text-[10px]" x-text="activeNode.sourceContest"></span>
+                                                </template>
+                                                <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[10px]" x-text="activeNode.difficulty"></span>
+                                                <span class="text-xs text-slate-400 font-bold" x-text="(activeNode.timeLimit || 1) + ' detik • ' + (activeNode.memoryLimit || 64) + ' MB'"></span>
+                                            </div>
+                                            <h3 class="text-xl font-black text-slate-900 flex items-center gap-2">
+                                                <span x-text="activeNode.title"></span>
+                                                <template x-if="activeNode.sourceUrl">
+                                                    <a :href="activeNode.sourceUrl" target="_blank" class="text-indigo-600 hover:text-indigo-800 text-xs font-bold" title="Buka di Website Asli">↗</a>
+                                                </template>
+                                            </h3>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <button type="button" @click="openVJudgeModal()" class="px-3.5 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors cursor-pointer">
+                                                🔄 Ganti Soal
+                                            </button>
+                                            <button type="button" @click="setCpMode('manual')" class="px-3.5 py-2 text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-xl transition-colors cursor-pointer">
+                                                ✍️ Edit Kustom (Mode Manual)
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tags Chips -->
+                                    <template x-if="getCpTags().length > 0">
+                                        <div class="flex items-center gap-1.5 flex-wrap">
+                                            <span class="text-[10px] font-black uppercase text-slate-400">Tag Topik:</span>
+                                            <template x-for="tag in getCpTags()" :key="tag">
+                                                <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 rounded-lg text-[10px] font-bold" x-text="'#' + tag"></span>
+                                            </template>
+                                        </div>
+                                    </template>
+
+                                    <!-- Problem Statement Body -->
+                                    <div class="space-y-4 pt-2">
+                                        <div>
+                                            <h4 class="font-black text-xs text-slate-800 uppercase tracking-wider mb-2">Deskripsi Soal</h4>
+                                            <div class="text-xs text-slate-700 leading-relaxed whitespace-pre-line bg-slate-50/70 p-4 rounded-2xl border border-slate-100" x-text="activeNode.problemDescription"></div>
+                                        </div>
+
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <h4 class="font-black text-[11px] text-slate-800 uppercase tracking-wider mb-1.5">Format Masukan</h4>
+                                                <div class="text-xs text-slate-600 bg-slate-50/70 p-3.5 rounded-2xl border border-slate-100 whitespace-pre-line" x-text="activeNode.inputFormat || '-'"></div>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-black text-[11px] text-slate-800 uppercase tracking-wider mb-1.5">Format Keluaran</h4>
+                                                <div class="text-xs text-slate-600 bg-slate-50/70 p-3.5 rounded-2xl border border-slate-100 whitespace-pre-line" x-text="activeNode.outputFormat || '-'"></div>
+                                            </div>
+                                        </div>
+
+                                        <template x-if="activeNode.constraints">
+                                            <div>
+                                                <h4 class="font-black text-[11px] text-slate-800 uppercase tracking-wider mb-1.5">Batasan</h4>
+                                                <div class="text-xs text-slate-600 bg-slate-50/70 p-3.5 rounded-2xl border border-slate-100 whitespace-pre-line" x-text="activeNode.constraints"></div>
+                                            </div>
+                                        </template>
+
+                                        <!-- Samples Table -->
+                                        <template x-if="activeNode.samples && activeNode.samples.length > 0">
+                                            <div>
+                                                <h4 class="font-black text-[11px] text-slate-800 uppercase tracking-wider mb-2">Contoh Masukan & Keluaran</h4>
+                                                <div class="space-y-3">
+                                                    <template x-for="(s, sIdx) in activeNode.samples" :key="sIdx">
+                                                        <div class="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden text-xs">
+                                                            <div class="px-4 py-2 bg-slate-100 border-b border-slate-200 font-black text-[11px] text-slate-700 flex items-center justify-between">
+                                                                <span x-text="'Contoh #' + (sIdx + 1)"></span>
+                                                                <span class="text-[10px] text-slate-400 font-normal" x-text="s.explanation || ''"></span>
+                                                            </div>
+                                                            <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                                                                <div class="p-3 bg-white">
+                                                                    <span class="text-[9px] font-bold text-slate-400 uppercase block mb-1">Input:</span>
+                                                                    <pre class="font-mono text-xs text-slate-900 whitespace-pre-wrap" x-text="s.input"></pre>
+                                                                </div>
+                                                                <div class="p-3 bg-white">
+                                                                    <span class="text-[9px] font-bold text-slate-400 uppercase block mb-1">Output:</span>
+                                                                    <pre class="font-mono text-xs text-slate-900 whitespace-pre-wrap" x-text="s.output"></pre>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <!-- Auto-Grading Readiness Status -->
+                                        <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-3 text-xs text-emerald-950 font-bold">
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-base">✓</span>
+                                                <span>Soal ini siap diuji otomatis di LMS Player. Sebanyak <span class="font-black" x-text="(activeNode.testCases || []).length"></span> Kasus Uji Penilaian (100 Poin) telah diaktifkan secara otomatis.</span>
+                                            </div>
+                                            <span class="px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[10px] font-black uppercase tracking-wider shrink-0">Auto-Judge Ready</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- EMPTY STATE IF NO PROBLEM YET IN VJUDGE MODE -->
+                            <template x-if="!activeNode.problemDescription">
+                                <div class="bg-white rounded-3xl border-2 border-dashed border-slate-200 p-12 text-center space-y-3">
+                                    <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-3xl mx-auto">
+                                        ⚡
+                                    </div>
+                                    <h4 class="font-black text-base text-slate-900">Belum Ada Soal Online Judge yang Dipasang</h4>
+                                    <p class="text-xs text-slate-500 max-w-md mx-auto">Ketik kode soal (misal: <strong>osn-2014-2c</strong> atau <strong>4A</strong> atau <strong>1068</strong>) di kotak atas, atau klik salah satu tombol rekomendasi untuk langsung memasang soal secara instan!</p>
+                                </div>
+                            </template>
+
+                        </div>
+
+                        <!-- ============================================================= -->
+                        <!-- OPSI 1: TAMPILAN MODE MANUAL (KUSTOM SENDIRI)                 -->
+                        <!-- ============================================================= -->
+                        <div x-show="activeNode.cpMode !== 'vjudge'" class="space-y-6 animate-fade-in">
 
                         <!-- SPESIFIKASI & LIMIT SOAL -->
                         <div class="bg-white p-6 rounded-3xl border border-indigo-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-5">
@@ -626,7 +833,9 @@
                             </div>
                         </div>
 
-                    </div>
+                        </div> <!-- END OPSI 1: MODE MANUAL -->
+
+                    </div> <!-- END PEMROGRAMAN EDITOR -->
 
                     <!-- KUIS EDITOR (Form Builder) -->
                     <div x-show="activeNode.type === 'kuis' || activeNode.type === 'video'" class="space-y-6 animate-fade-in">
@@ -1934,6 +2143,10 @@
                 vjudgeError: '',
                 vjudgePreviewProblem: null,
                 vjudgePresets: [
+                    { id: 'tlx_osn_2014_2c', platform: 'TLX', code: 'osn-2014-2c', name: 'A - Sang Pelompat (OSN 2014)', tag: 'BFS / 0-1 Shortest Path', difficulty: 'OSN / KSN', color: 'from-amber-600 to-yellow-600' },
+                    { id: 'tlx_osn_2019_1a', platform: 'TLX', code: 'osn-2019-1a', name: 'A - Mengumpulkan Peserta (OSN 2019)', tag: 'Greedy / Two Pointers', difficulty: 'Mudah', color: 'from-orange-600 to-amber-600' },
+                    { id: 'tlx_troc_30_a', platform: 'TLX', code: 'troc-30-a', name: 'A - Membagi Permen (TROC 30)', tag: 'Math / Implementation', difficulty: 'Mudah', color: 'from-emerald-600 to-teal-600' },
+                    { id: 'tlx_ksn_2020_1a', platform: 'TLX', code: 'ksn-2020-1a', name: 'A - Pertahanan Bogor (KSN 2020)', tag: 'DP / Graph Theory', difficulty: 'Sedang', color: 'from-blue-600 to-cyan-600' },
                     { id: 'cf_4a', platform: 'Codeforces', code: '4A', name: 'Watermelon', tag: 'Math / Brute Force', difficulty: 'Mudah', color: 'from-amber-500 to-rose-500' },
                     { id: 'cf_71a', platform: 'Codeforces', code: '71A', name: 'Way Too Long Words', tag: 'Strings', difficulty: 'Mudah', color: 'from-blue-500 to-indigo-600' },
                     { id: 'cf_158a', platform: 'Codeforces', code: '158A', name: 'Next Round', tag: 'Implementation', difficulty: 'Mudah', color: 'from-emerald-500 to-teal-600' },
@@ -2092,6 +2305,11 @@
                         quizTimeMethod: node.quizTimeMethod || 'pause',
                         quizAutoScore: node.quizAutoScore !== undefined ? node.quizAutoScore : true,
                         // CP / Pemrograman properties
+                        cpMode: node.cpMode || (node.sourcePlatform ? 'vjudge' : 'manual'),
+                        sourcePlatform: node.sourcePlatform || '',
+                        sourceId: node.sourceId || '',
+                        sourceUrl: node.sourceUrl || '',
+                        sourceContest: node.sourceContest || '',
                         timeLimit: node.timeLimit !== undefined ? node.timeLimit : 1.0,
                         memoryLimit: node.memoryLimit !== undefined ? node.memoryLimit : 256,
                         difficulty: node.difficulty || 'Sedang',
@@ -2502,6 +2720,54 @@
                 // ==========================================
                 // VJUDGE ONLINE JUDGE IMPORTER METHODS
                 // ==========================================
+                setCpMode(mode) {
+                    if (!this.activeNode) return;
+                    this.activeNode.cpMode = mode;
+                    this.saveLocalDraft();
+                    this.debounceSave();
+                },
+
+                async fetchAndApplyDirectVJudge(customQuery, platform) {
+                    const q = (customQuery || this.vjudgeInputQuery || '').trim();
+                    if (!q) {
+                        this.showToast('Ketik kode atau URL soal terlebih dahulu!', true);
+                        return;
+                    }
+                    if (customQuery) {
+                        this.vjudgeInputQuery = customQuery;
+                    }
+                    if (!this.activeNode) {
+                        this.showToast('Pilih modul pemrograman terlebih dahulu!', true);
+                        return;
+                    }
+                    this.vjudgeLoading = true;
+                    this.vjudgeError = '';
+                    try {
+                        const payload = {
+                            action: 'fetch_external_problem',
+                            url: q,
+                            platform: platform || 'auto'
+                        };
+                        const res = await fetch('/api/pg-lms', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        const data = await res.json().catch(() => ({}));
+                        if (res.ok && data.success && data.problem) {
+                            this.vjudgePreviewProblem = data.problem;
+                            this.applyVJudgeProblemToActiveNode();
+                            this.setCpMode('vjudge');
+                        } else {
+                            this.showToast(data.message || 'Gagal mengambil soal dari Online Judge', true);
+                        }
+                    } catch (err) {
+                        this.showToast(err.message || 'Terjadi kesalahan jaringan', true);
+                    } finally {
+                        this.vjudgeLoading = false;
+                    }
+                },
+
                 openVJudgeModal() {
                     this.showVJudgeModal = true;
                     this.vjudgeError = '';
@@ -2578,6 +2844,11 @@
 
                     // Ensure node is of type pemrograman
                     this.activeNode.type = 'pemrograman';
+                    this.activeNode.cpMode = 'vjudge';
+                    this.activeNode.sourcePlatform = prob.platform || '';
+                    this.activeNode.sourceId = prob.sourceId || '';
+                    this.activeNode.sourceUrl = prob.sourceUrl || '';
+                    this.activeNode.sourceContest = prob.sourceContest || '';
 
                     // Update fields
                     this.activeNode.title = prob.title || this.activeNode.title;
@@ -2936,6 +3207,9 @@
                         if (!Array.isArray(node.testCases)) node.testCases = [];
                         if (!node.starterCodes) {
                             node.starterCodes = { cpp: '', python: '', pascal: '', c: '', java: '' };
+                        }
+                        if (!node.cpMode) {
+                            node.cpMode = (node.sourcePlatform ? 'vjudge' : 'manual');
                         }
                     }
                     this.activeNode = node;

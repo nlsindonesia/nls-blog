@@ -999,6 +999,25 @@
                             <!-- TLX Sub-Header / Problem Specs Bar -->
                             <div class="bg-slate-900/95 backdrop-blur-xl rounded-3xl p-5 sm:p-6 border border-slate-800 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4 text-white">
                                 <div class="flex flex-wrap items-center gap-3">
+                                    <!-- Source Platform / VJudge Badge -->
+                                    <template x-if="activeNode.sourcePlatform">
+                                        <div class="flex items-center gap-2">
+                                            <span class="px-3.5 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 flex items-center gap-1.5">
+                                                <span class="text-sm">⚡</span>
+                                                <span x-text="activeNode.sourcePlatform"></span>
+                                                <template x-if="activeNode.sourceContest">
+                                                    <span class="opacity-80 font-semibold text-[11px]" x-text="'• ' + activeNode.sourceContest"></span>
+                                                </template>
+                                            </span>
+                                            <template x-if="activeNode.sourceUrl">
+                                                <a :href="activeNode.sourceUrl" target="_blank" class="px-2.5 py-1.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 transition-colors flex items-center gap-1" title="Buka soal asli">
+                                                    <span>Web Asli</span>
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                                </a>
+                                            </template>
+                                        </div>
+                                    </template>
+
                                     <!-- Difficulty Badge -->
                                     <span class="px-3.5 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider border flex items-center gap-2"
                                         :class="(activeNode.difficulty === 'Mudah') ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' :
