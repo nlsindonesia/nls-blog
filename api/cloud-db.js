@@ -147,7 +147,13 @@ export async function getCloudStore() {
 
         // 5. Courses & Quiz Submissions
         if (results[4].status === 'fulfilled' && results[4].value.status === 200) {
-            const d = results[4].value.data;
+            let d = results[4].value.data;
+            if (typeof d === 'string') {
+                try { d = JSON.parse(d); } catch(e) {}
+            }
+            if (d && typeof d.data === 'string') {
+                try { const inner = JSON.parse(d.data); if (inner) d = inner; } catch(e) {}
+            }
             if (d) {
                 if (Array.isArray(d.courses)) {
                     localMemoryCache.courses = d.courses;

@@ -897,14 +897,36 @@ export default async function handler(request, response) {
 
             // Single course requested (e.g. LMS player) -> Fetch exact row with full modules via O(1) indexed primary key seek
             if (targetCourseId) {
-                const res = await sql`SELECT content_json FROM lms_courses WHERE id = ${targetCourseId} LIMIT 1`;
-                if (res.rows.length === 0) {
+                let course = null;
+                try {
+                    const res = await sql`SELECT content_json FROM lms_courses WHERE id = ${targetCourseId} LIMIT 1`;
+                    if (res.rows.length > 0) {
+                        course = res.rows[0].content_json;
+                        if (typeof course === 'string') {
+                            try { course = JSON.parse(course); } catch(e) {}
+                        }
+                    }
+                } catch(e) {}
+
+                // Fallback to Cloud Store if not found in Postgres
+                if (!course) {
+                    try {
+                        const store = await getCloudStore();
+                        if (Array.isArray(store.courses)) {
+                            course = store.courses.find(c => c && c.id === targetCourseId);
+                        }
+                    } catch(e) {}
+                }
+
+                // Fallback to defaultCourses
+                if (!course) {
+                    course = defaultCourses.find(c => c.id === targetCourseId);
+                }
+
+                if (!course) {
                     return response.status(404).json({ success: false, message: 'Course not found.' });
                 }
-                let course = res.rows[0].content_json;
-                if (typeof course === 'string') {
-                    try { course = JSON.parse(course); } catch(e) {}
-                }
+
                 const realPassword = course.password;
                 delete course.password; // Never send password to client
 
@@ -977,38 +999,42 @@ export default async function handler(request, response) {
                 return c;
             });
 
-            // High-Availability Fallback: If Postgres returned 0 courses, load from Cloud Store!
-            if (courses.length === 0) {
-                try {
-                    const store = await getCloudStore();
-                    if (Array.isArray(store.courses) && store.courses.length > 0) {
-                        let cloudList = store.courses
-                            .filter(c => c && c.status !== 'draft' && c.status !== 'trashed')
-                            .filter(c => c.visibility !== 'private');
+            // High-Availability Multi-Source Sync: Merge Cloud Store courses (e.g. user-created courses)
+            try {
+                const store = await getCloudStore();
+                if (Array.isArray(store.courses) && store.courses.length > 0) {
+                    let cloudList = store.courses
+                        .filter(c => c && c.status !== 'draft' && c.status !== 'trashed')
+                        .filter(c => c.visibility !== 'private');
 
-                        if (category && level) {
-                            cloudList = cloudList.filter(c => c.category && c.category.toLowerCase() === category.toLowerCase() && c.level && c.level.toLowerCase() === level.toLowerCase());
-                        } else if (category) {
-                            cloudList = cloudList.filter(c => c.category && c.category.toLowerCase() === category.toLowerCase());
-                        } else if (level) {
-                            cloudList = cloudList.filter(c => c.level && c.level.toLowerCase() === level.toLowerCase());
-                        }
-
-                        courses = cloudList.map(c => {
-                            let copy = { ...c };
-                            delete copy.password;
-                            if (copy.visibility === 'password_protected') {
-                                copy.isLocked = true;
-                                copy.modules = [];
-                                copy.babs = [];
-                                copy.content = [];
-                            }
-                            const { modules, babs, ...summary } = copy;
-                            return wantFull ? copy : summary;
-                        });
+                    if (category && level) {
+                        cloudList = cloudList.filter(c => c.category && c.category.toLowerCase() === category.toLowerCase() && c.level && c.level.toLowerCase() === level.toLowerCase());
+                    } else if (category) {
+                        cloudList = cloudList.filter(c => c.category && c.category.toLowerCase() === category.toLowerCase());
+                    } else if (level) {
+                        cloudList = cloudList.filter(c => c.level && c.level.toLowerCase() === level.toLowerCase());
                     }
-                } catch(e) {}
-            }
+
+                    cloudList.forEach(c => {
+                        let copy = { ...c };
+                        delete copy.password;
+                        if (copy.visibility === 'password_protected') {
+                            copy.isLocked = true;
+                            copy.modules = [];
+                            copy.babs = [];
+                            copy.content = [];
+                        }
+                        const { modules, babs, ...summary } = copy;
+                        const item = wantFull ? copy : summary;
+                        const existingIdx = courses.findIndex(existing => existing.id === item.id);
+                        if (existingIdx >= 0) {
+                            courses[existingIdx] = item;
+                        } else {
+                            courses.unshift(item);
+                        }
+                    });
+                }
+            } catch(e) {}
 
             return response.status(200).json({ success: true, data: courses });
         }
@@ -1281,10 +1307,10 @@ export default async function handler(request, response) {
 
         // --- 8. ADMIN: GET ALL COURSES ---
         if (action === 'admin_get_courses' || (!action && request.method === 'GET' && request.url.includes('/api/pg-lms'))) { // fallback
-            let courses = [];
+            let pgCourses = [];
             try {
                 const res = await sql`SELECT content_json FROM lms_courses ORDER BY created_at DESC`;
-                courses = res.rows.map(r => {
+                pgCourses = res.rows.map(r => {
                     let c = r.content_json;
                     if (typeof c === 'string') {
                         try { c = JSON.parse(c); } catch(e) {}
@@ -1292,20 +1318,36 @@ export default async function handler(request, response) {
                     return c;
                 }).filter(Boolean);
             } catch(err) {
-                courses = [];
+                pgCourses = [];
             }
 
-            // High-Availability Fallback: If Postgres failed or returned 0, load from Cloud Store
-            if (courses.length === 0) {
-                try {
-                    const store = await getCloudStore();
-                    if (Array.isArray(store.courses) && store.courses.length > 0) {
-                        courses = store.courses;
-                    }
-                } catch(e) {}
-            }
+            let cloudCourses = [];
+            try {
+                const store = await getCloudStore();
+                if (Array.isArray(store.courses) && store.courses.length > 0) {
+                    cloudCourses = store.courses;
+                }
+            } catch(e) {}
 
-            return response.status(200).json({ success: true, data: courses });
+            const courseMap = new Map();
+            // 1. Default boilerplate courses
+            defaultCourses.forEach(c => { if (c && c.id) courseMap.set(c.id, c); });
+            // 2. Postgres courses
+            pgCourses.forEach(c => { if (c && c.id) courseMap.set(c.id, c); });
+            // 3. Cloud Store courses (custom user courses take priority)
+            cloudCourses.forEach(c => { if (c && c.id) courseMap.set(c.id, c); });
+
+            // Sort so user-created courses and updated courses appear at the top
+            const allCourses = Array.from(courseMap.values()).sort((a, b) => {
+                const isCustomA = (a.id && a.id.startsWith('c-178')) ? 1 : 0;
+                const isCustomB = (b.id && b.id.startsWith('c-178')) ? 1 : 0;
+                if (isCustomA !== isCustomB) return isCustomB - isCustomA;
+                const dateA = new Date(a.updated_at || a.created_at || 0).getTime();
+                const dateB = new Date(b.updated_at || b.created_at || 0).getTime();
+                return dateB - dateA;
+            });
+
+            return response.status(200).json({ success: true, data: allCourses });
         }
 
         // --- 9. ADMIN: SAVE COURSE ---

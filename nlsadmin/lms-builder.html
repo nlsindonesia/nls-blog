@@ -44,7 +44,14 @@
             </button>
             <div>
                 <h1 class="font-black text-lg text-indigo-950 leading-tight">Penyusun Konten & Modul Pembelajaran</h1>
-                <p class="text-[11px] text-indigo-800/70 font-bold tracking-wide mt-0.5" x-text="'Course: ' + courseTitle"></p>
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="text-[11px] text-indigo-800/80 font-bold tracking-wide">Pilih Course:</span>
+                    <select x-model="courseId" @change="switchCourse($event.target.value)" class="bg-white/95 border border-indigo-200 text-indigo-950 text-xs font-bold rounded-lg px-2.5 py-1 focus:ring-2 focus:ring-indigo-500 focus:outline-none shadow-sm max-w-xs truncate cursor-pointer hover:bg-white transition-all">
+                        <template x-for="c in coursesList" :key="c.id">
+                            <option :value="c.id" :selected="c.id === courseId" x-text="(c.category ? '[' + c.category + (c.level ? ' ' + c.level : '') + '] ' : '') + (c.title || c.id)"></option>
+                        </template>
+                    </select>
+                </div>
             </div>
         </div>
         <div class="flex items-center gap-4 relative z-10">
@@ -981,6 +988,7 @@
                 courseId: null,
                 courseData: null,
                 courseTitle: 'Sedang memuat...',
+                coursesList: [],
                 isSaving: false,
                 lastSaved: '',
                 showBulkModal: false,
@@ -989,7 +997,7 @@
                 previewQ: null,
                 bulkText: '',
                 toast: { show: false, message: '' },
-                                nodes: [], // fallback variable not used directly in tree anymore
+                nodes: [], // fallback variable not used directly in tree anymore
                 babs: [],
                 activeNode: null,
                 activePaketTab: 'all',
@@ -1017,12 +1025,78 @@
                     }
                 },
 
+                switchCourse(newCourseId) {
+                    if (!newCourseId) return;
+                    if (this.courseId === newCourseId) return;
+
+                    // Backup current draft
+                    if (this.babs && this.babs.length > 0) {
+                        localStorage.setItem('lms_builder_draft', JSON.stringify(this.babs));
+                    }
+
+                    const target = this.coursesList.find(c => c && c.id === newCourseId);
+                    if (target) {
+                        this.courseId = target.id;
+                        this.courseData = target;
+                        this.courseTitle = target.title || 'Course';
+                        this.babs = (target.babs && target.babs.length > 0) ? target.babs : 
+                                    ((target.content && target.content.length > 0) ? target.content : (target.modules || []));
+                        this.activeNode = null;
+
+                        const url = new URL(window.location);
+                        url.searchParams.set('course', target.id);
+                        url.searchParams.delete('node');
+                        window.history.pushState({ courseId: target.id }, '', url);
+                        this.showToast('Memuat: ' + (target.title || target.id));
+                    }
+                },
+
+                async forceSyncToVercel() {
+                    this.isSaving = true;
+                    try {
+                        if (this.activeNode && this.editorInstance) {
+                            this.activeNode.rawHtml = this.editorInstance.getData();
+                        }
+                        if (this.courseData) {
+                            this.courseData.babs = this.babs;
+                            this.courseData.content = this.babs;
+                            this.courseData.modules = this.babs;
+                            this.courseData.updated_at = new Date().toISOString();
+
+                            const res = await fetch('/api/pg-lms', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ action: 'admin_save_course', course: this.courseData })
+                            });
+
+                            if (res.ok) {
+                                localStorage.setItem('lms_builder_draft', JSON.stringify(this.babs));
+                                const now = new Date();
+                                this.lastSaved = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+                                this.showToast('✓ Berhasil disinkronisasi ke Vercel & Cloud Database!');
+                            } else {
+                                this.showToast('Sinkronisasi gagal (Status ' + res.status + ')', true);
+                            }
+                        } else {
+                            this.showToast('Pilih modul course terlebih dahulu.', true);
+                        }
+                    } catch(e) {
+                        this.showToast('Gagal terhubung ke server Vercel: ' + e.message, true);
+                    } finally {
+                        this.isSaving = false;
+                    }
+                },
+
                 async init() {
                     const urlParams = new URLSearchParams(window.location.search);
                     this.courseId = urlParams.get('course');
                     
                     window.addEventListener('popstate', (e) => {
                         const params = new URLSearchParams(window.location.search);
+                        const courseParam = params.get('course');
+                        if (courseParam && courseParam !== this.courseId) {
+                            this.switchCourse(courseParam);
+                        }
                         const nodeId = params.get('node');
                         if (nodeId) {
                             const found = this.findNodeById(nodeId);
@@ -1035,24 +1109,60 @@
                         }
                     });
 
-                    if (this.courseId) {
-                        try {
-                            const res = await fetch('/api/pg-lms');
-                            if (res.ok) {
-                                const json = await res.json();
-                                const course = (json.data || []).find(c => c && c.id === this.courseId);
-                                if (course) {
-                                    this.courseData = course;
-                                    this.courseTitle = course.title || 'Course';
-                                    this.babs = (course.babs && course.babs.length > 0) ? course.babs : 
-                                                ((course.content && course.content.length > 0) ? course.content : (course.modules || []));
-                                    
-                                    this.handleInitialNode();
-                                    return;
-                                }
+                    // 1. Fetch courses catalog for the dropdown and loader
+                    try {
+                        const res = await fetch('/api/pg-lms?action=admin_get_courses');
+                        if (res.ok) {
+                            const json = await res.json();
+                            const list = (json.data || []).filter(c => c && c.status !== 'trashed');
+                            if (list.length > 0) {
+                                this.coursesList = list;
                             }
-                        } catch(e) {}
+                        }
+                    } catch(e) {}
+
+                    // Merge any locally saved courses in browser storage
+                    try {
+                        const localRaw = localStorage.getItem('nls_lms_courses_v1');
+                        if (localRaw) {
+                            const locals = JSON.parse(localRaw);
+                            if (Array.isArray(locals)) {
+                                locals.forEach(lc => {
+                                    if (lc && lc.id && !this.coursesList.some(c => c.id === lc.id)) {
+                                        this.coursesList.push(lc);
+                                    }
+                                });
+                            }
+                        }
+                    } catch(e) {}
+
+                    // 2. Select course
+                    let targetCourse = null;
+                    if (this.courseId) {
+                        targetCourse = this.coursesList.find(c => c && c.id === this.courseId);
                     }
+
+                    // If not found or not in URL, select PENGARUH ASAM BASA or first course
+                    if (!targetCourse && this.coursesList.length > 0) {
+                        targetCourse = this.coursesList.find(c => c.id === 'c-1788097425590') || this.coursesList[0];
+                        if (targetCourse) {
+                            this.courseId = targetCourse.id;
+                            const url = new URL(window.location);
+                            url.searchParams.set('course', targetCourse.id);
+                            window.history.replaceState({ courseId: targetCourse.id }, '', url);
+                        }
+                    }
+
+                    if (targetCourse) {
+                        this.courseData = targetCourse;
+                        this.courseTitle = targetCourse.title || 'Course';
+                        this.babs = (targetCourse.babs && targetCourse.babs.length > 0) ? targetCourse.babs : 
+                                    ((targetCourse.content && targetCourse.content.length > 0) ? targetCourse.content : (targetCourse.modules || []));
+                        this.handleInitialNode();
+                        return;
+                    }
+
+                    this.courseTitle = 'Course Baru';
                     this.tryLoadDraft();
                     this.handleInitialNode();
                 },
@@ -1281,6 +1391,27 @@
                     if (this.courseId && this.courseData) {
                         this.courseData.babs = this.babs;
                         this.courseData.content = this.babs;
+                        this.courseData.modules = this.babs;
+                        this.courseData.updated_at = new Date().toISOString();
+
+                        // Keep local coursesList updated
+                        const cIdx = this.coursesList.findIndex(c => c && c.id === this.courseId);
+                        if (cIdx >= 0) {
+                            this.coursesList[cIdx] = JSON.parse(JSON.stringify(this.courseData));
+                        }
+
+                        // Keep browser localStorage courses updated
+                        try {
+                            const raw = localStorage.getItem('nls_lms_courses_v1');
+                            let localCourses = raw ? JSON.parse(raw) : [];
+                            if (Array.isArray(localCourses)) {
+                                const lIdx = localCourses.findIndex(c => c && c.id === this.courseId);
+                                if (lIdx >= 0) localCourses[lIdx] = this.courseData;
+                                else localCourses.unshift(this.courseData);
+                                localStorage.setItem('nls_lms_courses_v1', JSON.stringify(localCourses));
+                            }
+                        } catch(e) {}
+
                         try {
                             const res = await fetch('/api/pg-lms', {
                                 method: 'POST',
