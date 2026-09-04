@@ -541,12 +541,12 @@
 
                                                     <!-- Range Slider -->
                                                     <template x-if="q.type === 'range'">
-                                                        <div class="mt-8 px-4" x-init="if(typeof quizAnswers[q.id] === 'undefined' || Array.isArray(quizAnswers[q.id]) || typeof quizAnswers[q.id] === 'object') quizAnswers[q.id] = ((parseFloat(q.minRange)||0) + (parseFloat(q.maxRange)||100))/2">
+                                                        <div class="mt-8 px-4" x-init="if(typeof quizAnswers[q.id] === 'undefined' || Array.isArray(quizAnswers[q.id]) || typeof quizAnswers[q.id] === 'object') quizAnswers[q.id] = (((parseFloat(q.rangeMin ?? q.minRange)||0) + (parseFloat(q.rangeMax ?? q.maxRange)||100))/2)">
                                                             <div class="relative w-full">
-                                                                <input type="range" :min="q.minRange || 0" :max="q.maxRange || 100" :step="q.step || 1" x-model="quizAnswers[q.id]" @change="debounceAutosave()" class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                                                                <input type="range" :min="q.rangeMin ?? q.minRange ?? 0" :max="q.rangeMax ?? q.maxRange ?? 100" :step="q.rangeStep ?? q.step ?? 1" x-model="quizAnswers[q.id]" @change="debounceAutosave()" class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
                                                                 <div class="flex justify-between mt-3 text-xs font-black text-slate-400">
-                                                                    <span x-text="q.minRange || 0"></span>
-                                                                    <span x-text="q.maxRange || 100"></span>
+                                                                    <span x-text="q.rangeMin ?? q.minRange ?? 0"></span>
+                                                                    <span x-text="q.rangeMax ?? q.maxRange ?? 100"></span>
                                                                 </div>
                                                                 <div class="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-indigo-600 text-white font-black px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap">
                                                                     Jawaban: <span x-text="quizAnswers[q.id]"></span>
@@ -1825,12 +1825,12 @@
                             const ans = this.quizAnswers[q.id] || {};
                             let correctParts = 0;
                             const totalParts = (q.blankText.match(/{dash}/g) || []).length;
-                            const keys = q.blankAnswers.split('|').map(s => s.trim().toLowerCase());
+                            const keys = (q.blankAnswers || '').split('|').map(s => s.trim().toLowerCase());
                             for(let i=0; i<totalParts; i++) {
                                 let expected = keys[i] ? keys[i].split(',').map(s => s.trim()) : [];
                                 if (ans[i] && expected.includes(ans[i].trim().toLowerCase())) correctParts++;
                             }
-                            if(totalParts > 0) qScore = (correctParts / totalParts) * q.points;
+                            if (totalParts > 0) correct += (correctParts / totalParts);
                         }
                         else if (q.type === 'osn_biologi') {
                             const ans = this.quizAnswers[q.id] || {};
@@ -1840,14 +1840,13 @@
                                     if (ans[idx] === stmt.isTrue.toString()) correctStmts++;
                                 });
                             }
-                            if (correctStmts === 4) qScore = q.points;
-                            else if (correctStmts === 3) qScore = q.points * 0.6;
-                            else if (correctStmts === 2) qScore = q.points * 0.2;
-                            else qScore = 0;
+                            if (correctStmts === 4) correct += 1;
+                            else if (correctStmts === 3) correct += 0.6;
+                            else if (correctStmts === 2) correct += 0.2;
                         }
                         else if (q.type === 'range') {
                             const ans = this.quizAnswers[q.id];
-                            if (ans && parseFloat(ans) === parseFloat(q.correctRange)) qScore = q.points;
+                            if (ans !== undefined && parseFloat(ans) === parseFloat(q.rangeCorrect ?? q.correctRange)) correct++;
                         }
                         else if (q.type === 'graph') {
                             const ans = this.quizAnswers[q.id] || [];
@@ -1860,7 +1859,7 @@
                                     if (!match) allCorrect = false;
                                 });
                             }
-                            if (allCorrect) qScore = q.points;
+                            if (allCorrect) correct++;
                         }
                         else if (q.type === 'puzzle') {
                             const ans = this.quizAnswers[q.id] || [];
@@ -1871,7 +1870,7 @@
                                     if (ans[i] !== i) { allCorrect = false; break; }
                                 }
                             }
-                            if (allCorrect) qScore = q.points;
+                            if (allCorrect) correct++;
                         }
                     });
 
@@ -2101,7 +2100,7 @@
                         return correctStmts === 4;
                     }
                     else if (q.type === 'range') {
-                        return parseFloat(ans) === parseFloat(q.correctRange);
+                        return parseFloat(ans) === parseFloat(q.rangeCorrect ?? q.correctRange);
                     }
                     else if (q.type === 'graph') {
                         let allCorrect = true;

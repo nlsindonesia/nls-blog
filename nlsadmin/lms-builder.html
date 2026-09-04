@@ -857,129 +857,502 @@
         </div>
     </div>
     
-    <!-- Preview Modal -->
-    <div x-show="showPreviewModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity" x-cloak>
-        <div class="bg-slate-50 w-full max-w-3xl rounded-3xl shadow-2xl border border-slate-200 flex flex-col max-h-[90vh]" @click.outside="showPreviewModal = false">
-            <div class="px-6 py-5 border-b border-slate-200 flex items-center justify-between bg-white rounded-t-3xl">
-                <h3 class="font-black text-xl text-indigo-900 flex items-center gap-2">
-                    <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                    Live Preview Soal
-                </h3>
-                <button @click="showPreviewModal = false" class="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-200 rounded-xl transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
+    <!-- Live Preview Modal -->
+    <div x-show="showPreviewModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 transition-opacity" x-cloak
+         x-data="{
+             previewSim: {
+                 pgAns: null,
+                 pgkAns: [],
+                 pgmAns: {},
+                 isianAns: '',
+                 essaiAns: '',
+                 jodohAns: {},
+                 blankAns: {},
+                 osnAns: {},
+                 rangeAns: 50,
+                 graphPoints: [],
+                 puzzleTiles: [],
+                 selectedPuzzleTile: null,
+                 showKey: false
+             },
+             initSim(q) {
+                 if (!q) return;
+                 this.previewSim.showKey = false;
+                 this.previewSim.pgAns = null;
+                 this.previewSim.pgkAns = [];
+                 this.previewSim.pgmAns = {};
+                 this.previewSim.isianAns = '';
+                 this.previewSim.essaiAns = '';
+                 this.previewSim.jodohAns = {};
+                 this.previewSim.blankAns = {};
+                 this.previewSim.osnAns = {};
+                 this.previewSim.selectedPuzzleTile = null;
+                 
+                 if (q.type === 'range') {
+                     const min = parseFloat(q.rangeMin ?? q.minRange ?? 0);
+                     const max = parseFloat(q.rangeMax ?? q.maxRange ?? 100);
+                     this.previewSim.rangeAns = q.rangeCorrect ?? q.correctRange ?? ((min + max) / 2);
+                 } else if (q.type === 'graph') {
+                     this.previewSim.graphPoints = [];
+                 } else if (q.type === 'puzzle') {
+                     const diff = parseInt(q.puzzleDifficulty) || 4;
+                     const total = diff * diff;
+                     const arr = Array.from({length: total}, (_, i) => i);
+                     for (let i = arr.length - 1; i > 0; i--) {
+                         const j = Math.floor(Math.random() * (i + 1));
+                         [arr[i], arr[j]] = [arr[j], arr[i]];
+                     }
+                     this.previewSim.puzzleTiles = arr;
+                 }
+                 this.$nextTick(() => {
+                     if (window.MathJax) window.MathJax.typesetPromise();
+                 });
+             },
+             togglePuzzleTile(pos) {
+                 if (this.previewSim.selectedPuzzleTile === null) {
+                     this.previewSim.selectedPuzzleTile = pos;
+                 } else {
+                     const prevPos = this.previewSim.selectedPuzzleTile;
+                     const temp = this.previewSim.puzzleTiles[prevPos];
+                     this.previewSim.puzzleTiles[prevPos] = this.previewSim.puzzleTiles[pos];
+                     this.previewSim.puzzleTiles[pos] = temp;
+                     this.previewSim.selectedPuzzleTile = null;
+                 }
+             },
+             handleGraphClick(e, el) {
+                 const rect = el.getBoundingClientRect();
+                 const clickX = e.clientX - rect.left;
+                 const clickY = e.clientY - rect.top;
+                 const gridX = Math.round((clickX / rect.width) * 20 - 10);
+                 const gridY = Math.round(10 - (clickY / rect.height) * 20);
+                 const existing = this.previewSim.graphPoints.findIndex(p => p.x === gridX && p.y === gridY);
+                 if (existing > -1) {
+                     this.previewSim.graphPoints.splice(existing, 1);
+                 } else {
+                     this.previewSim.graphPoints.push({ x: gridX, y: gridY });
+                 }
+             }
+         }"
+         x-init="$watch('showPreviewModal', val => { if (val) initSim(previewQ); }); $watch('previewQ', q => initSim(q));">
+        
+        <div class="bg-slate-50 w-full max-w-4xl rounded-3xl shadow-2xl border border-slate-200 flex flex-col max-h-[92vh] overflow-hidden" @click.outside="showPreviewModal = false">
+            
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-white shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-black text-lg text-slate-800 leading-tight">Live Preview Soal</h3>
+                        <p class="text-xs text-slate-400 font-medium">Simulasi interaktif tampilan siswa & uji coba kunci jawaban</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <!-- Toggle Kunci Jawaban -->
+                    <button @click="previewSim.showKey = !previewSim.showKey; $nextTick(() => { if (window.MathJax) MathJax.typesetPromise(); })"
+                            :class="previewSim.showKey ? 'bg-emerald-500 text-white shadow-emerald-200 shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'"
+                            class="px-3.5 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 border border-transparent">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span x-text="previewSim.showKey ? 'Sembunyikan Kunci' : 'Lihat Kunci Jawaban'"></span>
+                    </button>
+                    
+                    <button @click="showPreviewModal = false" class="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
             </div>
-            <div class="p-6 overflow-y-auto flex-1 bg-white">
+
+            <!-- Modal Content Area -->
+            <div class="p-5 sm:p-8 overflow-y-auto flex-1 bg-slate-50/50 space-y-6">
                 <template x-if="previewQ">
-                    <div class="w-full bg-white rounded-[2.5rem] p-6 sm:p-10 shadow-xl border-2 border-indigo-100 ring-4 ring-indigo-50 relative pointer-events-none">
-                        <!-- Header Soal -->
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-indigo-50">
-                            <div class="flex items-center gap-3">
-                                <span class="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-sky-500 text-white font-black text-sm shadow-sm shadow-indigo-200">
+                    <div class="w-full bg-white rounded-[2rem] p-6 sm:p-8 shadow-sm border border-slate-200 relative">
+                        
+                        <!-- Top Metadata Badges -->
+                        <div class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-5 border-b border-slate-100">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-indigo-500 to-sky-500 text-white font-black text-xs shadow-sm">
                                     Simulasi Tampilan Siswa
                                 </span>
+                                <template x-if="previewQ.paket">
+                                    <span class="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 font-bold text-xs border border-emerald-200">
+                                        Paket <span x-text="previewQ.paket"></span>
+                                    </span>
+                                </template>
+                                <span class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs border border-slate-200 uppercase tracking-wider"
+                                      x-text="
+                                          previewQ.type === 'pg' ? '📝 Pilihan Ganda' :
+                                          previewQ.type === 'pg_kompleks' ? '☑️ PG Kompleks' :
+                                          previewQ.type === 'pg_majemuk' ? '⚖️ B/S Majemuk' :
+                                          previewQ.type === 'jodoh' ? '🔗 Menjodohkan' :
+                                          previewQ.type === 'isian' ? '✏️ Isian Singkat' :
+                                          previewQ.type === 'essai' ? '📄 Esai / Uraian' :
+                                          previewQ.type === 'blank' ? '📝 Isi Titik-Titik' :
+                                          previewQ.type === 'osn_biologi' ? '🧬 OSN Biologi (4 B/S)' :
+                                          previewQ.type === 'range' ? '🎯 Range Slider' :
+                                          previewQ.type === 'graph' ? '📈 Titik Koordinat' :
+                                          previewQ.type === 'puzzle' ? '🧩 Jigsaw Puzzle' : previewQ.type
+                                      ">
+                                </span>
                             </div>
-                            <span class="px-4 py-2 rounded-xl bg-indigo-50 text-indigo-700 font-black text-sm border-2 border-indigo-100 uppercase tracking-wider" x-text="previewQ.points + ' Poin'"></span>
+                            
+                            <span class="px-3.5 py-1.5 rounded-xl bg-amber-50 text-amber-800 font-black text-xs border border-amber-200" x-text="(previewQ.points || 10) + ' Poin'"></span>
                         </div>
 
-                        <!-- Teks Soal -->
-                        <div class="prose prose-lg prose-slate max-w-none mb-8 text-slate-800 font-medium">
-                            <div x-html="previewQ.text"></div>
+                        <!-- Teks Pertanyaan -->
+                        <div class="prose prose-slate max-w-none mb-8 text-slate-800 font-medium leading-relaxed">
+                            <div class="text-base sm:text-lg" x-html="previewQ.text ? previewQ.text.replace(/{dash}/g, '_____') : '<p class=\'text-slate-400 italic\'>Belum ada teks pertanyaan.</p>'"></div>
                         </div>
 
-                        <!-- Opsi (Simulation) -->
-                        <div class="pl-2">
+                        <!-- Interactive Question Simulation Body -->
+                        <div class="space-y-6">
+                            
+                            <!-- 1. PG Sederhana -->
                             <template x-if="previewQ.type === 'pg'">
                                 <div class="space-y-3">
-                                    <template x-for="(opt, oIdx) in previewQ.options" :key="oIdx">
-                                        <label class="flex items-start gap-4 p-5 rounded-2xl border-2 hover:bg-indigo-50/30 transition-all border-slate-100">
-                                            <div class="w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0 font-bold mt-0.5 transition-colors border-slate-200 text-slate-400">
+                                    <template x-for="(opt, oIdx) in (previewQ.options || [])" :key="oIdx">
+                                        <label class="flex items-start gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all"
+                                               :class="previewSim.pgAns === oIdx ? 'bg-indigo-50/80 border-indigo-400 shadow-md shadow-indigo-100/50' : (previewSim.showKey && previewQ.correctAnswers == oIdx ? 'bg-emerald-50/80 border-emerald-400' : 'border-slate-100 hover:border-indigo-200 hover:bg-slate-50/60')">
+                                            <div class="w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0 font-bold mt-0.5 transition-colors"
+                                                 :class="previewSim.pgAns === oIdx ? 'bg-indigo-500 text-white border-indigo-500' : (previewSim.showKey && previewQ.correctAnswers == oIdx ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-slate-50 text-slate-400 border-slate-200')">
                                                 <span x-text="String.fromCharCode(65 + oIdx)"></span>
                                             </div>
-                                            <div class="text-base text-slate-700 font-medium pt-1" x-text="opt"></div>
+                                            <input type="radio" name="preview_pg" :value="oIdx" x-model="previewSim.pgAns" class="sr-only">
+                                            <div class="text-base text-slate-700 font-medium pt-1 flex-1" x-html="opt"></div>
+                                            <template x-if="previewSim.showKey && previewQ.correctAnswers == oIdx">
+                                                <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase tracking-wider shrink-0 mt-1 border border-emerald-200">
+                                                    ✓ Kunci Jawaban
+                                                </span>
+                                            </template>
                                         </label>
                                     </template>
                                 </div>
                             </template>
 
+                            <!-- 2. PG Kompleks -->
                             <template x-if="previewQ.type === 'pg_kompleks'">
                                 <div class="space-y-3">
-                                    <template x-for="(opt, oIdx) in previewQ.options" :key="oIdx">
-                                        <label class="flex items-start gap-4 p-5 rounded-2xl border-2 border-slate-100 transition-all">
-                                            <input type="checkbox" disabled class="mt-1 w-5 h-5 text-indigo-600 border-slate-300 rounded">
-                                            <span class="text-base text-slate-700 font-medium pt-0.5" x-text="opt"></span>
+                                    <template x-for="(opt, oIdx) in (previewQ.options || [])" :key="oIdx">
+                                        <label class="flex items-start gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all"
+                                               :class="previewSim.pgkAns.includes(oIdx.toString()) ? 'bg-indigo-50/80 border-indigo-400 shadow-md shadow-indigo-100/50' : (previewSim.showKey && (previewQ.correctAnswersArray || []).map(String).includes(oIdx.toString()) ? 'bg-emerald-50/80 border-emerald-400' : 'border-slate-100 hover:border-indigo-200 hover:bg-slate-50/60')">
+                                            <input type="checkbox" :value="oIdx.toString()" x-model="previewSim.pgkAns" class="mt-1 w-5 h-5 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer">
+                                            <div class="text-base text-slate-700 font-medium pt-0.5 flex-1" x-html="opt"></div>
+                                            <template x-if="previewSim.showKey && (previewQ.correctAnswersArray || []).map(String).includes(oIdx.toString())">
+                                                <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase tracking-wider shrink-0 mt-0.5 border border-emerald-200">
+                                                    ✓ Kunci
+                                                </span>
+                                            </template>
                                         </label>
                                     </template>
                                 </div>
                             </template>
 
+                            <!-- 3. PG Majemuk (B/S) -->
                             <template x-if="previewQ.type === 'pg_majemuk'">
                                 <div class="space-y-4">
-                                    <div class="grid grid-cols-12 gap-3 text-[11px] font-black uppercase tracking-wider text-slate-400 border-b-2 border-slate-100 pb-3">
+                                    <div class="grid grid-cols-12 gap-3 text-[11px] font-black uppercase tracking-wider text-slate-400 border-b-2 border-slate-100 pb-3 px-2">
                                         <div class="col-span-8">Pernyataan</div>
-                                        <div class="col-span-2 text-center text-emerald-500">Benar</div>
-                                        <div class="col-span-2 text-center text-rose-500">Salah</div>
+                                        <div class="col-span-2 text-center text-emerald-600">Benar</div>
+                                        <div class="col-span-2 text-center text-rose-600">Salah</div>
                                     </div>
-                                    <template x-for="(stmt, sIdx) in previewQ.statements" :key="sIdx">
-                                        <div class="grid grid-cols-12 gap-3 items-center py-4 border-b border-slate-50 hover:bg-slate-50/80 rounded-xl px-2">
-                                            <div class="col-span-8 text-base font-medium text-slate-700" x-text="stmt.text"></div>
-                                            <div class="col-span-2 flex justify-center"><input type="radio" disabled class="w-5 h-5 text-emerald-500 border-slate-300"></div>
-                                            <div class="col-span-2 flex justify-center"><input type="radio" disabled class="w-5 h-5 text-rose-500 border-slate-300"></div>
+                                    <template x-for="(stmt, sIdx) in (previewQ.statements || [])" :key="sIdx">
+                                        <div class="grid grid-cols-12 gap-3 items-center py-4 border-b border-slate-50 hover:bg-slate-50/80 rounded-xl px-2 transition-colors">
+                                            <div class="col-span-8 text-base font-medium text-slate-700" x-html="stmt.text"></div>
+                                            <div class="col-span-2 flex justify-center">
+                                                <input type="radio" :name="'preview_qm_' + sIdx" value="true" x-model="previewSim.pgmAns[sIdx]" class="w-5 h-5 text-emerald-500 focus:ring-emerald-500 border-slate-300 cursor-pointer"
+                                                       :class="previewSim.showKey && String(stmt.isCorrect) === 'true' ? 'ring-4 ring-emerald-300' : ''">
+                                            </div>
+                                            <div class="col-span-2 flex justify-center">
+                                                <input type="radio" :name="'preview_qm_' + sIdx" value="false" x-model="previewSim.pgmAns[sIdx]" class="w-5 h-5 text-rose-500 focus:ring-rose-500 border-slate-300 cursor-pointer"
+                                                       :class="previewSim.showKey && String(stmt.isCorrect) === 'false' ? 'ring-4 ring-rose-300' : ''">
+                                            </div>
                                         </div>
                                     </template>
                                 </div>
                             </template>
-                            
-                            <template x-if="previewQ.type === 'isian'">
-                                <div class="space-y-4">
-                                    <input type="text" disabled class="w-full md:w-1/2 p-5 rounded-2xl border-2 border-slate-200 bg-slate-50 font-medium text-slate-700 text-lg" placeholder="Jawaban singkat Anda...">
-                                </div>
-                            </template>
 
-                            <template x-if="previewQ.type === 'essai'">
-                                <div class="space-y-4">
-                                    <textarea disabled rows="5" class="w-full p-5 rounded-2xl border-2 border-slate-200 bg-slate-50 font-medium text-slate-700 text-base" placeholder="Ketik uraian jawaban Anda di sini..."></textarea>
-                                </div>
-                            </template>
-                            
+                            <!-- 4. Menjodohkan -->
                             <template x-if="previewQ.type === 'jodoh'">
                                 <div class="space-y-4">
-                                    <template x-for="(pair, pIdx) in previewQ.pairs" :key="pIdx">
+                                    <template x-for="(pair, pIdx) in (previewQ.pairs || [])" :key="pIdx">
                                         <div class="flex flex-col md:flex-row md:items-center gap-4 bg-slate-50/80 p-5 rounded-2xl border border-slate-100">
-                                            <div class="flex-1 font-medium text-slate-800 text-base" x-text="pair.left"></div>
+                                            <div class="flex-1 font-medium text-slate-800 text-base" x-html="pair.left"></div>
                                             <div class="shrink-0 text-slate-300 hidden md:block">
                                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                                             </div>
-                                            <div class="flex-1 md:w-64">
-                                                <select disabled class="w-full p-4 rounded-xl border-2 border-slate-200 bg-white font-medium text-slate-700 appearance-none">
-                                                    <option>Pilih Pasangan...</option>
+                                            <div class="flex-1 md:w-64 space-y-1">
+                                                <select x-model="previewSim.jodohAns[pIdx]" class="w-full p-3.5 rounded-xl border-2 border-slate-200 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 bg-white cursor-pointer font-medium text-slate-700 text-sm">
+                                                    <option value="" disabled selected>Pilih Pasangan...</option>
+                                                    <template x-for="(optPair, rIdx) in previewQ.pairs" :key="rIdx">
+                                                        <option :value="optPair.right" x-text="optPair.right"></option>
+                                                    </template>
                                                 </select>
+                                                <template x-if="previewSim.showKey">
+                                                    <span class="text-[11px] font-bold text-emerald-600 block pl-1">
+                                                        ✓ Pasangan: <strong x-text="pair.right"></strong>
+                                                    </span>
+                                                </template>
                                             </div>
                                         </div>
                                     </template>
                                 </div>
                             </template>
+
+                            <!-- 5. Isian Singkat -->
+                            <template x-if="previewQ.type === 'isian'">
+                                <div class="space-y-4">
+                                    <input type="text" x-model="previewSim.isianAns" class="w-full md:w-2/3 p-4 rounded-2xl border-2 border-slate-200 bg-white font-medium text-slate-700 text-base focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 shadow-sm" placeholder="Ketik jawaban singkat simulasi di sini...">
+                                    <template x-if="previewSim.showKey">
+                                        <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-bold text-emerald-800">
+                                            ✓ Kunci Jawaban yang Diterima: <span class="font-mono text-emerald-900 bg-emerald-100/80 px-2 py-0.5 rounded" x-text="previewQ.shortAnswerKeys || '- Belum diisi -'"></span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <!-- 6. Esai -->
+                            <template x-if="previewQ.type === 'essai'">
+                                <div class="space-y-4">
+                                    <textarea x-model="previewSim.essaiAns" rows="4" class="w-full p-4 rounded-2xl border-2 border-slate-200 bg-white font-medium text-slate-700 text-base focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 shadow-sm" placeholder="Ketik uraian jawaban simulasi di sini..."></textarea>
+                                    <p class="text-xs text-slate-400 italic">Catatan: Tipe soal esai dikoreksi manual oleh guru dan tidak dinilai otomatis.</p>
+                                </div>
+                            </template>
+
+                            <!-- 7. Isi Titik-Titik (blank) -->
+                            <template x-if="previewQ.type === 'blank'">
+                                <div class="space-y-4">
+                                    <div class="p-6 bg-slate-50/80 rounded-2xl border border-slate-200">
+                                        <div class="text-base sm:text-lg font-medium text-slate-700 leading-loose flex flex-wrap items-center gap-y-3 gap-x-2">
+                                            <template x-for="(part, idx) in (previewQ.blankText || '').split('{dash}')">
+                                                <div class="flex items-center">
+                                                    <span x-html="part"></span>
+                                                    <template x-if="idx < (previewQ.blankText || '').split('{dash}').length - 1">
+                                                        <input type="text" x-model="previewSim.blankAns[idx]" class="mx-2 w-36 px-3 py-1.5 text-center font-bold text-indigo-700 bg-white border-b-2 border-indigo-400 focus:border-indigo-600 focus:outline-none transition-colors shadow-sm rounded-t-lg text-sm" placeholder="Ketik jawaban...">
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                    <template x-if="previewSim.showKey">
+                                        <div class="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-bold text-emerald-800 space-y-1">
+                                            <div>✓ Kunci Jawaban Rumpang:</div>
+                                            <div class="font-mono text-emerald-900 bg-white/80 p-2 rounded-lg border border-emerald-200" x-text="previewQ.blankAnswers || '- Belum diisi -'"></div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <!-- 8. OSN Biologi (4 Pernyataan) -->
+                            <template x-if="previewQ.type === 'osn_biologi'">
+                                <div class="space-y-3">
+                                    <template x-for="(stmt, idx) in (previewQ.osnStatements || [])" :key="idx">
+                                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-white border-2 border-slate-100 rounded-2xl hover:border-indigo-100 transition-colors">
+                                            <div class="flex-1 font-medium text-slate-700 text-sm sm:text-base" x-html="stmt.text || ('Pernyataan ' + (idx + 1))"></div>
+                                            <div class="flex items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-200 self-end sm:self-auto shrink-0">
+                                                <button type="button" @click="previewSim.osnAns[idx] = 'true'"
+                                                        :class="previewSim.osnAns[idx] === 'true' ? 'bg-emerald-500 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-200'"
+                                                        class="px-4 py-1.5 rounded-lg text-xs font-black transition-all">
+                                                    BENAR
+                                                </button>
+                                                <button type="button" @click="previewSim.osnAns[idx] = 'false'"
+                                                        :class="previewSim.osnAns[idx] === 'false' ? 'bg-rose-500 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-200'"
+                                                        class="px-4 py-1.5 rounded-lg text-xs font-black transition-all">
+                                                    SALAH
+                                                </button>
+                                                <template x-if="previewSim.showKey">
+                                                    <span class="ml-2 px-2 py-1 rounded bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase">
+                                                        Kunci: <strong x-text="stmt.isTrue ? 'BENAR' : 'SALAH'"></strong>
+                                                    </span>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <!-- 9. Range Slider (range) -->
+                            <template x-if="previewQ.type === 'range'">
+                                <div class="pt-8 pb-4 px-4 sm:px-8 bg-slate-50/80 rounded-2xl border border-slate-200">
+                                    <div class="relative w-full max-w-lg mx-auto">
+                                        <!-- Floating Bubble -->
+                                        <div class="absolute -top-12 left-1/2 -translate-x-1/2 bg-indigo-600 text-white font-black text-xs px-4 py-1.5 rounded-full shadow-md whitespace-nowrap flex items-center gap-1.5">
+                                            <span>Nilai Terpilih:</span>
+                                            <span class="text-sm font-black underline underline-offset-2" x-text="previewSim.rangeAns"></span>
+                                            <div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-indigo-600 rotate-45"></div>
+                                        </div>
+                                        <input type="range"
+                                               :min="previewQ.rangeMin ?? previewQ.minRange ?? 0"
+                                               :max="previewQ.rangeMax ?? previewQ.maxRange ?? 100"
+                                               :step="previewQ.rangeStep ?? previewQ.step ?? 1"
+                                               x-model="previewSim.rangeAns"
+                                               class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                                        <div class="flex justify-between mt-3 text-xs font-black text-slate-400">
+                                            <span>Min: <strong class="text-slate-700" x-text="previewQ.rangeMin ?? previewQ.minRange ?? 0"></strong></span>
+                                            <span>Step: <strong class="text-slate-700" x-text="previewQ.rangeStep ?? previewQ.step ?? 1"></strong></span>
+                                            <span>Max: <strong class="text-slate-700" x-text="previewQ.rangeMax ?? previewQ.maxRange ?? 100"></strong></span>
+                                        </div>
+                                    </div>
+                                    <template x-if="previewSim.showKey">
+                                        <div class="mt-6 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-bold text-emerald-800 text-center">
+                                            🎯 Target Kunci Jawaban: <strong class="text-emerald-950 font-black text-sm" x-text="previewQ.rangeCorrect ?? previewQ.correctRange ?? '-'"></strong>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <!-- 10. Titik Koordinat Kartesius (graph) -->
+                            <template x-if="previewQ.type === 'graph'">
+                                <div class="space-y-4">
+                                    <div class="flex flex-col items-center">
+                                        <div class="relative bg-white border-2 border-slate-300 rounded-2xl shadow-inner overflow-hidden cursor-crosshair w-full max-w-[400px] aspect-square select-none"
+                                             @click="handleGraphClick($event, $el)">
+                                            <!-- SVG Grid Lines -->
+                                            <svg width="100%" height="100%" viewBox="0 0 400 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" class="pointer-events-none">
+                                                <defs>
+                                                    <pattern id="prev_grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+                                                    </pattern>
+                                                </defs>
+                                                <rect width="400" height="400" fill="url(#prev_grid)" />
+                                                <!-- Primary Axes -->
+                                                <line x1="200" y1="0" x2="200" y2="400" stroke="#334155" stroke-width="2" />
+                                                <line x1="0" y1="200" x2="400" y2="200" stroke="#334155" stroke-width="2" />
+                                            </svg>
+                                            
+                                            <!-- Axis Labels -->
+                                            <span class="absolute left-1.5 top-1/2 text-[10px] font-black text-slate-400 -mt-3.5 select-none pointer-events-none">-10</span>
+                                            <span class="absolute right-1.5 top-1/2 text-[10px] font-black text-slate-400 -mt-3.5 select-none pointer-events-none">10</span>
+                                            <span class="absolute left-1/2 top-1.5 text-[10px] font-black text-slate-400 ml-1.5 select-none pointer-events-none">10</span>
+                                            <span class="absolute left-1/2 bottom-1.5 text-[10px] font-black text-slate-400 ml-1.5 select-none pointer-events-none">-10</span>
+                                            <span class="absolute left-1/2 top-1/2 text-[10px] font-black text-slate-400 ml-1.5 mt-1 select-none pointer-events-none">(0,0)</span>
+
+                                            <!-- Target Points (When Show Key is Active) -->
+                                            <template x-if="previewSim.showKey">
+                                                <template x-for="(tgt, tIdx) in (previewQ.graphCoordinates || [])" :key="'tgt_' + tIdx">
+                                                    <div class="absolute w-5 h-5 rounded-full border-2 border-dashed border-emerald-500 bg-emerald-400/50 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none animate-pulse"
+                                                         :style="`left: ${(Number(tgt.x) + 10) * 5}%; top: ${(10 - Number(tgt.y)) * 5}%;`">
+                                                    </div>
+                                                </template>
+                                            </template>
+
+                                            <!-- Simulated Plotted Points -->
+                                            <template x-for="(pt, pIdx) in previewSim.graphPoints" :key="'pt_' + pIdx">
+                                                <div class="absolute w-4 h-4 bg-indigo-600 border-2 border-white rounded-full shadow transform -translate-x-1/2 -translate-y-1/2 hover:scale-125 hover:bg-rose-500 transition-all cursor-pointer"
+                                                     :style="`left: ${(pt.x + 10) * 5}%; top: ${(10 - pt.y) * 5}%;`"
+                                                     :title="`Klik untuk hapus (${pt.x}, ${pt.y})`"
+                                                     @click.stop="previewSim.graphPoints.splice(pIdx, 1)">
+                                                </div>
+                                            </template>
+                                        </div>
+                                        
+                                        <p class="text-xs text-slate-400 mt-2 font-semibold text-center">Klik bidang kartesius untuk memplot titik. Klik titik kembali untuk menghapusnya.</p>
+                                    </div>
+
+                                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            <span class="text-xs font-bold text-slate-600">Titik Anda:</span>
+                                            <template x-if="previewSim.graphPoints.length === 0">
+                                                <span class="text-xs text-slate-400 italic">Belum ada titik yang diplot</span>
+                                            </template>
+                                            <template x-for="(pt, idx) in previewSim.graphPoints" :key="idx">
+                                                <span class="px-2.5 py-1 rounded-lg bg-indigo-100 text-indigo-800 font-bold text-xs">
+                                                    (<span x-text="pt.x"></span>, <span x-text="pt.y"></span>)
+                                                </span>
+                                            </template>
+                                        </div>
+                                        <button x-show="previewSim.graphPoints.length > 0" @click="previewSim.graphPoints = []" class="text-xs text-rose-500 hover:text-rose-700 font-bold">
+                                            Reset Titik
+                                        </button>
+                                    </div>
+
+                                    <template x-if="previewSim.showKey">
+                                        <div class="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-bold text-emerald-800">
+                                            <div>✓ Kunci Koordinat Target:</div>
+                                            <div class="flex flex-wrap gap-2 mt-1.5">
+                                                <template x-for="(coord, cIdx) in (previewQ.graphCoordinates || [])" :key="cIdx">
+                                                    <span class="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-900 font-mono text-xs border border-emerald-300">
+                                                        (<span x-text="coord.x"></span>, <span x-text="coord.y"></span>)
+                                                    </span>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <!-- 11. Jigsaw Puzzle (puzzle) -->
+                            <template x-if="previewQ.type === 'puzzle'">
+                                <div class="space-y-4">
+                                    <div class="max-w-sm mx-auto">
+                                        <div class="aspect-square w-full relative grid border-4 border-slate-200 rounded-2xl overflow-hidden bg-slate-100 shadow-md"
+                                             :style="`grid-template-columns: repeat(${parseInt(previewQ.puzzleDifficulty) || 4}, 1fr); grid-template-rows: repeat(${parseInt(previewQ.puzzleDifficulty) || 4}, 1fr);`">
+                                            <template x-for="(tileIdx, currentPos) in previewSim.puzzleTiles" :key="currentPos">
+                                                <div class="relative border border-white/40 cursor-pointer hover:opacity-90 transition-all select-none"
+                                                     :class="previewSim.selectedPuzzleTile === currentPos ? 'ring-4 ring-inset ring-indigo-500 z-10 scale-95 shadow-inner' : ''"
+                                                     @click="togglePuzzleTile(currentPos)">
+                                                    <div class="absolute inset-0 bg-cover bg-no-repeat"
+                                                         :style="`background-image: url('${previewQ.puzzleImage || 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=600&auto=format&fit=crop&q=80'}'); background-size: ${(parseInt(previewQ.puzzleDifficulty)||4)*100}% ${(parseInt(previewQ.puzzleDifficulty)||4)*100}%; background-position: ${(tileIdx % (parseInt(previewQ.puzzleDifficulty)||4)) * (100/(((parseInt(previewQ.puzzleDifficulty)||4)-1) || 1))}% ${Math.floor(tileIdx / (parseInt(previewQ.puzzleDifficulty)||4)) * (100/(((parseInt(previewQ.puzzleDifficulty)||4)-1) || 1))}%;`">
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                        
+                                        <div class="flex items-center justify-between mt-3 px-1">
+                                            <p class="text-xs text-slate-500 font-medium">Klik kotak 1 lalu kotak 2 untuk menukar posisinya.</p>
+                                            <button @click="initSim(previewQ)" class="text-xs text-indigo-600 hover:text-indigo-800 font-bold shrink-0 ml-2">
+                                                Acak Ulang
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <template x-if="previewSim.showKey">
+                                        <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs text-emerald-800 space-y-2">
+                                            <div class="font-bold">✓ Pratinjau Gambar Asli Utuh:</div>
+                                            <div class="w-36 aspect-square rounded-xl overflow-hidden border border-emerald-300 shadow-sm mx-auto">
+                                                <img :src="previewQ.puzzleImage || 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=600&auto=format&fit=crop&q=80'" class="w-full h-full object-cover">
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
                         </div>
 
                         <!-- Pembahasan -->
                         <template x-if="previewQ.discussion">
-                            <div class="mt-8 pt-8 border-t-2 border-slate-100 relative">
-                                <div class="flex items-start gap-4 p-5 sm:p-7 rounded-2xl bg-indigo-50/50 border border-indigo-100">
-                                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-sky-500 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20 text-white">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <div class="mt-8 pt-6 border-t border-slate-100">
+                                <div class="p-5 rounded-2xl bg-indigo-50/60 border border-indigo-100">
+                                    <div class="text-xs font-black uppercase tracking-wider text-indigo-500 mb-2 flex items-center gap-1.5">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        Pembahasan
                                     </div>
-                                    <div>
-                                        <h4 class="font-black text-indigo-900 mb-2 text-sm uppercase tracking-wider">Pembahasan</h4>
-                                        <div class="prose prose-sm prose-slate max-w-none text-indigo-950 font-medium leading-relaxed" x-html="previewQ.discussion"></div>
-                                    </div>
+                                    <div class="text-sm text-indigo-950 font-medium leading-relaxed prose prose-sm prose-indigo max-w-none" x-html="previewQ.discussion"></div>
                                 </div>
                             </div>
                         </template>
+
                     </div>
                 </template>
             </div>
-            <div class="p-5 border-t border-slate-200 bg-slate-50 rounded-b-3xl flex justify-end">
-                <button @click="showPreviewModal = false" class="px-6 py-3 font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl text-sm transition-colors shadow-sm">Tutup Preview</button>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 border-t border-slate-200 bg-white flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+                <div class="text-xs text-slate-500 font-semibold flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Simulasi live interaktif aktif — Bebas coba klik dan input.
+                </div>
+                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                    <button @click="initSim(previewQ)" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 font-bold text-xs transition-colors flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        Reset Simulasi
+                    </button>
+                    <button @click="showPreviewModal = false" class="px-6 py-2.5 font-black text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl text-xs transition-all shadow-md shadow-indigo-200 active:scale-95">
+                        Tutup Preview
+                    </button>
+                </div>
             </div>
         </div>
     </div>
