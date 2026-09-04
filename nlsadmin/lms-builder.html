@@ -889,6 +889,42 @@
                             </div>
                         </div>
 
+                        <!-- TEST CASE GENERATOR & KUNCI JAWABAN -->
+                        <div class="bg-white p-6 rounded-3xl border border-indigo-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-4 relative overflow-hidden group">
+                            <div class="absolute -right-10 -top-10 w-32 h-32 bg-sky-500/10 rounded-full blur-2xl group-hover:bg-sky-500/20 transition-all pointer-events-none"></div>
+                            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 relative z-10">
+                                <div>
+                                    <h4 class="font-black text-xs text-indigo-950 uppercase tracking-wider flex items-center gap-2">
+                                        <span class="text-base">⚙️</span> Kode Jawaban Benar (Test Case Generator)
+                                    </h4>
+                                    <p class="text-[11px] text-slate-500 mt-1.5 max-w-2xl leading-relaxed">Tuliskan kode program yang benar (contoh C++) di bawah ini. Kode ini <span class="font-bold text-rose-600">bukan untuk dicocokkan ke siswa</span>, melainkan digunakan oleh sistem untuk men-generate <span class="font-bold text-sky-600">Expected Output</span> secara otomatis berdasarkan <span class="font-bold text-emerald-600">Input</span> acak yang Anda tentukan.</p>
+                                </div>
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <select x-model="activeNode.generatorLang" @change="saveLocalDraft(); debounceSave()" class="py-1.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-indigo-950 focus:ring-2 focus:ring-sky-500 cursor-pointer">
+                                        <option value="cpp">C++ (GCC)</option>
+                                        <option value="python">Python 3</option>
+                                        <option value="java">Java</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="relative z-10 pt-1" x-init="if(!activeNode.referenceSolution) activeNode.referenceSolution = ''; if(!activeNode.generatorLang) activeNode.generatorLang = 'cpp';">
+                                <textarea x-model="activeNode.referenceSolution" @input="saveLocalDraft(); debounceSave()" rows="8" class="w-full p-4 bg-slate-900 text-sky-400 font-mono text-xs rounded-2xl focus:ring-2 focus:ring-sky-500 border border-slate-800 shadow-inner" placeholder="Tuliskan kode solusi yang benar di sini...&#10;&#10;Contoh C++:&#10;#include <iostream>&#10;using namespace std;&#10;&#10;int main() {&#10;    int a, b; cin >> a >> b;&#10;    cout << a + b << endl;&#10;    return 0;&#10;}"></textarea>
+                            </div>
+                            
+                            <!-- Aksi Generator -->
+                            <div class="flex items-center justify-between gap-2 pt-3 relative z-10 border-t border-slate-100 mt-2">
+                                <span class="text-[10px] text-slate-500 font-medium flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-sky-500 inline-block animate-pulse"></span>
+                                    Tips: Masukkan Input pada Test Case di bawah, lalu sistem akan memproses Output-nya.
+                                </span>
+                                <button type="button" @click="alert('Fitur eksekusi auto-generate test case backend dengan C++ sedang dalam tahap penyempurnaan. Output akan segera dapat digenerate otomatis berdasarkan input yang diberikan.')" class="px-5 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:brightness-110 text-white font-black text-xs rounded-xl shadow-[0_4px_15px_rgba(14,165,233,0.3)] transition-all active:scale-95 flex items-center gap-2 cursor-pointer border border-sky-400/50">
+                                    <span class="text-sm">⚡</span>
+                                    <span>Simpan & Aktifkan Generator</span>
+                                </button>
+                            </div>
+                        </div>
+
                         <!-- KASUS UJI PENILAIAN (GRADING / HIDDEN TEST CASES) -->
                         <div class="bg-white p-6 rounded-3xl border border-indigo-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-4">
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
