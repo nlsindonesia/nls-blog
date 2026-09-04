@@ -160,6 +160,7 @@ CREATE TABLE IF NOT EXISTS lms_courses (
 CREATE INDEX IF NOT EXISTS idx_lms_courses_cat_lvl ON lms_courses(category, level);
 CREATE INDEX IF NOT EXISTS idx_lms_courses_subject ON lms_courses(subject);
 CREATE INDEX IF NOT EXISTS idx_lms_courses_grade ON lms_courses(grade);
+CREATE INDEX IF NOT EXISTS idx_lms_courses_created_desc ON lms_courses(created_at DESC);
 
 -- 8. TABLE: lms_enrollments (Siswa Terdaftar & Progres Belajar)
 CREATE TABLE IF NOT EXISTS lms_enrollments (
@@ -175,6 +176,8 @@ CREATE TABLE IF NOT EXISTS lms_enrollments (
 
 CREATE INDEX IF NOT EXISTS idx_lms_enrollments_user ON lms_enrollments(user_id);
 CREATE INDEX IF NOT EXISTS idx_lms_enrollments_course ON lms_enrollments(course_id);
+CREATE INDEX IF NOT EXISTS idx_lms_enrollments_user_course ON lms_enrollments(user_id, course_id);
+CREATE INDEX IF NOT EXISTS idx_lms_enrollments_last_accessed ON lms_enrollments(last_accessed DESC);
 
 -- 9. TABLE: lms_quiz_results (Hasil Evaluasi & Pengerjaan Kuis Siswa)
 CREATE TABLE IF NOT EXISTS lms_quiz_results (
@@ -190,4 +193,40 @@ CREATE TABLE IF NOT EXISTS lms_quiz_results (
 
 CREATE INDEX IF NOT EXISTS idx_lms_quiz_results_user ON lms_quiz_results(user_id);
 CREATE INDEX IF NOT EXISTS idx_lms_quiz_results_course ON lms_quiz_results(course_id);
+CREATE INDEX IF NOT EXISTS idx_lms_quiz_results_user_date ON lms_quiz_results(user_id, submitted_at DESC);
+CREATE INDEX IF NOT EXISTS idx_lms_quiz_results_course_mod ON lms_quiz_results(course_id, module_index);
+
+-- 10. TABLE: lms_quiz_attempts (Progres Kuis Realtime Siswa)
+CREATE TABLE IF NOT EXISTS lms_quiz_attempts (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    course_id TEXT NOT NULL REFERENCES lms_courses(id) ON DELETE CASCADE,
+    module_id TEXT NOT NULL,
+    status TEXT DEFAULT 'in_progress',
+    started_at TEXT DEFAULT (datetime('now')),
+    last_saved_at TEXT DEFAULT (datetime('now')),
+    elapsed_seconds INTEGER DEFAULT 0,
+    answers_json TEXT DEFAULT '{}',
+    UNIQUE(user_id, course_id, module_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_lms_quiz_attempts_lookup ON lms_quiz_attempts(user_id, course_id, module_id);
+CREATE INDEX IF NOT EXISTS idx_lms_quiz_attempts_status ON lms_quiz_attempts(status);
+
+-- 11. TABLE: lms_schools (Database Master Sekolah Indonesia)
+CREATE TABLE IF NOT EXISTS lms_schools (
+    id TEXT PRIMARY KEY,
+    npsn TEXT,
+    name TEXT NOT NULL,
+    level TEXT,
+    city TEXT,
+    province TEXT,
+    country TEXT DEFAULT 'Indonesia',
+    created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_lms_schools_name ON lms_schools(name);
+CREATE INDEX IF NOT EXISTS idx_lms_schools_npsn ON lms_schools(npsn);
+CREATE INDEX IF NOT EXISTS idx_lms_schools_level ON lms_schools(level);
+
 

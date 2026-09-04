@@ -50,6 +50,13 @@ export default async function handler(request, response) {
                 );
             `;
             
+            try {
+                await sql`CREATE INDEX IF NOT EXISTS idx_lms_schools_name ON lms_schools(name);`;
+                await sql`CREATE INDEX IF NOT EXISTS idx_lms_schools_npsn ON lms_schools(npsn);`;
+                await sql`CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);`;
+                await sql`CREATE INDEX IF NOT EXISTS idx_users_school ON users(school);`;
+            } catch(e) {}
+            
             // Alter existing table just in case it was created with VARCHAR(20)
             await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS nisn VARCHAR(50);`;
             await sql`ALTER TABLE users ALTER COLUMN grade TYPE VARCHAR(255);`;
@@ -252,6 +259,7 @@ export default async function handler(request, response) {
                 result = await sql`SELECT * FROM lms_schools WHERE name ILIKE ${w1} AND name ILIKE ${w2} AND name ILIKE ${w3} AND name ILIKE ${w4} ORDER BY name ASC LIMIT 20`;
             }
             
+            response.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
             return response.status(200).json({ success: true, data: result.rows });
         }
 

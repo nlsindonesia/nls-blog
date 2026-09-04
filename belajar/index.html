@@ -3237,19 +3237,33 @@
                         };
                     }
 
+                    // Fetch latest courses from cloud API (SWR pattern)
+                    this.fetchCoursesFromCloud();
+
+                    // Revalidate on window focus & tab visibility (SWR standard)
+                    window.addEventListener('focus', () => {
+                        this.fetchCoursesFromCloud();
+                    });
+                    document.addEventListener('visibilitychange', () => {
+                        if (!document.hidden) {
+                            this.fetchCoursesFromCloud();
+                        }
+                    });
+
+                    // Relaxed periodic background sync (every 90s instead of 10s)
+                    setInterval(() => {
+                        if (!document.hidden) {
+                            this.fetchCoursesFromCloud();
+                        }
+                    }, 90000);
+
                     window.addEventListener('nls-courses-updated', (ev) => {
                         if (ev.detail && Array.isArray(ev.detail)) {
                             this.courses = ev.detail.filter(c => c && c.status !== 'trashed');
                         }
                     });
 
-                    // Fetch latest courses from cloud API
-                    this.fetchCoursesFromCloud();
 
-                    // Background live sync polling every 10 seconds
-                    setInterval(() => {
-                        this.fetchCoursesFromCloud();
-                    }, 10000);
 
                     // Router: Listen to URL back/forward & hash changes
                     window.addEventListener('hashchange', () => {

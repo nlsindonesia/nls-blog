@@ -90,6 +90,8 @@ export default async function handler(req, res) {
 
     // GET /api/articles
     if (req.method === 'GET') {
+        res.setHeader('Cache-Control', 'public, s-maxage=120, stale-while-revalidate=600');
+        res.setHeader('Vary', 'Accept-Encoding');
         const status = req.query && req.query.status;
         let data = articlesCache;
         if (status) {
