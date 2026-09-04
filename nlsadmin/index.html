@@ -5037,7 +5037,7 @@
                                                 <div class="grid gap-4" :class="courseModal.form.category === 'School' ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-3'">
                             <div>
                                 <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Kategori *</label>
-                                <select x-model="courseModal.form.category" @change="courseModal.form.level = Object.keys(lmsSubjectsData[courseModal.form.category] || {})[0]; courseModal.form.subject = (lmsSubjectsData[courseModal.form.category][courseModal.form.level] || [])[0]; courseModal.form.grade = ''" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                                <select x-model="courseModal.form.category" @change="onCourseModalCategoryChange()" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
                                     <template x-for="cat in Object.keys(lmsSubjectsData)" :key="cat">
                                         <option :value="cat" x-text="cat"></option>
                                     </template>
@@ -5045,7 +5045,7 @@
                             </div>
                             <div>
                                 <label class="block mb-1 text-slate-700 dark:text-slate-300 font-bold">Jenjang *</label>
-                                <select x-model="courseModal.form.level" @change="courseModal.form.subject = (lmsSubjectsData[courseModal.form.category][courseModal.form.level] || [])[0]; courseModal.form.grade = ''" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+                                <select x-model="courseModal.form.level" @change="onCourseModalLevelChange()" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-bold">
                                     <template x-for="lvl in Object.keys(lmsSubjectsData[courseModal.form.category] || {})" :key="lvl">
                                         <option :value="lvl" x-text="lvl"></option>
                                     </template>
@@ -6219,7 +6219,7 @@
                     } else if (section === 'lms') {
                         this.activeTab = 'lms_courses';
                         
-                        const rawCat = decodeURIComponent(sub || '').toLowerCase();
+                        const rawCat = decodeURIComponent(sub || '').toLowerCase().trim();
                         const catMap = {
                             'school': 'School',
                             'olimpiade': 'Olimpiade',
@@ -6231,14 +6231,17 @@
                         };
                         this.lmsCategory = catMap[rawCat] || 'School';
                         
-                        const rawLvl = decodeURIComponent(parts[2] || '').toLowerCase();
-                        const lvlMap = {
-                            'sd': 'SD', 'smp': 'SMP', 'sma': 'SMA',
-                            'tka sd': 'TKA SD', 'tka smp': 'TKA SMP', 'tka sma': 'TKA SMA',
-                            'snbt': 'SNBT', 'mandiri': 'Mandiri', 'kedinasan': 'Kedinasan',
-                            'trash': 'trash'
-                        };
-                        this.lmsLevel = lvlMap[rawLvl] || decodeURIComponent(parts[2] || '');
+                        const validLevels = Object.keys(this.lmsSubjectsData[this.lmsCategory] || {});
+                        const rawLvl = decodeURIComponent(parts[2] || '').toLowerCase().trim();
+                        
+                        if (rawLvl === 'trash') {
+                            this.showTrashCourses = true;
+                            this.lmsLevel = 'trash';
+                        } else {
+                            this.showTrashCourses = false;
+                            const matched = validLevels.find(l => l.toLowerCase() === rawLvl);
+                            this.lmsLevel = matched || validLevels[0] || 'SD';
+                        }
                         
                         let menuKey = '';
                         if (this.lmsCategory === 'School') menuKey = 'school';
@@ -9246,7 +9249,9 @@
                     if (this.isSchoolDropdownOpen) {
                         this.activeTab = 'lms_courses';
                         this.lmsCategory = 'School';
-                        if (!this.lmsLevel) this.lmsLevel = 'SD';
+                        if (!this.lmsLevel || !Object.keys(this.lmsSubjectsData['School'] || {}).includes(this.lmsLevel)) {
+                            this.lmsLevel = 'SD';
+                        }
                     }
                     this.syncUrlRoute(true);
                 },
@@ -9257,7 +9262,9 @@
                     if (this.isOlimpiadeDropdownOpen) {
                         this.activeTab = 'lms_courses';
                         this.lmsCategory = 'Olimpiade';
-                        if (!this.lmsLevel) this.lmsLevel = 'OSN SD';
+                        if (!this.lmsLevel || !Object.keys(this.lmsSubjectsData['Olimpiade'] || {}).includes(this.lmsLevel)) {
+                            this.lmsLevel = 'OSN SD';
+                        }
                     }
                     this.syncUrlRoute(true);
                 },
@@ -9268,7 +9275,9 @@
                     if (this.isTkaDropdownOpen) {
                         this.activeTab = 'lms_courses';
                         this.lmsCategory = 'TKA';
-                        if (!this.lmsLevel) this.lmsLevel = 'TKA SD';
+                        if (!this.lmsLevel || !Object.keys(this.lmsSubjectsData['TKA'] || {}).includes(this.lmsLevel)) {
+                            this.lmsLevel = 'TKA SD';
+                        }
                     }
                     this.syncUrlRoute(true);
                 },
@@ -9279,12 +9288,13 @@
                     if (this.isCollegeDropdownOpen) {
                         this.activeTab = 'lms_courses';
                         this.lmsCategory = 'Collage Preparation';
-                        if (!this.lmsLevel) this.lmsLevel = 'SNBT';
+                        if (!this.lmsLevel || !Object.keys(this.lmsSubjectsData['Collage Preparation'] || {}).includes(this.lmsLevel)) {
+                            this.lmsLevel = 'SNBT';
+                        }
                     }
                     this.syncUrlRoute(true);
                 },
 
-                
                 toggleLanguageDropdown() {
                     const nextState = !this.isLanguageDropdownOpen;
                     this.closeAllSubmenus(nextState ? 'language' : '');
@@ -9292,7 +9302,9 @@
                     if (this.isLanguageDropdownOpen) {
                         this.activeTab = 'lms_courses';
                         this.lmsCategory = 'Language';
-                        if (!this.lmsLevel) this.lmsLevel = 'IELTS';
+                        if (!this.lmsLevel || !Object.keys(this.lmsSubjectsData['Language'] || {}).includes(this.lmsLevel)) {
+                            this.lmsLevel = 'IELTS';
+                        }
                     }
                     this.syncUrlRoute(true);
                 },
@@ -9304,7 +9316,9 @@
                     if (this.isPemrogramanDropdownOpen) {
                         this.activeTab = 'lms_courses';
                         this.lmsCategory = 'Pemrograman';
-                        if (!this.lmsLevel) this.lmsLevel = 'OSN';
+                        if (!this.lmsLevel || !Object.keys(this.lmsSubjectsData['Pemrograman'] || {}).includes(this.lmsLevel)) {
+                            this.lmsLevel = 'OSN';
+                        }
                     }
                     this.syncUrlRoute(true);
                 },
@@ -9489,15 +9503,26 @@
                     return 'bg-gradient-to-r from-indigo-700 via-indigo-900 to-slate-950';
                 },
 
-                                openCreateCourseModal() {
+                openCreateCourseModal() {
                     this.courseModal.isEdit = false;
                     let defCat = this.lmsCategory || 'School';
-                    let defLevel = this.lmsLevel || Object.keys(this.lmsSubjectsData[defCat] || {})[0] || 'SMA';
-                    let defSubj = (this.lmsSubjectsData[defCat] && this.lmsSubjectsData[defCat][defLevel]) ? this.lmsSubjectsData[defCat][defLevel][0] : '';
+                    if (!this.lmsSubjectsData[defCat]) defCat = 'School';
+
+                    let validLevels = Object.keys(this.lmsSubjectsData[defCat] || {});
+                    let defLevel = this.lmsLevel;
+                    if (!validLevels.includes(defLevel)) {
+                        defLevel = validLevels[0] || 'SD';
+                    }
+
+                    let validSubjects = (this.lmsSubjectsData[defCat] && this.lmsSubjectsData[defCat][defLevel]) ? this.lmsSubjectsData[defCat][defLevel] : [];
+                    let defSubj = validSubjects[0] || '';
+                    let defGrade = '';
+
                     this.courseModal.form = {
                         id: 'c-' + Date.now(),
                         category: defCat,
                         level: defLevel,
+                        grade: defGrade,
                         subject: defSubj,
                         title: '',
                         description: '',
@@ -9518,6 +9543,21 @@
                         modules: []
                     };
                     this.courseModal.isOpen = true;
+                },
+
+                onCourseModalCategoryChange() {
+                    const cat = this.courseModal.form.category || 'School';
+                    const validLevels = Object.keys(this.lmsSubjectsData[cat] || {});
+                    this.courseModal.form.level = validLevels[0] || 'SD';
+                    this.onCourseModalLevelChange();
+                },
+
+                onCourseModalLevelChange() {
+                    const cat = this.courseModal.form.category || 'School';
+                    const lvl = this.courseModal.form.level;
+                    const validSubjects = (this.lmsSubjectsData[cat] && this.lmsSubjectsData[cat][lvl]) || [];
+                    this.courseModal.form.subject = validSubjects[0] || '';
+                    this.courseModal.form.grade = '';
                 },
 
                 editCourseInfo(course) {
