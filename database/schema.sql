@@ -142,3 +142,52 @@ CREATE TABLE IF NOT EXISTS system_settings (
     description TEXT,
     updated_at TEXT DEFAULT (datetime('now'))
 );
+
+-- 7. TABLE: lms_courses (Katalog Kursus, Modul Pembelajaran, & Silabus)
+CREATE TABLE IF NOT EXISTS lms_courses (
+    id TEXT PRIMARY KEY,
+    category TEXT NOT NULL,          -- 'School', 'Olimpiade', 'TKA', 'Collage Preparation', 'Language', 'Pemrograman'
+    level TEXT NOT NULL,             -- 'SD', 'SMP', 'SMA', 'TKA SMP', 'OSN', 'Python', etc.
+    subject TEXT,                   -- 'Matematika Wajib', 'IPA SMP', 'Bahasa Jepang', etc.
+    grade TEXT,                     -- 'Kelas 10', 'Kelas 7', 'Kelas 1' (for School)
+    title TEXT NOT NULL,
+    description TEXT,
+    content_json TEXT NOT NULL,     -- Detailed modules, lessons, quizzes, videos & metadata (JSON)
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_lms_courses_cat_lvl ON lms_courses(category, level);
+CREATE INDEX IF NOT EXISTS idx_lms_courses_subject ON lms_courses(subject);
+CREATE INDEX IF NOT EXISTS idx_lms_courses_grade ON lms_courses(grade);
+
+-- 8. TABLE: lms_enrollments (Siswa Terdaftar & Progres Belajar)
+CREATE TABLE IF NOT EXISTS lms_enrollments (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    course_id TEXT NOT NULL REFERENCES lms_courses(id) ON DELETE CASCADE,
+    progress INTEGER DEFAULT 0,
+    completed_modules TEXT DEFAULT '[]',
+    enrolled_at TEXT DEFAULT (datetime('now')),
+    last_accessed TEXT DEFAULT (datetime('now')),
+    UNIQUE(user_id, course_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_lms_enrollments_user ON lms_enrollments(user_id);
+CREATE INDEX IF NOT EXISTS idx_lms_enrollments_course ON lms_enrollments(course_id);
+
+-- 9. TABLE: lms_quiz_results (Hasil Evaluasi & Pengerjaan Kuis Siswa)
+CREATE TABLE IF NOT EXISTS lms_quiz_results (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    course_id TEXT NOT NULL REFERENCES lms_courses(id) ON DELETE CASCADE,
+    module_index TEXT,
+    score REAL,
+    paket INTEGER DEFAULT 1,
+    answers_json TEXT DEFAULT '{}',
+    submitted_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_lms_quiz_results_user ON lms_quiz_results(user_id);
+CREATE INDEX IF NOT EXISTS idx_lms_quiz_results_course ON lms_quiz_results(course_id);
+

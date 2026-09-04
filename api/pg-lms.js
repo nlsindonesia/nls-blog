@@ -662,6 +662,8 @@ export default async function handler(request, response) {
                 await sql`ALTER TABLE IF EXISTS lms_quiz_results ALTER COLUMN user_id TYPE VARCHAR(255) USING user_id::VARCHAR;`;
                 await sql`ALTER TABLE IF EXISTS lms_quiz_results ALTER COLUMN module_index TYPE VARCHAR(100) USING module_index::VARCHAR;`;
                 await sql`ALTER TABLE IF EXISTS lms_quiz_results ADD COLUMN IF NOT EXISTS paket INTEGER DEFAULT 1;`;
+                await sql`ALTER TABLE IF EXISTS lms_courses ADD COLUMN IF NOT EXISTS subject VARCHAR(100);`;
+                await sql`ALTER TABLE IF EXISTS lms_courses ADD COLUMN IF NOT EXISTS grade VARCHAR(50);`;
             } catch(e) {}
 
             await sql`
@@ -669,12 +671,20 @@ export default async function handler(request, response) {
                     id VARCHAR(100) PRIMARY KEY,
                     category VARCHAR(50),
                     level VARCHAR(50),
+                    subject VARCHAR(100),
+                    grade VARCHAR(50),
                     title VARCHAR(255),
                     description TEXT,
                     content_json JSONB,
                     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
                 );
             `;
+
+            try {
+                await sql`CREATE INDEX IF NOT EXISTS idx_lms_courses_cat_lvl ON lms_courses(category, level);`;
+                await sql`CREATE INDEX IF NOT EXISTS idx_lms_courses_subject ON lms_courses(subject);`;
+                await sql`CREATE INDEX IF NOT EXISTS idx_lms_courses_grade ON lms_courses(grade);`;
+            } catch(e) {}
 
             await sql`
                 CREATE TABLE IF NOT EXISTS lms_enrollments (
@@ -958,17 +968,35 @@ export default async function handler(request, response) {
             if (!course || !course.id) return response.status(400).json({ success: false, message: 'Invalid course data.' });
 
             const existing = await sql`SELECT id FROM lms_courses WHERE id = ${course.id}`;
+            const subj = course.subject || '';
+            const grd = course.grade || '';
+
             if (existing.rows.length === 0) {
-                await sql`
-                    INSERT INTO lms_courses (id, category, level, title, description, content_json)
-                    VALUES (${course.id}, ${course.category || ''}, ${course.level || ''}, ${course.title || ''}, ${course.description || ''}, ${JSON.stringify(course)})
-                `;
+                try {
+                    await sql`
+                        INSERT INTO lms_courses (id, category, level, subject, grade, title, description, content_json)
+                        VALUES (${course.id}, ${course.category || ''}, ${course.level || ''}, ${subj}, ${grd}, ${course.title || ''}, ${course.description || ''}, ${JSON.stringify(course)})
+                    `;
+                } catch(err) {
+                    await sql`
+                        INSERT INTO lms_courses (id, category, level, title, description, content_json)
+                        VALUES (${course.id}, ${course.category || ''}, ${course.level || ''}, ${course.title || ''}, ${course.description || ''}, ${JSON.stringify(course)})
+                    `;
+                }
             } else {
-                await sql`
-                    UPDATE lms_courses 
-                    SET category = ${course.category || ''}, level = ${course.level || ''}, title = ${course.title || ''}, description = ${course.description || ''}, content_json = ${JSON.stringify(course)}
-                    WHERE id = ${course.id}
-                `;
+                try {
+                    await sql`
+                        UPDATE lms_courses 
+                        SET category = ${course.category || ''}, level = ${course.level || ''}, subject = ${subj}, grade = ${grd}, title = ${course.title || ''}, description = ${course.description || ''}, content_json = ${JSON.stringify(course)}
+                        WHERE id = ${course.id}
+                    `;
+                } catch(err) {
+                    await sql`
+                        UPDATE lms_courses 
+                        SET category = ${course.category || ''}, level = ${course.level || ''}, title = ${course.title || ''}, description = ${course.description || ''}, content_json = ${JSON.stringify(course)}
+                        WHERE id = ${course.id}
+                    `;
+                }
             }
             return response.status(200).json({ success: true, message: 'Course saved successfully.' });
         }
@@ -1036,7 +1064,9 @@ export default async function handler(request, response) {
                 SELECT 
                     q.id, q.course_id, q.module_index, q.score, q.answers_json, q.submitted_at as date,
                     u.name as studentName, u.email as studentEmail, u.nisn, u.school,
-                    c.title as courseTitle, c.category, c.level
+                    c.title as courseTitle, c.category, c.level,
+                    c.content_json->>'subject' as subject,
+                    c.content_json->>'grade' as grade
                 FROM lms_quiz_results q
                 LEFT JOIN users u ON q.user_id = u.id::varchar
                 LEFT JOIN lms_courses c ON q.course_id = c.id
@@ -1054,6 +1084,8 @@ export default async function handler(request, response) {
                 moduleTitle: `Modul ID: ${r.module_index} (Paket ${r.paket || 1})`,
                 category: r.category || 'School',
                 level: r.level || '',
+                subject: r.subject || '',
+                grade: r.grade || '',
                 score: r.score,
                 answers: r.answers_json || {},
                 date: r.date
