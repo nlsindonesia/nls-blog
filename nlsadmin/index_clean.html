@@ -8710,7 +8710,10 @@
                 async syncCoursesFromCloud(showNotice = false) {
                     if (typeof fetch === 'undefined') return;
                     try {
-                        const res = await fetch('/api/pg-lms');
+                        const res = await fetch('/api/pg-lms?action=admin_get_courses&_t=' + Date.now(), {
+                            cache: 'no-store',
+                            headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+                        });
                         if (res.ok) {
                             const json = await res.json();
                             if (json && Array.isArray(json.data) && json.data.length > 0) {

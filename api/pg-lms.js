@@ -1154,6 +1154,10 @@ export default async function handler(request, response) {
 
         // --- 8. ADMIN: GET ALL COURSES (100% Cloud DB) ---
         if (action === 'admin_get_courses' || (!action && request.method === 'GET' && request.url.includes('/api/pg-lms'))) {
+            response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+            response.setHeader('Pragma', 'no-cache');
+            response.setHeader('Expires', '0');
+
             const store = await getCloudStore();
             const cloudCourses = Array.isArray(store.courses) ? store.courses : [];
 
@@ -1196,15 +1200,23 @@ export default async function handler(request, response) {
             let course = request.body.course || request.body;
             if (!course || !course.id) return response.status(400).json({ success: false, message: 'Invalid course data.' });
 
+            if (!course.updated_at) {
+                course.updated_at = new Date().toISOString();
+            }
+
             // Persist to Universal Cloud Store directly
             const store = await getCloudStore();
             const courses = Array.isArray(store.courses) ? store.courses : [];
             const idx = courses.findIndex(c => c.id === course.id);
             if (idx >= 0) courses[idx] = course;
             else courses.unshift(course);
-            await saveCloudStore({ courses });
+            
+            const saved = await saveCloudStore({ courses });
+            if (!saved) {
+                return response.status(500).json({ success: false, message: 'Gagal menyimpan ke Cloud Database.' });
+            }
 
-            return response.status(200).json({ success: true, message: 'Course saved successfully.' });
+            return response.status(200).json({ success: true, message: 'Course saved successfully.', updated_at: course.updated_at });
         }
 
         // --- 10. ADMIN: DELETE COURSE ---

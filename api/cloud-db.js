@@ -247,7 +247,17 @@ export async function saveCloudStore(updatedFields) {
         }
 
         if (syncPromises.length > 0) {
-            await Promise.allSettled(syncPromises);
+            const results = await Promise.allSettled(syncPromises);
+            for (const r of results) {
+                if (r.status === 'rejected') {
+                    console.warn('[NLS Cloud DB] Sync rejected:', r.reason);
+                    return false;
+                }
+                if (r.value && (r.value.status < 200 || r.value.status >= 300)) {
+                    console.warn('[NLS Cloud DB] Sync failed with status:', r.value.status, r.value.data);
+                    return false;
+                }
+            }
         }
 
         return true;

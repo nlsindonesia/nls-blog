@@ -54,18 +54,20 @@
                 </div>
             </div>
         </div>
-        <div class="flex items-center gap-4 relative z-10">
-            <span x-show="isSaving" class="text-xs font-bold text-amber-500 animate-pulse bg-amber-50 px-3 py-1 rounded-full">Menyimpan...</span>
-            <span x-show="!isSaving && lastSaved" class="text-xs font-bold text-indigo-400 bg-indigo-50/50 px-3 py-1 rounded-full border border-indigo-100/50" x-text="'Tersimpan ' + lastSaved"></span>
+        <div class="flex items-center gap-3 relative z-10">
+            <span x-show="isSaving" class="text-xs font-bold text-amber-600 animate-pulse bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200 flex items-center gap-1.5 shadow-sm">
+                <svg class="w-3.5 h-3.5 animate-spin text-amber-600" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                Menyimpan ke Cloud...
+            </span>
+            <span x-show="!isSaving && lastSaved" class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200 shadow-sm flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span x-text="'Tersimpan ' + lastSaved"></span>
+            </span>
             
-            <button @click="forceSyncToVercel()" class="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-black text-xs rounded-xl shadow-[0_4px_12px_rgba(16,185,129,0.3)] transition-all active:scale-95 flex items-center gap-2 border border-emerald-500">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-                Sync to Vercel
-            </button>
-
-            <button @click="saveAll()" class="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-black text-xs rounded-xl shadow-[0_4px_12px_rgba(79,70,229,0.3)] transition-all active:scale-95 flex items-center gap-2 border border-indigo-500">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
-                Simpan Modul
+            <button @click="saveAll(false)" :disabled="isSaving" class="px-5 py-2.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-700 hover:via-teal-700 hover:to-indigo-700 disabled:opacity-60 text-white font-black text-xs rounded-xl shadow-[0_4px_14px_rgba(16,185,129,0.35)] transition-all active:scale-95 flex items-center gap-2 border border-emerald-400 cursor-pointer" title="Simpan perubahan langsung ke Cloud Database & Vercel agar dapat diakses dari komputer lain">
+                <svg x-show="!isSaving" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+                <svg x-show="isSaving" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                <span x-text="isSaving ? 'Menyimpan & Menyinkronkan...' : 'Simpan & Sinkronisasi Cloud'"></span>
             </button>
         </div>
     </header>
@@ -1692,6 +1694,7 @@
                 courseTitle: 'Sedang memuat...',
                 coursesList: [],
                 isSaving: false,
+                isDirty: false,
                 lastSaved: '',
                 saveTimer: null,
                 showBulkModal: false,
@@ -2008,11 +2011,12 @@
                 },
 
                 debounceSave() {
+                    this.isDirty = true;
                     this.saveLocalDraft();
                     if (this.saveTimer) clearTimeout(this.saveTimer);
                     this.saveTimer = setTimeout(() => {
                         this.saveAll(true);
-                    }, 1500);
+                    }, 2500);
                 },
 
                 flushAllSync() {
@@ -2251,18 +2255,26 @@
                     if (!newCourseId) return;
                     if (this.courseId === newCourseId) return;
 
-                    // 1. Flush & save current course before switching
-                    this.saveLocalDraft();
-                    this.saveAll(true);
+                    // 1. Flush & save current course before switching if modified
+                    if (this.isDirty) {
+                        this.saveLocalDraft();
+                        this.saveAll(true);
+                    }
 
                     // 2. Switch courseId
                     this.courseId = newCourseId;
+                    this.isDirty = false;
 
-                    // 3. Check for local draft of new course
-                    let target = null;
+                    // 3. Pick freshest course between synced coursesList and local draft
+                    let target = this.coursesList.find(c => c && c.id === newCourseId);
                     const draftRaw = localStorage.getItem('nls_lms_draft_' + newCourseId);
                     if (draftRaw) {
-                        try { target = JSON.parse(draftRaw); } catch(e) {}
+                        try {
+                            const d = JSON.parse(draftRaw);
+                            const dTime = new Date(d.updated_at || 0).getTime();
+                            const tTime = target ? new Date(target.updated_at || 0).getTime() : 0;
+                            if (dTime > tTime) target = d;
+                        } catch(e) {}
                     }
                     if (!target) {
                         target = this.coursesList.find(c => c && c.id === newCourseId);
@@ -2377,7 +2389,7 @@
                         }
                     });
 
-                    // 1. Instant local load: Pre-populate from localStorage immediately
+                    // 1. Instant local load: Pre-populate from localStorage immediately for 0ms initial render
                     try {
                         const localCoursesRaw = localStorage.getItem('nls_lms_courses_v1');
                         if (localCoursesRaw) {
@@ -2399,7 +2411,7 @@
                         this.courseId = 'c-1788097425590';
                     }
 
-                    // Try to load dedicated draft for this course immediately (Zero Milliseconds)
+                    // Pre-populate dedicated draft for this course immediately
                     let loadedLocally = false;
                     try {
                         const draftRaw = localStorage.getItem('nls_lms_draft_' + this.courseId);
@@ -2426,70 +2438,59 @@
                         }
                     }
 
-                    // 2. Fetch courses catalog from server and merge intelligently
+                    // 2. Fetch fresh catalog and module data directly from Cloud Database
                     try {
-                        const res = await fetch('/api/pg-lms?action=admin_get_courses');
+                        const res = await fetch('/api/pg-lms?action=admin_get_courses&_t=' + Date.now(), {
+                            cache: 'no-store',
+                            headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+                        });
                         if (res.ok) {
                             const json = await res.json();
                             const serverList = (json.data || []).filter(c => c && c.status !== 'trashed');
                             
-                            const mergedMap = new Map();
-                            // First add server courses
-                            serverList.forEach(sc => {
-                                if (sc && sc.id) mergedMap.set(sc.id, sc);
-                            });
+                            // Find server copy of the active course
+                            const serverCourse = serverList.find(c => c && c.id === this.courseId);
+                            if (serverCourse) {
+                                const serverTime = new Date(serverCourse.updated_at || serverCourse.created_at || 0).getTime();
+                                const localTime = this.courseData ? new Date(this.courseData.updated_at || this.courseData.created_at || 0).getTime() : 0;
+                                
+                                // Always adopt server course if:
+                                // - User hasn't made unsaved edits in this session (!this.isDirty)
+                                // - Server timestamp is newer or equal to local
+                                // - Not loaded locally or local had empty babs
+                                const shouldAdoptServer = !this.isDirty || 
+                                                          (serverTime >= localTime) || 
+                                                          (!loadedLocally) || 
+                                                          (!this.babs || this.babs.length === 0);
 
-                            // Merge with local courses (local wins if updated_at >= server or has babs when server doesn't)
-                            if (this.coursesList && Array.isArray(this.coursesList)) {
-                                this.coursesList.forEach(lc => {
-                                    if (lc && lc.id) {
-                                        const existing = mergedMap.get(lc.id);
-                                        if (!existing) {
-                                            mergedMap.set(lc.id, lc);
-                                        } else {
-                                            const localDate = new Date(lc.updated_at || 0).getTime();
-                                            const serverDate = new Date(existing.updated_at || 0).getTime();
-                                            const localHasBabs = Array.isArray(lc.babs) && lc.babs.length > 0;
-                                            const serverHasBabs = Array.isArray(existing.babs) && existing.babs.length > 0;
-
-                                            if (localDate >= serverDate || (localHasBabs && !serverHasBabs)) {
-                                                mergedMap.set(lc.id, lc);
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-
-                            // Also merge any local drafts
-                            const currentDraftRaw = localStorage.getItem('nls_lms_draft_' + this.courseId);
-                            if (currentDraftRaw) {
-                                try {
-                                    const cd = JSON.parse(currentDraftRaw);
-                                    if (cd && cd.id) {
-                                        mergedMap.set(cd.id, cd);
-                                    }
-                                } catch(e) {}
-                            }
-
-                            this.coursesList = Array.from(mergedMap.values());
-
-                            // If we didn't load locally or the server has a fresher copy
-                            const activeCourse = mergedMap.get(this.courseId);
-                            if (activeCourse) {
-                                const activeBabs = this.normalizeBabs(activeCourse.babs || activeCourse.content || activeCourse.modules);
-                                if (!loadedLocally || !this.babs || this.babs.length === 0 || !this.babs.some(b => b.subBabs && b.subBabs.length > 0)) {
-                                    this.courseData = activeCourse;
-                                    this.courseTitle = activeCourse.title || 'Course';
-                                    this.babs = activeBabs;
+                                if (shouldAdoptServer) {
+                                    this.courseData = JSON.parse(JSON.stringify(serverCourse));
+                                    this.courseTitle = serverCourse.title || 'Course';
+                                    this.babs = this.normalizeBabs(serverCourse.babs || serverCourse.content || serverCourse.modules);
+                                    
+                                    try {
+                                        localStorage.setItem('nls_lms_draft_' + this.courseId, JSON.stringify(this.courseData));
+                                    } catch(e) {}
+                                    
                                     this.handleInitialNode();
                                 }
                             }
+
+                            // Keep course list up-to-date with server
+                            this.coursesList = serverList;
+                            try {
+                                localStorage.setItem('nls_lms_courses_v1', JSON.stringify(serverList));
+                            } catch(e) {}
                         }
-                    } catch(e) {}
+                    } catch(e) {
+                        console.warn('Gagal memuat catalog dari Cloud:', e);
+                    }
 
                     // Final fallback: Ensure babs is always valid
                     this.babs = this.normalizeBabs(this.babs);
-                    this.saveLocalDraft();
+                    if (this.isDirty) {
+                        this.saveLocalDraft();
+                    }
                     this.handleInitialNode();
                 },
 
@@ -2744,33 +2745,51 @@
                         });
                     }
 
-                    // Re-save draft after point distribution
+                    // 3. Ensure courseData has latest deep-copied babs and fresh timestamp
+                    if (!this.courseData) {
+                        this.courseData = { id: this.courseId, title: this.courseTitle || 'Course' };
+                    }
+                    this.courseData.id = this.courseId;
+                    this.courseData.title = this.courseTitle || this.courseData.title || 'Course';
+                    this.courseData.babs = JSON.parse(JSON.stringify(this.babs));
+                    this.courseData.content = this.courseData.babs;
+                    this.courseData.modules = this.courseData.babs;
+                    this.courseData.updated_at = new Date().toISOString();
+
+                    // Re-save draft after point distribution and timestamp update
                     this.saveLocalDraft();
 
-                    // 3. Remote Server & Cloud Database Sync
+                    // 4. Remote Server & Cloud Database Sync (Vercel API /pg-lms)
                     let success = false;
+                    let errorMsg = '';
                     try {
                         const res = await fetch('/api/pg-lms', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ action: 'admin_save_course', course: this.courseData })
                         });
-                        if (res.ok) {
+                        const json = await res.json().catch(() => ({}));
+                        if (res.ok && json.success) {
                             success = true;
+                            this.isDirty = false;
                         } else if (res.status === 413) {
-                            if (!silent) this.showToast('Gagal: Ukuran materi terlalu besar! (Max 4MB). Kurangi resolusi gambar.', true);
+                            errorMsg = 'Gagal: Ukuran materi terlalu besar! (Max 4MB). Kurangi resolusi gambar.';
                         } else {
-                            if (!silent) this.showToast('Tersimpan di draft lokal (status server: ' + res.status + ')', true);
+                            errorMsg = json.message || ('Gagal menyimpan ke server (status: ' + res.status + ')');
                         }
                     } catch(e) {
-                        if (!silent) this.showToast('Tersimpan di draft lokal (offline dari Cloud).', false);
+                        errorMsg = 'Gagal terhubung ke Cloud Database (' + e.message + ')';
                     }
 
                     this.isSaving = false;
                     const now = new Date();
                     this.lastSaved = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
-                    if (!silent && success) {
-                        this.showToast('✓ Perubahan berhasil disimpan & disinkronisasi ke Cloud!');
+                    if (!silent) {
+                        if (success) {
+                            this.showToast('✓ Berhasil disimpan & disinkronisasi ke Cloud! Siap diakses di komputer lain.');
+                        } else {
+                            this.showToast(errorMsg || 'Tersimpan di draft lokal saja', true);
+                        }
                     }
                 },
 
