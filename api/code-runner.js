@@ -25,7 +25,8 @@ function executeOnWandbox(compiler, code, stdin = '', options = '') {
             stdin: stdin || ''
         };
         if (options) {
-            bodyObj['compiler-option-raw'] = options;
+            // Wandbox requires newline-separated compiler options in compiler-option-raw
+            bodyObj['compiler-option-raw'] = options.split(/\s+/).filter(Boolean).join('\n');
         }
         const payload = JSON.stringify(bodyObj);
 
@@ -88,7 +89,7 @@ export default async function handler(req, res) {
             success: true,
             status: 'online',
             service: 'NLS Online Judge Execution Engine',
-            supportedLanguages: ['cpp', 'python', 'pascal', 'c', 'java']
+            supportedLanguages: ['cpp17', 'cpp20', 'python', 'pascal', 'c', 'java']
         });
     }
 
@@ -98,21 +99,55 @@ export default async function handler(req, res) {
 
     try {
         const body = req.body || {};
-        const { action = 'run_custom', language = 'cpp', code = '', stdin = '', samples = [], testCases = [], timeLimit = 1.0, userId, courseId, moduleId, problemTitle } = body;
+        const rawAction = body.action || '';
+        const mode = body.mode || '';
+        let action = 'run_custom';
+        if (rawAction) {
+            action = rawAction;
+        } else if (mode === 'custom') {
+            action = 'run_custom';
+        } else if (mode === 'samples') {
+            action = 'run_samples';
+        } else if (mode === 'submit') {
+            action = 'submit';
+        }
+
+        const language = body.language || 'cpp17';
+        const code = body.code || '';
+        const stdin = body.stdin !== undefined ? body.stdin : (body.customInput !== undefined ? body.customInput : '');
+        const samples = Array.isArray(body.samples) && body.samples.length > 0 ? body.samples : (Array.isArray(body.sampleCases) ? body.sampleCases : []);
+        const testCases = Array.isArray(body.testCases) ? body.testCases : [];
+        const timeLimit = body.timeLimit || 1.0;
+        const memoryLimit = body.memoryLimit || 256;
+        const userId = body.userId;
+        const courseId = body.courseId;
+        const moduleId = body.moduleId || body.problemId;
+        const problemTitle = body.problemTitle || body.title || 'Soal Pemrograman';
 
         if (!code || !code.trim()) {
             return res.status(400).json({ success: false, message: 'Source code tidak boleh kosong.' });
         }
 
         const langKey = language.toLowerCase().trim();
-        const compiler = COMPILERS[langKey] || COMPILERS['cpp'];
+        const compiler = COMPILERS[langKey] || COMPILERS['cpp17'] || COMPILERS['cpp'];
+
+        let compilerOptions = '';
+        if (langKey === 'cpp17' || langKey === 'cpp') {
+            compilerOptions = '-std=c++17 -O2';
+        } else if (langKey === 'cpp20') {
+            compilerOptions = '-std=c++20 -O2';
+        } else if (langKey === 'c') {
+            compilerOptions = '-std=c17 -O2';
+        } else if (langKey === 'pascal') {
+            compilerOptions = '-O2';
+        }
 
         // -------------------------------------------------------------
         // MODE 1: RUN CUSTOM INPUT (Siswa menguji kode dengan input sendiri)
         // -------------------------------------------------------------
         if (action === 'run_custom') {
             const startT = Date.now();
-            const result = await executeOnWandbox(compiler, code, stdin);
+            const result = await executeOnWandbox(compiler, code, stdin, compilerOptions);
             const execMs = Date.now() - startT;
 
             if (!result.ok) {
@@ -128,9 +163,14 @@ export default async function handler(req, res) {
                     success: true,
                     verdict: 'Compilation Error',
                     verdictCode: 'CE',
+                    verdictName: 'Compilation Error',
                     compilerError: compErr,
+                    compileError: compErr,
+                    errorOutput: compErr,
+                    stderr: compErr,
                     output: '',
-                    timeMs: execMs
+                    timeMs: execMs,
+                    executionTimeMs: execMs
                 });
             }
 
@@ -144,7 +184,11 @@ export default async function handler(req, res) {
                 verdictCode: d.isTLE ? 'TLE' : (isRTE ? 'RTE' : 'OK'),
                 output: rawOut,
                 errorOutput: rawErr,
-                timeMs: execMs
+                stderr: rawErr,
+                timeMs: execMs,
+                executionTimeMs: execMs,
+                compilerError: '',
+                compileError: ''
             });
         }
 
@@ -152,18 +196,29 @@ export default async function handler(req, res) {
         // MODE 2: RUN SAMPLES (Menguji kode terhadap seluruh Contoh Masukan)
         // -------------------------------------------------------------
         if (action === 'run_samples') {
-            const sampleList = Array.isArray(samples) && samples.length > 0 ? samples : [{ input: stdin, output: '' }];
+            const sampleList = samples.length > 0 ? samples : [{ input: stdin, output: '' }];
             const sampleResults = [];
             let allPassed = true;
 
             for (let i = 0; i < sampleList.length; i++) {
                 const s = sampleList[i];
                 const startT = Date.now();
-                const resW = await executeOnWandbox(compiler, code, s.input || '');
+                const resW = await executeOnWandbox(compiler, code, s.input || '', compilerOptions);
                 const execMs = Date.now() - startT;
 
                 if (!resW.ok) {
-                    sampleResults.push({ index: i + 1, passed: false, error: resW.error, timeMs: execMs });
+                    sampleResults.push({
+                        index: i + 1,
+                        label: `Contoh #${i + 1}`,
+                        passed: false,
+                        error: resW.error,
+                        errorOutput: resW.error,
+                        stderr: resW.error,
+                        timeMs: execMs,
+                        executionTimeMs: execMs,
+                        verdict: 'SE',
+                        verdictCode: 'SE'
+                    });
                     allPassed = false;
                     continue;
                 }
@@ -175,8 +230,11 @@ export default async function handler(req, res) {
                         success: true,
                         verdict: 'Compilation Error',
                         verdictCode: 'CE',
+                        verdictName: 'Compilation Error',
                         compilerError: compErr,
-                        samples: []
+                        compileError: compErr,
+                        samples: [],
+                        sampleResults: []
                     });
                 }
 
@@ -187,23 +245,33 @@ export default async function handler(req, res) {
 
                 if (!passed) allPassed = false;
 
+                const isTLE = Boolean(d.isTLE || d.status === '124' || (d.signal && d.signal.includes('KILL')));
+                const isRTE = d.status !== '0' && !isTLE;
+                const sampleVerdict = isTLE ? 'TLE' : (isRTE ? 'RTE' : (passed ? 'AC' : 'WA'));
+
                 sampleResults.push({
                     index: i + 1,
+                    label: `Contoh #${i + 1}`,
                     passed: passed,
-                    input: s.input,
-                    expectedOutput: s.output,
+                    input: s.input || '',
+                    expectedOutput: s.output || '',
                     actualOutput: actualOut,
                     errorOutput: d.program_error || '',
+                    stderr: d.program_error || '',
                     timeMs: execMs,
-                    verdict: d.isTLE ? 'TLE' : (d.status !== '0' ? 'RTE' : (passed ? 'AC' : 'WA'))
+                    executionTimeMs: execMs,
+                    verdict: sampleVerdict,
+                    verdictCode: sampleVerdict
                 });
             }
 
             return res.status(200).json({
                 success: true,
-                verdict: allPassed ? 'Sample Passed' : 'Sample Failed',
+                verdict: allPassed ? 'AC' : 'WA',
                 verdictCode: allPassed ? 'AC' : 'WA',
-                samples: sampleResults
+                verdictName: allPassed ? 'Sample Passed' : 'Sample Failed',
+                samples: sampleResults,
+                sampleResults: sampleResults
             });
         }
 
@@ -211,16 +279,13 @@ export default async function handler(req, res) {
         // MODE 3: SUBMIT SOLUTION (Grading resmi seluruh Kasus Uji Penilaian)
         // -------------------------------------------------------------
         if (action === 'submit') {
-            // Gabungkan test cases rahasia dengan contoh jika testCases kosong
-            let tests = Array.isArray(testCases) && testCases.length > 0 ? testCases : samples;
+            let tests = testCases.length > 0 ? testCases : samples;
             if (!tests || tests.length === 0) {
-                // Buat dummy sample jika guru belum memasukkan test case
                 tests = [{ input: stdin || '', output: '', points: 100 }];
             }
 
-            // Hitung bobot per test case agar total tepat 100 poin
             const totalPointsConfig = tests.reduce((acc, t) => acc + (Number(t.points) || 0), 0);
-            const defaultWeight = Math.floor(100 / tests.length);
+            const defaultWeight = Math.max(1, Math.floor(100 / tests.length));
 
             const testResults = [];
             let earnedPoints = 0;
@@ -235,12 +300,23 @@ export default async function handler(req, res) {
                 totalMaxPoints += pts;
 
                 const startT = Date.now();
-                const resW = await executeOnWandbox(compiler, code, t.input || '');
+                const resW = await executeOnWandbox(compiler, code, t.input || '', compilerOptions);
                 const execMs = Date.now() - startT;
                 if (execMs > maxTimeMs) maxTimeMs = execMs;
 
                 if (!resW.ok) {
-                    testResults.push({ index: i + 1, verdict: 'Server Error', verdictCode: 'SE', passed: false, points: 0, timeMs: execMs });
+                    testResults.push({
+                        index: i + 1,
+                        label: t.label || `Kasus Uji #${i + 1}`,
+                        verdict: 'SE',
+                        verdictCode: 'SE',
+                        verdictName: 'Server Error',
+                        passed: false,
+                        points: 0,
+                        maxPoints: pts,
+                        timeMs: execMs,
+                        executionTimeMs: execMs
+                    });
                     if (finalVerdictCode === 'AC') { finalVerdict = 'Server Error'; finalVerdictCode = 'SE'; }
                     continue;
                 }
@@ -248,26 +324,27 @@ export default async function handler(req, res) {
                 const d = resW.data || {};
                 const compErr = d.compiler_error || d.compiler_message || '';
                 
-                // Jika kompilasi gagal, langsung hentikan dan kembalikan CE
                 if (d.status !== '0' && compErr && !d.program_output) {
                     return res.status(200).json({
                         success: true,
                         score: 0,
+                        totalScore: 100,
                         totalPoints: 100,
-                        verdict: 'Compilation Error',
+                        verdict: 'CE',
                         verdictCode: 'CE',
+                        verdictName: 'Compilation Error',
                         compilerError: compErr,
-                        tests: []
+                        compileError: compErr,
+                        passedCount: 0,
+                        totalCount: tests.length,
+                        tests: [],
+                        testResults: []
                     });
                 }
 
-                // Cek Time Limit Exceeded (dari status sandbox compiler)
                 const isTLE = Boolean(d.isTLE || d.status === '124' || (d.signal && d.signal.includes('KILL')) || (d.program_error && d.program_error.toLowerCase().includes('time limit')));
-
-                // Cek Runtime Error
                 const isRTE = d.status !== '0' && !isTLE;
 
-                // Cek Kesesuaian Output
                 const actualOut = d.program_output || '';
                 const normActual = normalizeOutput(actualOut);
                 const normExpected = normalizeOutput(t.output || '');
@@ -296,25 +373,28 @@ export default async function handler(req, res) {
 
                 testResults.push({
                     index: i + 1,
+                    label: t.label || `Kasus Uji #${i + 1}`,
                     passed: isCorrect,
-                    verdict: testVerdict,
+                    verdict: testCode,
                     verdictCode: testCode,
+                    verdictName: testVerdict,
                     points: isCorrect ? pts : 0,
                     maxPoints: pts,
                     timeMs: execMs,
-                    // Sembunyikan detail test case jika bertipe hidden
-                    input: t.isHidden ? '(Kasus Uji Rahasia)' : t.input,
-                    expectedOutput: t.isHidden ? '(Kasus Uji Rahasia)' : t.output,
+                    executionTimeMs: execMs,
+                    input: t.isHidden ? '(Kasus Uji Rahasia)' : (t.input || ''),
+                    expectedOutput: t.isHidden ? '(Kasus Uji Rahasia)' : (t.output || ''),
                     actualOutput: t.isHidden && !isCorrect ? '(Output Tersembunyi)' : actualOut
                 });
             }
 
-            // Normalisasi skor akhir ke skala 100
             const normalizedScore = totalMaxPoints > 0 ? Math.min(100, Math.round((earnedPoints / totalMaxPoints) * 100)) : (finalVerdictCode === 'AC' ? 100 : 0);
+            const passedCount = testResults.filter(t => t.passed).length;
+            const totalCount = testResults.length;
+            const submissionId = `sub-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 
-            // Simpan riwayat submisi ke Cloud DB jika terdapat userId
             const submissionRecord = {
-                id: `sub-${Date.now()}`,
+                id: submissionId,
                 userId: userId || 'anonymous',
                 courseId: courseId || '',
                 moduleId: moduleId || '',
@@ -322,19 +402,23 @@ export default async function handler(req, res) {
                 language: language,
                 code: code,
                 score: normalizedScore,
-                verdict: finalVerdict,
+                totalScore: 100,
+                passedCount: passedCount,
+                totalCount: totalCount,
+                verdict: finalVerdictCode,
+                verdictName: finalVerdict,
                 verdictCode: finalVerdictCode,
                 maxTimeMs: maxTimeMs,
                 testsCount: testResults.length,
                 submittedAt: new Date().toISOString()
             };
 
-            if (userId) {
+            if (userId && userId !== 'anonymous' && userId !== 'guest') {
                 try {
                     const store = await getCloudStore();
                     const submissions = Array.isArray(store.quizSubmissions) ? store.quizSubmissions : [];
                     submissions.unshift(submissionRecord);
-                    await saveCloudStore({ quizSubmissions: submissions });
+                    await saveCloudStore({ quizSubmissions: submissions.slice(0, 200) });
                 } catch(saveErr) {
                     console.warn('[NLS Judge] Gagal menyimpan riwayat submisi ke Cloud DB:', saveErr.message);
                 }
@@ -343,17 +427,24 @@ export default async function handler(req, res) {
             return res.status(200).json({
                 success: true,
                 score: normalizedScore,
+                totalScore: 100,
                 earnedPoints: earnedPoints,
                 totalPoints: totalMaxPoints,
-                verdict: finalVerdict,
+                verdict: finalVerdictCode,
                 verdictCode: finalVerdictCode,
+                verdictName: finalVerdict,
+                passedCount: passedCount,
+                totalCount: totalCount,
                 maxTimeMs: maxTimeMs,
+                maxMemoryKb: 256 * 1024,
                 tests: testResults,
+                testResults: testResults,
+                submissionId: submissionId,
                 submission: submissionRecord
             });
         }
 
-        return res.status(400).json({ success: false, message: 'Action tidak valid.' });
+        return res.status(400).json({ success: false, message: 'Action atau mode tidak valid.' });
 
     } catch (err) {
         console.error('Error in code-runner:', err);

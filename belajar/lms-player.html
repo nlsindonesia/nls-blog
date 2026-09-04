@@ -1251,15 +1251,30 @@
 
                                     <!-- VIEW 1: CODE EDITOR -->
                                     <div x-show="cpState.activeTab === 'code'" class="flex flex-col">
-                                        <!-- Ace Code Editor Element -->
-                                        <div id="cp-ace-editor" class="w-full h-[460px] font-mono text-sm"></div>
+                                        <!-- Code Editor Workspace Container with Fallback Textarea -->
+                                        <div class="relative w-full h-[460px] min-h-[420px] bg-[#0e161f] overflow-hidden">
+                                            <!-- Fallback Textarea: instantly interactive without waiting for CDN -->
+                                            <textarea x-show="!cpState.editorReady"
+                                                x-model="cpState.currentCode"
+                                                @input="onTextareaCodeChange($event.target.value)"
+                                                placeholder="Ketik kode solusi Anda di sini..."
+                                                spellcheck="false"
+                                                class="w-full h-full p-4 bg-[#0e161f] text-emerald-300 font-mono text-sm border-0 outline-none resize-none leading-relaxed"
+                                                style="font-family: 'Fira Code', 'Courier New', monospace; tab-size: 4;"></textarea>
+
+                                            <!-- Ace Code Editor Element: rich IDE mode -->
+                                            <div id="cp-ace-editor"
+                                                x-show="cpState.editorReady"
+                                                style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; min-height: 420px; z-index: 1;"
+                                                class="font-mono text-sm"></div>
+                                        </div>
 
                                         <!-- Editor Status Bar -->
                                         <div class="bg-[#0e171f] border-t border-b border-slate-800 px-4 py-2 flex items-center justify-between text-[11px] text-slate-400 font-mono">
                                             <div class="flex items-center gap-3">
                                                 <span class="flex items-center gap-1.5 text-emerald-400">
                                                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                                                    Autosave Aktif
+                                                    <span x-text="cpState.editorReady ? 'Ace Editor Siap' : 'Editor Aktif'"></span>
                                                 </span>
                                                 <span class="text-slate-600">|</span>
                                                 <span x-text="'Baris: ' + cpState.cursorPos.row + ', Kolom: ' + cpState.cursorPos.col"></span>
@@ -1674,6 +1689,8 @@
                     copiedSampleIdx: null,
                     showEditorialSpoiler: false,
                     editorInstance: null,
+                    editorReady: false,
+                    currentCode: '',
                     cursorPos: { row: 1, col: 1 },
                     bestScore: 0,
                     bestVerdict: null
@@ -2787,7 +2804,16 @@
                 // ==========================================
                 initCpEditor() {
                     if (!this.activeNode || this.activeNode.type !== 'pemrograman') return;
-                    
+
+                    // Clean up any existing editor instance
+                    if (this.cpState.editorInstance) {
+                        try {
+                            this.cpState.editorInstance.destroy();
+                        } catch(e) {}
+                        this.cpState.editorInstance = null;
+                        this.cpState.editorReady = false;
+                    }
+
                     const courseId = this.courseData ? this.courseData.id : 'draft';
                     const lastLang = localStorage.getItem('cp_last_lang_' + courseId + '_' + this.activeNode.id);
                     if (lastLang) {
@@ -2797,7 +2823,7 @@
                         if (available) this.cpState.selectedLang = available;
                     }
 
-                    // Reset console output and last verdict for new problem
+                    // Reset console output and state for new problem
                     this.cpState.customOutput = '';
                     this.cpState.customStderr = '';
                     this.cpState.customTimeMs = 0;
@@ -2806,62 +2832,115 @@
 
                     // Set initial custom input to sample input 1 if customInput is empty
                     const initialSamples = this.activeNode.sampleCases || this.activeNode.samples || [];
-                    if (initialSamples.length > 0) {
+                    if (initialSamples.length > 0 && !this.cpState.customInput) {
                         this.cpState.customInput = initialSamples[0].input || '';
                     }
 
                     this.loadCpSubmissions();
 
-                    const editorEl = document.getElementById('cp-ace-editor');
-                    if (!editorEl || typeof ace === 'undefined') return;
-
-                    if (!this.cpState.editorInstance) {
-                        const editor = ace.edit('cp-ace-editor');
-                        editor.setTheme('ace/theme/one_dark');
-                        editor.setFontSize(14);
-                        editor.setShowPrintMargin(false);
-                        editor.session.setUseSoftTabs(true);
-                        editor.session.setTabSize(4);
-                        editor.setOptions({
-                            enableBasicAutocompletion: true,
-                            enableLiveAutocompletion: true,
-                            enableSnippets: true,
-                            showLineNumbers: true
-                        });
-
-                        editor.selection.on('changeCursor', () => {
-                            const pos = editor.getCursorPosition();
-                            this.cpState.cursorPos = { row: pos.row + 1, col: pos.column + 1 };
-                        });
-
-                        editor.on('change', () => {
-                            if (!this.activeNode || this.activeNode.type !== 'pemrograman') return;
-                            const val = editor.getValue();
-                            const currentLang = this.cpState.selectedLang;
-                            const cId = this.courseData ? this.courseData.id : 'draft';
-                            const key = 'cp_code_' + cId + '_' + this.activeNode.id + '_' + currentLang;
-                            try {
-                                localStorage.setItem(key, val);
-                            } catch(e) {}
-                        });
-
-                        this.cpState.editorInstance = editor;
+                    // Pre-load saved code or boilerplate into currentCode so fallback textarea is immediately populated
+                    const key = 'cp_code_' + courseId + '_' + this.activeNode.id + '_' + this.cpState.selectedLang;
+                    let savedCode = localStorage.getItem(key);
+                    if (savedCode === null) {
+                        if (this.activeNode.starterCodes && this.activeNode.starterCodes[this.cpState.selectedLang]) {
+                            savedCode = this.activeNode.starterCodes[this.cpState.selectedLang];
+                        } else {
+                            savedCode = this.getDefaultBoilerplate(this.cpState.selectedLang);
+                        }
                     }
+                    this.cpState.currentCode = savedCode || '';
 
-                    this.updateEditorLangAndCode();
+                    // Robust retry loop to mount Ace when the DOM node is ready
+                    let attempts = 0;
+                    const maxAttempts = 30;
+                    const mountAce = () => {
+                        const editorEl = document.getElementById('cp-ace-editor');
+                        if (!editorEl || typeof ace === 'undefined') {
+                            if (++attempts < maxAttempts) {
+                                setTimeout(mountAce, 60);
+                            }
+                            return;
+                        }
+
+                        try {
+                            const editor = ace.edit('cp-ace-editor');
+                            editor.setTheme('ace/theme/one_dark');
+                            editor.setFontSize(14);
+                            editor.setShowPrintMargin(false);
+                            editor.session.setUseSoftTabs(true);
+                            editor.session.setTabSize(4);
+                            editor.setReadOnly(false);
+                            editor.setOptions({
+                                enableBasicAutocompletion: true,
+                                enableLiveAutocompletion: true,
+                                enableSnippets: true,
+                                showLineNumbers: true
+                            });
+
+                            editor.selection.on('changeCursor', () => {
+                                const pos = editor.getCursorPosition();
+                                this.cpState.cursorPos = { row: pos.row + 1, col: pos.column + 1 };
+                            });
+
+                            editor.on('change', () => {
+                                if (!this.activeNode || this.activeNode.type !== 'pemrograman') return;
+                                const val = editor.getValue();
+                                this.cpState.currentCode = val;
+                                const currentLang = this.cpState.selectedLang;
+                                const cId = this.courseData ? this.courseData.id : 'draft';
+                                const saveKey = 'cp_code_' + cId + '_' + this.activeNode.id + '_' + currentLang;
+                                try {
+                                    localStorage.setItem(saveKey, val);
+                                } catch(e) {}
+                            });
+
+                            this.cpState.editorInstance = editor;
+                            this.cpState.editorReady = true;
+                            this.updateEditorLangAndCode();
+
+                            setTimeout(() => {
+                                editor.resize(true);
+                                editor.renderer.updateFull();
+                                editor.focus();
+                            }, 100);
+                        } catch(err) {
+                            console.warn('Gagal memuat Ace editor, menggunakan textarea interaktif:', err);
+                            this.cpState.editorReady = false;
+                        }
+                    };
+
+                    mountAce();
+                },
+
+                onTextareaCodeChange(val) {
+                    this.cpState.currentCode = val;
+                    if (this.activeNode) {
+                        const courseId = this.courseData ? this.courseData.id : 'draft';
+                        const key = 'cp_code_' + courseId + '_' + this.activeNode.id + '_' + this.cpState.selectedLang;
+                        try {
+                            localStorage.setItem(key, val);
+                        } catch(e) {}
+                    }
+                },
+
+                getCurrentCpCode() {
+                    if (this.cpState.editorInstance && this.cpState.editorReady) {
+                        try {
+                            const val = this.cpState.editorInstance.getValue();
+                            if (val !== undefined && val !== null) {
+                                this.cpState.currentCode = val;
+                                return val;
+                            }
+                        } catch(e) {}
+                    }
+                    return this.cpState.currentCode || '';
                 },
 
                 updateEditorLangAndCode() {
-                    if (!this.cpState.editorInstance || !this.activeNode) return;
+                    if (!this.activeNode) return;
                     const lang = this.cpState.selectedLang;
                     const courseId = this.courseData ? this.courseData.id : 'draft';
                     const key = 'cp_code_' + courseId + '_' + this.activeNode.id + '_' + lang;
-
-                    let mode = 'ace/mode/c_cpp';
-                    if (lang === 'python') mode = 'ace/mode/python';
-                    else if (lang === 'pascal') mode = 'ace/mode/pascal';
-                    else if (lang === 'java') mode = 'ace/mode/java';
-                    this.cpState.editorInstance.session.setMode(mode);
 
                     let savedCode = localStorage.getItem(key);
                     if (savedCode === null) {
@@ -2871,8 +2950,18 @@
                             savedCode = this.getDefaultBoilerplate(lang);
                         }
                     }
-                    this.cpState.editorInstance.setValue(savedCode || '', -1);
-                    this.cpState.editorInstance.focus();
+                    this.cpState.currentCode = savedCode || '';
+
+                    if (this.cpState.editorInstance && this.cpState.editorReady) {
+                        let mode = 'ace/mode/c_cpp';
+                        if (lang === 'python') mode = 'ace/mode/python';
+                        else if (lang === 'pascal') mode = 'ace/mode/pascal';
+                        else if (lang === 'java') mode = 'ace/mode/java';
+                        this.cpState.editorInstance.session.setMode(mode);
+                        this.cpState.editorInstance.setValue(this.cpState.currentCode, -1);
+                        this.cpState.editorInstance.resize(true);
+                        this.cpState.editorInstance.focus();
+                    }
                 },
 
                 onLangChange() {
@@ -2883,13 +2972,13 @@
                 },
 
                 getDefaultBoilerplate(lang) {
-                    if (lang === 'cpp17' || lang === 'cpp20') {
+                    if (lang === 'cpp17' || lang === 'cpp20' || lang === 'cpp') {
                         return `#include <iostream>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    \n    // Tulis kode solusi Anda di sini\n    \n    return 0;\n}\n`;
                     }
                     if (lang === 'c') {
                         return `#include <stdio.h>\n\nint main() {\n    // Tulis kode solusi Anda di sini\n    return 0;\n}\n`;
                     }
-                    if (lang === 'python') {
+                    if (lang === 'python' || lang === 'python3') {
                         return `import sys\n\ndef main():\n    # Tulis kode solusi Anda di sini\n    pass\n\nif __name__ == '__main__':\n    main()\n`;
                     }
                     if (lang === 'pascal') {
@@ -2906,16 +2995,18 @@
                     if (!confirm('Kembalikan kode ke template awal untuk bahasa ini? Perubahan kode Anda saat ini akan direset.')) return;
                     const lang = this.cpState.selectedLang;
                     const starter = (this.activeNode.starterCodes && this.activeNode.starterCodes[lang]) ? this.activeNode.starterCodes[lang] : this.getDefaultBoilerplate(lang);
-                    if (this.cpState.editorInstance) {
+                    this.cpState.currentCode = starter;
+                    if (this.cpState.editorInstance && this.cpState.editorReady) {
                         this.cpState.editorInstance.setValue(starter, -1);
+                        this.cpState.editorInstance.focus();
                     }
                     const courseId = this.courseData ? this.courseData.id : 'draft';
                     localStorage.setItem('cp_code_' + courseId + '_' + this.activeNode.id + '_' + lang, starter);
                 },
 
                 async runCpCustom() {
-                    if (!this.cpState.editorInstance || !this.activeNode) return;
-                    const code = this.cpState.editorInstance.getValue();
+                    if (!this.activeNode) return;
+                    const code = this.getCurrentCpCode();
                     if (!code.trim()) {
                         alert('Tulis kode solusi terlebih dahulu!');
                         return;
@@ -2935,7 +3026,9 @@
                                 code: code,
                                 language: this.cpState.selectedLang,
                                 mode: 'custom',
+                                action: 'run_custom',
                                 customInput: this.cpState.customInput || '',
+                                stdin: this.cpState.customInput || '',
                                 timeLimit: this.activeNode.timeLimit || 1,
                                 memoryLimit: this.activeNode.memoryLimit || 256
                             })
@@ -2943,11 +3036,8 @@
                         const data = await res.json();
                         if (data.success) {
                             this.cpState.customOutput = data.output || '';
-                            this.cpState.customStderr = data.stderr || '';
-                            this.cpState.customTimeMs = data.executionTimeMs || 0;
-                            if (data.compileError) {
-                                this.cpState.customStderr = data.compileError;
-                            }
+                            this.cpState.customStderr = data.stderr || data.errorOutput || data.compileError || data.compilerError || '';
+                            this.cpState.customTimeMs = data.executionTimeMs || data.timeMs || 0;
                         } else {
                             this.cpState.customStderr = data.message || 'Gagal mengeksekusi kode.';
                         }
@@ -2958,8 +3048,8 @@
                 },
 
                 async runCpSamples() {
-                    if (!this.cpState.editorInstance || !this.activeNode) return;
-                    const code = this.cpState.editorInstance.getValue();
+                    if (!this.activeNode) return;
+                    const code = this.getCurrentCpCode();
                     if (!code.trim()) {
                         alert('Tulis kode solusi terlebih dahulu!');
                         return;
@@ -2982,14 +3072,16 @@
                                 code: code,
                                 language: this.cpState.selectedLang,
                                 mode: 'samples',
+                                action: 'run_samples',
                                 sampleCases: sampleCasesList,
+                                samples: sampleCasesList,
                                 timeLimit: this.activeNode.timeLimit || 1,
                                 memoryLimit: this.activeNode.memoryLimit || 256
                             })
                         });
                         const data = await res.json();
                         if (data.success) {
-                            this.cpState.sampleResults = data.sampleResults || [];
+                            this.cpState.sampleResults = data.sampleResults || data.samples || [];
                         } else {
                             alert('Gagal menguji kasus contoh: ' + (data.message || 'Unknown error'));
                         }
@@ -3000,8 +3092,8 @@
                 },
 
                 async submitCpSolution() {
-                    if (!this.cpState.editorInstance || !this.activeNode) return;
-                    const code = this.cpState.editorInstance.getValue();
+                    if (!this.activeNode) return;
+                    const code = this.getCurrentCpCode();
                     if (!code.trim()) {
                         alert('Tulis kode solusi sebelum mengumpulkan!');
                         return;
@@ -3031,7 +3123,10 @@
                                 code: code,
                                 language: this.cpState.selectedLang,
                                 mode: 'submit',
+                                action: 'submit',
                                 problemId: this.activeNode.id,
+                                moduleId: this.activeNode.id,
+                                problemTitle: this.activeNode.title || 'Soal Pemrograman',
                                 courseId: courseId,
                                 userId: userId,
                                 userName: userName,
@@ -3049,14 +3144,14 @@
                             const submissionRecord = {
                                 id: data.submissionId || ('sub_' + Date.now().toString(36)),
                                 language: this.cpState.selectedLang,
-                                verdict: data.verdict,
+                                verdict: data.verdict || data.verdictCode,
                                 score: data.score,
-                                totalScore: data.totalScore,
-                                timeMs: data.maxTimeMs,
-                                memoryKb: data.maxMemoryKb,
+                                totalScore: data.totalScore || 100,
+                                timeMs: data.maxTimeMs || 0,
+                                memoryKb: data.maxMemoryKb || 256 * 1024,
                                 date: new Date().toLocaleString('id-ID'),
                                 code: code,
-                                details: data.testResults
+                                details: data.testResults || data.tests || []
                             };
                             this.cpState.submissions.unshift(submissionRecord);
                             try {
@@ -3066,11 +3161,11 @@
                             // Update best score
                             if (data.score > (this.cpState.bestScore || 0)) {
                                 this.cpState.bestScore = data.score;
-                                this.cpState.bestVerdict = data.verdict;
+                                this.cpState.bestVerdict = data.verdict || data.verdictCode;
                             }
 
                             // If AC 100, trigger confetti and mark module as completed!
-                            if (data.verdict === 'AC' && data.score === 100) {
+                            if ((data.verdict === 'AC' || data.verdictCode === 'AC') && data.score === 100) {
                                 if (typeof confetti === 'function') {
                                     confetti({
                                         particleCount: 120,
@@ -3121,11 +3216,32 @@
                 },
 
                 copySampleInput(input, idx) {
-                    if (navigator.clipboard) {
-                        navigator.clipboard.writeText(input);
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(input).then(() => {
+                            this.cpState.copiedSampleIdx = idx;
+                            setTimeout(() => { this.cpState.copiedSampleIdx = null; }, 2000);
+                        }).catch(() => {
+                            this.fallbackCopy(input);
+                            this.cpState.copiedSampleIdx = idx;
+                            setTimeout(() => { this.cpState.copiedSampleIdx = null; }, 2000);
+                        });
+                    } else {
+                        this.fallbackCopy(input);
                         this.cpState.copiedSampleIdx = idx;
                         setTimeout(() => { this.cpState.copiedSampleIdx = null; }, 2000);
                     }
+                },
+
+                fallbackCopy(text) {
+                    const t = document.createElement('textarea');
+                    t.value = text;
+                    t.style.position = 'fixed';
+                    t.style.opacity = '0';
+                    document.body.appendChild(t);
+                    t.focus();
+                    t.select();
+                    try { document.execCommand('copy'); } catch(e) {}
+                    document.body.removeChild(t);
                 },
 
                 useSampleAsCustomInput(input) {
@@ -3142,20 +3258,31 @@
                 },
 
                 loadSubmittedCodeToEditor(code) {
-                    if (this.cpState.editorInstance) {
+                    this.cpState.currentCode = code;
+                    if (this.cpState.editorInstance && this.cpState.editorReady) {
                         this.cpState.editorInstance.setValue(code, -1);
-                        this.cpState.showCodeModal = false;
-                        this.cpState.activeTab = 'code';
-                        const el = document.getElementById('cp-ace-editor');
-                        if (el) el.scrollIntoView({ behavior: 'smooth' });
                     }
+                    this.cpState.showCodeModal = false;
+                    this.cpState.activeTab = 'code';
+                    const cId = this.courseData ? this.courseData.id : 'draft';
+                    if (this.activeNode) {
+                        localStorage.setItem('cp_code_' + cId + '_' + this.activeNode.id + '_' + this.cpState.selectedLang, code);
+                    }
+                    const el = document.getElementById('cp-ace-editor');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
                 },
 
                 copyToClipboard(text) {
-                    if (navigator.clipboard && text) {
+                    if (navigator.clipboard && navigator.clipboard.writeText && text) {
                         navigator.clipboard.writeText(text).then(() => {
                             alert('Tersalin ke clipboard!');
-                        }).catch(() => {});
+                        }).catch(() => {
+                            this.fallbackCopy(text);
+                            alert('Tersalin ke clipboard!');
+                        });
+                    } else if (text) {
+                        this.fallbackCopy(text);
+                        alert('Tersalin ke clipboard!');
                     }
                 }
             }
