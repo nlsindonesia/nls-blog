@@ -9788,12 +9788,12 @@
                         sessionStorage.setItem('nls_admin_lms_return_url', window.location.href);
                     } catch(e) {}
                     const returnUrl = encodeURIComponent(window.location.href);
-                    window.location.href = `/nlsadmin/lms-builder.html?course=${course.id}&returnUrl=${returnUrl}`;
+                    window.location.href = `/nlsadmin/lms-builder?course=${course.id}&returnUrl=${returnUrl}`;
                 },
 
                 openQuizResults(course) {
                     // Navigate to the course-specific LMS Results dashboard
-                    window.location.href = `/nlsadmin/lms-results.html?courseId=${course.id}&courseTitle=${encodeURIComponent(course.title || '')}`;
+                    window.location.href = `/nlsadmin/lms-results?courseId=${course.id}&courseTitle=${encodeURIComponent(course.title || '')}`;
                 },
 
                 addQuizQuestionItem() {

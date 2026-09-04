@@ -8625,7 +8625,7 @@
                         sessionStorage.setItem('nls_admin_lms_return_url', window.location.href);
                     } catch(e) {}
                     const returnUrl = encodeURIComponent(window.location.href);
-                    window.location.href = `/nlsadmin/lms-builder.html?course=${course.id}&returnUrl=${returnUrl}`;
+                    window.location.href = `/nlsadmin/lms-builder?course=${course.id}&returnUrl=${returnUrl}`;
                 },
 
                 addQuizQuestionItem() {
