@@ -120,9 +120,10 @@
                                     <div x-show="activeNode && activeNode.id === node.id" class="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500"></div>
                                     <div class="flex items-center gap-3 min-w-0 pl-1">
                                         <div class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-sm"
-                                            :class="node.type === 'materi' ? 'bg-sky-100 text-sky-600' : (node.type === 'kuis' ? 'bg-amber-100 text-amber-600' : 'bg-rose-100 text-rose-600')">
+                                            :class="node.type === 'materi' ? 'bg-sky-100 text-sky-600' : (node.type === 'kuis' ? 'bg-amber-100 text-amber-600' : (node.type === 'pemrograman' ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'))">
                                             <svg x-show="node.type === 'materi'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                             <svg x-show="node.type === 'kuis'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                            <svg x-show="node.type === 'pemrograman'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
                                             <svg x-show="node.type === 'video'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                         </div>
                                         <span class="font-black text-xs truncate" :class="activeNode && activeNode.id === node.id ? 'text-indigo-900' : 'text-slate-700'" x-text="node.title || 'Tanpa Judul'"></span>
@@ -163,12 +164,12 @@
                     
                     <!-- Title Editor -->
                     <div class="bg-white p-7 rounded-3xl border border-indigo-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-1.5 h-full" :class="activeNode.type === 'materi' ? 'bg-gradient-to-b from-sky-400 to-blue-500' : (activeNode.type === 'kuis' ? 'bg-gradient-to-b from-amber-400 to-orange-500' : 'bg-gradient-to-b from-rose-400 to-red-500')"></div>
+                        <div class="absolute top-0 left-0 w-1.5 h-full" :class="activeNode.type === 'materi' ? 'bg-gradient-to-b from-sky-400 to-blue-500' : (activeNode.type === 'kuis' ? 'bg-gradient-to-b from-amber-400 to-orange-500' : (activeNode.type === 'pemrograman' ? 'bg-gradient-to-b from-emerald-400 to-teal-600' : 'bg-gradient-to-b from-rose-400 to-red-500'))"></div>
                         <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50/50 rounded-full blur-2xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
                         
                         <div class="relative z-10 pl-2">
                             <label class="block text-[10px] font-black uppercase text-indigo-400 mb-1 tracking-wider">Judul Node / Halaman</label>
-                            <input type="text" x-model="activeNode.title" @input="saveLocalDraft(); debounceSave()" @change="saveLocalDraft(); debounceSave()" class="w-full text-2xl font-black text-indigo-950 border-none p-0 focus:ring-0 bg-transparent placeholder-slate-300" placeholder="Masukkan judul materi/kuis...">
+                            <input type="text" x-model="activeNode.title" @input="saveLocalDraft(); debounceSave()" @change="saveLocalDraft(); debounceSave()" class="w-full text-2xl font-black text-indigo-950 border-none p-0 focus:ring-0 bg-transparent placeholder-slate-300" placeholder="Masukkan judul materi/kuis/pemrograman...">
                             
                             <div class="mt-6 flex flex-wrap gap-3">
                                 <label class="cursor-pointer group">
@@ -190,6 +191,17 @@
                                             <div class="w-2 h-2 rounded-full bg-amber-500 scale-0 transition-transform" :class="activeNode.type === 'kuis' ? 'scale-100' : ''"></div>
                                         </div>
                                         <span class="font-bold text-xs" :class="activeNode.type === 'kuis' ? 'text-amber-700' : 'text-slate-600 group-hover:text-slate-900'">✍️ Kuis & Latihan</span>
+                                    </div>
+                                </label>
+
+                                <label class="cursor-pointer group">
+                                    <input type="radio" x-model="activeNode.type" value="pemrograman" @change="changeNodeType('pemrograman')" class="hidden">
+                                    <div class="flex items-center gap-2 px-4 py-2 rounded-xl border transition-all"
+                                         :class="activeNode.type === 'pemrograman' ? 'border-emerald-200 bg-emerald-50 shadow-[0_2px_8px_rgba(16,185,129,0.15)]' : 'border-slate-200 bg-white hover:bg-slate-50'">
+                                        <div class="w-4 h-4 rounded-full border flex items-center justify-center transition-colors" :class="activeNode.type === 'pemrograman' ? 'border-emerald-500' : 'border-slate-300 group-hover:border-emerald-400'">
+                                            <div class="w-2 h-2 rounded-full bg-emerald-500 scale-0 transition-transform" :class="activeNode.type === 'pemrograman' ? 'scale-100' : ''"></div>
+                                        </div>
+                                        <span class="font-bold text-xs" :class="activeNode.type === 'pemrograman' ? 'text-emerald-700' : 'text-slate-600 group-hover:text-slate-900'">💻 Pemrograman (TLX/CP)</span>
                                     </div>
                                 </label>
 
@@ -292,6 +304,217 @@
                                 </template>
                             </div>
                         </div>
+                    <!-- PEMROGRAMAN EDITOR (Competitive Programming / TLX Style) -->
+                    <div x-show="activeNode.type === 'pemrograman'" class="space-y-6 animate-fade-in">
+                        
+                        <!-- HEADER & QUICK ACTIONS -->
+                        <div class="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 text-white p-6 rounded-3xl shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                            <div class="relative z-10 space-y-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/30 text-emerald-300 font-black text-[10px] uppercase tracking-wider border border-emerald-500/40">TLX / OSN Format</span>
+                                    <span class="text-xs text-slate-400 font-bold">• Online Judge Auto-Grading</span>
+                                </div>
+                                <h3 class="text-lg font-black text-white">Soal Competitive Programming</h3>
+                                <p class="text-xs text-slate-300 max-w-xl leading-relaxed">Siswa menulis kode (C++, Python, Pascal, Java, C), menjalankan Custom Input, dan dinilai otomatis dengan verdict resmi (AC, WA, TLE, RTE, CE).</p>
+                            </div>
+                            <div class="relative z-10 flex items-center gap-2 shrink-0">
+                                <button type="button" @click="applyTlxTemplate()" class="px-4 py-2.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-xs rounded-xl shadow-lg transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
+                                    <span>✨ Gunakan Template Soal OSN/TLX</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- SPESIFIKASI & LIMIT SOAL -->
+                        <div class="bg-white p-6 rounded-3xl border border-indigo-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider mb-1.5">Batas Waktu (Detik)</label>
+                                <div class="relative">
+                                    <input type="number" step="0.1" min="0.1" max="10.0" x-model.number="activeNode.timeLimit" @input="saveLocalDraft(); debounceSave()" class="w-full pl-3 pr-12 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-indigo-950 focus:ring-2 focus:ring-emerald-500">
+                                    <span class="absolute right-3 top-2.5 text-xs font-bold text-slate-400">detik</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider mb-1.5">Batas Memori (MB)</label>
+                                <div class="relative">
+                                    <input type="number" step="16" min="16" max="1024" x-model.number="activeNode.memoryLimit" @input="saveLocalDraft(); debounceSave()" class="w-full pl-3 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-indigo-950 focus:ring-2 focus:ring-emerald-500">
+                                    <span class="absolute right-3 top-2.5 text-xs font-bold text-slate-400">MB</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider mb-1.5">Tingkat Kesulitan</label>
+                                <select x-model="activeNode.difficulty" @change="saveLocalDraft(); debounceSave()" class="w-full py-2.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-indigo-950 focus:ring-2 focus:ring-emerald-500 cursor-pointer">
+                                    <option value="Mudah">🟢 Mudah (Easy)</option>
+                                    <option value="Sedang">🟡 Sedang (Medium)</option>
+                                    <option value="Sulit">🔴 Sulit (Hard)</option>
+                                    <option value="OSN / KSN">🏆 OSN / KSN Informatika</option>
+                                    <option value="ICPC">⚡ ICPC / Advanced</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider mb-1.5">Tag Topik Algoritma</label>
+                                <input type="text" x-model="activeNode.topicTags" @input="saveLocalDraft(); debounceSave()" placeholder="Implementasi, Matematika, Greedy" class="w-full py-2.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-indigo-950 focus:ring-2 focus:ring-emerald-500 placeholder-slate-400">
+                            </div>
+                        </div>
+
+                        <!-- DESKRIPSI SOAL & SPESIFIKASI FORMAT -->
+                        <div class="bg-white p-6 rounded-3xl border border-indigo-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-5">
+                            <div>
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <label class="text-[10px] font-black uppercase text-indigo-400 tracking-wider">Deskripsi Masalah / Soal Cerita</label>
+                                    <span class="text-[10px] text-slate-400 font-medium">Mendukung formula MathJax seperti <code class="bg-slate-100 text-indigo-600 px-1 py-0.5 rounded">$O(N \log N)$</code></span>
+                                </div>
+                                <textarea x-model="activeNode.problemDescription" @input="saveLocalDraft(); debounceSave()" rows="5" placeholder="Tuliskan latar belakang masalah, cerita Pak Dengklek, atau instruksi soal..." class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-emerald-500"></textarea>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider mb-1.5">Format Masukan (Input Format)</label>
+                                    <textarea x-model="activeNode.inputFormat" @input="saveLocalDraft(); debounceSave()" rows="3" placeholder="Contoh: Baris pertama berisi dua buah bilangan bulat N dan M..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-emerald-500"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider mb-1.5">Format Keluaran (Output Format)</label>
+                                    <textarea x-model="activeNode.outputFormat" @input="saveLocalDraft(); debounceSave()" rows="3" placeholder="Contoh: Sebuah baris berisi bilangan yang menyatakan..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-emerald-500"></textarea>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider mb-1.5">Batasan (Constraints / Subsoal)</label>
+                                <textarea x-model="activeNode.constraints" @input="saveLocalDraft(); debounceSave()" rows="2" placeholder="Contoh: 1 <= N, M <= 1000&#10;1 <= A_i <= 10^9" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono text-slate-800 focus:ring-2 focus:ring-emerald-500"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- CONTOH MASUKAN & KELUARAN (SAMPLES) -->
+                        <div class="bg-white p-6 rounded-3xl border border-indigo-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h4 class="font-black text-xs text-indigo-950 uppercase tracking-wider">Contoh Masukan & Keluaran (Dilihat oleh Siswa)</h4>
+                                    <p class="text-[11px] text-slate-400">Contoh kasus uji ini ditampilkan langsung pada soal agar siswa memahami format input & output.</p>
+                                </div>
+                                <button type="button" @click="addCpSample()" class="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl font-bold text-xs flex items-center gap-1 transition-all cursor-pointer">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg> Tambah Contoh
+                                </button>
+                            </div>
+
+                            <div class="space-y-3">
+                                <template x-for="(sample, sIdx) in (activeNode.samples || [])" :key="sIdx">
+                                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <span class="font-black text-xs text-slate-700" x-text="'Contoh #' + (sIdx + 1)"></span>
+                                            <button type="button" @click="removeCpSample(sIdx)" class="text-rose-500 hover:text-rose-700 text-xs font-bold transition-colors cursor-pointer">Hapus</button>
+                                        </div>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Contoh Masukan (stdin)</label>
+                                                <textarea x-model="sample.input" @input="saveLocalDraft(); debounceSave()" rows="3" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl font-mono text-xs text-slate-900 focus:ring-2 focus:ring-emerald-500" placeholder="174"></textarea>
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Contoh Keluaran (stdout)</label>
+                                                <textarea x-model="sample.output" @input="saveLocalDraft(); debounceSave()" rows="3" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl font-mono text-xs text-slate-900 focus:ring-2 focus:ring-emerald-500" placeholder="174&#10;4002&#10;92046"></textarea>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Penjelasan Contoh (Opsional)</label>
+                                            <input type="text" x-model="sample.explanation" @input="saveLocalDraft(); debounceSave()" class="w-full p-2 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-700 focus:ring-2 focus:ring-emerald-500" placeholder="Penjelasan cara kerja output pada contoh ini...">
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- KASUS UJI PENILAIAN (GRADING / HIDDEN TEST CASES) -->
+                        <div class="bg-white p-6 rounded-3xl border border-indigo-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-4">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                <div>
+                                    <h4 class="font-black text-xs text-indigo-950 uppercase tracking-wider">Kasus Uji Penilaian (Test Cases / Hidden)</h4>
+                                    <p class="text-[11px] text-slate-400">Kasus uji yang digunakan sistem Online Judge untuk menentukan nilai siswa (AC, WA, TLE, RTE, CE).</p>
+                                </div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <button type="button" @click="copySamplesToTestCases()" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs transition-all cursor-pointer">
+                                        📋 Salin Contoh
+                                    </button>
+                                    <button type="button" @click="distributeCpPoints()" class="px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-xl font-bold text-xs transition-all cursor-pointer">
+                                        ⚖️ Bagi Rata (Total 100)
+                                    </button>
+                                    <button type="button" @click="addCpTestCase()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs flex items-center gap-1 transition-all cursor-pointer">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg> Tambah Kasus Uji
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <template x-for="(tc, tcIdx) in (activeNode.testCases || [])" :key="tcIdx">
+                                    <div class="p-4 rounded-2xl border transition-all" :class="tc.isHidden ? 'bg-amber-50/40 border-amber-200' : 'bg-slate-50 border-slate-200'">
+                                        <div class="flex items-center justify-between mb-3">
+                                            <div class="flex items-center gap-3">
+                                                <span class="font-black text-xs text-slate-800" x-text="'Test Case #' + (tcIdx + 1)"></span>
+                                                <label class="flex items-center gap-1.5 text-xs font-bold cursor-pointer" :class="tc.isHidden ? 'text-amber-800' : 'text-slate-500'">
+                                                    <input type="checkbox" x-model="tc.isHidden" @change="saveLocalDraft(); debounceSave()" class="rounded text-amber-600 focus:ring-amber-500">
+                                                    <span>Rahasia (Hidden)</span>
+                                                </label>
+                                            </div>
+                                            <div class="flex items-center gap-3">
+                                                <div class="flex items-center gap-1">
+                                                    <span class="text-[10px] font-black uppercase text-slate-400">Poin:</span>
+                                                    <input type="number" min="1" max="100" x-model.number="tc.points" @input="saveLocalDraft(); debounceSave()" class="w-14 px-2 py-1 bg-white border border-slate-200 rounded-lg text-xs font-black text-center text-indigo-950 focus:ring-2 focus:ring-emerald-500">
+                                                </div>
+                                                <button type="button" @click="removeCpTestCase(tcIdx)" class="text-rose-500 hover:text-rose-700 text-xs font-bold transition-colors cursor-pointer">Hapus</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Masukan (stdin)</label>
+                                                <textarea x-model="tc.input" @input="saveLocalDraft(); debounceSave()" rows="3" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl font-mono text-xs text-slate-900 focus:ring-2 focus:ring-emerald-500" placeholder="Input kasus uji..."></textarea>
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Keluaran yang Diharapkan (Expected stdout)</label>
+                                                <textarea x-model="tc.output" @input="saveLocalDraft(); debounceSave()" rows="3" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl font-mono text-xs text-slate-900 focus:ring-2 focus:ring-emerald-500" placeholder="Keluaran yang benar..."></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- TEMPLATE STARTER CODE & EDITORIAL -->
+                        <div class="bg-white p-6 rounded-3xl border border-indigo-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-4" x-data="{ codeTab: 'cpp' }">
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                                <div>
+                                    <h4 class="font-black text-xs text-indigo-950 uppercase tracking-wider">Template Kode Awal (Starter Code)</h4>
+                                    <p class="text-[11px] text-slate-400">Kode pembuka yang otomatis muncul di editor siswa saat memilih bahasa tertentu.</p>
+                                </div>
+                                <div class="flex gap-1.5 bg-slate-100 p-1 rounded-xl">
+                                    <button type="button" @click="codeTab = 'cpp'" :class="codeTab === 'cpp' ? 'bg-white text-indigo-950 shadow-sm font-black' : 'text-slate-500 font-bold'" class="px-2.5 py-1 text-xs rounded-lg transition-all">C++</button>
+                                    <button type="button" @click="codeTab = 'python'" :class="codeTab === 'python' ? 'bg-white text-indigo-950 shadow-sm font-black' : 'text-slate-500 font-bold'" class="px-2.5 py-1 text-xs rounded-lg transition-all">Python 3</button>
+                                    <button type="button" @click="codeTab = 'pascal'" :class="codeTab === 'pascal' ? 'bg-white text-indigo-950 shadow-sm font-black' : 'text-slate-500 font-bold'" class="px-2.5 py-1 text-xs rounded-lg transition-all">Pascal</button>
+                                    <button type="button" @click="codeTab = 'c'" :class="codeTab === 'c' ? 'bg-white text-indigo-950 shadow-sm font-black' : 'text-slate-500 font-bold'" class="px-2.5 py-1 text-xs rounded-lg transition-all">C</button>
+                                    <button type="button" @click="codeTab = 'java'" :class="codeTab === 'java' ? 'bg-white text-indigo-950 shadow-sm font-black' : 'text-slate-500 font-bold'" class="px-2.5 py-1 text-xs rounded-lg transition-all">Java</button>
+                                </div>
+                            </div>
+
+                            <div x-show="codeTab === 'cpp'">
+                                <textarea x-model="activeNode.starterCodes.cpp" @input="saveLocalDraft(); debounceSave()" rows="8" class="w-full p-3 bg-slate-900 text-emerald-400 font-mono text-xs rounded-xl focus:ring-2 focus:ring-emerald-500"></textarea>
+                            </div>
+                            <div x-show="codeTab === 'python'">
+                                <textarea x-model="activeNode.starterCodes.python" @input="saveLocalDraft(); debounceSave()" rows="8" class="w-full p-3 bg-slate-900 text-emerald-400 font-mono text-xs rounded-xl focus:ring-2 focus:ring-emerald-500"></textarea>
+                            </div>
+                            <div x-show="codeTab === 'pascal'">
+                                <textarea x-model="activeNode.starterCodes.pascal" @input="saveLocalDraft(); debounceSave()" rows="8" class="w-full p-3 bg-slate-900 text-emerald-400 font-mono text-xs rounded-xl focus:ring-2 focus:ring-emerald-500"></textarea>
+                            </div>
+                            <div x-show="codeTab === 'c'">
+                                <textarea x-model="activeNode.starterCodes.c" @input="saveLocalDraft(); debounceSave()" rows="8" class="w-full p-3 bg-slate-900 text-emerald-400 font-mono text-xs rounded-xl focus:ring-2 focus:ring-emerald-500"></textarea>
+                            </div>
+                            <div x-show="codeTab === 'java'">
+                                <textarea x-model="activeNode.starterCodes.java" @input="saveLocalDraft(); debounceSave()" rows="8" class="w-full p-3 bg-slate-900 text-emerald-400 font-mono text-xs rounded-xl focus:ring-2 focus:ring-emerald-500"></textarea>
+                            </div>
+
+                            <div class="pt-3 border-t border-slate-100">
+                                <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider mb-1.5">Pembahasan / Editorial (Opsional)</label>
+                                <textarea x-model="activeNode.editorial" @input="saveLocalDraft(); debounceSave()" rows="3" placeholder="Penjelasan algoritma penyelesaian soal, kompleksitas waktu O(...) dan ruang..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-emerald-500"></textarea>
+                            </div>
+                        </div>
+
                     </div>
 
                     <!-- KUIS EDITOR (Form Builder) -->
@@ -1591,9 +1814,132 @@
                         if (this.editorInstance && this.editorInstance.status === 'ready') {
                             this.editorInstance.setData(this.activeNode.rawHtml || '');
                         }
+                    } else if (newType === 'pemrograman') {
+                        if (this.activeNode.timeLimit === undefined) this.activeNode.timeLimit = 1.0;
+                        if (this.activeNode.memoryLimit === undefined) this.activeNode.memoryLimit = 256;
+                        if (this.activeNode.difficulty === undefined) this.activeNode.difficulty = 'Sedang';
+                        if (this.activeNode.topicTags === undefined) this.activeNode.topicTags = 'Implementasi';
+                        if (!Array.isArray(this.activeNode.samples)) {
+                            this.activeNode.samples = [{ input: '174', output: '174\n4002\n92046', explanation: 'Bulan 1: 174. Bulan 2: 174 * 23 = 4002. Bulan 3: 4002 * 23 = 92046.' }];
+                        }
+                        if (!Array.isArray(this.activeNode.testCases)) {
+                            this.activeNode.testCases = [
+                                { input: '174', output: '174\n4002\n92046', points: 30, isHidden: false },
+                                { input: '1', output: '1\n23\n529', points: 35, isHidden: true },
+                                { input: '1000', output: '1000\n23000\n529000', points: 35, isHidden: true }
+                            ];
+                        }
+                        if (!this.activeNode.starterCodes) {
+                            this.activeNode.starterCodes = {
+                                cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    // Tulis kodemu di sini\n    return 0;\n}',
+                                python: '# Tulis kodemu di sini\n',
+                                pascal: 'var\nbegin\n  // Tulis kodemu di sini\nend.',
+                                c: '#include <stdio.h>\n\nint main() {\n    // Tulis kodemu di sini\n    return 0;\n}',
+                                java: 'import java.util.*;\n\npublic class Solution {\n    public static void main(String[] args) {\n        // Tulis kodemu di sini\n    }\n}'
+                            };
+                        }
                     }
                     this.saveLocalDraft();
                     this.debounceSave();
+                },
+
+                addCpSample() {
+                    if (!this.activeNode) return;
+                    if (!Array.isArray(this.activeNode.samples)) this.activeNode.samples = [];
+                    this.activeNode.samples.push({ input: '', output: '', explanation: '' });
+                    this.saveLocalDraft();
+                    this.debounceSave();
+                },
+
+                removeCpSample(idx) {
+                    if (!this.activeNode || !Array.isArray(this.activeNode.samples)) return;
+                    this.activeNode.samples.splice(idx, 1);
+                    this.saveLocalDraft();
+                    this.debounceSave();
+                },
+
+                addCpTestCase() {
+                    if (!this.activeNode) return;
+                    if (!Array.isArray(this.activeNode.testCases)) this.activeNode.testCases = [];
+                    this.activeNode.testCases.push({ input: '', output: '', points: 20, isHidden: true });
+                    this.distributeCpPoints();
+                    this.saveLocalDraft();
+                    this.debounceSave();
+                },
+
+                removeCpTestCase(idx) {
+                    if (!this.activeNode || !Array.isArray(this.activeNode.testCases)) return;
+                    this.activeNode.testCases.splice(idx, 1);
+                    this.distributeCpPoints();
+                    this.saveLocalDraft();
+                    this.debounceSave();
+                },
+
+                distributeCpPoints() {
+                    if (!this.activeNode || !Array.isArray(this.activeNode.testCases) || this.activeNode.testCases.length === 0) return;
+                    const count = this.activeNode.testCases.length;
+                    const base = Math.floor(100 / count);
+                    const rem = 100 - (base * count);
+                    this.activeNode.testCases.forEach((tc, i) => {
+                        tc.points = i === 0 ? (base + rem) : base;
+                    });
+                    this.saveLocalDraft();
+                    this.debounceSave();
+                },
+
+                copySamplesToTestCases() {
+                    if (!this.activeNode || !Array.isArray(this.activeNode.samples) || this.activeNode.samples.length === 0) return;
+                    if (!Array.isArray(this.activeNode.testCases)) this.activeNode.testCases = [];
+                    this.activeNode.samples.forEach(s => {
+                        if (s.input || s.output) {
+                            this.activeNode.testCases.push({
+                                input: s.input || '',
+                                output: s.output || '',
+                                points: 20,
+                                isHidden: false
+                            });
+                        }
+                    });
+                    this.distributeCpPoints();
+                    this.showToast('Contoh berhasil disalin ke Kasus Uji Penilaian!');
+                },
+
+                applyTlxTemplate() {
+                    if (!this.activeNode) return;
+                    if (this.activeNode.problemDescription && !confirm('Ganti konten soal saat ini dengan template standar TLX/OSN?')) return;
+                    
+                    this.activeNode.title = this.activeNode.title || 'A. Memperbarui Nilai Variabel';
+                    this.activeNode.timeLimit = 1.0;
+                    this.activeNode.memoryLimit = 256;
+                    this.activeNode.difficulty = 'Mudah';
+                    this.activeNode.topicTags = 'Implementasi, Variabel, Matematika';
+                    this.activeNode.problemDescription = 'Pak Dengklek membeli kandang bebek baru, yang dilengkapi dengan fitur kata sandi. Pak Dengklek ingin mengganti kata sandinya setiap bulan, dengan strategi berikut:\n\n• Pada bulan pertama, kata sandinya adalah N.\n• Untuk bulan kedua dan seterusnya, kata sandinya adalah kata sandi pada bulan sebelumnya, dikalikan 23.\n\nBuatlah program yang mencetak sandi Pak Dengklek pada bulan pertama, kedua, dan ketiga!';
+                    this.activeNode.inputFormat = 'Sebuah baris berisi sebuah bilangan bulat $N$ (sandi pada bulan pertama).';
+                    this.activeNode.outputFormat = 'Tiga buah baris, masing-masing berisi sandi Pak Dengklek pada bulan pertama, kedua, dan ketiga.';
+                    this.activeNode.constraints = '$1 \\le N \\le 1000$';
+                    this.activeNode.samples = [
+                        {
+                            input: '174',
+                            output: '174\n4002\n92046',
+                            explanation: 'Bulan 1: 174. Bulan 2: 174 * 23 = 4002. Bulan 3: 4002 * 23 = 92046.'
+                        }
+                    ];
+                    this.activeNode.testCases = [
+                        { input: '174', output: '174\n4002\n92046', points: 30, isHidden: false },
+                        { input: '1', output: '1\n23\n529', points: 35, isHidden: true },
+                        { input: '1000', output: '1000\n23000\n529000', points: 35, isHidden: true }
+                    ];
+                    this.activeNode.starterCodes = {
+                        cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    if (cin >> n) {\n        cout << n << endl;\n        int b2 = n * 23;\n        cout << b2 << endl;\n        cout << b2 * 23 << endl;\n    }\n    return 0;\n}',
+                        python: 'n = int(input())\nprint(n)\nb2 = n * 23\nprint(b2)\nprint(b2 * 23)\n',
+                        pascal: 'var n, b2: longint;\nbegin\n  readln(n);\n  writeln(n);\n  b2 := n * 23;\n  writeln(b2);\n  writeln(b2 * 23);\nend.',
+                        c: '#include <stdio.h>\n\nint main() {\n    int n;\n    if (scanf("%d", &n) == 1) {\n        printf("%d\\n", n);\n        int b2 = n * 23;\n        printf("%d\\n", b2);\n        printf("%d\\n", b2 * 23);\n    }\n    return 0;\n}',
+                        java: 'import java.util.Scanner;\n\npublic class Solution {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (sc.hasNextInt()) {\n            int n = sc.nextInt();\n            System.out.println(n);\n            int b2 = n * 23;\n            System.out.println(b2);\n            System.out.println(b2 * 23);\n        }\n    }\n}'
+                    };
+                    this.activeNode.editorial = 'Permasalahan ini menguji pemahaman operasi aritmatika dan penugasan variabel (assignment). Kita cukup membaca masukan $N$, mencetak $N$, lalu mengalikan dengan 23 untuk bulan kedua, dan mengalikan kembali dengan 23 untuk bulan ketiga. Kompleksitas waktu: $\\mathcal{O}(1)$, kompleksitas memori: $\\mathcal{O}(1)$.';
+                    this.saveLocalDraft();
+                    this.debounceSave();
+                    this.showToast('Template TLX/OSN berhasil dimuat!');
                 },
 
                 switchCourse(newCourseId) {
