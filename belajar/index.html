@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-RDFS63LJMD"></script>
     <script>
@@ -9,8 +11,6 @@
       gtag('js', new Date());
       gtag('config', 'G-RDFS63LJMD');
     </script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
         // 1. Immediate Cross-Origin SSO Handoff Interceptor (Runs before Alpine.js)
         (function() {
@@ -3123,11 +3123,38 @@
                     { id: 'c-clg-2b', category: 'Collage Preparation', level: 'Mandiri', title: 'Masterclass SM ITB & SMUP Unpad Saintek', description: 'Penguasaan soal level tinggi Matematika, Fisika, dan Kimia Ujian Mandiri Kampus Favorit.', mentor: 'Dr. Sarah Kartika, M.Sc.', totalModules: 12, completedModules: 0, progress: 0 },
 
                     // College Prep Kedinasan
-                    { id: 'c-clg-3', category: 'Collage Preparation', level: 'Kedinasan', title: 'Bimbel SKD Kedinasan (TIU, TWK, TKP)', description: 'Strategi lolos passing grade SKD IPDN, STAN, STIS, STIN, dan Poltekip.', mentor: 'Tim Spesialis Kedinasan', totalModules: 10, completedModules: 0, progress: 0 }
+                    { id: 'c-clg-3', category: 'Collage Preparation', level: 'Kedinasan', title: 'Bimbel SKD Kedinasan (TIU, TWK, TKP)', description: 'Strategi lolos passing grade SKD IPDN, STAN, STIS, STIN, dan Poltekip.', mentor: 'Tim Spesialis Kedinasan', totalModules: 10, completedModules: 0, progress: 0 },
+
+                    // Language Goethe & HSK
+                    { id: 'c-lang-3', category: 'Language', level: 'Goethe-Zertifikat', title: 'Deutsch A1-B1 Intensiv: Vorbereitung Goethe-Zertifikat', description: 'Tata bahasa Jerman terstruktur, latihan hören, lesen, schreiben, dan sprechen persiapan studi Ausbildung & Uni di Jerman.', mentor: 'Frau Anke Schneider', totalModules: 12, completedModules: 0, progress: 0 },
+                    { id: 'c-lang-4', category: 'Language', level: 'Hanyu Shuiping Kaoshi', title: 'HSK 3-4 Masterclass: Hanzi, Grammar & Listening Express', description: 'Metode cepat menguasai 1.200 karakter Hanzi, tata bahasa Mandarin baku, dan simulasi resmi ujian HSK.', mentor: 'Lao Shi Chen Wei', totalModules: 12, completedModules: 0, progress: 0 },
+
+                    // Pemrograman & Keterampilan Digital
+                    { id: 'c-prog-py1', category: 'Pemrograman', level: 'Python', title: 'Python Fundamental & Algoritma Logika Digital', description: 'Penguasaan sintaks Python, tipe data, struktur kendali perulangan & percabangan, fungsi, serta algoritma dasar.', mentor: 'Kak Fakhri Irfan, S.Kom.', totalModules: 10, completedModules: 0, progress: 0 },
+                    { id: 'c-prog-py2', category: 'Pemrograman', level: 'Python', title: 'Data Analysis & Otomasi dengan Python & Pandas', description: 'Manipulasi dataset tabular dengan Pandas, NumPy, visualisasi data interaktif, dan otomasi workflow laporan data modern.', mentor: 'Kak Fakhri Irfan, S.Kom.', totalModules: 12, completedModules: 0, progress: 0 },
+                    { id: 'c-prog-cs1', category: 'Pemrograman', level: 'Cyber Security', title: 'Cyber Security Fundamentals & Web Vulnerability Assessment', description: 'Dasar keamanan jaringan, pengujian penetrasi etis (ethical hacking), OWASP Top 10, dan implementasi kriptografi terapan.', mentor: 'Tim Keamanan Siber NLS', totalModules: 10, completedModules: 0, progress: 0 },
+                    { id: 'c-prog-seo1', category: 'Pemrograman', level: 'SEO', title: 'SEO Technical & Digital Search Dominance 2026', description: 'Arsitektur web SEO, optimasi Core Web Vitals, schema markup, riset kata kunci kompetitif, serta strategi rangking #1 Google.', mentor: 'Tim Digital & Growth NLS', totalModules: 8, completedModules: 0, progress: 0 },
+                    { id: 'c-prog-da1', category: 'Pemrograman', level: 'Data Analyst', title: 'SQL & Business Intelligence Dashboard Mastery', description: 'Kueri analitis SQL tingkat lanjut, JOIN kompleks, window functions, agregasi metrik bisnis, dan visualisasi Power BI / Looker Studio.', mentor: 'Kak Raditya Pratama, S.Si.', totalModules: 12, completedModules: 0, progress: 0 },
+                    { id: 'c-prog-osn1', category: 'Pemrograman', level: 'OSN', title: 'Pemrograman C++ & Competitive Programming OSN Informatika', description: 'Algoritma greedy, dynamic programming, graf traversal, dan struktur data tingkat tinggi persiapan seleksi OSN Informatika & IOI.', mentor: 'Kak Fakhri Irfan, S.Kom.', totalModules: 14, completedModules: 0, progress: 0 }
                 ],
 
-                // Active Student Enrolled Classes
-                enrolledIds: [],
+                // Active Student Enrolled Classes (Read immediately from localStorage so classes NEVER disappear)
+                enrolledIds: (function() {
+                    try {
+                        const rawAuth = localStorage.getItem('nls_student_auth_session') || localStorage.getItem('nls_auth_session') || localStorage.getItem('nls_student_profile_v1');
+                        let uid = 'student';
+                        if (rawAuth) {
+                            const parsed = JSON.parse(rawAuth);
+                            uid = parsed.id || parsed.email || parsed.username || 'student';
+                        }
+                        const saved = localStorage.getItem('nls_enrolled_courses_' + uid) || localStorage.getItem('nls_my_enrolled_courses_v1');
+                        if (saved) {
+                            const arr = JSON.parse(saved);
+                            if (Array.isArray(arr) && arr.length > 0) return arr;
+                        }
+                    } catch(e) {}
+                    return [];
+                })(),
 
                 // Quiz Results History
                 quizResults: [],
@@ -3615,16 +3642,56 @@
 
 
                 async fetchMyLMSData(userId) {
+                    const profile = this.studentProfile || {};
+                    const uid = userId || profile.id || profile.email || profile.username || 'student';
+
+                    // 1. Immediately read from local storage so UI is never 0
+                    try {
+                        const localEnrolled = localStorage.getItem('nls_enrolled_courses_' + uid) || localStorage.getItem('nls_my_enrolled_courses_v1');
+                        if (localEnrolled) {
+                            const parsed = JSON.parse(localEnrolled);
+                            if (Array.isArray(parsed) && parsed.length > 0) {
+                                this.enrolledIds = Array.from(new Set([...this.enrolledIds, ...parsed]));
+                            }
+                        }
+                    } catch(e) {}
+
                     try {
                         const res = await fetch('/api/pg-lms', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ action: 'get_lms_data', userId: userId })
+                            body: JSON.stringify({ 
+                                action: 'get_lms_data', 
+                                userId: uid,
+                                email: profile.email || '',
+                                username: profile.username || profile.name || ''
+                            })
                         });
                         const data = await res.json();
                         if (data.success && data.lmsData) {
-                            this.enrolledIds = data.lmsData.enrolledIds || [];
+                            const serverEnrolled = data.lmsData.enrolledIds || [];
+                            // Union merge local & server so enrolled classes are NEVER dropped
+                            const mergedEnrolled = Array.from(new Set([...this.enrolledIds, ...serverEnrolled]));
+                            this.enrolledIds = mergedEnrolled;
                             
+                            try {
+                                localStorage.setItem('nls_enrolled_courses_' + uid, JSON.stringify(mergedEnrolled));
+                                localStorage.setItem('nls_my_enrolled_courses_v1', JSON.stringify(mergedEnrolled));
+                            } catch(e) {}
+                            
+                            // If local had classes that server didn't have yet, auto-sync back to server
+                            const serverSet = new Set(serverEnrolled);
+                            const missingOnServer = mergedEnrolled.filter(id => !serverSet.has(id));
+                            if (missingOnServer.length > 0) {
+                                missingOnServer.forEach(cId => {
+                                    fetch('/api/pg-lms', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ action: 'enroll', userId: uid, email: profile.email || '', courseId: cId })
+                                    }).catch(() => {});
+                                });
+                            }
+
                             const rawQuiz = data.lmsData.quizResults || [];
                             this.quizResults = rawQuiz.map((q, idx) => {
                                 const course = this.courses.find(c => c.id === q.courseId);
@@ -3642,13 +3709,13 @@
 
                             // Update local cache for quiz results
                             try {
-                                localStorage.setItem('nls_lms_quiz_results_' + userId, JSON.stringify(this.quizResults));
+                                localStorage.setItem('nls_lms_quiz_results_' + uid, JSON.stringify(this.quizResults));
                             } catch(e) {}
                         }
                     } catch(e) {
                         // Fallback to local cache if network fails
                         try {
-                            const cachedQuiz = localStorage.getItem('nls_lms_quiz_results_' + userId);
+                            const cachedQuiz = localStorage.getItem('nls_lms_quiz_results_' + uid);
                             if (cachedQuiz) this.quizResults = JSON.parse(cachedQuiz);
                         } catch(err) {}
                     }
@@ -3718,6 +3785,14 @@
                     }
                     if (!this.enrolledIds.includes(course.id)) {
                         this.enrolledIds.push(course.id);
+                        
+                        // Immediately persist to localStorage so data NEVER disappears
+                        const uid = (this.studentProfile && (this.studentProfile.id || this.studentProfile.email || this.studentProfile.username)) || 'student';
+                        try {
+                            localStorage.setItem('nls_enrolled_courses_' + uid, JSON.stringify(this.enrolledIds));
+                            localStorage.setItem('nls_my_enrolled_courses_v1', JSON.stringify(this.enrolledIds));
+                        } catch(e) {}
+
                         this.showToast(`Berhasil mendaftar kelas "${course.title}"!`);
                         
                         // Save to Cloud DB
@@ -3725,7 +3800,12 @@
                             await fetch('/api/pg-lms', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ action: 'enroll', userId: this.studentProfile.id, courseId: course.id })
+                                body: JSON.stringify({ 
+                                    action: 'enroll', 
+                                    userId: uid, 
+                                    email: (this.studentProfile && this.studentProfile.email) || '',
+                                    courseId: course.id 
+                                })
                             });
                         } catch(e) {}
                         
