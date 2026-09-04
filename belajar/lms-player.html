@@ -1019,10 +1019,10 @@
                                     </div>
 
                                     <!-- Tags -->
-                                    <template x-if="activeNode.tags">
+                                    <template x-if="activeNode.tags || activeNode.topicTags">
                                         <div class="flex flex-wrap items-center gap-1.5">
-                                            <template x-for="tag in (activeNode.tags.split(',').map(t => t.trim()).filter(Boolean))" :key="tag">
-                                                <span class="text-[10px] font-bold text-slate-400 bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700" x-text="'#' + tag"></span>
+                                            <template x-for="tag in ((activeNode.tags || activeNode.topicTags || '').split(',').map(t => t.trim()).filter(Boolean))" :key="tag">
+                                                <span class="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/25 shadow-sm" x-text="'#' + tag"></span>
                                             </template>
                                         </div>
                                     </template>

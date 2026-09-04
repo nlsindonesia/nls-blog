@@ -328,34 +328,137 @@
                         </div>
 
                         <!-- SPESIFIKASI & LIMIT SOAL -->
-                        <div class="bg-white p-6 rounded-3xl border border-indigo-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div>
-                                <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider mb-1.5">Batas Waktu (Detik)</label>
-                                <div class="relative">
-                                    <input type="number" step="0.1" min="0.1" max="10.0" x-model.number="activeNode.timeLimit" @input="saveLocalDraft(); debounceSave()" class="w-full pl-3 pr-12 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-indigo-950 focus:ring-2 focus:ring-emerald-500">
-                                    <span class="absolute right-3 top-2.5 text-xs font-bold text-slate-400">detik</span>
+                        <div class="bg-white p-6 rounded-3xl border border-indigo-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-5">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider mb-1.5">Batas Waktu (Detik)</label>
+                                    <div class="relative">
+                                        <input type="number" step="0.1" min="0.1" max="10.0" x-model.number="activeNode.timeLimit" @input="saveLocalDraft(); debounceSave()" class="w-full pl-3 pr-12 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-indigo-950 focus:ring-2 focus:ring-emerald-500">
+                                        <span class="absolute right-3 top-2.5 text-xs font-bold text-slate-400">detik</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider mb-1.5">Batas Memori (MB)</label>
+                                    <div class="relative">
+                                        <input type="number" step="16" min="16" max="1024" x-model.number="activeNode.memoryLimit" @input="saveLocalDraft(); debounceSave()" class="w-full pl-3 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-indigo-950 focus:ring-2 focus:ring-emerald-500">
+                                        <span class="absolute right-3 top-2.5 text-xs font-bold text-slate-400">MB</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider mb-1.5">Tingkat Kesulitan</label>
+                                    <select x-model="activeNode.difficulty" @change="saveLocalDraft(); debounceSave()" class="w-full py-2.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-indigo-950 focus:ring-2 focus:ring-emerald-500 cursor-pointer">
+                                        <option value="Mudah">🟢 Mudah (Easy)</option>
+                                        <option value="Sedang">🟡 Sedang (Medium)</option>
+                                        <option value="Sulit">🔴 Sulit (Hard)</option>
+                                        <option value="OSN / KSN">🏆 OSN / KSN Informatika</option>
+                                        <option value="ICPC">⚡ ICPC / Advanced</option>
+                                    </select>
                                 </div>
                             </div>
-                            <div>
-                                <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider mb-1.5">Batas Memori (MB)</label>
-                                <div class="relative">
-                                    <input type="number" step="16" min="16" max="1024" x-model.number="activeNode.memoryLimit" @input="saveLocalDraft(); debounceSave()" class="w-full pl-3 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-indigo-950 focus:ring-2 focus:ring-emerald-500">
-                                    <span class="absolute right-3 top-2.5 text-xs font-bold text-slate-400">MB</span>
+
+                            <!-- TAG TOPIK ALGORITMA (TLX TOKI OFFICIAL TAGS AUTOCOMPLETE) -->
+                            <div class="pt-4 border-t border-slate-100 relative" @click.away="isTagDropdownOpen = false">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <label class="text-[10px] font-black uppercase text-indigo-400 tracking-wider">Tag Topik Algoritma</label>
+                                        <span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-black border border-emerald-200 flex items-center gap-1">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                            85 Topik Resmi TLX TOKI
+                                        </span>
+                                    </div>
+                                    <span class="text-[10px] text-slate-400 font-medium">Ketik beberapa huruf untuk mencari • Tekan Enter / klik untuk memilih</span>
                                 </div>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider mb-1.5">Tingkat Kesulitan</label>
-                                <select x-model="activeNode.difficulty" @change="saveLocalDraft(); debounceSave()" class="w-full py-2.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-indigo-950 focus:ring-2 focus:ring-emerald-500 cursor-pointer">
-                                    <option value="Mudah">🟢 Mudah (Easy)</option>
-                                    <option value="Sedang">🟡 Sedang (Medium)</option>
-                                    <option value="Sulit">🔴 Sulit (Hard)</option>
-                                    <option value="OSN / KSN">🏆 OSN / KSN Informatika</option>
-                                    <option value="ICPC">⚡ ICPC / Advanced</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-black uppercase text-indigo-400 tracking-wider mb-1.5">Tag Topik Algoritma</label>
-                                <input type="text" x-model="activeNode.topicTags" @input="saveLocalDraft(); debounceSave()" placeholder="Implementasi, Matematika, Greedy" class="w-full py-2.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-indigo-950 focus:ring-2 focus:ring-emerald-500 placeholder-slate-400">
+
+                                <!-- Active Selected Chips -->
+                                <div class="flex flex-wrap items-center gap-1.5 mb-2.5 min-h-[36px] p-2 bg-slate-50/80 border border-slate-200/80 rounded-2xl">
+                                    <template x-if="getCpTags().length === 0">
+                                        <span class="text-xs text-slate-400 italic px-1">Belum ada topik dipilih. Ketik di bawah atau klik rekomendasi populer.</span>
+                                    </template>
+                                    <template x-for="tag in getCpTags()" :key="tag">
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-100/90 text-emerald-900 border border-emerald-300 rounded-xl text-xs font-black shadow-xs group transition-all animate-scale-in">
+                                            <span class="text-emerald-600 font-bold">#</span>
+                                            <span x-text="tag"></span>
+                                            <button type="button" @click="removeCpTag(tag)" class="text-emerald-700 hover:text-rose-600 ml-0.5 font-bold transition-colors cursor-pointer" title="Hapus tag">
+                                                ✕
+                                            </button>
+                                        </span>
+                                    </template>
+                                </div>
+
+                                <!-- Input Autocomplete Field -->
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                    </div>
+                                    <input type="text"
+                                           x-model="tagSearchQuery"
+                                           @focus="isTagDropdownOpen = true"
+                                           @input="isTagDropdownOpen = true"
+                                           @keydown.enter.prevent="handleTagInputEnter()"
+                                           @keydown.escape="isTagDropdownOpen = false"
+                                           placeholder="Ketik beberapa huruf topik TLX (contoh: dyn, tree, bin, math, graph, greedy)..."
+                                           class="w-full pl-10 pr-24 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-indigo-950 focus:ring-2 focus:ring-emerald-500 placeholder-slate-400 shadow-inner">
+                                    <div class="absolute inset-y-0 right-1.5 flex items-center gap-1">
+                                        <button type="button" x-show="tagSearchQuery" @click="tagSearchQuery = ''; isTagDropdownOpen = false" class="text-slate-400 hover:text-slate-600 text-xs px-2 py-1 font-bold">✕</button>
+                                        <button type="button" @click="isTagDropdownOpen = !isTagDropdownOpen" class="px-2.5 py-1 text-[11px] font-bold bg-white text-indigo-700 border border-indigo-100 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer flex items-center gap-1 shadow-xs">
+                                            <span>Semua</span>
+                                            <svg class="w-3 h-3 transition-transform" :class="isTagDropdownOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                        </button>
+                                    </div>
+
+                                    <!-- Floating Dropdown Recommendations -->
+                                    <div x-show="isTagDropdownOpen"
+                                         x-transition:enter="transition ease-out duration-150"
+                                         x-transition:enter-start="opacity-0 translate-y-1"
+                                         x-transition:enter-end="opacity-100 translate-y-0"
+                                         class="absolute z-50 left-0 right-0 mt-1.5 bg-white border border-slate-200 rounded-2xl shadow-2xl max-h-64 overflow-y-auto p-2 divide-y divide-slate-100">
+                                        
+                                        <div class="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                                            <span x-text="tagSearchQuery ? ('Hasil Pencarian (' + filteredTlxTags().length + ')') : 'Topik TLX Sering Dipakai'"></span>
+                                            <span class="text-[9px] text-emerald-600 font-bold">Sumber: tlx.toki.id/problems</span>
+                                        </div>
+
+                                        <div class="py-1 space-y-0.5">
+                                            <template x-for="(tagItem, idx) in filteredTlxTags()" :key="tagItem">
+                                                <button type="button"
+                                                        @click="addCpTag(tagItem)"
+                                                        class="w-full px-3 py-2 text-left rounded-xl hover:bg-emerald-50 flex items-center justify-between group transition-colors cursor-pointer text-xs">
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 group-hover:scale-125 transition-transform"></span>
+                                                        <span class="font-bold text-slate-800 group-hover:text-emerald-950" x-text="tagItem"></span>
+                                                    </div>
+                                                    <span class="text-[10px] font-bold text-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                                                        + Pilih
+                                                    </span>
+                                                </button>
+                                            </template>
+                                            
+                                            <template x-if="filteredTlxTags().length === 0">
+                                                <div class="p-3 text-center text-xs text-slate-400">
+                                                    Tidak ada topik TLX yang cocok dengan "<span class="font-bold text-slate-600" x-text="tagSearchQuery"></span>".
+                                                    <div class="mt-2">
+                                                        <button type="button" @click="addCpTag(tagSearchQuery)" class="px-3 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-lg text-xs transition-colors">
+                                                            + Tambahkan sebagai tag kustom
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Popular Quick Pick Pills -->
+                                <div class="mt-2.5 flex items-center gap-1.5 flex-wrap">
+                                    <span class="text-[10px] font-black uppercase text-slate-400 tracking-wider mr-1">Rekomendasi Cepat:</span>
+                                    <template x-for="recTag in ['dynamic programming', 'greedy', 'math: number theory', 'searching: binary search', 'graph: shortest path', 'data structure: segment tree', 'implementation', 'ad hoc']" :key="recTag">
+                                        <button type="button"
+                                                x-show="!getCpTags().some(t => t.toLowerCase() === recTag.toLowerCase())"
+                                                @click="addCpTag(recTag)"
+                                                class="px-2 py-1 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200 border border-slate-200 rounded-lg text-[10px] font-bold text-slate-600 transition-all active:scale-95 cursor-pointer">
+                                            + <span x-text="recTag"></span>
+                                        </button>
+                                    </template>
+                                </div>
                             </div>
                         </div>
 
@@ -1602,6 +1705,95 @@
                 activeNode: null,
                 activePaketTab: 'all',
                 editorInstance: null,
+                tagSearchQuery: '',
+                isTagDropdownOpen: false,
+                tlxTagsList: [
+                    "ad hoc",
+                    "bitwise operation",
+                    "constructive",
+                    "data structure",
+                    "data structure: binary search tree",
+                    "data structure: bitset",
+                    "data structure: compression",
+                    "data structure: disjoint set union",
+                    "data structure: fenwick tree",
+                    "data structure: heap",
+                    "data structure: monotonic",
+                    "data structure: persistent",
+                    "data structure: prefix sum",
+                    "data structure: segment tree",
+                    "data structure: sparse table",
+                    "data structure: sqrt decomposition",
+                    "data structure: trie",
+                    "dynamic programming",
+                    "dynamic programming: bitmask",
+                    "dynamic programming: broken profile",
+                    "dynamic programming: combinatorics",
+                    "dynamic programming: connected components",
+                    "dynamic programming: digit",
+                    "dynamic programming: matrix exponentiation",
+                    "dynamic programming: sum over subsets",
+                    "dynamic programming: tree",
+                    "game theory",
+                    "game theory: sprague-grundy number",
+                    "geometry",
+                    "geometry: convex hull",
+                    "graph",
+                    "graph: 2-satisfiability",
+                    "graph: biconnected components",
+                    "graph: bipartite",
+                    "graph: hall's marriage theorem",
+                    "graph: max flow",
+                    "graph: max matching",
+                    "graph: min cost flow",
+                    "graph: min spanning tree",
+                    "graph: planar",
+                    "graph: reachability tree",
+                    "graph: shortest path",
+                    "graph: strongly connected components",
+                    "graph: topological sort",
+                    "graph: traversal",
+                    "greedy",
+                    "heuristic",
+                    "heuristic: las vegas",
+                    "implementation",
+                    "information theory",
+                    "math",
+                    "math: big integer",
+                    "math: combinatorics",
+                    "math: fast fourier transform",
+                    "math: inclusion-exclusion",
+                    "math: inversion",
+                    "math: linearity of expectation",
+                    "math: number theory",
+                    "math: pigeonhole principle",
+                    "math: polynomials",
+                    "math: probability",
+                    "optimization trick",
+                    "optimization trick: convex hull",
+                    "optimization trick: knuth",
+                    "optimization trick: lagrangian relaxation",
+                    "searching",
+                    "searching: binary search",
+                    "searching: brute force",
+                    "searching: divide-and-conquer",
+                    "searching: meet-in-the-middle",
+                    "searching: sweep line",
+                    "searching: ternary search",
+                    "searching: two pointers",
+                    "string",
+                    "string: aho-corasick",
+                    "string: hashing",
+                    "string: knuth-morris-pratt",
+                    "string: suffix structure",
+                    "tree",
+                    "tree: centroid decomposition",
+                    "tree: diameter",
+                    "tree: flattening",
+                    "tree: heavy-light decomposition",
+                    "tree: lowest common ancestor",
+                    "tree: small-to-large"
+                ],
 
                 normalizeBabs(data) {
                     if (!data || !Array.isArray(data) || data.length === 0) {
@@ -1648,6 +1840,21 @@
                         quizShufflePackage: node.quizShufflePackage !== undefined ? node.quizShufflePackage : true,
                         quizTimeMethod: node.quizTimeMethod || 'pause',
                         quizAutoScore: node.quizAutoScore !== undefined ? node.quizAutoScore : true,
+                        // CP / Pemrograman properties
+                        timeLimit: node.timeLimit !== undefined ? node.timeLimit : 1.0,
+                        memoryLimit: node.memoryLimit !== undefined ? node.memoryLimit : 256,
+                        difficulty: node.difficulty || 'Sedang',
+                        topicTags: node.topicTags || node.tags || '',
+                        tags: node.tags || node.topicTags || '',
+                        problemDescription: node.problemDescription || '',
+                        inputFormat: node.inputFormat || '',
+                        outputFormat: node.outputFormat || '',
+                        constraints: node.constraints || '',
+                        samples: Array.isArray(node.samples) ? node.samples : (Array.isArray(node.sampleCases) ? node.sampleCases : []),
+                        sampleCases: Array.isArray(node.sampleCases) ? node.sampleCases : (Array.isArray(node.samples) ? node.samples : []),
+                        testCases: Array.isArray(node.testCases) ? node.testCases : [],
+                        starterCodes: node.starterCodes || { cpp: '', python: '', pascal: '', c: '', java: '' },
+                        editorial: node.editorial || '',
                         questions: Array.isArray(node.questions) ? node.questions.map(q => this.normalizeQuestion(q)).filter(Boolean) : []
                     };
                 },
@@ -1732,18 +1939,23 @@
                         } catch(e) {}
                     }
 
-                    // Ensure CP sampleCases and samples are bidirectionally synchronized
+                    // Ensure CP sampleCases/samples and topicTags/tags are bidirectionally synchronized
                     if (this.activeNode && this.activeNode.type === 'pemrograman') {
                         if (this.activeNode.samples && !this.activeNode.sampleCases) this.activeNode.sampleCases = this.activeNode.samples;
                         if (this.activeNode.sampleCases && !this.activeNode.samples) this.activeNode.samples = this.activeNode.sampleCases;
+                        if (this.activeNode.topicTags && !this.activeNode.tags) this.activeNode.tags = this.activeNode.topicTags;
+                        if (this.activeNode.tags && !this.activeNode.topicTags) this.activeNode.topicTags = this.activeNode.tags;
                     }
                     if (this.babs && Array.isArray(this.babs)) {
                         this.babs.forEach(b => {
-                            if (b.nodes && Array.isArray(b.nodes)) {
-                                b.nodes.forEach(n => {
+                            const subList = b.subBabs || b.nodes;
+                            if (subList && Array.isArray(subList)) {
+                                subList.forEach(n => {
                                     if (n && n.type === 'pemrograman') {
                                         if (n.samples && !n.sampleCases) n.sampleCases = n.samples;
                                         if (n.sampleCases && !n.samples) n.samples = n.sampleCases;
+                                        if (n.topicTags && !n.tags) n.tags = n.topicTags;
+                                        if (n.tags && !n.topicTags) n.topicTags = n.tags;
                                     }
                                 });
                             }
@@ -1838,7 +2050,8 @@
                         if (this.activeNode.timeLimit === undefined) this.activeNode.timeLimit = 1.0;
                         if (this.activeNode.memoryLimit === undefined) this.activeNode.memoryLimit = 256;
                         if (this.activeNode.difficulty === undefined) this.activeNode.difficulty = 'Sedang';
-                        if (this.activeNode.topicTags === undefined) this.activeNode.topicTags = 'Implementasi';
+                        if (this.activeNode.topicTags === undefined) this.activeNode.topicTags = 'implementation';
+                        this.activeNode.tags = this.activeNode.topicTags;
                         if (!Array.isArray(this.activeNode.samples)) {
                             this.activeNode.samples = Array.isArray(this.activeNode.sampleCases) ? this.activeNode.sampleCases : [{ input: '174', output: '174\n4002\n92046', explanation: 'Bulan 1: 174. Bulan 2: 174 * 23 = 4002. Bulan 3: 4002 * 23 = 92046.' }];
                         }
@@ -1935,7 +2148,8 @@
                     this.activeNode.timeLimit = 1.0;
                     this.activeNode.memoryLimit = 256;
                     this.activeNode.difficulty = 'Mudah';
-                    this.activeNode.topicTags = 'Implementasi, Variabel, Matematika';
+                    this.activeNode.topicTags = 'implementation, math: number theory';
+                    this.activeNode.tags = this.activeNode.topicTags;
                     this.activeNode.problemDescription = 'Pak Dengklek membeli kandang bebek baru, yang dilengkapi dengan fitur kata sandi. Pak Dengklek ingin mengganti kata sandinya setiap bulan, dengan strategi berikut:\n\n• Pada bulan pertama, kata sandinya adalah N.\n• Untuk bulan kedua dan seterusnya, kata sandinya adalah kata sandi pada bulan sebelumnya, dikalikan 23.\n\nBuatlah program yang mencetak sandi Pak Dengklek pada bulan pertama, kedua, dan ketiga!';
                     this.activeNode.inputFormat = 'Sebuah baris berisi sebuah bilangan bulat $N$ (sandi pada bulan pertama).';
                     this.activeNode.outputFormat = 'Tiga buah baris, masing-masing berisi sandi Pak Dengklek pada bulan pertama, kedua, dan ketiga.';
@@ -1964,6 +2178,73 @@
                     this.saveLocalDraft();
                     this.debounceSave();
                     this.showToast('Template TLX/OSN berhasil dimuat!');
+                },
+
+                getCpTags() {
+                    if (!this.activeNode) return [];
+                    const raw = this.activeNode.topicTags || this.activeNode.tags || '';
+                    if (!raw) return [];
+                    return raw.split(',').map(t => t.trim()).filter(Boolean);
+                },
+
+                addCpTag(tag) {
+                    if (!this.activeNode) return;
+                    tag = (tag || '').trim();
+                    if (!tag) return;
+                    const tags = this.getCpTags();
+                    if (!tags.some(t => t.toLowerCase() === tag.toLowerCase())) {
+                        tags.push(tag);
+                        this.activeNode.topicTags = tags.join(', ');
+                        this.activeNode.tags = this.activeNode.topicTags;
+                        this.saveLocalDraft();
+                        this.debounceSave();
+                    }
+                    this.tagSearchQuery = '';
+                    this.isTagDropdownOpen = false;
+                },
+
+                removeCpTag(tagToRemove) {
+                    if (!this.activeNode) return;
+                    const tags = this.getCpTags().filter(t => t.toLowerCase() !== tagToRemove.toLowerCase());
+                    this.activeNode.topicTags = tags.join(', ');
+                    this.activeNode.tags = this.activeNode.topicTags;
+                    this.saveLocalDraft();
+                    this.debounceSave();
+                },
+
+                filteredTlxTags() {
+                    const currentTags = this.getCpTags().map(t => t.toLowerCase());
+                    if (!this.tagSearchQuery || !this.tagSearchQuery.trim()) {
+                        return this.tlxTagsList.filter(t => !currentTags.includes(t.toLowerCase())).slice(0, 10);
+                    }
+                    const q = this.tagSearchQuery.toLowerCase().trim();
+                    return this.tlxTagsList
+                        .filter(t => t.toLowerCase().includes(q) && !currentTags.includes(t.toLowerCase()))
+                        .slice(0, 15);
+                },
+
+                handleTagInputEnter() {
+                    const list = this.filteredTlxTags();
+                    if (list.length > 0) {
+                        this.addCpTag(list[0]);
+                    } else if (this.tagSearchQuery && this.tagSearchQuery.trim()) {
+                        this.addCpTag(this.tagSearchQuery.trim());
+                    }
+                },
+
+                async loadTlxTags() {
+                    try {
+                        const res = await fetch('https://api.tlx.toki.id/v2/problems/tags');
+                        if (res.ok) {
+                            const data = await res.json();
+                            if (data && Array.isArray(data.data)) {
+                                const tagGroup = data.data.find(g => g && g.title === 'Tag');
+                                if (tagGroup && Array.isArray(tagGroup.options) && tagGroup.options.length > 0) {
+                                    this.tlxTagsList = tagGroup.options.map(o => o.label);
+                                }
+                            }
+                        }
+                    } catch(e) {}
                 },
 
                 switchCourse(newCourseId) {
@@ -2053,6 +2334,7 @@
                 },
 
                 async init() {
+                    this.loadTlxTags();
                     const urlParams = new URLSearchParams(window.location.search);
                     this.courseId = urlParams.get('course');
 
@@ -2248,7 +2530,10 @@
                         if (node.timeLimit === undefined) node.timeLimit = 1.0;
                         if (node.memoryLimit === undefined) node.memoryLimit = 256;
                         if (node.difficulty === undefined) node.difficulty = 'Sedang';
-                        if (node.topicTags === undefined) node.topicTags = 'Implementasi';
+                        if (node.topicTags === undefined && node.tags !== undefined) node.topicTags = node.tags;
+                        if (node.tags === undefined && node.topicTags !== undefined) node.tags = node.topicTags;
+                        if (!node.topicTags) node.topicTags = 'implementation';
+                        if (!node.tags) node.tags = node.topicTags;
                         if (!Array.isArray(node.samples)) {
                             node.samples = Array.isArray(node.sampleCases) ? node.sampleCases : [];
                         }
