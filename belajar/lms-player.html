@@ -385,6 +385,11 @@
                                                         <span class="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-sky-500 text-white font-black text-sm shadow-sm shadow-indigo-200">
                                                             Soal No. <span x-text="quizState.currentQIdx + 1"></span>
                                                         </span>
+                                                        <template x-if="(activeNode.quizPackageCount || 1) > 1">
+                                                            <span class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-xs border border-emerald-200 uppercase tracking-wider">
+                                                                Paket <span x-text="quizState.assignedPaket"></span>
+                                                            </span>
+                                                        </template>
                                                         <span class="px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-600 font-bold text-xs border border-indigo-100 uppercase tracking-wider" 
                                                             x-text="q.type === 'pg' ? 'PG Sederhana' : q.type === 'pg_kompleks' ? 'PG Kompleks' : q.type === 'pg_majemuk' ? 'B/S Majemuk' : q.type === 'jodoh' ? 'Menjodohkan' : q.type === 'isian' ? 'Isian Singkat' : q.type === 'blank' ? 'Isi Titik' : q.type === 'osn_biologi' ? 'OSN Biologi' : q.type === 'range' ? 'Tebak Angka' : q.type === 'graph' ? 'Titik Koordinat' : q.type === 'puzzle' ? 'Jigsaw Puzzle' : 'Essay'"></span>
                                                     </div>
@@ -400,7 +405,7 @@
                                                     <!-- PG Sederhana -->
                                                     <template x-if="q.type === 'pg'">
                                                         <div class="space-y-3">
-                                                            <template x-for="(oIdx, loopIdx) in q._shuffledIndices" :key="oIdx">
+                                                            <template x-for="(oIdx, loopIdx) in (q._shuffledIndices || (q.options ? q.options.map((_, i) => i) : []))" :key="oIdx">
                                                                 <label class="flex items-start gap-4 p-5 rounded-2xl border-2 hover:bg-indigo-50/30 cursor-pointer transition-all" 
                                                                     :class="quizAnswers[q.id] == oIdx ? 'bg-indigo-50/80 border-indigo-400 shadow-md shadow-indigo-100/50' : 'border-slate-100 hover:border-indigo-200'">
                                                                     <div class="w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0 font-bold mt-0.5 transition-colors"
@@ -418,7 +423,7 @@
                                                     <template x-if="q.type === 'pg_kompleks'">
                                                         <div class="space-y-3">
                                                             <div x-init="if(!Array.isArray(quizAnswers[q.id])) quizAnswers[q.id] = []"></div>
-                                                            <template x-for="(oIdx, loopIdx) in q._shuffledIndices" :key="oIdx">
+                                                            <template x-for="(oIdx, loopIdx) in (q._shuffledIndices || (q.options ? q.options.map((_, i) => i) : []))" :key="oIdx">
                                                                     <label class="flex items-start gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all" 
                                                                         :class="(Array.isArray(quizAnswers[q.id]) && quizAnswers[q.id].includes(oIdx.toString())) ? 'bg-indigo-50/80 border-indigo-400 shadow-md shadow-indigo-100/50' : 'border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/30'">
                                                                         <input type="checkbox" :name="'q_' + q.id" :value="oIdx.toString()" 
@@ -818,7 +823,7 @@
                                         </template>
                                         
                                         <div class="flex flex-col sm:flex-row justify-center gap-4">
-                                            <button @click="quizState.submitted = false; quizState.inProgress = false; quizAnswers = {}" class="px-8 py-4 rounded-2xl bg-white border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-black text-sm transition-all shadow-sm">
+                                            <button @click="quizState.submitted = false; quizState.inProgress = false; quizAnswers = {}; localStorage.removeItem('nls_paket_' + courseData.id + '_' + activeNode.id)" class="px-8 py-4 rounded-2xl bg-white border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-black text-sm transition-all shadow-sm">
                                                 Ulangi Kuis
                                             </button>
                                             <button @click="quizState.showDiscussion = true; $nextTick(() => { if (window.MathJax) MathJax.typesetPromise(); });" class="px-8 py-4 rounded-2xl bg-white border-2 border-indigo-200 hover:border-indigo-300 hover:bg-indigo-50 text-indigo-700 font-black text-sm transition-all shadow-sm">
@@ -983,20 +988,23 @@
     </div>
 
     <script>
+        function shuffleArray(array) {
+            if (!Array.isArray(array)) return [];
+            let curId = array.length;
+            while (0 !== curId) {
+                let randId = Math.floor(Math.random() * curId);
+                curId -= 1;
+                let tmp = array[curId];
+                array[curId] = array[randId];
+                array[randId] = tmp;
+            }
+            return array;
+        }
+        window.shuffleArray = shuffleArray;
+
         function lmsPlayer() {
             return {
-                
-                shuffleArray(array) {
-                    let curId = array.length;
-                    while (0 !== curId) {
-                        let randId = Math.floor(Math.random() * curId);
-                        curId -= 1;
-                        let tmp = array[curId];
-                        array[curId] = array[randId];
-                        array[randId] = tmp;
-                    }
-                    return array;
-                },
+                shuffleArray,
 
                 showPasswordPrompt: false,
                 coursePassword: '',
@@ -1503,19 +1511,19 @@
                     if (this.quizState.activeQuestions) {
                         this.quizState.activeQuestions.forEach(q => {
                             if ((q.type === 'pg' || q.type === 'pg_kompleks') && q.options) {
-                                q._shuffledIndices = this.activeNode.quizShuffleOptions !== false 
+                                q._shuffledIndices = (this.activeNode.quizShuffleOptions !== false) 
                                     ? shuffleArray(q.options.map((_, i) => i)) 
                                     : q.options.map((_, i) => i);
                                 if (q.type === 'pg_kompleks' && !Array.isArray(this.quizAnswers[q.id])) this.quizAnswers[q.id] = [];
                             }
                             else if (q.type === 'pg_majemuk' && q.statements) {
-                                q._shuffledStmts = this.activeNode.quizShuffleOptions !== false
+                                q._shuffledStmts = (this.activeNode.quizShuffleOptions !== false)
                                     ? shuffleArray(q.statements.map((_, i) => i))
                                     : q.statements.map((_, i) => i);
                                 if (typeof this.quizAnswers[q.id] !== 'object' || Array.isArray(this.quizAnswers[q.id])) this.quizAnswers[q.id] = {};
                             }
                             else if (q.type === 'jodoh' && q.pairs) {
-                                q._shuffledRights = this.activeNode.quizShuffleOptions !== false
+                                q._shuffledRights = (this.activeNode.quizShuffleOptions !== false)
                                     ? shuffleArray([...q.pairs.map(p => p.right)])
                                     : [...q.pairs.map(p => p.right)];
                                 if (typeof this.quizAnswers[q.id] !== 'object' || Array.isArray(this.quizAnswers[q.id])) this.quizAnswers[q.id] = {};
@@ -1543,21 +1551,35 @@
                     this.quizState.submitted = false;
                     this.quizState.elapsedSeconds = 0;
                     
+                    // 1. Acak Paket (jika quizPackageCount > 1 dan quizShufflePackage !== false)
                     const packages = this.activeNode.quizPackageCount || 1;
                     let storedPaket = localStorage.getItem('nls_paket_' + this.courseData.id + '_' + this.activeNode.id);
                     if (!storedPaket || parseInt(storedPaket) > packages) {
-                        storedPaket = Math.floor(Math.random() * packages) + 1;
+                        if (this.activeNode.quizShufflePackage !== false && packages > 1) {
+                            storedPaket = Math.floor(Math.random() * packages) + 1;
+                        } else {
+                            storedPaket = 1;
+                        }
                         localStorage.setItem('nls_paket_' + this.courseData.id + '_' + this.activeNode.id, storedPaket);
                     }
                     this.quizState.assignedPaket = parseInt(storedPaket);
                     
                     let baseQuestions = this.activeNode.questions ? this.activeNode.questions.filter(q => (q.paket || 1) === this.quizState.assignedPaket) : [];
-                    if (this.activeNode.quizShuffle) {
-                        this.quizState.activeQuestions = this.shuffleArray([...baseQuestions]);
+                    
+                    // Safety Fallback: jika paket yang diundi kosong, ambil paket 1 atau seluruh soal yang ada
+                    if (baseQuestions.length === 0 && this.activeNode.questions && this.activeNode.questions.length > 0) {
+                        baseQuestions = this.activeNode.questions.filter(q => (q.paket || 1) === 1);
+                        if (baseQuestions.length === 0) baseQuestions = this.activeNode.questions;
+                    }
+
+                    // 2. Acak Urutan Soal (jika quizShuffle !== false)
+                    if (this.activeNode.quizShuffle !== false) {
+                        this.quizState.activeQuestions = shuffleArray([...baseQuestions]);
                     } else {
-                        this.quizState.activeQuestions = baseQuestions;
+                        this.quizState.activeQuestions = [...baseQuestions];
                     }
                     
+                    // 3. Acak Urutan Opsi (dieksekusi dalam initQuestionsState)
                     this.initQuestionsState();
                     
                     let durationStr = this.activeNode.quizDuration ? this.activeNode.quizDuration.toString() : (this.activeNode.duration || '15');
@@ -1772,8 +1794,8 @@
                             if (ans == q.correctAnswers) correct++;
                         } 
                         else if (q.type === 'pg_kompleks') {
-                            const correctArr = q.correctAnswersArray || [];
-                            const userArr = ans || [];
+                            const correctArr = (q.correctAnswersArray || []).map(String);
+                            const userArr = (Array.isArray(ans) ? ans : []).map(String);
                             if (correctArr.length === userArr.length && correctArr.every(val => userArr.includes(val))) {
                                 correct++;
                             }
@@ -1782,7 +1804,7 @@
                             let allMatch = true;
                             const userObj = ans || {};
                             q.statements.forEach((stmt, sIdx) => {
-                                if (userObj[sIdx] !== stmt.isCorrect) allMatch = false;
+                                if (String(userObj[sIdx]) !== String(stmt.isCorrect)) allMatch = false;
                             });
                             if (allMatch && q.statements.length > 0) correct++;
                         }
@@ -2034,15 +2056,15 @@
                         return ans == q.correctAnswers;
                     } 
                     else if (q.type === 'pg_kompleks') {
-                        const correctArr = q.correctAnswersArray || [];
-                        const userArr = ans || [];
+                        const correctArr = (q.correctAnswersArray || []).map(String);
+                        const userArr = (Array.isArray(ans) ? ans : []).map(String);
                         return (correctArr.length === userArr.length && correctArr.every(val => userArr.includes(val)));
                     }
                     else if (q.type === 'pg_majemuk') {
                         let allMatch = true;
                         const userObj = ans || {};
                         q.statements.forEach((stmt, sIdx) => {
-                            if (userObj[sIdx] !== stmt.isCorrect) allMatch = false;
+                            if (String(userObj[sIdx]) !== String(stmt.isCorrect)) allMatch = false;
                         });
                         return allMatch && q.statements.length > 0;
                     }
