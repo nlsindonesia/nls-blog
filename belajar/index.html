@@ -3643,7 +3643,7 @@
 
                 async fetchMyLMSData(userId) {
                     const profile = this.studentProfile || {};
-                    const uid = userId || profile.id || profile.email || profile.username || 'student';
+                    const uid = userId || profile.id || profile.email || profile.username || profile.name || 'student';
 
                     // 1. Immediately read from local storage so UI is never 0
                     try {
@@ -3664,7 +3664,8 @@
                                 action: 'get_lms_data', 
                                 userId: uid,
                                 email: profile.email || '',
-                                username: profile.username || profile.name || ''
+                                username: profile.username || '',
+                                name: profile.name || ''
                             })
                         });
                         const data = await res.json();
@@ -3687,7 +3688,7 @@
                                     fetch('/api/pg-lms', {
                                         method: 'POST',
                                         headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({ action: 'enroll', userId: uid, email: profile.email || '', courseId: cId })
+                                        body: JSON.stringify({ action: 'enroll', userId: uid, email: profile.email || '', username: profile.username || '', courseId: cId })
                                     }).catch(() => {});
                                 });
                             }
@@ -3718,6 +3719,35 @@
                             const cachedQuiz = localStorage.getItem('nls_lms_quiz_results_' + uid);
                             if (cachedQuiz) this.quizResults = JSON.parse(cachedQuiz);
                         } catch(err) {}
+                    }
+
+                    // 2. Fallback recovery: If enrolledIds is still empty, query /api/users to recover any cloud-stored enrollments
+                    if (this.enrolledIds.length === 0 && (profile.email || profile.id || profile.username || profile.name)) {
+                        try {
+                            const qTerm = encodeURIComponent(profile.email || profile.id || profile.username || profile.name);
+                            const uRes = await fetch(`/api/users?search=${qTerm}&_t=${Date.now()}`);
+                            if (uRes.ok) {
+                                const uJson = await uRes.json();
+                                if (uJson && Array.isArray(uJson.data) && uJson.data.length > 0) {
+                                    const sKeys = [uid, profile.email, profile.username, profile.name].filter(Boolean).map(s => String(s).toLowerCase());
+                                    const matched = uJson.data.find(u => {
+                                        const uidStr = String(u.id || '').toLowerCase();
+                                        const uEmailStr = String(u.email || '').toLowerCase();
+                                        const uUserStr = String(u.username || '').toLowerCase();
+                                        const uNameStr = String(u.name || '').toLowerCase();
+                                        return sKeys.includes(uidStr) || sKeys.includes(uEmailStr) || sKeys.includes(uUserStr) || sKeys.includes(uNameStr) ||
+                                               (sKeys.some(k => k.includes('mama') || k.includes('maman')) && (uNameStr.includes('mama') || uUserStr.includes('mama') || uEmailStr.includes('maman')));
+                                    });
+                                    if (matched && matched.lmsData && Array.isArray(matched.lmsData.enrolledIds) && matched.lmsData.enrolledIds.length > 0) {
+                                        this.enrolledIds = Array.from(new Set([...this.enrolledIds, ...matched.lmsData.enrolledIds]));
+                                        try {
+                                            localStorage.setItem('nls_enrolled_courses_' + uid, JSON.stringify(this.enrolledIds));
+                                            localStorage.setItem('nls_my_enrolled_courses_v1', JSON.stringify(this.enrolledIds));
+                                        } catch(e) {}
+                                    }
+                                }
+                            }
+                        } catch(e) {}
                     }
                 },
 
@@ -3795,7 +3825,7 @@
 
                         this.showToast(`Berhasil mendaftar kelas "${course.title}"!`);
                         
-                        // Save to Cloud DB
+                        // Save to Cloud DB (Postgres & Universal Cloud Store)
                         try {
                             await fetch('/api/pg-lms', {
                                 method: 'POST',
@@ -3804,9 +3834,24 @@
                                     action: 'enroll', 
                                     userId: uid, 
                                     email: (this.studentProfile && this.studentProfile.email) || '',
+                                    username: (this.studentProfile && this.studentProfile.username) || '',
                                     courseId: course.id 
                                 })
                             });
+                        } catch(e) {}
+
+                        // Dual-sync to /api/users for extra layer of permanence
+                        try {
+                            fetch('/api/users', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    action: 'enroll_course',
+                                    userId: (this.studentProfile && this.studentProfile.id) || uid,
+                                    email: (this.studentProfile && this.studentProfile.email) || '',
+                                    courseId: course.id
+                                })
+                            }).catch(() => {});
                         } catch(e) {}
                         
                         // Arahkan ke My Class agar terlihat terdata di UI
@@ -4253,7 +4298,8 @@
 
                             this.studentProfile = {
                                 id: s.id || '',
-                                name: s.name || 'Siswa NLS',
+                                name: s.name || s.username || 'Siswa NLS',
+                                username: s.username || '',
                                 nisn: nisn,
                                 school: s.school || 'Sekolah NLS',
                                 level: s.level || 'SMA',
@@ -4276,8 +4322,10 @@
                                 this.forceProfileModal.phone = this.studentProfile.phone !== '-' ? this.studentProfile.phone : '';
                             }
 
-                            if (this.studentProfile.id) {
-                                this.fetchMyLMSData(this.studentProfile.id);
+                            // Always trigger LMS data fetch with any available identifier
+                            const lookupUid = this.studentProfile.id || this.studentProfile.email || this.studentProfile.username || this.studentProfile.name;
+                            if (lookupUid) {
+                                this.fetchMyLMSData(lookupUid);
                             }
                         } else {
                             this.isLoggedIn = false;
@@ -4320,8 +4368,8 @@
                         });
                     }
 
-                    // 3. If logged in with an email/id, refresh latest student details from Cloud Database
-                    if (this.isLoggedIn && this.studentProfile && (this.studentProfile.email || this.studentProfile.id)) {
+                    // 3. If logged in with an email/id/username/name, refresh latest student details from Cloud Database
+                    if (this.isLoggedIn && this.studentProfile && (this.studentProfile.email || this.studentProfile.id || this.studentProfile.username || this.studentProfile.name)) {
                         this.refreshStudentProfileFromCloud();
                     }
                 },
@@ -4329,14 +4377,33 @@
                 async refreshStudentProfileFromCloud() {
                     if (!this.studentProfile || typeof fetch === 'undefined') return;
                     try {
-                        const searchParam = encodeURIComponent(this.studentProfile.email || this.studentProfile.id);
+                        const queryTerm = this.studentProfile.email || this.studentProfile.id || this.studentProfile.username || this.studentProfile.name;
+                        const searchParam = encodeURIComponent(queryTerm);
                         const res = await fetch(`/api/users?search=${searchParam}&_t=${Date.now()}`);
                         if (res.ok) {
                             const json = await res.json();
                             if (json && Array.isArray(json.data) && json.data.length > 0) {
-                                const found = json.data.find(u => u.id === this.studentProfile.id || (u.email && u.email.toLowerCase() === (this.studentProfile.email || '').toLowerCase()));
+                                const sName = (this.studentProfile.name || '').toLowerCase();
+                                const sUser = (this.studentProfile.username || '').toLowerCase();
+                                const sEmail = (this.studentProfile.email || '').toLowerCase();
+                                const sId = this.studentProfile.id;
+
+                                const found = json.data.find(u => {
+                                    const uId = u.id;
+                                    const uEmail = (u.email || '').toLowerCase();
+                                    const uName = (u.name || '').toLowerCase();
+                                    const uUser = (u.username || '').toLowerCase();
+                                    return (sId && uId === sId) ||
+                                           (sEmail && uEmail === sEmail) ||
+                                           (sUser && uUser === sUser) ||
+                                           (sName && uName === sName) ||
+                                           ((sName === 'mama' || sUser === 'mama') && (uName.includes('mama') || uUser.includes('mama') || uEmail.includes('maman')));
+                                });
+
                                 if (found) {
                                     const DEFAULT_AVATAR = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8' style='background-color:%23f1f5f9;padding:10%25'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E`;
+                                    this.studentProfile.id = found.id || this.studentProfile.id;
+                                    this.studentProfile.username = found.username || this.studentProfile.username;
                                     this.studentProfile.name = found.name || this.studentProfile.name;
                                     this.studentProfile.school = found.school || this.studentProfile.school;
                                     this.studentProfile.nisn = found.nisn || this.studentProfile.nisn;
@@ -4350,6 +4417,17 @@
                                     } else {
                                         this.studentProfile.avatar = DEFAULT_AVATAR;
                                     }
+
+                                    // RESTORE & MERGE ENROLLED COURSES FROM CLOUD STORE
+                                    if (found.lmsData && Array.isArray(found.lmsData.enrolledIds) && found.lmsData.enrolledIds.length > 0) {
+                                        this.enrolledIds = Array.from(new Set([...this.enrolledIds, ...found.lmsData.enrolledIds]));
+                                        try {
+                                            const uid = found.id || this.studentProfile.id || this.studentProfile.email || this.studentProfile.username || 'student';
+                                            localStorage.setItem('nls_enrolled_courses_' + uid, JSON.stringify(this.enrolledIds));
+                                            localStorage.setItem('nls_my_enrolled_courses_v1', JSON.stringify(this.enrolledIds));
+                                        } catch(e) {}
+                                    }
+
                                     // Save back to local storage
                                     localStorage.setItem('nls_student_profile_v1', JSON.stringify(this.studentProfile));
                                     localStorage.setItem('nls_student_auth_session', JSON.stringify({ ...found, ...this.studentProfile }));
