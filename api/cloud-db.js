@@ -85,7 +85,15 @@ function extractItems(d) {
     return null;
 }
 
-export async function getCloudStore() {
+let lastCacheFetchTime = 0;
+const CACHE_TTL_MS = 25 * 1000; // 25 seconds in-memory cache TTL for warm serverless instances
+
+export async function getCloudStore(forceRefresh = false) {
+    const now = Date.now();
+    if (!forceRefresh && (now - lastCacheFetchTime < CACHE_TTL_MS) && Array.isArray(localMemoryCache.users) && localMemoryCache.users.length > 0) {
+        return localMemoryCache;
+    }
+
     try {
         const t = Date.now();
         const noCacheHeader = { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' };
@@ -180,6 +188,7 @@ export async function getCloudStore() {
             }
         }
 
+        lastCacheFetchTime = Date.now();
         localMemoryCache.lastUpdated = new Date().toISOString();
         return localMemoryCache;
     } catch (e) {
@@ -193,6 +202,7 @@ export async function getCloudStore() {
  */
 export async function saveCloudStore(updatedFields) {
     try {
+        lastCacheFetchTime = Date.now();
         localMemoryCache = {
             ...localMemoryCache,
             ...updatedFields,

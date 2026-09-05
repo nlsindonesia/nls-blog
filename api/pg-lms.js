@@ -1097,9 +1097,10 @@ export default async function handler(request, response) {
                 if (!targetUser.lmsData.cpDrafts) targetUser.lmsData.cpDrafts = {};
 
                 // Simpan ke riwayat submisi unik akun siswa
+                // Simpan ke riwayat submisi unik akun siswa (hemat kuota cloud bin: max 30 item)
                 targetUser.lmsData.cpSubmissions.unshift(submission);
-                if (targetUser.lmsData.cpSubmissions.length > 100) {
-                    targetUser.lmsData.cpSubmissions = targetUser.lmsData.cpSubmissions.slice(0, 100);
+                if (targetUser.lmsData.cpSubmissions.length > 30) {
+                    targetUser.lmsData.cpSubmissions = targetUser.lmsData.cpSubmissions.slice(0, 30);
                 }
 
                 // Update draft kodingan terakhir jika ada
@@ -1144,6 +1145,12 @@ export default async function handler(request, response) {
                 if (!targetUser.lmsData.cpDrafts) targetUser.lmsData.cpDrafts = {};
 
                 const draftKey = `${courseId || 'course'}_${moduleId}_${language || 'cpp'}`;
+                
+                // Hemat Kuota: Jangan panggil saveCloudStore jika kodingan tidak berubah sama sekali!
+                if (targetUser.lmsData.cpDrafts[draftKey] && targetUser.lmsData.cpDrafts[draftKey].code === code) {
+                    return response.status(200).json({ success: true, unchanged: true });
+                }
+
                 targetUser.lmsData.cpDrafts[draftKey] = {
                     code: code,
                     language: language,

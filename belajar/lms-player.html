@@ -1712,11 +1712,21 @@
                     return 'guest';
                 },
 
+                lastSavedDraftMap: {},
+
                 debounceSaveCpDraft(code, lang) {
+                    if (!code || !this.activeNode || !this.courseData) return;
+                    const studentId = this.getStudentId();
+                    if (studentId === 'guest') return;
+
+                    const draftKey = `${this.courseData.id}_${this.activeNode.id}_${lang}`;
+                    if (this.lastSavedDraftMap[draftKey] === code) return;
+
                     if (this.cpDraftTimeout) clearTimeout(this.cpDraftTimeout);
                     this.cpDraftTimeout = setTimeout(() => {
-                        const studentId = this.getStudentId();
-                        if (studentId === 'guest' || !this.activeNode || !this.courseData) return;
+                        if (this.lastSavedDraftMap[draftKey] === code) return;
+                        this.lastSavedDraftMap[draftKey] = code;
+
                         fetch('/api/pg-lms', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -1729,7 +1739,7 @@
                                 code: code
                             })
                         }).catch(() => {});
-                    }, 2000);
+                    }, 12000);
                 },
 
                 // YouTube Interactive API state
