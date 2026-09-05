@@ -104,18 +104,31 @@ app.post('/api/judge/submit', (req, res) => {
       });
     }
 
-    // Tentukan platform target
+    // Tentukan platform target (HANYA 4 ONLINE JUDGE RESMI YANG DITERIMA)
     let targetPlatform = (platform || '').toLowerCase();
     if (!targetPlatform) {
       if (problemUrl.includes('codeforces.com') || /^\d+[a-zA-Z][a-zA-Z0-9]*$/.test(problemUrl.trim()) || problemUrl.toLowerCase().includes('codeforce')) {
         targetPlatform = 'codeforces';
       } else if (problemUrl.includes('atcoder.jp') || /^(abc|arc|agc|practice)\d*_[a-zA-Z0-9]+/i.test(problemUrl.trim())) {
         targetPlatform = 'atcoder';
-      } else if (problemUrl.includes('cses.fi') || /^\d+$/.test(problemUrl.trim()) || problemUrl.toLowerCase().includes('cses')) {
+      } else if (problemUrl.includes('cses.fi') || (/^\d+$/.test(problemUrl.trim()) && !problemUrl.includes('.')) || problemUrl.toLowerCase().includes('cses')) {
         targetPlatform = 'cses';
-      } else {
+      } else if (problemUrl.includes('tlx.toki.id') || /^(troc|osn|ksn|toki)-/i.test(problemUrl.trim()) || problemUrl.toLowerCase().includes('tlx')) {
         targetPlatform = 'tlx';
+      } else {
+        return res.status(400).json({
+          success: false,
+          error: 'Platform tidak didukung. Layanan Remote Judge hanya menerima 4 judge resmi: TLX TOKI, CSES, AtCoder, dan Codeforces. Platform lain sementara ditolak.'
+        });
       }
+    }
+
+    const SUPPORTED_PLATFORMS = ['tlx', 'cses', 'atcoder', 'codeforces'];
+    if (!SUPPORTED_PLATFORMS.includes(targetPlatform)) {
+      return res.status(400).json({
+        success: false,
+        error: `Platform "${targetPlatform}" tidak didukung. Layanan Remote Judge hanya menerima 4 judge resmi: TLX TOKI, CSES, AtCoder, dan Codeforces. Platform lain sementara ditolak.`
+      });
     }
 
     // Periksa apakah sesi bot tersedia untuk platform yang membutuhkan login manual

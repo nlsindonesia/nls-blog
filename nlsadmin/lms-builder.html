@@ -3571,6 +3571,15 @@
                             this.showToast('Ketik kode atau URL soal terlebih dahulu!', true);
                             return;
                         }
+
+                        // Validasi penolakan platform di luar 4 Online Judge resmi
+                        const UNSUPPORTED = ['leetcode.com', 'hackerrank.com', 'hackerearth.com', 'spoj.com', 'kattis.com', 'codechef.com', 'topcoder.com', 'geeksforgeeks.org', 'vjudge.net', 'beecrowd.com'];
+                        const qLower = q.toLowerCase();
+                        if (UNSUPPORTED.some(u => qLower.includes(u))) {
+                            this.showToast('Platform belum didukung. Mode VJudge saat ini hanya menerima 4 Online Judge resmi: TLX TOKI, CSES, AtCoder, dan Codeforces. Platform lain sementara ditolak.', true);
+                            return;
+                        }
+
                         if (customQuery) {
                             this.vjudgeInputQuery = customQuery;
                         }
@@ -3632,6 +3641,16 @@
                             this.vjudgeLoading = false;
                             return;
                         }
+
+                        // Validasi penolakan platform di luar 4 Online Judge resmi
+                        const UNSUPPORTED = ['leetcode.com', 'hackerrank.com', 'hackerearth.com', 'spoj.com', 'kattis.com', 'codechef.com', 'topcoder.com', 'geeksforgeeks.org', 'vjudge.net', 'beecrowd.com'];
+                        const qLower = q.toLowerCase();
+                        if (UNSUPPORTED.some(u => qLower.includes(u))) {
+                            this.vjudgeError = 'Platform belum didukung. Mode VJudge saat ini hanya menerima 4 Online Judge resmi: TLX TOKI, CSES, AtCoder, dan Codeforces. Platform lain sementara ditolak.';
+                            this.vjudgeLoading = false;
+                            return;
+                        }
+
                         payload.url = q;
                         payload.platform = platform || this.vjudgeSelectedPlatform || 'auto';
                     }

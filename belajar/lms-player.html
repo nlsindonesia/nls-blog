@@ -3340,6 +3340,19 @@
                                     } else if (provLow === 'cses' || srcLow.includes('cses.fi')) {
                                         targetPlat = 'cses';
                                         platName = 'CSES';
+                                    } else if (provLow === 'tlx' || srcLow.includes('tlx.toki.id') || /^(troc|osn|ksn|toki)-/i.test(srcLow.trim())) {
+                                        targetPlat = 'tlx';
+                                        platName = 'TLX TOKI';
+                                    } else {
+                                        this.executionResult = {
+                                            success: false,
+                                            status: 'REJECTED',
+                                            verdict: 'REJECTED',
+                                            score: 0,
+                                            message: 'Platform VJudge tidak didukung. Mode VJudge saat ini hanya menerima 4 Online Judge resmi: TLX TOKI, CSES, AtCoder, dan Codeforces. Platform lain sementara ditolak.',
+                                            testCases: []
+                                        };
+                                        return;
                                     }
 
                                     const directSubmitRes = await fetch('http://localhost:3500/api/judge/submit', {

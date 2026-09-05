@@ -24,18 +24,24 @@ class SubmissionQueue {
   addJob({ problemUrl, language, sourceCode, studentId, platform }) {
     const jobId = `sub_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
     
-    // Auto-detect platform jika tidak dispesifikasikan secara eksplisit
+    // Auto-detect platform jika tidak dispesifikasikan secara eksplisit (HANYA 4 JUDGE RESMI)
     let targetPlatform = (platform || '').toLowerCase();
     if (!targetPlatform) {
       if (problemUrl.includes('codeforces.com') || /^\d+[a-zA-Z][a-zA-Z0-9]*$/.test(problemUrl.trim()) || problemUrl.toLowerCase().includes('codeforce')) {
         targetPlatform = 'codeforces';
       } else if (problemUrl.includes('atcoder.jp') || /^(abc|arc|agc|practice)\d*_[a-zA-Z0-9]+/i.test(problemUrl.trim())) {
         targetPlatform = 'atcoder';
-      } else if (problemUrl.includes('cses.fi') || /^\d+$/.test(problemUrl.trim()) || problemUrl.toLowerCase().includes('cses')) {
+      } else if (problemUrl.includes('cses.fi') || (/^\d+$/.test(problemUrl.trim()) && !problemUrl.includes('.')) || problemUrl.toLowerCase().includes('cses')) {
         targetPlatform = 'cses';
-      } else {
+      } else if (problemUrl.includes('tlx.toki.id') || /^(troc|osn|ksn|toki)-/i.test(problemUrl.trim()) || problemUrl.toLowerCase().includes('tlx')) {
         targetPlatform = 'tlx';
+      } else {
+        throw new Error(`Platform untuk soal "${problemUrl}" tidak didukung. Layanan Remote Judge hanya menerima 4 judge resmi: TLX TOKI, CSES, AtCoder, dan Codeforces. Platform lain sementara ditolak.`);
       }
+    }
+
+    if (!['tlx', 'cses', 'atcoder', 'codeforces'].includes(targetPlatform)) {
+      throw new Error(`Platform "${targetPlatform}" tidak didukung. Layanan Remote Judge hanya menerima 4 judge resmi: TLX TOKI, CSES, AtCoder, dan Codeforces. Platform lain sementara ditolak.`);
     }
 
     const jobData = {

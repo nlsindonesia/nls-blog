@@ -284,7 +284,7 @@ export default async function handler(req, res) {
             const sourcePlatform = (body.sourcePlatform || '').toLowerCase();
             const sourceUrl = body.sourceUrl || body.remoteJudgeUrl || body.problemUrl || '';
 
-            // Cek apakah soal ini menggunakan Mode Remote Judge (TLX TOKI, CSES, AtCoder, atau Codeforces)
+            // Cek apakah soal ini menggunakan Mode Remote Judge (HANYA 4 JUDGE RESMI: TLX TOKI, CSES, AtCoder, Codeforces)
             const isCodeforcesVJudge = (
                 sourceUrl.toLowerCase().includes('codeforces.com') ||
                 judgeProvider === 'codeforces' ||
@@ -303,19 +303,42 @@ export default async function handler(req, res) {
                 sourceUrl.toLowerCase().includes('cses.fi') ||
                 judgeProvider === 'cses' ||
                 sourcePlatform === 'cses' ||
-                (cpMode === 'vjudge' && /^\d+$/.test((sourceUrl || '').trim()))
+                (/^\d+$/.test((sourceUrl || '').trim()) && !sourceUrl.includes('.'))
             );
 
             const isTlxVJudge = !isCodeforcesVJudge && !isAtcoderVJudge && !isCsesVJudge && (
                 sourceUrl.toLowerCase().includes('tlx.toki.id') ||
                 judgeProvider === 'tlx' ||
                 sourcePlatform === 'tlx' ||
-                cpMode === 'vjudge' || body.isVJudge || body.remoteJudge
+                /^(troc|osn|ksn|toki)-/i.test((sourceUrl || problemTitle || '').trim())
             );
 
-            const isRemoteJudge = isCodeforcesVJudge || isAtcoderVJudge || isCsesVJudge || isTlxVJudge;
+            // JIKA MODE VJUDGE AKTIF TAPI BUKAN SALAH SATU DARI 4 JUDGE RESMI -> TOLAK!
+            const isVJudgeMode = cpMode === 'vjudge' || body.isVJudge || body.remoteJudge;
+            const isSupportedRemoteJudge = isCodeforcesVJudge || isAtcoderVJudge || isCsesVJudge || isTlxVJudge;
 
-            if (isRemoteJudge) {
+            if (isVJudgeMode && !isSupportedRemoteJudge) {
+                console.warn(`[CodeRunner] DITOLAK: Submisi VJudge mencoba platform di luar 4 Online Judge resmi: "${sourceUrl || judgeProvider || sourcePlatform}"`);
+                return res.status(400).json({
+                    success: false,
+                    error: 'Platform VJudge tidak didukung. Mode VJudge saat ini hanya menerima 4 Online Judge resmi: TLX TOKI, CSES, AtCoder, dan Codeforces. Platform lain sementara ditolak.',
+                    verdict: 'REJECTED',
+                    score: 0,
+                    testCases: [{
+                        index: 1,
+                        label: 'Verifikasi Platform VJudge',
+                        verdict: 'REJECTED',
+                        verdictCode: 'REJECTED',
+                        verdictName: 'Platform Belum Didukung',
+                        passed: false,
+                        points: 0,
+                        maxPoints: 100,
+                        actualOutput: 'Mode VJudge saat ini hanya menerima 4 judge resmi: TLX TOKI, CSES, AtCoder, dan Codeforces. Platform lain sementara ditolak.'
+                    }]
+                });
+            }
+
+            if (isSupportedRemoteJudge) {
                 let targetPlatform = 'tlx';
                 let platformDisplayName = 'TLX TOKI';
 
