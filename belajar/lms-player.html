@@ -1526,7 +1526,7 @@
                                                         class="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-black text-sm uppercase tracking-wider shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-60">
                                                         <svg x-show="!cpState.isSubmitting" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                                         <svg x-show="cpState.isSubmitting" class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                                                        <span x-text="cpState.isSubmitting ? 'Menilai Solusi...' : 'Kirim Solusi (Submit)'"></span>
+                                                        <span x-text="cpState.isSubmitting ? ((activeNode.cpMode === 'vjudge' || (activeNode.sourcePlatform || '').toLowerCase() === 'tlx') ? 'Menilai via TLX Grader (@nls_bot)...' : 'Menilai Solusi...') : 'Kirim Solusi (Submit)'"></span>
                                                     </button>
                                                 </div>
                                             </div>
@@ -3271,28 +3271,100 @@
                     }
 
                     try {
+                        const payload = {
+                            code: code,
+                            language: this.cpState.selectedLang,
+                            mode: 'submit',
+                            action: 'submit',
+                            problemId: this.activeNode.id,
+                            moduleId: this.activeNode.id,
+                            problemTitle: this.activeNode.title || 'Soal Pemrograman',
+                            courseId: courseId,
+                            userId: userId,
+                            userName: userName,
+                            cpMode: this.activeNode.cpMode || (this.activeNode.sourcePlatform ? 'vjudge' : 'manual'),
+                            judgeProvider: this.activeNode.judgeProvider || (this.activeNode.sourcePlatform ? this.activeNode.sourcePlatform.toLowerCase() : 'manual'),
+                            sourcePlatform: this.activeNode.sourcePlatform || '',
+                            sourceUrl: this.activeNode.sourceUrl || this.activeNode.remoteJudgeUrl || '',
+                            testCases: this.activeNode.testCases || [],
+                            sampleCases: this.activeNode.sampleCases || this.activeNode.samples || [],
+                            timeLimit: this.activeNode.timeLimit || 1,
+                            memoryLimit: this.activeNode.memoryLimit || 256
+                        };
+
+                        let data = null;
                         const res = await fetch('/api/code-runner', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                code: code,
-                                language: this.cpState.selectedLang,
-                                mode: 'submit',
-                                action: 'submit',
-                                problemId: this.activeNode.id,
-                                moduleId: this.activeNode.id,
-                                problemTitle: this.activeNode.title || 'Soal Pemrograman',
-                                courseId: courseId,
-                                userId: userId,
-                                userName: userName,
-                                testCases: this.activeNode.testCases || [],
-                                sampleCases: this.activeNode.sampleCases || this.activeNode.samples || [],
-                                timeLimit: this.activeNode.timeLimit || 1,
-                                memoryLimit: this.activeNode.memoryLimit || 256
-                            })
-                        });
-                        const data = await res.json();
-                        if (data.success) {
+                            body: JSON.stringify(payload)
+                        }).catch(() => null);
+
+                        if (res && res.ok) {
+                            data = await res.json().catch(() => null);
+                        } else {
+                            // Fallback langsung ke TLX Remote Judge port 3500 jika running lokal (misal serve.ps1 tanpa Vercel serverless)
+                            const isVJudge = payload.cpMode === 'vjudge' || payload.judgeProvider === 'tlx' || (payload.sourcePlatform && payload.sourcePlatform.toLowerCase() === 'tlx');
+                            if (isVJudge) {
+                                try {
+                                    const directSubmitRes = await fetch('http://localhost:3500/api/judge/submit', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            problemUrl: payload.sourceUrl || payload.problemTitle,
+                                            language: payload.language,
+                                            sourceCode: payload.code,
+                                            studentId: payload.userId || payload.userName
+                                        })
+                                    });
+                                    const directSubmitData = await directSubmitRes.json();
+                                    if (directSubmitData.success && directSubmitData.jobId) {
+                                        const jobId = directSubmitData.jobId;
+                                        const startT = Date.now();
+                                        while (Date.now() - startT < 65000) {
+                                            await new Promise(r => setTimeout(r, 2000));
+                                            const stRes = await fetch(`http://localhost:3500/api/judge/status/${jobId}`);
+                                            const stData = await stRes.json();
+                                            if (stData.success && stData.job && (stData.job.status === 'completed' || stData.job.status === 'failed')) {
+                                                const r = stData.job.result || {};
+                                                const v = r.verdict || 'Accepted';
+                                                let vCode = 'WA';
+                                                if (/Accepted|Diterima/i.test(v)) vCode = 'AC';
+                                                else if (/Wrong Answer/i.test(v)) vCode = 'WA';
+                                                else if (/Time Limit/i.test(v)) vCode = 'TLE';
+                                                else if (/Memory Limit/i.test(v)) vCode = 'MLE';
+                                                else if (/Compilation Error/i.test(v)) vCode = 'CE';
+                                                else if (/Runtime Error/i.test(v)) vCode = 'RTE';
+                                                const sc = Number(r.score) !== undefined ? Number(r.score) : (vCode === 'AC' ? 100 : 0);
+                                                data = {
+                                                    success: true,
+                                                    score: sc,
+                                                    totalScore: 100,
+                                                    totalPoints: 100,
+                                                    verdict: vCode,
+                                                    verdictCode: vCode,
+                                                    verdictName: `${v} (TLX TOKI Official)`,
+                                                    timeMs: r.time || 'N/A',
+                                                    memoryKb: r.memory || 'N/A',
+                                                    maxTimeMs: 0,
+                                                    maxMemoryKb: 262144,
+                                                    isRemoteJudge: true,
+                                                    remotePlatform: 'TLX TOKI',
+                                                    submissionId: jobId
+                                                };
+                                                break;
+                                            }
+                                        }
+                                    }
+                                } catch (directErr) {
+                                    console.warn('Direct fallback to localhost:3500 failed:', directErr);
+                                }
+                            }
+                            if (!data && res) {
+                                data = await res.json().catch(() => ({}));
+                            }
+                        }
+
+                        if (data && data.success) {
                             this.cpState.lastVerdict = data;
 
                             // Add to submissions history

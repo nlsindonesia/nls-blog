@@ -276,9 +276,165 @@ export default async function handler(req, res) {
         }
 
         // -------------------------------------------------------------
-        // MODE 3: SUBMIT SOLUTION (Grading resmi seluruh Kasus Uji Penilaian)
+        // MODE 3: SUBMIT SOLUTION (Grading resmi)
         // -------------------------------------------------------------
         if (action === 'submit') {
+            const cpMode = body.cpMode || '';
+            const judgeProvider = (body.judgeProvider || '').toLowerCase();
+            const sourcePlatform = (body.sourcePlatform || '').toLowerCase();
+            const sourceUrl = body.sourceUrl || body.remoteJudgeUrl || body.problemUrl || '';
+
+            // Cek apakah soal ini menggunakan Opsi 2: Mode VJudge menuju TLX TOKI
+            const isTlxVJudge = cpMode === 'vjudge' && (
+                judgeProvider === 'tlx' ||
+                sourcePlatform === 'tlx' ||
+                sourceUrl.toLowerCase().includes('tlx.toki.id') ||
+                body.isVJudge ||
+                body.remoteJudge
+            );
+
+            if (isTlxVJudge) {
+                console.log(`[CodeRunner] Meneruskan submisi ke TLX Remote Judge Service...`);
+                console.log(`[CodeRunner] URL Soal: ${sourceUrl || problemTitle}`);
+
+                const remoteJudgeServiceUrl = process.env.TLX_JUDGE_URL || 'http://localhost:3500';
+                const targetUrl = sourceUrl || problemTitle;
+
+                try {
+                    // 1. Kirim kodingan ke antrean TLX Remote Judge
+                    const submitRes = await fetch(`${remoteJudgeServiceUrl}/api/judge/submit`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            problemUrl: targetUrl,
+                            language: langKey,
+                            sourceCode: code,
+                            studentId: userId || body.userName || 'siswa'
+                        })
+                    });
+
+                    const submitData = await submitRes.json();
+                    if (!submitData.success) {
+                        return res.status(502).json({
+                            success: false,
+                            message: submitData.error || 'Layanan TLX Remote Judge menolak submisi.'
+                        });
+                    }
+
+                    const jobId = submitData.jobId;
+                    console.log(`[CodeRunner] Job TLX diterima: ${jobId}. Mulai polling status grading...`);
+
+                    // 2. Polling status hasil penilaian TLX
+                    const startTime = Date.now();
+                    let finalJob = null;
+
+                    while (Date.now() - startTime < 65000) {
+                        await new Promise(r => setTimeout(r, 2000));
+
+                        const statusRes = await fetch(`${remoteJudgeServiceUrl}/api/judge/status/${jobId}`);
+                        const statusData = await statusRes.json();
+
+                        if (statusData.success && statusData.job) {
+                            if (statusData.job.status === 'completed' || statusData.job.status === 'failed') {
+                                finalJob = statusData.job;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!finalJob) {
+                        return res.status(504).json({
+                            success: false,
+                            message: 'Penilaian di TLX TOKI membutuhkan waktu terlalu lama (timeout 60 detik). Silakan coba submit ulang beberapa saat lagi.'
+                        });
+                    }
+
+                    if (finalJob.status === 'failed') {
+                        return res.status(502).json({
+                            success: false,
+                            message: finalJob.error || 'Submisi gagal dinilai di server TLX.'
+                        });
+                    }
+
+                    // 3. Ekstrak verdict dan format untuk LMS Player
+                    const r = finalJob.result || {};
+                    const rawVerdict = r.verdict || 'Accepted';
+
+                    let vCode = 'WA';
+                    let vName = rawVerdict;
+                    if (/Accepted|Diterima/i.test(rawVerdict)) { vCode = 'AC'; vName = 'Accepted'; }
+                    else if (/Wrong Answer|Jawaban Salah/i.test(rawVerdict)) { vCode = 'WA'; vName = 'Wrong Answer'; }
+                    else if (/Time Limit Exceeded|Batas Waktu/i.test(rawVerdict)) { vCode = 'TLE'; vName = 'Time Limit Exceeded'; }
+                    else if (/Memory Limit Exceeded|Batas Memori/i.test(rawVerdict)) { vCode = 'MLE'; vName = 'Memory Limit Exceeded'; }
+                    else if (/Compilation Error|Kesalahan Kompilasi/i.test(rawVerdict)) { vCode = 'CE'; vName = 'Compilation Error'; }
+                    else if (/Runtime Error|Kesalahan/i.test(rawVerdict)) { vCode = 'RTE'; vName = 'Runtime Error'; }
+
+                    const score = Number(r.score) !== undefined ? Number(r.score) : (vCode === 'AC' ? 100 : 0);
+
+                    // Parse waktu ke angka ms jika memungkinkan
+                    let timeNumber = 0;
+                    if (typeof r.time === 'string') {
+                        const m = r.time.match(/(\d+(\.\d+)?)/);
+                        if (m) timeNumber = parseFloat(m[1]);
+                    }
+
+                    return res.status(200).json({
+                        success: true,
+                        score: score,
+                        totalScore: 100,
+                        totalPoints: 100,
+                        verdict: vCode,
+                        verdictCode: vCode,
+                        verdictName: `${vName} (TLX TOKI Official)`,
+                        passedCount: vCode === 'AC' ? 1 : 0,
+                        totalCount: 1,
+                        timeMs: r.time || `${timeNumber} ms`,
+                        memoryKb: r.memory || 'N/A',
+                        maxTimeMs: timeNumber,
+                        maxMemoryKb: 256 * 1024,
+                        executionTimeMs: timeNumber,
+                        isRemoteJudge: true,
+                        remotePlatform: 'TLX TOKI',
+                        submissionId: jobId,
+                        tests: [
+                            {
+                                index: 1,
+                                label: 'Evaluasi Resmi TLX TOKI Grader',
+                                verdict: vCode,
+                                verdictCode: vCode,
+                                verdictName: vName,
+                                passed: vCode === 'AC',
+                                points: score,
+                                maxPoints: 100,
+                                timeMs: timeNumber,
+                                executionTimeMs: timeNumber
+                            }
+                        ],
+                        testResults: [
+                            {
+                                index: 1,
+                                label: 'Evaluasi Resmi TLX TOKI Grader',
+                                verdict: vCode,
+                                verdictCode: vCode,
+                                verdictName: vName,
+                                passed: vCode === 'AC',
+                                points: score,
+                                maxPoints: 100,
+                                timeMs: timeNumber,
+                                executionTimeMs: timeNumber
+                            }
+                        ]
+                    });
+                } catch (err) {
+                    console.error('[CodeRunner] Error saat menghubungkan ke TLX Remote Judge:', err.message);
+                    return res.status(503).json({
+                        success: false,
+                        message: `Gagal terhubung ke Layanan TLX Remote Judge (port 3500). Pastikan server remote judge aktif dengan menjalankan 'npm start' di folder tlx-remote-judge. Detail error: ${err.message}`
+                    });
+                }
+            }
+
+            // Fallback: Mode 1 (Manual) atau Soal dengan Kasus Uji Lokal
             let tests = testCases.length > 0 ? testCases : samples;
             if (!tests || tests.length === 0) {
                 tests = [{ input: stdin || '', output: '', points: 100 }];

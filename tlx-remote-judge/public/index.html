@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TLX Remote Judge Playground | Antigravity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #0a0e17;
+      --bg-surface: #111827;
+      --bg-card: #172033;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-focus: #3b82f6;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --primary-glow: rgba(59, 130, 246, 0.35);
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.25);
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.06) 0%, transparent 40%);
+    }
+
+    /* Header */
+    header {
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 1rem 2rem;
+    }
+
+    .header-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: #fff;
+      box-shadow: 0 4px 15px var(--primary-glow);
+    }
+
+    .logo-title h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-title p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      padding: 0.4rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--warning);
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.active {
+      background: var(--success);
+      box-shadow: 0 0 10px var(--success-glow);
+    }
+
+    .status-dot.inactive {
+      background: var(--danger);
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.9); }
+    }
+
+    /* Layout */
+    main {
+      max-width: 1300px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 2rem;
+      width: 100%;
+    }
+
+    @media (max-width: 960px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      background: #0d1321;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      color: #fff;
+      padding: 0.75rem 1rem;
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    textarea {
+      font-family: var(--font-mono);
+      min-height: 280px;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      resize: vertical;
+    }
+
+    .quick-chips {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      font-size: 0.725rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #93c5fd;
+      transition: 0.15s;
+    }
+
+    .chip:hover {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: #3b82f6;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      color: #fff;
+      border: none;
+      padding: 0.85rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 6px 20px var(--primary-glow);
+      transition: all 0.2s;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Result Card Styles */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      opacity: 0.6;
+    }
+
+    .verdict-box {
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .verdict-box.AC {
+      background: linear-gradient(180deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .verdict-box.WA, .verdict-box.TLE, .verdict-box.MLE, .verdict-box.RTE, .verdict-box.CE {
+      background: linear-gradient(180deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05));
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .verdict-box.PENDING {
+      background: linear-gradient(180deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
+      border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .verdict-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .verdict-box.AC .verdict-title { color: #34d399; }
+    .verdict-box.WA .verdict-title, .verdict-box.TLE .verdict-title { color: #f87171; }
+    .verdict-box.PENDING .verdict-title { color: #60a5fa; }
+
+    .score-badge {
+      display: inline-block;
+      margin-top: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding: 0.25rem 1rem;
+      border-radius: 9999px;
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .metric-card {
+      background: #0d1321;
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .metric-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .metric-value {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      font-family: var(--font-mono);
+      margin-top: 0.25rem;
+    }
+
+    /* Timeline Stepper */
+    .stepper {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .step-item.active {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .step-item.completed {
+      color: #34d399;
+    }
+
+    .step-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+    }
+
+    .step-item.active .step-icon {
+      border-color: #3b82f6;
+      background: #3b82f6;
+      color: #fff;
+    }
+
+    .step-item.completed .step-icon {
+      border-color: #10b981;
+      background: #10b981;
+      color: #fff;
+    }
+
+    .spinner {
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <div class="logo-area">
+        <div class="logo-icon">TLX</div>
+        <div class="logo-title">
+          <h1>Remote Judge Bot Service</h1>
+          <p>Automated Submission &amp; Evaluation Engine for TLX TOKI</p>
+        </div>
+      </div>
+      <div class="status-badge" id="sessionStatusBadge">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Memeriksa Sesi...</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Kolom Kiri: Form Submisi -->
+    <section class="card">
+      <div class="card-header">
+        <h2 class="card-title">Kirim Kodingan Siswa</h2>
+      </div>
+
+      <form id="submitForm">
+        <div class="form-group">
+          <label for="problemUrl">URL / Kode Soal TLX</label>
+          <input type="text" id="problemUrl" placeholder="https://tlx.toki.id/problems/troc-30/A" required value="https://tlx.toki.id/problems/troc-30/A">
+          <div class="quick-chips">
+            <span class="chip" onclick="setProblem('https://tlx.toki.id/problems/troc-30/A')">TROC-30 A</span>
+            <span class="chip" onclick="setProblem('https://tlx.toki.id/problems/troc-29/A')">TROC-29 A</span>
+            <span class="chip" onclick="setProblem('https://tlx.toki.id/problems/tlx-training/A1')">Training A1</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label for="language">Bahasa</label>
+            <select id="language">
+              <option value="cpp20" selected>C++20</option>
+              <option value="python3">Python 3</option>
+              <option value="java">Java</option>
+              <option value="pascal">Pascal</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="studentId">ID Siswa (Opsional)</label>
+            <input type="text" id="studentId" placeholder="siswa_001" value="siswa_bimbel_01">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <label style="margin-bottom: 0;" for="sourceCode">Source Code</label>
+            <button type="button" class="chip" style="background: none;" onclick="loadSampleCode()">Contoh C++ AC</button>
+          </div>
+          <textarea id="sourceCode" spellcheck="false" required>#include <iostream>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    // Tulis solusi di sini
+    cout << "YES\n";
+    return 0;
+}</textarea>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span>Kirim &amp; Nilai di TLX</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- Kolom Kanan: Status & Hasil Penilaian -->
+    <section class="card" id="resultCard">
+      <div class="card-header">
+        <h2 class="card-title">Hasil Penilaian (Verdict)</h2>
+        <span id="jobIdTag" style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">-</span>
+      </div>
+
+      <div id="emptyDisplay" class="empty-state">
+        <div class="empty-icon">⏳</div>
+        <p>Belum ada submisi yang aktif.<br>Silakan kirim kode dari form di sebelah kiri untuk melihat proses penilaian live.</p>
+      </div>
+
+      <div id="liveDisplay" style="display: none;">
+        <div class="verdict-box PENDING" id="verdictBox">
+          <div class="verdict-title" id="verdictTitle">Pending / Grading</div>
+          <div class="score-badge" id="scoreBadge">Skor: - / 100</div>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Execution Time</div>
+            <div class="metric-value" id="runtimeVal">-</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Memory Used</div>
+            <div class="metric-value" id="memoryVal">-</div>
+          </div>
+        </div>
+
+        <!-- Stepper Progress -->
+        <div class="stepper">
+          <div class="step-item completed" id="step1">
+            <span class="step-icon">✓</span>
+            <span>Kodingan diterima oleh antrean</span>
+          </div>
+          <div class="step-item" id="step2">
+            <span class="step-icon" id="step2Icon">2</span>
+            <span>Bot membuka TLX &amp; mengisi form</span>
+          </div>
+          <div class="step-item" id="step3">
+            <span class="step-icon" id="step3Icon">3</span>
+            <span>Menunggu penilaian Grader TLX</span>
+          </div>
+          <div class="step-item" id="step4">
+            <span class="step-icon" id="step4Icon">4</span>
+            <span>Hasil verdict final diperoleh</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Quick helpers
+    function setProblem(url) {
+      document.getElementById('problemUrl').value = url;
+    }
+
+    function loadSampleCode() {
+      document.getElementById('language').value = 'cpp20';
+      document.getElementById('sourceCode').value = `#include <iostream>
+using namespace std;
+
+int main() {
+    int a, b;
+    if (cin >> a >> b) {
+        cout << (a + b) << "\\n";
+    } else {
+        cout << "Halo TLX\\n";
+    }
+    return 0;
+}`;
+    }
+
+    // Check health & session
+    async function checkHealth() {
+      try {
+        const res = await fetch('/api/health');
+        const data = await res.json();
+        const dot = document.getElementById('statusDot');
+        const text = document.getElementById('statusText');
+
+        if (data.sessionExists) {
+          dot.className = 'status-dot active';
+          text.innerText = data.botUser ? `TLX: @${data.botUser} (Aktif)` : 'TLX Sesi Aktif';
+        } else {
+          dot.className = 'status-dot inactive';
+          text.innerText = 'Sesi Belum Login';
+        }
+      } catch (e) {
+        document.getElementById('statusDot').className = 'status-dot inactive';
+        document.getElementById('statusText').innerText = 'Server Offline';
+      }
+    }
+
+    checkHealth();
+    setInterval(checkHealth, 15000);
+
+    // Submission Handler
+    const form = document.getElementById('submitForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const problemUrl = document.getElementById('problemUrl').value.trim();
+      const language = document.getElementById('language').value;
+      const studentId = document.getElementById('studentId').value.trim();
+      const sourceCode = document.getElementById('sourceCode').value;
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner"></span> <span>Memasukkan ke Antrean...</span>';
+
+      // Switch UI
+      document.getElementById('emptyDisplay').style.display = 'none';
+      document.getElementById('liveDisplay').style.display = 'block';
+
+      // Reset Stepper
+      resetStepper();
+
+      try {
+        const res = await fetch('/api/judge/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ problemUrl, language, sourceCode, studentId })
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+          alert('Gagal: ' + (data.error || 'Terjadi kesalahan'));
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span>Kirim &amp; Nilai di TLX</span>';
+          return;
+        }
+
+        document.getElementById('jobIdTag').innerText = data.jobId;
+        pollJobStatus(data.jobId);
+      } catch (err) {
+        alert('Gagal menghubungi server: ' + err.message);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span>Kirim &amp; Nilai di TLX</span>';
+      }
+    });
+
+    function resetStepper() {
+      const box = document.getElementById('verdictBox');
+      box.className = 'verdict-box PENDING';
+      document.getElementById('verdictTitle').innerText = 'Di Antrean...';
+      document.getElementById('scoreBadge').innerText = 'Skor: - / 100';
+      document.getElementById('runtimeVal').innerText = '-';
+      document.getElementById('memoryVal').innerText = '-';
+
+      document.getElementById('step1').className = 'step-item completed';
+      document.getElementById('step2').className = 'step-item active';
+      document.getElementById('step2Icon').innerHTML = '<span class="spinner" style="width:10px;height:10px;"></span>';
+      document.getElementById('step3').className = 'step-item';
+      document.getElementById('step3Icon').innerText = '3';
+      document.getElementById('step4').className = 'step-item';
+      document.getElementById('step4Icon').innerText = '4';
+    }
+
+    async function pollJobStatus(jobId) {
+      const interval = setInterval(async () => {
+        try {
+          const res = await fetch(`/api/judge/status/${jobId}`);
+          const data = await res.json();
+
+          if (!data.success || !data.job) return;
+
+          const job = data.job;
+
+          if (job.status === 'processing') {
+            document.getElementById('verdictTitle').innerText = 'Sedang Menilai di TLX...';
+            document.getElementById('step2').className = 'step-item completed';
+            document.getElementById('step2Icon').innerText = '✓';
+            document.getElementById('step3').className = 'step-item active';
+            document.getElementById('step3Icon').innerHTML = '<span class="spinner" style="width:10px;height:10px;"></span>';
+          }
+
+          if (job.status === 'completed' || job.status === 'failed') {
+            clearInterval(interval);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>Kirim &amp; Nilai di TLX</span>';
+
+            document.getElementById('step3').className = 'step-item completed';
+            document.getElementById('step3Icon').innerText = '✓';
+            document.getElementById('step4').className = 'step-item completed';
+            document.getElementById('step4Icon').innerText = '✓';
+
+            const box = document.getElementById('verdictBox');
+
+            if (job.status === 'completed' && job.result) {
+              const res = job.result;
+              const verdict = res.verdict || 'Accepted';
+              document.getElementById('verdictTitle').innerText = verdict;
+              document.getElementById('scoreBadge').innerText = `Skor: ${res.score} / 100`;
+              document.getElementById('runtimeVal').innerText = res.time || 'N/A';
+              document.getElementById('memoryVal').innerText = res.memory || 'N/A';
+
+              if (verdict === 'Accepted') {
+                box.className = 'verdict-box AC';
+              } else {
+                box.className = 'verdict-box WA';
+              }
+            } else {
+              box.className = 'verdict-box WA';
+              document.getElementById('verdictTitle').innerText = 'Gagal';
+              document.getElementById('scoreBadge').innerText = job.error || 'Terjadi kesalahan saat submit';
+            }
+          }
+        } catch (e) {
+          console.error('Error polling status:', e);
+        }
+      }, 2000);
+    }
+  </script>
+</body>
+</html>

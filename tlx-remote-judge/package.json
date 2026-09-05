@@ -1,0 +1,28 @@
+{
+  "name": "tlx-remote-judge",
+  "version": "1.0.0",
+  "description": "Automated Remote Judge Service and Submitter Bot for TLX (TOKI) using Playwright",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "login": "node scripts/login.js",
+    "check-auth": "node scripts/check-auth.js"
+  },
+  "keywords": [
+    "remote-judge",
+    "tlx",
+    "toki",
+    "playwright",
+    "competitive-programming",
+    "judge-bot"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "playwright": "^1.45.0"
+  }
+}

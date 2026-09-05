@@ -1,0 +1,4 @@
+node_modules/
+session/tlx_session.json
+.env
+*.log
