@@ -1454,7 +1454,12 @@
                                                                     <div class="text-xs text-slate-400 mt-0.5">
                                                                         Nilai: <strong class="text-white text-sm" x-text="cpState.lastVerdict.score + ' / ' + cpState.lastVerdict.totalScore"></strong>
                                                                         <span class="mx-2">•</span>
-                                                                        Lolos: <strong class="text-white" x-text="cpState.lastVerdict.passedCount + ' dari ' + cpState.lastVerdict.totalCount + ' kasus'"></strong>
+                                                                        <template x-if="cpState.lastVerdict.isRemoteJudge">
+                                                                            <span class="text-emerald-400 font-bold">Evaluasi Resmi TLX TOKI (@nls_bot)</span>
+                                                                        </template>
+                                                                        <template x-if="!cpState.lastVerdict.isRemoteJudge">
+                                                                            <span>Lolos: <strong class="text-white" x-text="cpState.lastVerdict.passedCount + ' dari ' + cpState.lastVerdict.totalCount + ' kasus'"></strong></span>
+                                                                        </template>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -1471,6 +1476,17 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+
+                                                        <!-- Remote Judge TLX Notice -->
+                                                        <template x-if="cpState.lastVerdict.isRemoteJudge">
+                                                            <div class="p-3 bg-emerald-950/40 border border-emerald-500/30 rounded-xl text-xs flex items-center justify-between text-emerald-300">
+                                                                <div class="flex items-center gap-2">
+                                                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                                                    <span>Solusi dinilai resmi oleh <strong>Server TLX TOKI (@nls_bot)</strong> terhadap seluruh subtask / secret test cases TLX.</span>
+                                                                </div>
+                                                                <span class="font-mono text-[10px] text-emerald-400 font-bold" x-text="'Submisi ID: ' + cpState.lastVerdict.submissionId"></span>
+                                                            </div>
+                                                        </template>
 
                                                         <!-- Compile Error Box if any -->
                                                         <template x-if="cpState.lastVerdict.compileError">

@@ -666,30 +666,45 @@
 
                                             <!-- COLLAPSIBLE TEST CASES LIST -->
                                             <div x-show="vjudgeShowTestCases" class="pt-3 border-t border-emerald-200/80 space-y-3 animate-fade-in">
+                                                <!-- IMPORTANT NOTICE TO ADMIN -->
+                                                <div class="p-3.5 bg-gradient-to-r from-emerald-950 via-slate-900 to-teal-950 text-white rounded-2xl text-xs flex items-start gap-3 shadow-md border border-emerald-700/50">
+                                                    <div class="w-7 h-7 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0 font-bold mt-0.5 text-base">
+                                                        🛡️
+                                                    </div>
+                                                    <div class="space-y-1">
+                                                        <div class="font-black text-emerald-300 text-xs">Catatan Penilaian Mode VJudge:</div>
+                                                        <div class="text-[11px] text-slate-200 leading-relaxed">
+                                                            Contoh di bawah ini adalah <strong>Kasus Contoh Soal (Sample Cases)</strong> dari TLX yang dicantumkan di lembar soal dan digunakan untuk tombol <em>"Jalankan Kasus Contoh"</em> siswa. Saat siswa menekan <strong>"Kumpul Solusi / Submit"</strong>, penilaian resmi <strong>100% dievaluasi langsung oleh server juri TLX TOKI (@nls_bot)</strong> menggunakan <strong>seluruh test case rahasia / subtask resmi TLX</strong>, bukan hanya 2 contoh ini.
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                                 <div class="text-[11px] font-black text-emerald-900 uppercase tracking-wider flex items-center justify-between">
-                                                    <span>Rincian Kasus Uji Penilaian Otomatis</span>
-                                                    <span class="text-[10px] text-emerald-700 font-medium">Auto-Graded on Submission</span>
+                                                    <span>Daftar Kasus Contoh Soal (Sample Cases)</span>
+                                                    <span class="text-[10px] text-emerald-700 font-bold bg-emerald-100 px-2.5 py-0.5 rounded-lg">Untuk Panduan Soal & Run Samples</span>
                                                 </div>
                                                 <div class="grid grid-cols-1 gap-2.5 max-h-72 overflow-y-auto pr-1">
-                                                    <template x-for="(tc, tcIdx) in (activeNode.testCases || [])" :key="tcIdx">
-                                                        <div class="bg-white p-3 rounded-xl border border-emerald-100 text-xs shadow-sm space-y-2">
+                                                    <template x-for="(s, sIdx) in (activeNode.samples && activeNode.samples.length > 0 ? activeNode.samples : (activeNode.testCases || []))" :key="sIdx">
+                                                        <div class="bg-white p-3.5 rounded-xl border border-emerald-100 text-xs shadow-sm space-y-2">
                                                             <div class="flex items-center justify-between">
                                                                 <div class="flex items-center gap-2">
-                                                                    <span class="font-black text-slate-800" x-text="'Test Case #' + (tcIdx + 1)"></span>
-                                                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-black"
-                                                                          :class="tc.isHidden ? 'bg-amber-100 text-amber-800' : 'bg-sky-100 text-sky-800'"
-                                                                          x-text="tc.isHidden ? 'Tersembunyi (Hidden Judge)' : 'Terbuka (Sample Case)'"></span>
+                                                                    <span class="font-black text-slate-800" x-text="'Contoh Kasus #' + (sIdx + 1)"></span>
+                                                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-sky-100 text-sky-800">
+                                                                        Contoh di Soal (Sample Case)
+                                                                    </span>
                                                                 </div>
-                                                                <span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-900 font-black rounded-lg text-xs" x-text="(tc.points || 0) + ' Poin'"></span>
+                                                                <span class="px-2.5 py-0.5 bg-emerald-50 text-emerald-800 font-bold rounded-lg text-[11px] border border-emerald-200 flex items-center gap-1">
+                                                                    <span>🌐</span> Dinilai Resmi di TLX TOKI
+                                                                </span>
                                                             </div>
                                                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] font-mono">
-                                                                <div class="p-2 rounded bg-slate-50 border border-slate-200">
-                                                                    <span class="text-[9px] font-bold text-slate-400 uppercase block">Input:</span>
-                                                                    <pre class="text-slate-800 whitespace-pre-wrap max-h-24 overflow-y-auto" x-text="tc.input || '(kosong)'"></pre>
+                                                                <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                                                                    <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Input:</span>
+                                                                    <pre class="text-slate-800 whitespace-pre-wrap max-h-24 overflow-y-auto font-bold" x-text="s.input || '(kosong)'"></pre>
                                                                 </div>
-                                                                <div class="p-2 rounded bg-slate-50 border border-slate-200">
-                                                                    <span class="text-[9px] font-bold text-slate-400 uppercase block">Expected Output:</span>
-                                                                    <pre class="text-slate-800 whitespace-pre-wrap max-h-24 overflow-y-auto" x-text="tc.output || '(kosong)'"></pre>
+                                                                <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                                                                    <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Expected Output:</span>
+                                                                    <pre class="text-slate-800 whitespace-pre-wrap max-h-24 overflow-y-auto font-bold" x-text="s.output || '(kosong)'"></pre>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -3689,8 +3704,17 @@
                         this.activeNode.editorial = prob.editorial;
                     }
 
-                    // Test Cases: if available from parser, use them; otherwise auto-generate from samples
-                    if (Array.isArray(prob.testCases) && prob.testCases.length > 0) {
+                    // Test Cases: pada mode VJudge TLX, penilaian resmi 100% dilakukan di server TLX TOKI
+                    if (this.activeNode.cpMode === 'vjudge' || prob.platform === 'TLX') {
+                        this.activeNode.testCases = (this.activeNode.samples || []).map((s, idx) => ({
+                            input: s.input || '',
+                            output: s.output || '',
+                            points: 0,
+                            isHidden: false,
+                            isSample: true,
+                            label: `Contoh #${idx + 1}`
+                        }));
+                    } else if (Array.isArray(prob.testCases) && prob.testCases.length > 0) {
                         this.activeNode.testCases = JSON.parse(JSON.stringify(prob.testCases));
                     } else if (this.activeNode.samples && this.activeNode.samples.length > 0) {
                         this.activeNode.testCases = this.activeNode.samples.map((s, idx) => ({

@@ -284,13 +284,19 @@ export default async function handler(req, res) {
             const sourcePlatform = (body.sourcePlatform || '').toLowerCase();
             const sourceUrl = body.sourceUrl || body.remoteJudgeUrl || body.problemUrl || '';
 
-            // Cek apakah soal ini menggunakan Opsi 2: Mode VJudge menuju TLX TOKI
-            const isTlxVJudge = cpMode === 'vjudge' && (
+            // Cek apakah soal ini menggunakan Mode VJudge menuju TLX TOKI
+            const isTlxVJudge = (
+                cpMode === 'vjudge' ||
                 judgeProvider === 'tlx' ||
                 sourcePlatform === 'tlx' ||
                 sourceUrl.toLowerCase().includes('tlx.toki.id') ||
                 body.isVJudge ||
                 body.remoteJudge
+            ) && (
+                sourceUrl.toLowerCase().includes('tlx.toki.id') ||
+                judgeProvider === 'tlx' ||
+                sourcePlatform === 'tlx' ||
+                cpMode === 'vjudge'
             );
 
             if (isTlxVJudge) {
