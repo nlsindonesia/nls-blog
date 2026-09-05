@@ -720,6 +720,68 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <!-- PEMBAHASAN / EDITORIAL (OPSIONAL UNTUK MODE VJUDGE) -->
+                                        <div class="p-6 rounded-3xl bg-gradient-to-br from-amber-50/40 via-white to-indigo-50/30 border border-amber-200/80 shadow-sm space-y-4" x-data="{ showVjudgeEditorialPreview: false }">
+                                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-amber-100">
+                                                <div>
+                                                    <div class="flex items-center gap-2 mb-1">
+                                                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                                        <h4 class="font-black text-xs text-amber-950 uppercase tracking-wider flex items-center gap-1.5">
+                                                            <span>💡</span> Pembahasan / Editorial Soal (Opsional)
+                                                        </h4>
+                                                        <span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 text-[10px] font-black border border-amber-200">
+                                                            Dilihat Siswa di LMS Player
+                                                        </span>
+                                                    </div>
+                                                    <p class="text-[11px] text-slate-500 max-w-2xl leading-relaxed">
+                                                        Walaupun solusi dinilai otomatis oleh server resmi <strong x-text="activeNode.sourcePlatform ? activeNode.sourcePlatform.toUpperCase() : 'Online Judge'"></strong>, Anda dapat menuliskan pembahasan, ide algoritma, formula matematika, maupun tips solusi untuk membantu siswa belajar setelah mencoba.
+                                                    </p>
+                                                </div>
+                                                <div class="flex items-center gap-2 shrink-0 flex-wrap">
+                                                    <button type="button" 
+                                                            @click="showVjudgeEditorialPreview = !showVjudgeEditorialPreview; if(showVjudgeEditorialPreview) typesetMathJax();"
+                                                            class="px-3.5 py-2 bg-white hover:bg-slate-50 text-indigo-950 border border-slate-200 rounded-xl font-bold text-xs transition-all shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95">
+                                                        <span x-text="showVjudgeEditorialPreview ? '✏️ Edit Teks' : '👁️ Pratinjau Tampilan'"></span>
+                                                    </button>
+                                                    <button type="button" 
+                                                            @click="autoFormatActiveNodeLatex(true)"
+                                                            class="px-3.5 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-xl font-bold text-xs transition-all shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95">
+                                                        <span>✨ Rapikan LaTeX ($...$)</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Editor Textarea -->
+                                            <div x-show="!showVjudgeEditorialPreview" class="space-y-2">
+                                                <textarea x-model="activeNode.editorial" 
+                                                          @input="saveLocalDraft(); debounceSave(); typesetMathJax()" 
+                                                          rows="6" 
+                                                          placeholder="Tuliskan analisis permasalahan, ide algoritma (misal: Greedy, Binary Search, DP), penjelasan rumus matematika, atau petunjuk penyelesaian soal ini...&#10;&#10;Mendukung formula matematika LaTeX menggunakan tanda dollar: contoh $1 \le N \le 10^5$, $\mathcal{O}(N \log N)$, dsb."
+                                                          class="w-full p-4 bg-white border border-slate-200 rounded-2xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-amber-500 shadow-inner leading-relaxed"></textarea>
+                                                <div class="flex items-center justify-between text-[10px] text-slate-400 px-1">
+                                                    <span>Gunakan tanda dollar <code class="bg-amber-100/60 text-amber-900 px-1.5 py-0.5 rounded font-mono font-bold">$...$</code> untuk rumus matematika dan notasi Big-O.</span>
+                                                    <span x-text="(activeNode.editorial || '').length + ' karakter'"></span>
+                                                </div>
+                                            </div>
+
+                                            <!-- Rendered Preview Area -->
+                                            <div x-show="showVjudgeEditorialPreview" class="space-y-2">
+                                                <div class="p-5 bg-white rounded-2xl border border-amber-200/80 text-xs text-slate-800 leading-relaxed max-h-72 overflow-y-auto">
+                                                    <template x-if="activeNode.editorial && activeNode.editorial.trim().length > 0">
+                                                        <div class="prose prose-sm max-w-none font-normal" x-html="formatMathPreview(activeNode.editorial)"></div>
+                                                    </template>
+                                                    <template x-if="!activeNode.editorial || activeNode.editorial.trim().length === 0">
+                                                        <div class="text-slate-400 italic text-center py-6 space-y-1">
+                                                            <div class="text-2xl mb-1">📝</div>
+                                                            <div class="font-bold text-slate-600">Belum ada pembahasan yang ditulis.</div>
+                                                            <div class="text-[11px]">Klik tombol "Edit Teks" di atas untuk menambahkan pembahasan soal ini.</div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </template>
