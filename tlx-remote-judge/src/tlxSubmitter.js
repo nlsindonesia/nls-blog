@@ -14,7 +14,7 @@ const config = require('./config');
  * Normalisasi URL soal TLX
  */
 function normalizeProblemUrl(inputUrl) {
-  const trimmed = inputUrl.trim();
+  const trimmed = (inputUrl || '').trim();
   if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
     return trimmed;
   }
@@ -34,23 +34,6 @@ function getFileExtension(langKey) {
   if (key.includes('go')) return '.go';
   if (key.includes('rust')) return '.rs';
   return '.txt';
-}
-
-/**
- * Dapatkan label bahasa di TLX
- */
-function getTlxLanguageLabel(langKey) {
-  const key = (langKey || '').toLowerCase();
-  if (key.includes('cpp20') || key.includes('c++20')) return 'C++20';
-  if (key.includes('cpp17') || key.includes('c++17')) return 'C++17';
-  if (key.includes('cpp') || key.includes('c++')) return 'C++20';
-  if (key === 'c') return 'C11';
-  if (key.includes('py')) return 'Python 3';
-  if (key.includes('java')) return 'Java 21';
-  if (key.includes('pas')) return 'Free Pascal';
-  if (key.includes('go')) return 'Go';
-  if (key.includes('rust')) return 'Rust';
-  return 'C++20';
 }
 
 /**
@@ -89,41 +72,67 @@ async function submitToTLX({ problemUrl, language = 'cpp20', sourceCode, student
   fs.writeFileSync(tempFilePath, sourceCode, 'utf8');
 
   try {
-    // 1. Kunjungi halaman soal
+    // 1. Kunjungi halaman soal TLX
     console.log(`   🌐 Membuka halaman soal TLX...`);
-    await page.goto(targetUrl, { waitUntil: 'networkidle', timeout: 45000 });
+    await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 35000 });
+    await page.waitForTimeout(3000);
 
-    // 2. Pilih Bahasa jika berbeda dengan default
-    const targetLangLabel = getTlxLanguageLabel(language);
-    const langBtn = page.locator('.bp6-popover-target button:has-text("C++"), .bp6-popover-target button:has-text("Python"), .bp6-popover-target button:has-text("Java"), .bp6-popover-target button:has-text("Pascal")');
+    // 2. Pilih Bahasa di form TLX sesuai opsi yang tersedia
+    let langBtn = page.locator('form').filter({ hasText: 'Language' }).locator('.bp6-popover-target button').first();
+    if (await langBtn.count() === 0) {
+      langBtn = page.locator('.bp6-popover-target button').first();
+    }
+
     if (await langBtn.count() > 0) {
-      const currentLang = await langBtn.first().innerText().catch(() => '');
-      if (!currentLang.includes(targetLangLabel)) {
-        console.log(`   🔄 Mengubah bahasa dari ${currentLang} ke ${targetLangLabel}...`);
-        await langBtn.first().click();
-        await page.waitForTimeout(500);
-        const targetOption = page.locator(`.bp6-menu-item:has-text("${targetLangLabel}")`);
-        if (await targetOption.count() > 0) {
-          await targetOption.first().click();
-          await page.waitForTimeout(500);
-        }
+      await langBtn.click();
+      await page.waitForTimeout(600);
+      const availableItems = await page.locator('.bp6-menu-item').allInnerTexts().catch(() => []);
+
+      let bestOption = null;
+      const langLow = (language || 'cpp').toLowerCase();
+      if (langLow.includes('cpp') || langLow.includes('c++')) {
+        bestOption = availableItems.find(i => /C\+\+20/i.test(i)) ||
+                     availableItems.find(i => /C\+\+17/i.test(i)) ||
+                     availableItems.find(i => /C\+\+14/i.test(i)) ||
+                     availableItems.find(i => /C\+\+11/i.test(i)) ||
+                     availableItems.find(i => /C\+\+/i.test(i));
+      } else if (langLow.includes('py')) {
+        bestOption = availableItems.find(i => /Python\s*3/i.test(i)) ||
+                     availableItems.find(i => /Python/i.test(i));
+      } else if (langLow.includes('java')) {
+        bestOption = availableItems.find(i => /Java\s*21/i.test(i)) ||
+                     availableItems.find(i => /Java\s*17/i.test(i)) ||
+                     availableItems.find(i => /Java/i.test(i));
+      } else if (langLow.includes('pas')) {
+        bestOption = availableItems.find(i => /Pascal/i.test(i));
+      } else if (langLow === 'c') {
+        bestOption = availableItems.find(i => /^C$/i.test(i.trim())) ||
+                     availableItems.find(i => /C11/i.test(i)) ||
+                     availableItems.find(i => /C99/i.test(i));
+      }
+
+      if (bestOption) {
+        console.log(`   🔄 Memilih bahasa "${bestOption}" dari daftar compiler TLX...`);
+        await page.locator('.bp6-menu-item').filter({ hasText: bestOption }).first().click();
+        await page.waitForTimeout(600);
+      } else {
+        await page.keyboard.press('Escape');
       }
     }
 
     // 3. Masukkan file kodingan ke input form
     console.log(`   📄 Mengunggah file solusi kodingan...`);
-    const fileInput = page.locator('input[name="sourceFiles.source"], input[type="file"]');
+    const fileInput = page.locator('input[name="sourceFiles.source"], input[type="file"]').first();
     if (await fileInput.count() === 0) {
       throw new Error('Tidak dapat menemukan kolom upload file kodingan di halaman soal TLX.');
     }
-    await fileInput.first().setInputFiles(tempFilePath);
-    await page.waitForTimeout(800);
+    await fileInput.setInputFiles(tempFilePath);
+    await page.waitForTimeout(1000);
 
-    // 4. Klik tombol Submit yang telah aktif (enabled)
+    // 4. Klik tombol Submit resmi TLX
     const submitBtn = page.locator('button[type="submit"]:has-text("Submit"), button[type="submit"]:has-text("Kirim")').first();
     await submitBtn.waitFor({ state: 'visible', timeout: 10000 });
 
-    // Pastikan tombol Submit (bukan tombol switch bahasa) sudah aktif / tidak disabled
     await page.waitForFunction(() => {
       const btns = Array.from(document.querySelectorAll('button[type="submit"]'));
       const btn = btns.find(b => b.innerText.includes('Submit') || b.innerText.includes('Kirim'));
@@ -133,90 +142,86 @@ async function submitToTLX({ problemUrl, language = 'cpp20', sourceCode, student
     console.log(`   📤 Menekan tombol Submit resmi TLX...`);
     await submitBtn.click();
 
-    // 5. Tunggu redirect ke halaman submisi pengguna
+    // 5. Tunggu redirect ke halaman riwayat submisi
     console.log(`   ⏳ Submisi terkirim! Menunggu halaman submisi TLX...`);
-    await page.waitForURL('**/submissions/**', { timeout: 10000 }).catch(() => {});
+    await page.waitForURL('**/submissions/**', { timeout: 12000 }).catch(() => {});
     await page.waitForTimeout(2000);
 
-    // Fallback jika belum otomatis redirect ke submissions
-    if (!page.url().includes('/submissions')) {
-      console.log(`   ℹ️ Mengarahkan ke halaman riwayat submisi: ${targetUrl}/submissions/mine`);
-      await page.goto(`${targetUrl}/submissions/mine`, { waitUntil: 'domcontentloaded', timeout: 20000 }).catch(() => {});
-      await page.waitForTimeout(2000);
-    }
+    const mineUrl = targetUrl.replace(/\/+$/, '') + '/submissions/mine';
+    console.log(`   ℹ️ Membuka riwayat submisi pribadi: ${mineUrl}`);
+    await page.goto(mineUrl, { waitUntil: 'domcontentloaded', timeout: 25000 }).catch(() => {});
+    await page.waitForTimeout(2000);
 
-    // 6. Polling hasil penilaian pada tabel submisi pengguna
-    await page.locator('table:has-text("Verdict")').first().waitFor({ state: 'attached', timeout: 15000 }).catch(() => {});
+    // 6. Polling hasil penilaian pada tabel submisi TLX
     const startTime = Date.now();
     let finalVerdict = 'Pending';
     let finalSubmissionId = null;
     let finalRuntime = '-';
     let finalMemory = '-';
     let finalScore = 0;
+    let finalTests = [];
 
     while (Date.now() - startTime < config.JUDGING_TIMEOUT_MS) {
-      // Cari tabel submissions resmi TLX (menghindari tabel leaderboard top users)
-      const rowsData = await page.evaluate(() => {
+      const rowData = await page.evaluate(() => {
         const tables = Array.from(document.querySelectorAll('table'));
-        const subTable = tables.find(t => {
-          const text = t.innerText;
-          return text.includes('Verdict') && (text.includes('Lang') || text.includes('Time') || text.includes('ID'));
-        });
+        const subTable = tables.find(t => t.innerText.includes('Verdict') && t.innerText.includes('Lang'));
         if (!subTable) return null;
-
-        const rows = Array.from(subTable.querySelectorAll('tbody tr, tr'));
-        for (const r of rows) {
-          const cells = Array.from(r.querySelectorAll('td')).map(c => c.innerText.trim());
-          if (cells.length >= 4) {
+        const trs = Array.from(subTable.querySelectorAll('tbody tr, tr'));
+        for (const tr of trs) {
+          const tds = Array.from(tr.querySelectorAll('td')).map(td => td.innerText.trim());
+          if (tds.length >= 4) {
             return {
-              rawText: r.innerText,
-              cells: cells
+              id: tds[0],
+              user: tds[1],
+              lang: tds[2],
+              verdict: tds[3],
+              time: tds[4] || '',
+              rawText: tr.innerText
             };
           }
         }
         return null;
       });
 
-      if (rowsData && rowsData.cells && rowsData.cells.length >= 4) {
-        const cells = rowsData.cells;
-        finalSubmissionId = cells[0] || null;
-        // cells format: [ID, User, Lang, Verdict, TimeSubmitted, Action]
-        const verdictText = cells[3] || cells.find(c => /Accepted|Wrong Answer|Time Limit|Memory Limit|Compilation Error|Runtime Error|Pending|Grading/i.test(c)) || rowsData.rawText;
+      if (rowData && rowData.id) {
+        finalSubmissionId = rowData.id;
+        const vText = rowData.verdict;
+        console.log(`   📊 Status saat ini [ID: ${finalSubmissionId}]: ${vText.replace(/\n/g, ' ')}`);
 
-        console.log(`   📊 Status saat ini [ID: ${finalSubmissionId}]: ${verdictText}`);
+        const isStillGrading = /Pending|Grading|Menunggu|Menilai/i.test(vText);
 
-        const isStillGrading = /Pending|Grading|Menunggu|Menilai/i.test(verdictText);
-
-        if (!isStillGrading && /Accepted|Wrong Answer|Time Limit|Memory Limit|Compilation Error|Runtime Error/i.test(verdictText)) {
-          if (/Accepted|Diterima/i.test(verdictText)) {
+        if (!isStillGrading && /Accepted|Wrong Answer|Time Limit|Memory Limit|Compilation Error|Runtime Error/i.test(vText)) {
+          if (/Accepted|Diterima/i.test(vText)) {
             finalVerdict = 'Accepted';
             finalScore = 100;
-          } else if (/Wrong Answer/i.test(verdictText)) {
+          } else if (/Wrong Answer/i.test(vText)) {
             finalVerdict = 'Wrong Answer';
             finalScore = 0;
-          } else if (/Time Limit/i.test(verdictText)) {
+          } else if (/Time Limit/i.test(vText)) {
             finalVerdict = 'Time Limit Exceeded';
             finalScore = 0;
-          } else if (/Memory Limit/i.test(verdictText)) {
+          } else if (/Memory Limit/i.test(vText)) {
             finalVerdict = 'Memory Limit Exceeded';
             finalScore = 0;
-          } else if (/Compilation Error/i.test(verdictText)) {
+          } else if (/Compilation Error/i.test(vText)) {
             finalVerdict = 'Compilation Error';
             finalScore = 0;
-          } else if (/Runtime Error/i.test(verdictText)) {
+          } else if (/Runtime Error/i.test(vText)) {
             finalVerdict = 'Runtime Error';
             finalScore = 0;
           }
 
-          // Cek apakah ada skor di baris tersebut
-          const scoreMatch = verdictText.match(/(\d{1,3})\s*\/\s*100/) || verdictText.match(/Score:\s*(\d{1,3})/i);
-          if (scoreMatch) finalScore = parseInt(scoreMatch[1], 10);
+          // Skor jika ada di baris tabel, e.g. "Wrong Answer\n15"
+          const scoreMatch = vText.match(/(\d{1,3})\s*\/\s*100/) || vText.match(/(\d{1,3})$/m);
+          if (scoreMatch) {
+            finalScore = parseInt(scoreMatch[1], 10);
+          }
 
-          // Ambil detail waktu dan memori jika ada
-          const timeMatch = rowsData.rawText.match(/(\d+(\.\d+)?\s*(ms|s))/i);
+          // Format runtime dan memory jika tersedia
+          const timeMatch = rowData.rawText.match(/(\d+(\.\d+)?\s*(ms|s))/i);
           if (timeMatch) finalRuntime = timeMatch[0];
 
-          const memMatch = rowsData.rawText.match(/(\d+(\.\d+)?\s*(MB|KB))/i);
+          const memMatch = rowData.rawText.match(/(\d+(\.\d+)?\s*(MB|KB))/i);
           if (memMatch) finalMemory = memMatch[0];
 
           break;
@@ -224,10 +229,51 @@ async function submitToTLX({ problemUrl, language = 'cpp20', sourceCode, student
       }
 
       await page.waitForTimeout(3000);
-      // Reload halaman submissions agar TLX SPA merender status terbaru dari backend
-      if (page.url().includes('/submissions')) {
-        await page.reload({ waitUntil: 'networkidle' }).catch(() => {});
-        await page.locator('table:has-text("Verdict")').first().waitFor({ state: 'attached', timeout: 8000 }).catch(() => {});
+      await page.reload({ waitUntil: 'domcontentloaded' }).catch(() => {});
+      await page.waitForTimeout(1500);
+    }
+
+    // 7. Ambil rincian kasus uji / subsoal autentik jika submissionId tersedia
+    if (finalSubmissionId) {
+      try {
+        console.log(`   🔎 Mengambil rincian kasus uji autentik dari https://tlx.toki.id/submissions/${finalSubmissionId}...`);
+        await page.goto(`https://tlx.toki.id/submissions/${finalSubmissionId}`, { waitUntil: 'domcontentloaded', timeout: 15000 });
+        await page.waitForTimeout(2000);
+
+        const subtaskResults = await page.evaluate(() => {
+          const text = document.body.innerText;
+          const items = [];
+          const regex = /Subtask\s+(\d+)[\s\n]+([A-Za-z\s]+)[\s\n]+(\d+)/gi;
+          let m;
+          while ((m = regex.exec(text)) !== null) {
+            const pts = parseInt(m[3], 10);
+            const vName = m[2].trim();
+            const isAc = /Accepted|Diterima/i.test(vName);
+            items.push({
+              index: parseInt(m[1], 10),
+              label: `Subsoal #${m[1]}`,
+              verdict: isAc ? 'AC' : 'WA',
+              verdictCode: isAc ? 'AC' : 'WA',
+              verdictName: vName,
+              passed: isAc,
+              points: pts,
+              maxPoints: 100,
+              executionTimeMs: 0
+            });
+          }
+          return items;
+        });
+
+        if (subtaskResults && subtaskResults.length > 0) {
+          finalTests = subtaskResults;
+          const totalEarned = finalTests.reduce((sum, s) => sum + (s.points || 0), 0);
+          if (totalEarned > 0 || finalScore === 0) {
+            finalScore = totalEarned;
+          }
+          console.log(`   📋 Terdeteksi ${finalTests.length} subsoal autentik TLX (Total Skor: ${finalScore})`);
+        }
+      } catch (detailErr) {
+        console.warn(`   ⚠️ Tidak dapat memuat detail halaman subtasks:`, detailErr.message);
       }
     }
 
@@ -243,6 +289,7 @@ async function submitToTLX({ problemUrl, language = 'cpp20', sourceCode, student
       score: finalScore,
       time: finalRuntime,
       memory: finalMemory,
+      tests: finalTests,
       problemUrl: targetUrl,
       language,
       studentId: studentId || null,

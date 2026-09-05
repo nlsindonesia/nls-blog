@@ -364,49 +364,59 @@ export default async function handler(req, res) {
 
                 if (canConnectToJudge) {
                     try {
-                        // Gunakan timeout singkat untuk mengecek ketersediaan remote judge daemon
                         const controller = new AbortController();
-                        const timeoutId = setTimeout(() => controller.abort(), 3500);
+                        const timeoutId = setTimeout(() => controller.abort(), 8000);
 
                         // 1. Kirim kodingan ke antrean Remote Judge
                         const submitRes = await fetch(`${remoteJudgeServiceUrl}/api/judge/submit`, {
-                        method: 'POST',
-                        signal: controller.signal,
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            platform: targetPlatform,
-                            problemUrl: targetUrl,
-                            language: langKey,
-                            sourceCode: code,
-                            studentId: userId || body.userName || 'siswa'
-                        })
-                    }).catch(() => null);
-                    clearTimeout(timeoutId);
+                            method: 'POST',
+                            signal: controller.signal,
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                platform: targetPlatform,
+                                problemUrl: targetUrl,
+                                language: langKey,
+                                sourceCode: code,
+                                studentId: userId || body.userName || 'siswa'
+                            })
+                        }).catch(() => null);
+                        clearTimeout(timeoutId);
 
-                    if (submitRes && submitRes.ok) {
-                        const submitData = await submitRes.json().catch(() => ({}));
-                        if (submitData.success && submitData.jobId) {
-                            const jobId = submitData.jobId;
-                            console.log(`[CodeRunner] Job ${platformDisplayName} diterima: ${jobId}. Mulai polling status grading...`);
+                        if (submitRes && submitRes.ok) {
+                            const submitData = await submitRes.json().catch(() => ({}));
+                            if (submitData.success && submitData.jobId) {
+                                const jobId = submitData.jobId;
+                                console.log(`[CodeRunner] Job ${platformDisplayName} diterima: ${jobId}. Mulai polling status grading...`);
 
-                            // 2. Polling status hasil penilaian Remote Judge
-                            const startTime = Date.now();
-                            let finalJob = null;
+                                // 2. Polling status hasil penilaian Remote Judge (dibatasi 7s di Vercel agar tidak melebihi timeout 10s)
+                                const startTime = Date.now();
+                                const maxPollTime = isVercel ? 7000 : 65000;
+                                let finalJob = null;
 
-                            while (Date.now() - startTime < 65000) {
-                                await new Promise(r => setTimeout(r, 2000));
+                                while (Date.now() - startTime < maxPollTime) {
+                                    await new Promise(r => setTimeout(r, 1500));
 
-                                const statusRes = await fetch(`${remoteJudgeServiceUrl}/api/judge/status/${jobId}`).catch(() => null);
-                                if (statusRes && statusRes.ok) {
-                                    const statusData = await statusRes.json().catch(() => ({}));
-                                    if (statusData.success && statusData.job) {
-                                        if (statusData.job.status === 'completed' || statusData.job.status === 'failed') {
-                                            finalJob = statusData.job;
-                                            break;
+                                    const statusRes = await fetch(`${remoteJudgeServiceUrl}/api/judge/status/${jobId}`).catch(() => null);
+                                    if (statusRes && statusRes.ok) {
+                                        const statusData = await statusRes.json().catch(() => ({}));
+                                        if (statusData.success && statusData.job) {
+                                            if (statusData.job.status === 'completed' || statusData.job.status === 'failed') {
+                                                finalJob = statusData.job;
+                                                break;
+                                            }
                                         }
                                     }
                                 }
-                            }
+
+                                if (isVercel && (!finalJob || finalJob.status === 'processing')) {
+                                    return res.status(200).json({
+                                        success: true,
+                                        isProcessing: true,
+                                        jobId: jobId,
+                                        remotePlatform: platformDisplayName,
+                                        checkStatusUrl: `${remoteJudgeServiceUrl}/api/judge/status/${jobId}`
+                                    });
+                                }
 
                             if (finalJob && finalJob.status === 'completed') {
                                 // 3. Ekstrak verdict dan format untuk LMS Player

@@ -3309,138 +3309,149 @@
                         };
 
                         let data = null;
-                        const res = await fetch('/api/code-runner', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        }).catch(() => null);
+                        const isVJudge = payload.cpMode === 'vjudge' || 
+                            ['tlx', 'cses', 'atcoder', 'codeforces'].includes(payload.judgeProvider) ||
+                            (payload.sourcePlatform && ['tlx', 'cses', 'atcoder', 'codeforces'].includes(payload.sourcePlatform.toLowerCase())) ||
+                            (payload.sourceUrl && (payload.sourceUrl.includes('tlx.toki.id') || payload.sourceUrl.includes('cses.fi') || payload.sourceUrl.includes('atcoder.jp') || payload.sourceUrl.includes('codeforces.com')));
 
-                        if (res && res.ok) {
-                            data = await res.json().catch(() => null);
-                        } else {
-                            // Fallback langsung ke Remote Judge port 3500 jika running lokal (misal serve.ps1 tanpa Vercel serverless)
-                            const isVJudge = payload.cpMode === 'vjudge' || 
-                                ['tlx', 'cses', 'atcoder', 'codeforces'].includes(payload.judgeProvider) ||
-                                (payload.sourcePlatform && ['tlx', 'cses', 'atcoder', 'codeforces'].includes(payload.sourcePlatform.toLowerCase())) ||
-                                (payload.sourceUrl && (payload.sourceUrl.includes('tlx.toki.id') || payload.sourceUrl.includes('cses.fi') || payload.sourceUrl.includes('atcoder.jp') || payload.sourceUrl.includes('codeforces.com')));
+                        if (isVJudge) {
+                            let targetPlat = 'tlx';
+                            let platName = 'TLX TOKI';
+                            const srcLow = (payload.sourceUrl || '').toLowerCase();
+                            const provLow = (payload.judgeProvider || (payload.sourcePlatform || '')).toLowerCase();
 
-                            if (isVJudge) {
-                                try {
-                                    let targetPlat = 'tlx';
-                                    let platName = 'TLX TOKI';
-                                    const srcLow = (payload.sourceUrl || '').toLowerCase();
-                                    const provLow = (payload.judgeProvider || (payload.sourcePlatform || '')).toLowerCase();
+                            if (provLow === 'codeforces' || srcLow.includes('codeforces.com') || /^\d+[a-za-z][a-za-z0-9]*$/.test(srcLow.trim())) {
+                                targetPlat = 'codeforces';
+                                platName = 'Codeforces';
+                            } else if (provLow === 'atcoder' || srcLow.includes('atcoder.jp')) {
+                                targetPlat = 'atcoder';
+                                platName = 'AtCoder';
+                            } else if (provLow === 'cses' || srcLow.includes('cses.fi')) {
+                                targetPlat = 'cses';
+                                platName = 'CSES';
+                            } else if (provLow === 'tlx' || srcLow.includes('tlx.toki.id') || /^(troc|osn|ksn|toki)-/i.test(srcLow.trim())) {
+                                targetPlat = 'tlx';
+                                platName = 'TLX TOKI';
+                            } else {
+                                this.cpState.isSubmitting = false;
+                                alert('Platform VJudge tidak didukung. Mode VJudge saat ini hanya menerima 4 Online Judge resmi: TLX TOKI, CSES, AtCoder, dan Codeforces.');
+                                return;
+                            }
 
-                                    if (provLow === 'codeforces' || srcLow.includes('codeforces.com') || /^\d+[a-za-z][a-za-z0-9]*$/.test(srcLow.trim())) {
-                                        targetPlat = 'codeforces';
-                                        platName = 'Codeforces';
-                                    } else if (provLow === 'atcoder' || srcLow.includes('atcoder.jp')) {
-                                        targetPlat = 'atcoder';
-                                        platName = 'AtCoder';
-                                    } else if (provLow === 'cses' || srcLow.includes('cses.fi')) {
-                                        targetPlat = 'cses';
-                                        platName = 'CSES';
-                                    } else if (provLow === 'tlx' || srcLow.includes('tlx.toki.id') || /^(troc|osn|ksn|toki)-/i.test(srcLow.trim())) {
-                                        targetPlat = 'tlx';
-                                        platName = 'TLX TOKI';
-                                    } else {
-                                        this.executionResult = {
-                                            success: false,
-                                            status: 'REJECTED',
-                                            verdict: 'REJECTED',
-                                            score: 0,
-                                            message: 'Platform VJudge tidak didukung. Mode VJudge saat ini hanya menerima 4 Online Judge resmi: TLX TOKI, CSES, AtCoder, dan Codeforces. Platform lain sementara ditolak.',
-                                            testCases: []
-                                        };
-                                        return;
-                                    }
+                            const judgeHost = localStorage.getItem('nls_remote_judge_url') || 'https://nls-blog-production.up.railway.app';
+                            try {
+                                const directSubmitRes = await fetch(`${judgeHost}/api/judge/submit`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        platform: targetPlat,
+                                        problemUrl: payload.sourceUrl || payload.problemTitle,
+                                        language: payload.language,
+                                        sourceCode: payload.code,
+                                        studentId: payload.userId || payload.userName
+                                    })
+                                });
 
-                                    const judgeHost = localStorage.getItem('nls_remote_judge_url') || 'https://nls-blog-production.up.railway.app';
-                                    const directSubmitRes = await fetch(`${judgeHost}/api/judge/submit`, {
-                                        method: 'POST',
-                                        headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({
-                                            platform: targetPlat,
-                                            problemUrl: payload.sourceUrl || payload.problemTitle,
-                                            language: payload.language,
-                                            sourceCode: payload.code,
-                                            studentId: payload.userId || payload.userName
-                                        })
-                                    });
-                                    const directSubmitData = await directSubmitRes.json();
+                                if (directSubmitRes.ok) {
+                                    const directSubmitData = await directSubmitRes.json().catch(() => ({}));
                                     if (directSubmitData.success && directSubmitData.jobId) {
                                         const jobId = directSubmitData.jobId;
                                         const startT = Date.now();
-                                        while (Date.now() - startT < 65000) {
+                                        while (Date.now() - startT < 85000) {
                                             await new Promise(r => setTimeout(r, 2000));
-                                            const stRes = await fetch(`${judgeHost}/api/judge/status/${jobId}`);
-                                            const stData = await stRes.json();
-                                            if (stData.success && stData.job && (stData.job.status === 'completed' || stData.job.status === 'failed')) {
-                                                const r = stData.job.result || {};
-                                                const v = r.verdict || 'Accepted';
-                                                let vCode = 'WA';
-                                                if (/Accepted|Diterima/i.test(v)) vCode = 'AC';
-                                                else if (/Wrong Answer/i.test(v)) vCode = 'WA';
-                                                else if (/Time Limit/i.test(v)) vCode = 'TLE';
-                                                else if (/Memory Limit/i.test(v)) vCode = 'MLE';
-                                                else if (/Compilation Error/i.test(v)) vCode = 'CE';
-                                                else if (/Runtime Error/i.test(v)) vCode = 'RTE';
-                                                const sc = Number(r.score) !== undefined ? Number(r.score) : (vCode === 'AC' ? 100 : 0);
-                                                
-                                                let testsArr = [];
-                                                if (Array.isArray(r.tests) && r.tests.length > 0) {
-                                                    testsArr = r.tests.map((t, idx) => ({
-                                                        index: t.index || (idx + 1),
-                                                        label: t.label || `Kasus Uji #${idx + 1}`,
-                                                        verdict: t.verdictCode || (t.passed ? 'AC' : 'WA'),
-                                                        passed: Boolean(t.passed),
-                                                        points: t.points !== undefined ? t.points : (t.passed ? 7 : 0),
-                                                        executionTimeMs: t.executionTimeMs || 0
-                                                    }));
-                                                } else {
-                                                    testsArr = [
-                                                        {
-                                                            index: 1,
-                                                            label: `Evaluasi Resmi Server ${platName}`,
-                                                            verdict: vCode,
-                                                            verdictCode: vCode,
-                                                            verdictName: v,
-                                                            passed: vCode === 'AC',
-                                                            points: sc,
-                                                            maxPoints: 100,
-                                                            executionTimeMs: 0
-                                                        }
-                                                    ];
-                                                }
+                                            const stRes = await fetch(`${judgeHost}/api/judge/status/${jobId}`).catch(() => null);
+                                            if (stRes && stRes.ok) {
+                                                const stData = await stRes.json().catch(() => ({}));
+                                                if (stData.success && stData.job && (stData.job.status === 'completed' || stData.job.status === 'failed')) {
+                                                    const r = stData.job.result || {};
+                                                    const v = r.verdict || (stData.job.status === 'failed' ? (stData.job.error || 'Evaluation Failed') : 'Accepted');
+                                                    let vCode = 'WA';
+                                                    if (/Accepted|Diterima/i.test(v)) vCode = 'AC';
+                                                    else if (/Wrong Answer/i.test(v)) vCode = 'WA';
+                                                    else if (/Time Limit/i.test(v)) vCode = 'TLE';
+                                                    else if (/Memory Limit/i.test(v)) vCode = 'MLE';
+                                                    else if (/Compilation Error/i.test(v)) vCode = 'CE';
+                                                    else if (/Runtime Error/i.test(v)) vCode = 'RTE';
+                                                    const sc = Number(r.score) !== undefined ? Number(r.score) : (vCode === 'AC' ? 100 : 0);
 
-                                                data = {
-                                                    success: true,
-                                                    score: sc,
-                                                    totalScore: 100,
-                                                    totalPoints: 100,
-                                                    verdict: vCode,
-                                                    verdictCode: vCode,
-                                                    verdictName: `${v} (${platName} Official)`,
-                                                    timeMs: r.time || 'N/A',
-                                                    memoryKb: r.memory || 'N/A',
-                                                    maxTimeMs: r.maxTimeMs || 0,
-                                                    maxMemoryKb: 262144,
-                                                    isRemoteJudge: true,
-                                                    remotePlatform: platName,
-                                                    submissionId: jobId,
-                                                    testResults: testsArr,
-                                                    tests: testsArr
-                                                };
-                                                break;
+                                                    let testsArr = [];
+                                                    if (Array.isArray(r.tests) && r.tests.length > 0) {
+                                                        testsArr = r.tests.map((t, idx) => ({
+                                                            index: t.index || (idx + 1),
+                                                            label: t.label || `Kasus Uji #${idx + 1}`,
+                                                            verdict: t.verdictCode || (t.passed ? 'AC' : 'WA'),
+                                                            verdictCode: t.verdictCode || (t.passed ? 'AC' : 'WA'),
+                                                            verdictName: t.verdictName || (t.passed ? 'Accepted' : 'Wrong Answer'),
+                                                            passed: Boolean(t.passed),
+                                                            points: t.points !== undefined ? t.points : (t.passed ? Math.floor(100 / r.tests.length) : 0),
+                                                            maxPoints: t.maxPoints || 100,
+                                                            executionTimeMs: t.executionTimeMs || 0
+                                                        }));
+                                                    } else {
+                                                        testsArr = [
+                                                            {
+                                                                index: 1,
+                                                                label: `Evaluasi Resmi Server ${platName}`,
+                                                                verdict: vCode,
+                                                                verdictCode: vCode,
+                                                                verdictName: v,
+                                                                passed: vCode === 'AC',
+                                                                points: sc,
+                                                                maxPoints: 100,
+                                                                executionTimeMs: 0
+                                                            }
+                                                        ];
+                                                    }
+
+                                                    data = {
+                                                        success: true,
+                                                        score: sc,
+                                                        totalScore: 100,
+                                                        totalPoints: 100,
+                                                        verdict: vCode,
+                                                        verdictCode: vCode,
+                                                        verdictName: `${v} (${platName} Official)`,
+                                                        timeMs: r.time || 'N/A',
+                                                        memoryKb: r.memory || 'N/A',
+                                                        maxTimeMs: r.maxTimeMs || 0,
+                                                        maxMemoryKb: 262144,
+                                                        isRemoteJudge: true,
+                                                        remotePlatform: platName,
+                                                        submissionId: jobId,
+                                                        testResults: testsArr,
+                                                        tests: testsArr
+                                                    };
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
-                                } catch (directErr) {
-                                    console.warn('Direct fallback to localhost:3500 failed:', directErr);
                                 }
+                            } catch (directErr) {
+                                console.warn('[LMS Player] Direct connection to remote judge error:', directErr);
                             }
-                            if (!data && res) {
-                                data = await res.json().catch(() => ({}));
+
+                            if (!data) {
+                                data = {
+                                    success: false,
+                                    verdict: 'OFFLINE',
+                                    verdictCode: 'OFFLINE',
+                                    verdictName: 'Server Grader Offline',
+                                    score: 0,
+                                    totalScore: 100,
+                                    message: `Layanan Remote Judge [${platName}] sedang offline atau belum terhubung. Mode VJudge mewajibkan evaluasi resmi langsung dari server ${platName} agar seluruh kasus uji rahasia (secret test cases) teruji secara autentik.`
+                                };
+                            }
+                        } else {
+                            // Mode Manual / Sandbox lokal untuk soal latihan modul biasa
+                            const res = await fetch('/api/code-runner', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(payload)
+                            }).catch(() => null);
+
+                            if (res && res.ok) {
+                                data = await res.json().catch(() => null);
                             }
                         }
 
