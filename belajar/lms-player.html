@@ -22,6 +22,26 @@
             height: 100vh !important;
             overflow: hidden !important;
         }
+        #lms-main-content:fullscreen {
+            background-color: #f8fafc;
+            background-image: radial-gradient(at 0% 0%, hsla(228,100%,98%,1) 0, transparent 50%), radial-gradient(at 100% 100%, hsla(240,100%,98%,1) 0, transparent 50%);
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: 100vw !important;
+            max-height: 100vh !important;
+            overflow-y: auto !important;
+            padding: 1.5rem !important;
+        }
+        #lms-main-content:-webkit-full-screen {
+            background-color: #f8fafc;
+            background-image: radial-gradient(at 0% 0%, hsla(228,100%,98%,1) 0, transparent 50%), radial-gradient(at 100% 100%, hsla(240,100%,98%,1) 0, transparent 50%);
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: 100vw !important;
+            max-height: 100vh !important;
+            overflow-y: auto !important;
+            padding: 1.5rem !important;
+        }
         #video-card-container:fullscreen {
             width: 100vw !important;
             height: 100vh !important;
@@ -58,7 +78,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.7/mode-java.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
-<body class="text-slate-800 antialiased h-screen overflow-hidden flex flex-col" x-data="lmsPlayer()" x-init="init()">
+<body class="text-slate-800 antialiased h-screen overflow-hidden flex flex-col" x-data="lmsPlayer()" x-init="init()" @keydown.escape.window="if(isRightPaneFullscreen) toggleRightPaneFullscreen()">
     <!-- Password Prompt Overlay -->
     <div x-show="showPasswordPrompt" style="display: none;" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4">
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 text-center relative overflow-hidden">
@@ -247,9 +267,18 @@
             </div>
         </aside>
 
-        <!-- Main Content Area -->
-        <main class="flex-1 relative overflow-y-auto player-scroll flex flex-col z-0">
+        <!-- Main Content Area (Bagian Kanan LMS Player) -->
+        <main id="lms-main-content" 
+              :class="isRightPaneFullscreen ? 'fixed inset-0 z-[100] bg-slate-50 overflow-y-auto player-scroll flex flex-col p-4 sm:p-8' : 'flex-1 relative overflow-y-auto player-scroll flex flex-col z-0'">
             
+            <!-- Floating Exit Fullscreen Button when in Right Pane Fullscreen -->
+            <div x-show="isRightPaneFullscreen" style="display: none;" class="fixed top-5 right-5 z-[120] pointer-events-auto shadow-2xl">
+                <button type="button" @click="toggleRightPaneFullscreen()"
+                    class="px-5 py-3 rounded-2xl bg-slate-900/90 hover:bg-slate-950 text-white text-xs font-black shadow-2xl border border-white/20 backdrop-blur-xl flex items-center gap-2.5 active:scale-95 cursor-pointer hover:border-rose-400 transition-all group">
+                    <svg class="w-4 h-4 text-rose-400 group-hover:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <span>Keluar Layar Penuh <span class="text-[10px] text-slate-400 font-normal hidden sm:inline">(Esc)</span></span>
+                </button>
+            </div>
             
             <template x-if="!activeNode">
                 <div class="flex-1 flex flex-col items-center justify-center p-8 text-center max-w-4xl mx-auto w-full">
@@ -273,7 +302,7 @@
 
 
             <template x-if="activeNode">
-                <div class="w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6 transition-all duration-300" :class="activeNode.type === 'pemrograman' ? 'max-w-[1600px]' : 'max-w-6xl'">
+                <div class="w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6 transition-all duration-300" :class="isRightPaneFullscreen ? 'max-w-[1700px]' : (activeNode.type === 'pemrograman' ? 'max-w-[1600px]' : 'max-w-6xl')">
                     
                     <!-- Content Header -->
                     <div class="bg-white/70 backdrop-blur-2xl rounded-[2.5rem] p-8 sm:p-12 shadow-[0_20px_60px_-15px_rgba(79,70,229,0.1)] border border-white relative overflow-hidden ring-1 ring-indigo-50">
@@ -1918,28 +1947,44 @@
                 quizAnswers: {},
                 quizState: { submitted: false, isSubmitting: false, showDiscussion: false, hasEssay: false, score: 0, correct: 0, total: 0, inProgress: false, currentQIdx: 0, doubtful: [], timeLeft: 0, timerInterval: null, elapsedSeconds: 0, autosaveInterval: null, autosaveTimeout: null, activeQuestions: [], assignedPaket: 1 },
                 
+                isRightPaneFullscreen: false,
                 isAppFullscreen: false,
                 isMateriFullscreen: false,
                 isVideoFullscreen: false,
 
-                toggleAppFullscreen() {
-                    const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement || document.mozFullScreenElement);
-                    if (!isFs) {
-                        const docEl = document.documentElement;
-                        const req = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.msRequestFullscreen || docEl.mozRequestFullScreen;
-                        if (req) {
-                            req.call(docEl).catch(() => {});
+                toggleRightPaneFullscreen() {
+                    const mainEl = document.getElementById('lms-main-content');
+                    const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+                    
+                    if (!isFs && !this.isRightPaneFullscreen) {
+                        this.isRightPaneFullscreen = true;
+                        if (mainEl) {
+                            try {
+                                const req = mainEl.requestFullscreen || mainEl.webkitRequestFullscreen || mainEl.msRequestFullscreen || mainEl.mozRequestFullScreen;
+                                if (req) {
+                                    req.call(mainEl).catch(() => {});
+                                }
+                            } catch(e) {}
                         }
                     } else {
-                        const exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen || document.mozCancelFullScreen;
-                        if (exit) {
-                            exit.call(document).catch(() => {});
-                        }
+                        this.isRightPaneFullscreen = false;
+                        try {
+                            if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+                                const exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen || document.mozCancelFullScreen;
+                                if (exit) {
+                                    exit.call(document).catch(() => {});
+                                }
+                            }
+                        } catch(e) {}
                     }
                 },
 
+                toggleAppFullscreen() {
+                    this.toggleRightPaneFullscreen();
+                },
+
                 toggleMateriFullscreen() {
-                    this.toggleAppFullscreen();
+                    this.toggleRightPaneFullscreen();
                 },
 
                 cloudCpSubmissions: [],
@@ -2062,18 +2107,22 @@
                 },
                 
                 async init() {
-                    this.isAppFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
-                    this.isVideoFullscreen = this.isAppFullscreen;
-                    const onFsChange = () => {
-                        this.isAppFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
-                        this.isVideoFullscreen = this.isAppFullscreen;
-                        if (!this.isAppFullscreen && this.isMateriFullscreen) {
+                    const checkFs = () => {
+                        const fsEl = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+                        const mainEl = document.getElementById('lms-main-content');
+                        this.isRightPaneFullscreen = !!(fsEl && (fsEl === mainEl || (mainEl && mainEl.contains(fsEl)))) || (!fsEl && this.isRightPaneFullscreen);
+                        this.isAppFullscreen = !!fsEl || this.isRightPaneFullscreen;
+                        this.isVideoFullscreen = this.isRightPaneFullscreen;
+                        if (!fsEl) {
+                            this.isRightPaneFullscreen = false;
+                            this.isAppFullscreen = false;
                             this.isMateriFullscreen = false;
                         }
                     };
-                    document.addEventListener('fullscreenchange', onFsChange);
-                    document.addEventListener('webkitfullscreenchange', onFsChange);
-                    document.addEventListener('msfullscreenchange', onFsChange);
+                    checkFs();
+                    document.addEventListener('fullscreenchange', checkFs);
+                    document.addEventListener('webkitfullscreenchange', checkFs);
+                    document.addEventListener('msfullscreenchange', checkFs);
 
                     const urlParams = new URLSearchParams(window.location.search);
                     const courseId = urlParams.get('course');
