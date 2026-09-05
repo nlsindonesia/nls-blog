@@ -1,7 +1,7 @@
 import { getCloudStore, saveCloudStore } from './cloud-db.js';
-import { generateVpsSqlDump } from './vps-exporter.js';
+import { generateVpsSqlDump } from '../lib/vps-exporter.js';
 import { fetchExternalProblem } from '../lib/oj-crawler.js';
-import { translateTextPreservingMath } from './translate.js';
+import { translateTextPreservingMath } from '../lib/translate.js';
 
 const defaultCourses = [
     // School SD (Kelas 1-6)
@@ -805,14 +805,23 @@ export default async function handler(request, response) {
         }
 
         // --- 0.6. VJUDGE / CP PROBLEM TRANSLATOR (EN -> ID) ---
-        if (action === 'translate_problem') {
+        if (action === 'translate_problem' || (!action && (body?.segments || body?.description || body?.text))) {
             try {
                 const params = body || request.query || {};
                 const sourceLang = params.sourceLang || 'en';
                 const targetLang = params.targetLang || 'id';
 
-                if (params.segments && typeof params.segments === 'object') {
-                    const { title, description, inputFormat, outputFormat, constraints, editorial } = params.segments;
+                const segs = params.segments || (params.description ? {
+                    title: params.title,
+                    description: params.description,
+                    inputFormat: params.inputFormat,
+                    outputFormat: params.outputFormat,
+                    constraints: params.constraints,
+                    editorial: params.editorial
+                } : null);
+
+                if (segs && typeof segs === 'object') {
+                    const { title, description, inputFormat, outputFormat, constraints, editorial } = segs;
                     const [
                         transTitle,
                         transDesc,
@@ -829,18 +838,21 @@ export default async function handler(request, response) {
                         editorial ? translateTextPreservingMath(editorial, sourceLang, targetLang) : Promise.resolve('')
                     ]);
 
+                    const resultSegments = {
+                        title: transTitle || title || '',
+                        description: transDesc || description || '',
+                        inputFormat: transInput || inputFormat || '',
+                        outputFormat: transOutput || outputFormat || '',
+                        constraints: transConstraints || constraints || '',
+                        editorial: transEditorial || editorial || ''
+                    };
+
                     return response.status(200).json({
                         success: true,
                         sourceLang,
                         targetLang,
-                        segments: {
-                            title: transTitle || title || '',
-                            description: transDesc || description || '',
-                            inputFormat: transInput || inputFormat || '',
-                            outputFormat: transOutput || outputFormat || '',
-                            constraints: transConstraints || constraints || '',
-                            editorial: transEditorial || editorial || ''
-                        }
+                        segments: resultSegments,
+                        ...resultSegments
                     });
                 }
 

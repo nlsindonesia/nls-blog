@@ -3808,12 +3808,17 @@
 
                         let translated = null;
 
-                        // Try dedicated /api/translate endpoint first
+                        // Primary: /api/pg-lms
                         try {
-                            const res = await fetch('/api/translate', {
+                            const res = await fetch('/api/pg-lms', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ segments, targetLang: 'id', sourceLang: 'en' })
+                                body: JSON.stringify({
+                                    action: 'translate_problem',
+                                    segments: segments,
+                                    targetLang: 'id',
+                                    sourceLang: 'en'
+                                })
                             });
                             if (res.ok) {
                                 const data = await res.json();
@@ -3823,18 +3828,13 @@
                             }
                         } catch(e) {}
 
-                        // Fallback to /api/pg-lms endpoint
+                        // Fallback: /api/translate
                         if (!translated) {
                             try {
-                                const res2 = await fetch('/api/pg-lms', {
+                                const res2 = await fetch('/api/translate', {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({
-                                        action: 'translate_problem',
-                                        segments: segments,
-                                        targetLang: 'id',
-                                        sourceLang: 'en'
-                                    })
+                                    body: JSON.stringify({ segments, targetLang: 'id', sourceLang: 'en' })
                                 });
                                 if (res2.ok) {
                                     const data2 = await res2.json();

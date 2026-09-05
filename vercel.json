@@ -1,7 +1,7 @@
 {
-    "cleanUrls":  true,
-    "trailingSlash":  false,
-        "redirects": [
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "redirects": [
         {
             "source": "/belajar/:path*",
             "has": [ { "type": "host", "value": "nls-superadmin.vercel.app" } ],
@@ -39,62 +39,66 @@
             "permanent": true
         }
     ],
-    "rewrites":  [
-                     {
-                         "source":  "/api/(.*)",
-                         "destination":  "/api/$1"
-                     },
-                     {
-                         "source":  "/login",
-                         "destination":  "/login/index.html"
-                     },
-                     {
-                         "source":  "/register",
-                         "destination":  "/login/index.html"
-                     },
-                     {
-                         "source":  "/belajar/lms-player",
-                         "destination":  "/belajar/lms-player.html"
-                     },
-                     {
-                         "source":  "/((?!api/|_next/|favicon|login|register|.*\\..*).*)",
-                         "has":  [
-                                     {
-                                         "type":  "host",
-                                         "value":  "nls-belajar.vercel.app"
-                                     }
-                                 ],
-                         "destination":  "/belajar"
-                     },
-                     {
-                         "source":  "/((?!api/|_next/|favicon|login|register|.*\\..*).*)",
-                         "has":  [
-                                     {
-                                         "type":  "host",
-                                         "value":  "belajar.next-level-study.com"
-                                     }
-                                 ],
-                         "destination":  "/belajar"
-                     },
-                     {
-                         "source":  "/((?!api/|_next/|favicon|login|register|.*\\..*).*)",
-                         "has":  [
-                                     {
-                                         "type":  "host",
-                                         "value":  "nls-superadmin.vercel.app"
-                                     }
-                                 ],
-                         "destination":  "/nlsadmin"
-                     },
-                     {
-                         "source":  "/((?!api/|_next/|favicon|login|register|.*\\..*).*)",
-                         "has":  [
-                                     {
-                                         "type":  "host",
-                                         "value":  "admin.next-level-study.com"
-                                     }
-                                 ],
-                         "destination":  "/nlsadmin"
-                     }
-                 ]
+    "rewrites": [
+        {
+            "source": "/api/translate",
+            "destination": "/api/pg-lms?action=translate_problem"
+        },
+        {
+            "source": "/api/(.*)",
+            "destination": "/api/$1"
+        },
+        {
+            "source": "/login",
+            "destination": "/login/index.html"
+        },
+        {
+            "source": "/register",
+            "destination": "/login/index.html"
+        },
+        {
+            "source": "/belajar/lms-player",
+            "destination": "/belajar/lms-player.html"
+        },
+        {
+            "source": "/((?!api/|_next/|favicon|login|register|.*\\..*).*)",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "nls-belajar.vercel.app"
+                }
+            ],
+            "destination": "/belajar"
+        },
+        {
+            "source": "/((?!api/|_next/|favicon|login|register|.*\\..*).*)",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "belajar.next-level-study.com"
+                }
+            ],
+            "destination": "/belajar"
+        },
+        {
+            "source": "/((?!api/|_next/|favicon|login|register|.*\\..*).*)",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "nls-superadmin.vercel.app"
+                }
+            ],
+            "destination": "/nlsadmin"
+        },
+        {
+            "source": "/((?!api/|_next/|favicon|login|register|.*\\..*).*)",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "admin.next-level-study.com"
+                }
+            ],
+            "destination": "/nlsadmin"
+        }
+    ]
 }

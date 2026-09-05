@@ -3554,27 +3554,27 @@
 
                         let translated = null;
                         try {
-                            const res = await fetch('/api/translate', {
+                            const res2 = await fetch('/api/pg-lms', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ segments, targetLang: 'id', sourceLang: 'en' })
+                                body: JSON.stringify({ action: 'translate_problem', segments, targetLang: 'id', sourceLang: 'en' })
                             });
-                            if (res.ok) {
-                                const d = await res.json();
-                                if (d && d.success && d.segments) translated = d.segments;
+                            if (res2.ok) {
+                                const d2 = await res2.json();
+                                if (d2 && d2.success && d2.segments) translated = d2.segments;
                             }
                         } catch(e) {}
 
                         if (!translated) {
                             try {
-                                const res2 = await fetch('/api/pg-lms', {
+                                const res = await fetch('/api/translate', {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ action: 'translate_problem', segments, targetLang: 'id', sourceLang: 'en' })
+                                    body: JSON.stringify({ segments, targetLang: 'id', sourceLang: 'en' })
                                 });
-                                if (res2.ok) {
-                                    const d2 = await res2.json();
-                                    if (d2 && d2.success && d2.segments) translated = d2.segments;
+                                if (res.ok) {
+                                    const d = await res.json();
+                                    if (d && d.success && d.segments) translated = d.segments;
                                 }
                             } catch(e) {}
                         }
