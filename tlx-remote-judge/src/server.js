@@ -10,6 +10,35 @@ const fs = require('fs');
 const config = require('./config');
 const queue = require('./submissionQueue');
 
+// Pulihkan sesi login dari Environment Variables jika tersedia di Cloud
+function restoreSessionsFromEnv() {
+  const sessionDir = path.dirname(config.SESSION_PATH);
+  if (!fs.existsSync(sessionDir)) {
+    fs.mkdirSync(sessionDir, { recursive: true });
+  }
+  const sessions = [
+    { env: 'TLX_SESSION_JSON', path: config.SESSION_PATH },
+    { env: 'CSES_SESSION_JSON', path: config.CSES_SESSION_PATH },
+    { env: 'ATCODER_SESSION_JSON', path: config.ATCODER_SESSION_PATH },
+    { env: 'CODEFORCES_SESSION_JSON', path: config.CODEFORCES_SESSION_PATH }
+  ];
+  for (const s of sessions) {
+    if (process.env[s.env] && !fs.existsSync(s.path)) {
+      try {
+        let content = process.env[s.env].trim();
+        if (content.startsWith('ey') || (!content.startsWith('{') && !content.startsWith('['))) {
+          content = Buffer.from(content, 'base64').toString('utf8');
+        }
+        fs.writeFileSync(s.path, content, 'utf8');
+        console.log(`[Server] Sesi login berhasil dimuat dari environment variable ${s.env}`);
+      } catch (err) {
+        console.warn(`[Server] Gagal memuat sesi dari ${s.env}:`, err.message);
+      }
+    }
+  }
+}
+restoreSessionsFromEnv();
+
 const app = express();
 
 // Middleware
