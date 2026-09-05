@@ -357,9 +357,9 @@ export default async function handler(req, res) {
                 console.log(`[CodeRunner] URL/Task Soal: ${sourceUrl || problemTitle}`);
 
                 const isVercel = Boolean(process.env.VERCEL || process.env.VERCEL_ENV);
-                const remoteJudgeServiceUrl = process.env.TLX_JUDGE_URL || process.env.REMOTE_JUDGE_URL || 'http://localhost:3500';
+                const remoteJudgeServiceUrl = process.env.TLX_JUDGE_URL || process.env.REMOTE_JUDGE_URL || 'https://nls-blog-production.up.railway.app';
                 const isLocalhostJudge = remoteJudgeServiceUrl.includes('localhost') || remoteJudgeServiceUrl.includes('127.0.0.1');
-                const canConnectToJudge = !(isVercel && isLocalhostJudge);
+                const canConnectToJudge = true;
                 const targetUrl = sourceUrl || problemTitle;
 
                 if (canConnectToJudge) {

@@ -3355,7 +3355,7 @@
                                         return;
                                     }
 
-                                    const judgeHost = localStorage.getItem('nls_remote_judge_url') || 'http://localhost:3500';
+                                    const judgeHost = localStorage.getItem('nls_remote_judge_url') || 'https://nls-blog-production.up.railway.app';
                                     const directSubmitRes = await fetch(`${judgeHost}/api/judge/submit`, {
                                         method: 'POST',
                                         headers: { 'Content-Type': 'application/json' },

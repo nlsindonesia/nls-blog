@@ -116,10 +116,47 @@ app.get('/api/health', (req, res) => {
       }
     },
     headless: config.HEADLESS,
-    queueLength: queue.queue.length,
+    queueLength: queue.getQueueLength(),
     isProcessing: queue.isProcessing,
     timestamp: new Date().toISOString()
   });
+});
+
+/**
+ * Endpoint sinkronisasi sesi bot dari developer (dilindungi token)
+ */
+app.post('/api/admin/sync-sessions', (req, res) => {
+  const token = req.headers['x-admin-token'] || req.query.token;
+  if (token !== (process.env.ADMIN_SYNC_TOKEN || 'nls_sync_remote_2026')) {
+    return res.status(403).json({ success: false, error: 'Unauthorized' });
+  }
+
+  const { tlxSession, csesSession, atcoderSession, codeforcesSession } = req.body || {};
+  const sessionDir = path.dirname(config.SESSION_PATH);
+  if (!fs.existsSync(sessionDir)) fs.mkdirSync(sessionDir, { recursive: true });
+
+  const results = {};
+  try {
+    if (tlxSession) {
+      fs.writeFileSync(config.SESSION_PATH, typeof tlxSession === 'string' ? tlxSession : JSON.stringify(tlxSession, null, 2), 'utf8');
+      results.tlx = true;
+    }
+    if (csesSession) {
+      fs.writeFileSync(config.CSES_SESSION_PATH, typeof csesSession === 'string' ? csesSession : JSON.stringify(csesSession, null, 2), 'utf8');
+      results.cses = true;
+    }
+    if (atcoderSession) {
+      fs.writeFileSync(config.ATCODER_SESSION_PATH, typeof atcoderSession === 'string' ? atcoderSession : JSON.stringify(atcoderSession, null, 2), 'utf8');
+      results.atcoder = true;
+    }
+    if (codeforcesSession) {
+      fs.writeFileSync(config.CODEFORCES_SESSION_PATH, typeof codeforcesSession === 'string' ? codeforcesSession : JSON.stringify(codeforcesSession, null, 2), 'utf8');
+      results.codeforces = true;
+    }
+    return res.json({ success: true, message: 'Sessions synced successfully to cloud', results });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 /**
