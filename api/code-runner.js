@@ -356,13 +356,22 @@ export default async function handler(req, res) {
                 console.log(`[CodeRunner] Meneruskan submisi ke Layanan Remote Judge [${platformDisplayName}]...`);
                 console.log(`[CodeRunner] URL/Task Soal: ${sourceUrl || problemTitle}`);
 
-                const remoteJudgeServiceUrl = process.env.TLX_JUDGE_URL || 'http://localhost:3500';
+                const isVercel = Boolean(process.env.VERCEL || process.env.VERCEL_ENV);
+                const remoteJudgeServiceUrl = process.env.TLX_JUDGE_URL || process.env.REMOTE_JUDGE_URL || 'http://localhost:3500';
+                const isLocalhostJudge = remoteJudgeServiceUrl.includes('localhost') || remoteJudgeServiceUrl.includes('127.0.0.1');
+                const canConnectToJudge = !(isVercel && isLocalhostJudge);
                 const targetUrl = sourceUrl || problemTitle;
 
-                try {
-                    // 1. Kirim kodingan ke antrean Remote Judge
-                    const submitRes = await fetch(`${remoteJudgeServiceUrl}/api/judge/submit`, {
+                if (canConnectToJudge) {
+                    try {
+                        // Gunakan timeout singkat untuk mengecek ketersediaan remote judge daemon
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 3500);
+
+                        // 1. Kirim kodingan ke antrean Remote Judge
+                        const submitRes = await fetch(`${remoteJudgeServiceUrl}/api/judge/submit`, {
                         method: 'POST',
+                        signal: controller.signal,
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             platform: targetPlatform,
@@ -371,137 +380,122 @@ export default async function handler(req, res) {
                             sourceCode: code,
                             studentId: userId || body.userName || 'siswa'
                         })
-                    });
+                    }).catch(() => null);
+                    clearTimeout(timeoutId);
 
-                    const submitData = await submitRes.json();
-                    if (!submitData.success) {
-                        return res.status(502).json({
-                            success: false,
-                            message: submitData.error || `Layanan Remote Judge menolak submisi ke ${platformDisplayName}.`
-                        });
-                    }
+                    if (submitRes && submitRes.ok) {
+                        const submitData = await submitRes.json().catch(() => ({}));
+                        if (submitData.success && submitData.jobId) {
+                            const jobId = submitData.jobId;
+                            console.log(`[CodeRunner] Job ${platformDisplayName} diterima: ${jobId}. Mulai polling status grading...`);
 
-                    const jobId = submitData.jobId;
-                    console.log(`[CodeRunner] Job ${platformDisplayName} diterima: ${jobId}. Mulai polling status grading...`);
+                            // 2. Polling status hasil penilaian Remote Judge
+                            const startTime = Date.now();
+                            let finalJob = null;
 
-                    // 2. Polling status hasil penilaian Remote Judge
-                    const startTime = Date.now();
-                    let finalJob = null;
+                            while (Date.now() - startTime < 65000) {
+                                await new Promise(r => setTimeout(r, 2000));
 
-                    while (Date.now() - startTime < 65000) {
-                        await new Promise(r => setTimeout(r, 2000));
+                                const statusRes = await fetch(`${remoteJudgeServiceUrl}/api/judge/status/${jobId}`).catch(() => null);
+                                if (statusRes && statusRes.ok) {
+                                    const statusData = await statusRes.json().catch(() => ({}));
+                                    if (statusData.success && statusData.job) {
+                                        if (statusData.job.status === 'completed' || statusData.job.status === 'failed') {
+                                            finalJob = statusData.job;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
 
-                        const statusRes = await fetch(`${remoteJudgeServiceUrl}/api/judge/status/${jobId}`);
-                        const statusData = await statusRes.json();
+                            if (finalJob && finalJob.status === 'completed') {
+                                // 3. Ekstrak verdict dan format untuk LMS Player
+                                const r = finalJob.result || {};
+                                const rawVerdict = r.verdict || 'Accepted';
 
-                        if (statusData.success && statusData.job) {
-                            if (statusData.job.status === 'completed' || statusData.job.status === 'failed') {
-                                finalJob = statusData.job;
-                                break;
+                                let vCode = 'WA';
+                                let vName = rawVerdict;
+                                if (/Accepted|Diterima/i.test(rawVerdict)) { vCode = 'AC'; vName = 'Accepted'; }
+                                else if (/Wrong Answer|Jawaban Salah/i.test(rawVerdict)) { vCode = 'WA'; vName = 'Wrong Answer'; }
+                                else if (/Time Limit Exceeded|Batas Waktu/i.test(rawVerdict)) { vCode = 'TLE'; vName = 'Time Limit Exceeded'; }
+                                else if (/Memory Limit Exceeded|Batas Memori/i.test(rawVerdict)) { vCode = 'MLE'; vName = 'Memory Limit Exceeded'; }
+                                else if (/Compilation Error|Kesalahan Kompilasi/i.test(rawVerdict)) { vCode = 'CE'; vName = 'Compilation Error'; }
+                                else if (/Runtime Error|Kesalahan/i.test(rawVerdict)) { vCode = 'RTE'; vName = 'Runtime Error'; }
+
+                                const score = Number(r.score) !== undefined ? Number(r.score) : (vCode === 'AC' ? 100 : 0);
+
+                                // Parse waktu ke angka ms jika memungkinkan
+                                let timeNumber = 0;
+                                if (typeof r.time === 'string') {
+                                    const m = r.time.match(/(\d+(\.\d+)?)/);
+                                    if (m) timeNumber = parseFloat(m[1]);
+                                }
+
+                                // Rincian test cases (CSES menyediakan daftar test individual)
+                                let testsArray = [];
+                                if (Array.isArray(r.tests) && r.tests.length > 0) {
+                                    testsArray = r.tests.map((t, idx) => ({
+                                        index: t.index || (idx + 1),
+                                        label: t.label || `Kasus Uji #${idx + 1}`,
+                                        verdict: t.verdictCode || (t.passed ? 'AC' : 'WA'),
+                                        verdictCode: t.verdictCode || (t.passed ? 'AC' : 'WA'),
+                                        verdictName: t.verdictName || (t.passed ? 'Accepted' : 'Wrong Answer'),
+                                        passed: Boolean(t.passed),
+                                        points: t.points !== undefined ? t.points : (t.passed ? 7 : 0),
+                                        maxPoints: t.maxPoints || 7,
+                                        timeMs: t.executionTimeMs || 0,
+                                        executionTimeMs: t.executionTimeMs || 0
+                                    }));
+                                } else {
+                                    testsArray = [
+                                        {
+                                            index: 1,
+                                            label: `Evaluasi Resmi Server ${platformDisplayName}`,
+                                            verdict: vCode,
+                                            verdictCode: vCode,
+                                            verdictName: vName,
+                                            passed: vCode === 'AC',
+                                            points: score,
+                                            maxPoints: 100,
+                                            timeMs: timeNumber,
+                                            executionTimeMs: timeNumber
+                                        }
+                                    ];
+                                }
+
+                                const passedCount = testsArray.filter(t => t.passed).length;
+                                const totalCount = testsArray.length;
+
+                                return res.status(200).json({
+                                    success: true,
+                                    score: score,
+                                    totalScore: 100,
+                                    totalPoints: 100,
+                                    verdict: vCode,
+                                    verdictCode: vCode,
+                                    verdictName: `${vName} (${platformDisplayName} Official)`,
+                                    passedCount: passedCount,
+                                    totalCount: totalCount,
+                                    timeMs: r.time || `${timeNumber} ms`,
+                                    memoryKb: r.memory || 'N/A',
+                                    maxTimeMs: timeNumber,
+                                    maxMemoryKb: 256 * 1024,
+                                    executionTimeMs: timeNumber,
+                                    isRemoteJudge: true,
+                                    remotePlatform: platformDisplayName,
+                                    submissionId: jobId,
+                                    tests: testsArray,
+                                    testResults: testsArray
+                                });
                             }
                         }
                     }
-
-                    if (!finalJob) {
-                        return res.status(504).json({
-                            success: false,
-                            message: `Penilaian di server ${platformDisplayName} membutuhkan waktu terlalu lama (timeout 60 detik). Silakan coba submit ulang beberapa saat lagi.`
-                        });
-                    }
-
-                    if (finalJob.status === 'failed') {
-                        return res.status(502).json({
-                            success: false,
-                            message: finalJob.error || `Submisi gagal dinilai di server ${platformDisplayName}.`
-                        });
-                    }
-
-                    // 3. Ekstrak verdict dan format untuk LMS Player
-                    const r = finalJob.result || {};
-                    const rawVerdict = r.verdict || 'Accepted';
-
-                    let vCode = 'WA';
-                    let vName = rawVerdict;
-                    if (/Accepted|Diterima/i.test(rawVerdict)) { vCode = 'AC'; vName = 'Accepted'; }
-                    else if (/Wrong Answer|Jawaban Salah/i.test(rawVerdict)) { vCode = 'WA'; vName = 'Wrong Answer'; }
-                    else if (/Time Limit Exceeded|Batas Waktu/i.test(rawVerdict)) { vCode = 'TLE'; vName = 'Time Limit Exceeded'; }
-                    else if (/Memory Limit Exceeded|Batas Memori/i.test(rawVerdict)) { vCode = 'MLE'; vName = 'Memory Limit Exceeded'; }
-                    else if (/Compilation Error|Kesalahan Kompilasi/i.test(rawVerdict)) { vCode = 'CE'; vName = 'Compilation Error'; }
-                    else if (/Runtime Error|Kesalahan/i.test(rawVerdict)) { vCode = 'RTE'; vName = 'Runtime Error'; }
-
-                    const score = Number(r.score) !== undefined ? Number(r.score) : (vCode === 'AC' ? 100 : 0);
-
-                    // Parse waktu ke angka ms jika memungkinkan
-                    let timeNumber = 0;
-                    if (typeof r.time === 'string') {
-                        const m = r.time.match(/(\d+(\.\d+)?)/);
-                        if (m) timeNumber = parseFloat(m[1]);
-                    }
-
-                    // Rincian test cases (CSES menyediakan daftar test individual)
-                    let testsArray = [];
-                    if (Array.isArray(r.tests) && r.tests.length > 0) {
-                        testsArray = r.tests.map((t, idx) => ({
-                            index: t.index || (idx + 1),
-                            label: t.label || `Kasus Uji #${idx + 1}`,
-                            verdict: t.verdictCode || (t.passed ? 'AC' : 'WA'),
-                            verdictCode: t.verdictCode || (t.passed ? 'AC' : 'WA'),
-                            verdictName: t.verdictName || (t.passed ? 'Accepted' : 'Wrong Answer'),
-                            passed: Boolean(t.passed),
-                            points: t.points !== undefined ? t.points : (t.passed ? 7 : 0),
-                            maxPoints: t.maxPoints || 7,
-                            timeMs: t.executionTimeMs || 0,
-                            executionTimeMs: t.executionTimeMs || 0
-                        }));
-                    } else {
-                        testsArray = [
-                            {
-                                index: 1,
-                                label: `Evaluasi Resmi Server ${platformDisplayName}`,
-                                verdict: vCode,
-                                verdictCode: vCode,
-                                verdictName: vName,
-                                passed: vCode === 'AC',
-                                points: score,
-                                maxPoints: 100,
-                                timeMs: timeNumber,
-                                executionTimeMs: timeNumber
-                            }
-                        ];
-                    }
-
-                    const passedCount = testsArray.filter(t => t.passed).length;
-                    const totalCount = testsArray.length;
-
-                    return res.status(200).json({
-                        success: true,
-                        score: score,
-                        totalScore: 100,
-                        totalPoints: 100,
-                        verdict: vCode,
-                        verdictCode: vCode,
-                        verdictName: `${vName} (${platformDisplayName} Official)`,
-                        passedCount: passedCount,
-                        totalCount: totalCount,
-                        timeMs: r.time || `${timeNumber} ms`,
-                        memoryKb: r.memory || 'N/A',
-                        maxTimeMs: timeNumber,
-                        maxMemoryKb: 256 * 1024,
-                        executionTimeMs: timeNumber,
-                        isRemoteJudge: true,
-                        remotePlatform: platformDisplayName,
-                        submissionId: jobId,
-                        tests: testsArray,
-                        testResults: testsArray
-                    });
                 } catch (err) {
-                    console.error(`[CodeRunner] Error saat menghubungkan ke Remote Judge [${platformDisplayName}]:`, err.message);
-                    return res.status(503).json({
-                        success: false,
-                        message: `Gagal terhubung ke Layanan Remote Judge (port 3500). Pastikan server remote judge aktif dengan menjalankan 'npm start' di folder tlx-remote-judge. Detail error: ${err.message}`
-                    });
+                    console.warn(`[CodeRunner] Remote Judge [${platformDisplayName}] offline/tidak terjangkau (${err.message}). Beralih otomatis ke evaluasi Sandbox...`);
                 }
             }
+            console.log(`[CodeRunner] Menggunakan Sandbox Evaluator otomatis untuk [${platformDisplayName}]...`);
+        }
 
             // Fallback: Mode 1 (Manual) atau Soal dengan Kasus Uji Lokal
             let tests = testCases.length > 0 ? testCases : samples;
