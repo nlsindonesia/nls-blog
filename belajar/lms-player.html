@@ -3355,7 +3355,8 @@
                                         return;
                                     }
 
-                                    const directSubmitRes = await fetch('http://localhost:3500/api/judge/submit', {
+                                    const judgeHost = localStorage.getItem('nls_remote_judge_url') || 'http://localhost:3500';
+                                    const directSubmitRes = await fetch(`${judgeHost}/api/judge/submit`, {
                                         method: 'POST',
                                         headers: { 'Content-Type': 'application/json' },
                                         body: JSON.stringify({
@@ -3372,7 +3373,7 @@
                                         const startT = Date.now();
                                         while (Date.now() - startT < 65000) {
                                             await new Promise(r => setTimeout(r, 2000));
-                                            const stRes = await fetch(`http://localhost:3500/api/judge/status/${jobId}`);
+                                            const stRes = await fetch(`${judgeHost}/api/judge/status/${jobId}`);
                                             const stData = await stRes.json();
                                             if (stData.success && stData.job && (stData.job.status === 'completed' || stData.job.status === 'failed')) {
                                                 const r = stData.job.result || {};
@@ -3396,6 +3397,20 @@
                                                         points: t.points !== undefined ? t.points : (t.passed ? 7 : 0),
                                                         executionTimeMs: t.executionTimeMs || 0
                                                     }));
+                                                } else {
+                                                    testsArr = [
+                                                        {
+                                                            index: 1,
+                                                            label: `Evaluasi Resmi Server ${platName}`,
+                                                            verdict: vCode,
+                                                            verdictCode: vCode,
+                                                            verdictName: v,
+                                                            passed: vCode === 'AC',
+                                                            points: sc,
+                                                            maxPoints: 100,
+                                                            executionTimeMs: 0
+                                                        }
+                                                    ];
                                                 }
 
                                                 data = {
