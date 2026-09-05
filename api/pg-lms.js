@@ -1,6 +1,7 @@
 import { getCloudStore, saveCloudStore } from './cloud-db.js';
 import { generateVpsSqlDump } from './vps-exporter.js';
 import { fetchExternalProblem } from '../lib/oj-crawler.js';
+import { translateTextPreservingMath } from './translate.js';
 
 const defaultCourses = [
     // School SD (Kelas 1-6)
@@ -800,6 +801,57 @@ export default async function handler(request, response) {
                 return response.status(200).json({ success: true, problem: result });
             } catch (err) {
                 return response.status(400).json({ success: false, message: err.message || 'Gagal mengambil soal dari Online Judge.' });
+            }
+        }
+
+        // --- 0.6. VJUDGE / CP PROBLEM TRANSLATOR (EN -> ID) ---
+        if (action === 'translate_problem') {
+            try {
+                const params = body || request.query || {};
+                const sourceLang = params.sourceLang || 'en';
+                const targetLang = params.targetLang || 'id';
+
+                if (params.segments && typeof params.segments === 'object') {
+                    const { title, description, inputFormat, outputFormat, constraints, editorial } = params.segments;
+                    const [
+                        transTitle,
+                        transDesc,
+                        transInput,
+                        transOutput,
+                        transConstraints,
+                        transEditorial
+                    ] = await Promise.all([
+                        title ? translateTextPreservingMath(title, sourceLang, targetLang) : Promise.resolve(''),
+                        description ? translateTextPreservingMath(description, sourceLang, targetLang) : Promise.resolve(''),
+                        inputFormat ? translateTextPreservingMath(inputFormat, sourceLang, targetLang) : Promise.resolve(''),
+                        outputFormat ? translateTextPreservingMath(outputFormat, sourceLang, targetLang) : Promise.resolve(''),
+                        constraints ? translateTextPreservingMath(constraints, sourceLang, targetLang) : Promise.resolve(''),
+                        editorial ? translateTextPreservingMath(editorial, sourceLang, targetLang) : Promise.resolve('')
+                    ]);
+
+                    return response.status(200).json({
+                        success: true,
+                        sourceLang,
+                        targetLang,
+                        segments: {
+                            title: transTitle || title || '',
+                            description: transDesc || description || '',
+                            inputFormat: transInput || inputFormat || '',
+                            outputFormat: transOutput || outputFormat || '',
+                            constraints: transConstraints || constraints || '',
+                            editorial: transEditorial || editorial || ''
+                        }
+                    });
+                }
+
+                if (params.text) {
+                    const translated = await translateTextPreservingMath(params.text, sourceLang, targetLang);
+                    return response.status(200).json({ success: true, sourceLang, targetLang, translated });
+                }
+
+                return response.status(400).json({ success: false, message: 'Parameter teks terjemahan tidak valid.' });
+            } catch (err) {
+                return response.status(500).json({ success: false, message: err.message || 'Gagal menerjemahkan teks soal.' });
             }
         }
 

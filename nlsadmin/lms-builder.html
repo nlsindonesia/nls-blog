@@ -560,7 +560,33 @@
                                                 </template>
                                             </h3>
                                         </div>
-                                        <div class="flex items-center gap-2">
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            <!-- Translate to Indonesian button -->
+                                            <button type="button" 
+                                                    @click="translateActiveNodeToIndonesian()" 
+                                                    :disabled="isTranslatingNode"
+                                                    class="px-3.5 py-2 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-xs active:scale-95 disabled:opacity-50"
+                                                    title="Terjemahkan deskripsi soal dari Bahasa Inggris ke Bahasa Indonesia (Formula LaTeX & Contoh Kasus tetap aman)">
+                                                <template x-if="isTranslatingNode">
+                                                    <span class="inline-flex items-center gap-1.5 text-emerald-700">
+                                                        <svg class="animate-spin w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                                                        <span>Menerjemahkan...</span>
+                                                    </span>
+                                                </template>
+                                                <template x-if="!isTranslatingNode">
+                                                    <span>🇮🇩 Terjemahkan ke Indonesia (Auto)</span>
+                                                </template>
+                                            </button>
+
+                                            <!-- Restore original English if backup exists -->
+                                            <button type="button" 
+                                                    x-show="activeNode && activeNode.originalEnBackup" 
+                                                    @click="restoreOriginalEnglishNode()" 
+                                                    class="px-3 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 active:scale-95"
+                                                    title="Kembalikan teks soal ke bahasa Inggris aslinya">
+                                                <span>🇬🇧 Kembalikan ke Asli (EN)</span>
+                                            </button>
+
                                             <button type="button" @click="setCpMode('manual')" class="px-3.5 py-2 text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-xl transition-colors cursor-pointer flex items-center gap-1.5">
                                                 <span>✍️ Beralih ke Mode Manual (Edit Kustom)</span>
                                             </button>
@@ -944,7 +970,22 @@
                             <div>
                                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-1.5">
                                     <label class="text-[10px] font-black uppercase text-indigo-400 tracking-wider">Deskripsi Masalah / Soal Cerita</label>
-                                    <div class="flex items-center gap-2">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <button type="button" 
+                                                @click="translateActiveNodeToIndonesian()" 
+                                                :disabled="isTranslatingNode"
+                                                class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-[10px] rounded-lg border border-emerald-300 transition-all flex items-center gap-1 cursor-pointer shadow-sm active:scale-95 disabled:opacity-50"
+                                                title="Terjemahkan teks soal ke Bahasa Indonesia (Formula LaTeX & Contoh Kasus tetap aman)">
+                                            <span>🇮🇩</span>
+                                            <span x-text="isTranslatingNode ? 'Menerjemahkan...' : 'Terjemahkan ke Indonesia'"></span>
+                                        </button>
+                                        <button type="button" 
+                                                x-show="activeNode && activeNode.originalEnBackup" 
+                                                @click="restoreOriginalEnglishNode()" 
+                                                class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] rounded-lg border border-slate-300 transition-all flex items-center gap-1 cursor-pointer shadow-sm active:scale-95"
+                                                title="Kembalikan teks soal ke bahasa Inggris aslinya">
+                                            <span>🇬🇧 Asli (EN)</span>
+                                        </button>
                                         <button type="button" @click="autoFormatActiveNodeLatex(true)" class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[10px] rounded-lg border border-indigo-200 transition-all flex items-center gap-1 cursor-pointer shadow-sm active:scale-95">
                                             <span>✨</span>
                                             <span>Rapikan Formula LaTeX ($...$)</span>
@@ -2624,6 +2665,7 @@
                 activePaketTab: 'all',
                 // Reference Solution & Test Case Generator State
                 isGeneratingOutputs: false,
+                isTranslatingNode: false,
                 generatorProgress: { current: 0, total: 0, percent: 0 },
                 generatorStatusText: '',
                 generatorCompilerError: '',
@@ -2793,6 +2835,7 @@
                         testCases: Array.isArray(node.testCases) ? node.testCases : [],
                         starterCodes: node.starterCodes || { cpp: '', python: '', pascal: '', c: '', java: '' },
                         editorial: node.editorial || '',
+                        originalEnBackup: node.originalEnBackup || null,
                         questions: Array.isArray(node.questions) ? node.questions.map(q => this.normalizeQuestion(q)).filter(Boolean) : []
                     };
                 },
@@ -3406,7 +3449,7 @@
 
                 sanitizeNodeLatex(node) {
                     if (!node || node.type !== 'pemrograman') return;
-                    ['problemDescription', 'rawHtml', 'inputFormat', 'outputFormat', 'constraints'].forEach(prop => {
+                    ['problemDescription', 'rawHtml', 'inputFormat', 'outputFormat', 'constraints', 'editorial'].forEach(prop => {
                         if (node[prop] && typeof node[prop] === 'string') {
                             const cleaned = this.autoFormatLatex(node[prop]);
                             if (cleaned !== node[prop]) {
@@ -3419,7 +3462,7 @@
                 autoFormatActiveNodeLatex(showToast = true) {
                     if (!this.activeNode || this.activeNode.type !== 'pemrograman') return;
                     let changed = false;
-                    ['problemDescription', 'rawHtml', 'inputFormat', 'outputFormat', 'constraints'].forEach(prop => {
+                    ['problemDescription', 'rawHtml', 'inputFormat', 'outputFormat', 'constraints', 'editorial'].forEach(prop => {
                         if (this.activeNode[prop]) {
                             const formatted = this.autoFormatLatex(this.activeNode[prop]);
                             if (formatted !== this.activeNode[prop]) {
@@ -3436,6 +3479,102 @@
                         this.showToast('Format formula sudah rapi.');
                     }
                     this.typesetMathJax();
+                },
+
+                async translateActiveNodeToIndonesian() {
+                    if (!this.activeNode || this.activeNode.type !== 'pemrograman') return;
+                    this.isTranslatingNode = true;
+                    try {
+                        const segments = {
+                            description: this.activeNode.problemDescription || this.activeNode.rawHtml || '',
+                            inputFormat: this.activeNode.inputFormat || '',
+                            outputFormat: this.activeNode.outputFormat || '',
+                            constraints: this.activeNode.constraints || '',
+                            editorial: this.activeNode.editorial || ''
+                        };
+
+                        let translated = null;
+                        try {
+                            const res = await fetch('/api/translate', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ segments, targetLang: 'id', sourceLang: 'en' })
+                            });
+                            if (res.ok) {
+                                const d = await res.json();
+                                if (d && d.success && d.segments) translated = d.segments;
+                            }
+                        } catch(e) {}
+
+                        if (!translated) {
+                            try {
+                                const res2 = await fetch('/api/pg-lms', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ action: 'translate_problem', segments, targetLang: 'id', sourceLang: 'en' })
+                                });
+                                if (res2.ok) {
+                                    const d2 = await res2.json();
+                                    if (d2 && d2.success && d2.segments) translated = d2.segments;
+                                }
+                            } catch(e) {}
+                        }
+
+                        if (translated) {
+                            // Backup English before overwriting so teacher can restore if desired
+                            if (!this.activeNode.originalEnBackup) {
+                                this.activeNode.originalEnBackup = {
+                                    problemDescription: this.activeNode.problemDescription || this.activeNode.rawHtml || '',
+                                    inputFormat: this.activeNode.inputFormat || '',
+                                    outputFormat: this.activeNode.outputFormat || '',
+                                    constraints: this.activeNode.constraints || '',
+                                    editorial: this.activeNode.editorial || ''
+                                };
+                            }
+
+                            if (translated.description) {
+                                this.activeNode.problemDescription = translated.description;
+                                if (this.activeNode.rawHtml) this.activeNode.rawHtml = translated.description;
+                            }
+                            if (translated.inputFormat) this.activeNode.inputFormat = translated.inputFormat;
+                            if (translated.outputFormat) this.activeNode.outputFormat = translated.outputFormat;
+                            if (translated.constraints) this.activeNode.constraints = translated.constraints;
+                            if (translated.editorial) this.activeNode.editorial = translated.editorial;
+
+                            this.sanitizeNodeLatex(this.activeNode);
+                            this.saveLocalDraft();
+                            this.debounceSave();
+                            this.typesetMathJax();
+                            this.showToast('✓ Deskripsi soal berhasil diterjemahkan ke Bahasa Indonesia!');
+                        } else {
+                            alert('Gagal menerjemahkan soal saat ini. Silakan coba kembali sesaat lagi.');
+                        }
+                    } catch(err) {
+                        console.error('Translation error in builder:', err);
+                        alert('Terjadi kesalahan saat menerjemahkan: ' + err.message);
+                    } finally {
+                        this.isTranslatingNode = false;
+                    }
+                },
+
+                restoreOriginalEnglishNode() {
+                    if (!this.activeNode || !this.activeNode.originalEnBackup) return;
+                    const b = this.activeNode.originalEnBackup;
+                    if (b.problemDescription !== undefined) {
+                        this.activeNode.problemDescription = b.problemDescription;
+                        if (this.activeNode.rawHtml) this.activeNode.rawHtml = b.problemDescription;
+                    }
+                    if (b.inputFormat !== undefined) this.activeNode.inputFormat = b.inputFormat;
+                    if (b.outputFormat !== undefined) this.activeNode.outputFormat = b.outputFormat;
+                    if (b.constraints !== undefined) this.activeNode.constraints = b.constraints;
+                    if (b.editorial !== undefined) this.activeNode.editorial = b.editorial;
+                    delete this.activeNode.originalEnBackup;
+
+                    this.sanitizeNodeLatex(this.activeNode);
+                    this.saveLocalDraft();
+                    this.debounceSave();
+                    this.typesetMathJax();
+                    this.showToast('Soal dikembalikan ke Bahasa Inggris aslinya.');
                 },
 
                 typesetMathJax(targetEl = null) {
