@@ -372,17 +372,17 @@
                                     <div>
                                         <div class="flex items-center gap-2 mb-1">
                                             <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold text-[10px] border border-emerald-500/30">Mode VJudge Terintegrasi</span>
-                                            <span class="text-xs text-slate-400 font-medium">• Penilaian Otomatis Server TLX TOKI</span>
+                                            <span class="text-xs text-slate-400 font-medium">• Penilaian Otomatis Server TLX TOKI &amp; CSES</span>
                                         </div>
                                         <h4 class="font-black text-base text-white">Tarik Soal Online Judge Otomatis (VJudge Style)</h4>
-                                        <p class="text-xs text-slate-300 mt-0.5">Soal tetap tampil & disimpan di website kita, sedangkan <strong>penilaian solusi siswa dievaluasi langsung oleh server resmi TLX TOKI via bot (@nls_bot)</strong>.</p>
+                                        <p class="text-xs text-slate-300 mt-0.5">Soal tetap tampil &amp; disimpan di website kita, sedangkan <strong>penilaian solusi siswa dievaluasi langsung oleh server resmi TLX TOKI &amp; CSES via bot (@nls_bot)</strong>.</p>
                                     </div>
                                     <button type="button" @click="openVJudgeModal()" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl border border-white/20 transition-all flex items-center gap-1.5 shrink-0 cursor-pointer">
                                         <span>📋 Modal Dialog & Smart Paste</span>
                                     </button>
                                 </div>
 
-                                <!-- LIVE STATUS TLX REMOTE JUDGE BOT -->
+                                <!-- LIVE STATUS REMOTE JUDGE BOT (TLX & CSES) -->
                                 <div class="p-3.5 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                                      :class="tlxServiceStatus.online ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300' : 'bg-slate-800/80 border-slate-700 text-slate-300'">
                                     <div class="flex items-center gap-3">
@@ -390,13 +390,19 @@
                                              :class="tlxServiceStatus.online ? 'bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.9)] animate-pulse' : 'bg-amber-400'"></div>
                                         <div class="text-xs">
                                             <div class="font-black flex items-center gap-2 flex-wrap">
-                                                <span>TLX Remote Judge Service:</span>
+                                                <span>Remote Judge Service:</span>
                                                 <span :class="tlxServiceStatus.online ? 'text-emerald-400' : 'text-amber-400'" x-text="tlxServiceStatus.online ? 'ONLINE & SIAP' : 'STANDBY / OFFLINE'"></span>
-                                                <template x-if="tlxServiceStatus.online && tlxServiceStatus.botUser">
+                                                <template x-if="tlxServiceStatus.online && tlxServiceStatus.bots">
+                                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                                        <span class="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-200 text-[10px] font-mono border border-amber-500/30" x-text="'TLX: @' + (tlxServiceStatus.bots.tlx?.botUser || 'nls_bot')"></span>
+                                                        <span class="px-2 py-0.5 rounded-md bg-teal-500/20 text-teal-200 text-[10px] font-mono border border-teal-500/30" x-text="'CSES: @' + (tlxServiceStatus.bots.cses?.botUser || 'nls_bot')"></span>
+                                                    </div>
+                                                </template>
+                                                <template x-if="tlxServiceStatus.online && !tlxServiceStatus.bots && tlxServiceStatus.botUser">
                                                     <span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-200 text-[10px] font-mono border border-emerald-500/30" x-text="'Bot: @' + tlxServiceStatus.botUser"></span>
                                                 </template>
                                             </div>
-                                            <div class="text-[11px] opacity-80 mt-0.5" x-text="tlxServiceStatus.online ? 'Submisi kodingan siswa akan dikirimkan otomatis ke server TLX TOKI untuk dinilai realtime.' : 'Jalankan server bot: cd tlx-remote-judge && npm start (port 3500)'"></div>
+                                            <div class="text-[11px] opacity-80 mt-0.5" x-text="tlxServiceStatus.online ? 'Submisi kodingan siswa akan dikirimkan otomatis ke server TLX TOKI & CSES untuk dinilai realtime.' : 'Jalankan server bot: cd tlx-remote-judge && npm start (port 3500)'"></div>
                                         </div>
                                     </div>
                                     <button type="button" @click="checkTlxServiceHealth()" class="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all shrink-0 cursor-pointer border border-white/10 flex items-center gap-1.5 self-start sm:self-auto">
@@ -2525,7 +2531,7 @@
                 vjudgeLoading: false,
                 vjudgeError: '',
                 vjudgePreviewProblem: null,
-                tlxServiceStatus: { online: false, botUser: null, checking: false, checkedAt: null },
+                tlxServiceStatus: { online: false, botUser: null, bots: null, checking: false, checkedAt: null },
                 vjudgePresets: [
                     { id: 'tlx_osn_2014_2c', platform: 'TLX', code: 'osn-2014-2c', name: 'A - Sang Pelompat (OSN 2014)', tag: 'BFS / 0-1 Shortest Path', difficulty: 'OSN / KSN', color: 'from-amber-600 to-yellow-600' },
                     { id: 'tlx_osn_2019_1a', platform: 'TLX', code: 'osn-2019-1a', name: 'A - Mengumpulkan Peserta (OSN 2019)', tag: 'Greedy / Two Pointers', difficulty: 'Mudah', color: 'from-orange-600 to-amber-600' },
@@ -3502,8 +3508,14 @@
                     if (!this.activeNode) return;
                     this.activeNode.cpMode = mode;
                     if (mode === 'vjudge') {
-                        if (!this.activeNode.sourcePlatform) this.activeNode.sourcePlatform = 'TLX';
-                        this.activeNode.judgeProvider = 'tlx';
+                        const curPlat = (this.vjudgeActivePlatformTab || '').toLowerCase();
+                        if (curPlat === 'cses' || (this.activeNode.sourcePlatform || '').toLowerCase() === 'cses') {
+                            this.activeNode.sourcePlatform = 'CSES';
+                            this.activeNode.judgeProvider = 'cses';
+                        } else {
+                            if (!this.activeNode.sourcePlatform) this.activeNode.sourcePlatform = 'TLX';
+                            this.activeNode.judgeProvider = 'tlx';
+                        }
                         this.activeNode.remoteJudge = true;
                         this.checkTlxServiceHealth();
                     }
@@ -3523,6 +3535,7 @@
                             const data = await res.json();
                             this.tlxServiceStatus.online = Boolean(data.status === 'ok' && data.sessionExists);
                             this.tlxServiceStatus.botUser = data.botUser || 'nls_bot';
+                            this.tlxServiceStatus.bots = data.bots || null;
                         } else {
                             this.tlxServiceStatus.online = false;
                         }
@@ -3704,8 +3717,8 @@
                         this.activeNode.editorial = prob.editorial;
                     }
 
-                    // Test Cases: pada mode VJudge TLX, penilaian resmi 100% dilakukan di server TLX TOKI
-                    if (this.activeNode.cpMode === 'vjudge' || prob.platform === 'TLX') {
+                    // Test Cases: pada mode VJudge (TLX / CSES), penilaian resmi 100% dilakukan di server resmi via bot
+                    if (this.activeNode.cpMode === 'vjudge' || prob.platform === 'TLX' || prob.platform === 'CSES') {
                         this.activeNode.testCases = (this.activeNode.samples || []).map((s, idx) => ({
                             input: s.input || '',
                             output: s.output || '',

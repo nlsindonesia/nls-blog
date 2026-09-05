@@ -5,6 +5,7 @@
  */
 
 const { submitToTLX } = require('./tlxSubmitter');
+const { submitToCSES } = require('./csesSubmitter');
 const config = require('./config');
 
 class SubmissionQueue {
@@ -18,10 +19,22 @@ class SubmissionQueue {
   /**
    * Tambahkan pekerjaan submisi baru ke dalam antrean
    */
-  addJob({ problemUrl, language, sourceCode, studentId }) {
+  addJob({ problemUrl, language, sourceCode, studentId, platform }) {
     const jobId = `sub_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+    
+    // Auto-detect platform jika tidak dispesifikasikan secara eksplisit
+    let targetPlatform = (platform || '').toLowerCase();
+    if (!targetPlatform) {
+      if (problemUrl.includes('cses.fi') || /^\d+$/.test(problemUrl.trim()) || problemUrl.toLowerCase().includes('cses')) {
+        targetPlatform = 'cses';
+      } else {
+        targetPlatform = 'tlx';
+      }
+    }
+
     const jobData = {
       jobId,
+      platform: targetPlatform,
       problemUrl,
       language,
       sourceCode,
@@ -37,7 +50,7 @@ class SubmissionQueue {
     this.jobs.set(jobId, jobData);
     this.queue.push(jobId);
 
-    console.log(`📥 [Queue] Job ditambahkan: ${jobId} (Antrean saat ini: ${this.queue.length})`);
+    console.log(`📥 [Queue] Job ditambahkan: ${jobId} [Platform: ${targetPlatform.toUpperCase()}] (Antrean: ${this.queue.length})`);
 
     // Picu prosesor jika belum aktif
     this.processNext();
@@ -81,15 +94,25 @@ class SubmissionQueue {
 
     job.status = 'processing';
     job.startedAt = new Date().toISOString();
-    console.log(`⚙️ [Queue] Memproses ${currentJobId}... Sisa di antrean: ${this.queue.length}`);
+    console.log(`⚙️ [Queue] Memproses ${currentJobId} [${(job.platform || 'tlx').toUpperCase()}]... Sisa di antrean: ${this.queue.length}`);
 
     try {
-      const result = await submitToTLX({
-        problemUrl: job.problemUrl,
-        language: job.language,
-        sourceCode: job.sourceCode,
-        studentId: job.studentId
-      });
+      let result;
+      if (job.platform === 'cses') {
+        result = await submitToCSES({
+          problemUrl: job.problemUrl,
+          language: job.language,
+          sourceCode: job.sourceCode,
+          studentId: job.studentId
+        });
+      } else {
+        result = await submitToTLX({
+          problemUrl: job.problemUrl,
+          language: job.language,
+          sourceCode: job.sourceCode,
+          studentId: job.studentId
+        });
+      }
 
       job.completedAt = new Date().toISOString();
       if (result.success) {

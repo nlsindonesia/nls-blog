@@ -1,4 +1,5 @@
 node_modules/
-session/tlx_session.json
+session/*.json
+!session/.gitkeep
 .env
 *.log

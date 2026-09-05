@@ -442,12 +442,13 @@
 
       <form id="submitForm">
         <div class="form-group">
-          <label for="problemUrl">URL / Kode Soal TLX</label>
-          <input type="text" id="problemUrl" placeholder="https://tlx.toki.id/problems/troc-30/A" required value="https://tlx.toki.id/problems/troc-30/A">
+          <label for="problemUrl">URL / Kode Soal (TLX / CSES)</label>
+          <input type="text" id="problemUrl" placeholder="Contoh: https://tlx.toki.id/problems/troc-30/A atau 1068" required value="https://cses.fi/problemset/task/1068">
           <div class="quick-chips">
-            <span class="chip" onclick="setProblem('https://tlx.toki.id/problems/troc-30/A')">TROC-30 A</span>
-            <span class="chip" onclick="setProblem('https://tlx.toki.id/problems/troc-29/A')">TROC-29 A</span>
-            <span class="chip" onclick="setProblem('https://tlx.toki.id/problems/tlx-training/A1')">Training A1</span>
+            <span class="chip" onclick="setProblem('https://cses.fi/problemset/task/1068', 'cses')">CSES 1068</span>
+            <span class="chip" onclick="setProblem('https://cses.fi/problemset/task/1083', 'cses')">CSES 1083</span>
+            <span class="chip" onclick="setProblem('https://tlx.toki.id/problems/troc-30/A', 'tlx')">TLX TROC-30 A</span>
+            <span class="chip" onclick="setProblem('https://tlx.toki.id/problems/troc-29/A', 'tlx')">TLX TROC-29 A</span>
           </div>
         </div>
 
@@ -545,8 +546,28 @@ int main() {
 
   <script>
     // Quick helpers
-    function setProblem(url) {
+    function setProblem(url, platform) {
       document.getElementById('problemUrl').value = url;
+      if (platform === 'cses' || url.includes('1068')) {
+        document.getElementById('sourceCode').value = `#include <iostream>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    long long n;
+    if (!(cin >> n)) return 0;
+    while (true) {
+        cout << n;
+        if (n == 1) break;
+        cout << " ";
+        if (n % 2 == 0) n /= 2;
+        else n = 3 * n + 1;
+    }
+    cout << "\\n";
+    return 0;
+}`;
+      }
     }
 
     function loadSampleCode() {

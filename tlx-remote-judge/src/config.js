@@ -16,6 +16,33 @@ module.exports = {
   SESSION_PATH: process.env.SESSION_PATH
     ? path.resolve(ROOT_DIR, process.env.SESSION_PATH)
     : path.resolve(ROOT_DIR, 'session/tlx_session.json'),
+  CSES_SESSION_PATH: process.env.CSES_SESSION_PATH
+    ? path.resolve(ROOT_DIR, process.env.CSES_SESSION_PATH)
+    : path.resolve(ROOT_DIR, 'session/cses_session.json'),
+  CSES_USERNAME: process.env.CSES_USERNAME || 'nls_bot',
+  CSES_PASSWORD: process.env.CSES_PASSWORD || 'maman123',
+
+  // Pemetaan ID bahasa umum ke nama bahasa di form dropdown CSES
+  CSES_LANGUAGE_MAP: {
+    'cpp': 'C++',
+    'cpp20': 'C++',
+    'cpp17': 'C++',
+    'c': 'C',
+    'python': 'Python3',
+    'python3': 'Python3',
+    'py': 'Python3',
+    'java': 'Java',
+    'pascal': 'Pascal',
+    'pas': 'Pascal',
+    'rust': 'Rust',
+    'js': 'Node.js',
+    'javascript': 'Node.js',
+    'node': 'Node.js',
+    'haskell': 'Haskell',
+    'ruby': 'Ruby',
+    'scala': 'Scala',
+    'assembly': 'Assembly'
+  },
 
   // Pemetaan ID bahasa umum ke nama bahasa di form dropdown/radio TLX
   LANGUAGE_MAP: {

@@ -21,13 +21,14 @@ app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 app.use(express.static(path.join(__dirname, '../public')));
 
 /**
- * Health check & status sesi bot
+ * Health check & status sesi bot TLX & CSES
  */
 app.get('/api/health', (req, res) => {
-  const sessionExists = fs.existsSync(config.SESSION_PATH);
-  let botUsername = null;
+  const tlxSessionExists = fs.existsSync(config.SESSION_PATH);
+  const csesSessionExists = fs.existsSync(config.CSES_SESSION_PATH);
+  let tlxBotUsername = null;
 
-  if (sessionExists) {
+  if (tlxSessionExists) {
     try {
       const sessionData = JSON.parse(fs.readFileSync(config.SESSION_PATH, 'utf8'));
       for (const origin of sessionData.origins || []) {
@@ -35,19 +36,32 @@ app.get('/api/health', (req, res) => {
           if (item.name === 'persist:session') {
             const parsed = JSON.parse(item.value);
             const user = typeof parsed.user === 'string' ? JSON.parse(parsed.user) : parsed.user;
-            if (user && user.username) botUsername = user.username;
+            if (user && user.username) tlxBotUsername = user.username;
           }
         }
       }
     } catch (e) {}
   }
 
+  const csesBotUsername = config.CSES_USERNAME || 'nls_bot';
+
   res.json({
     status: 'ok',
-    service: 'TLX Remote Judge Service',
-    sessionExists,
-    botUser: botUsername,
-    sessionPath: config.SESSION_PATH,
+    service: 'NLS Universal Remote Judge Service (TLX & CSES)',
+    sessionExists: tlxSessionExists || csesSessionExists,
+    botUser: tlxBotUsername || csesBotUsername,
+    bots: {
+      tlx: {
+        online: tlxSessionExists,
+        botUser: tlxBotUsername || 'nls_bot',
+        sessionPath: config.SESSION_PATH
+      },
+      cses: {
+        online: csesSessionExists,
+        botUser: csesBotUsername,
+        sessionPath: config.CSES_SESSION_PATH
+      }
+    },
     headless: config.HEADLESS,
     queueLength: queue.queue.length,
     isProcessing: queue.isProcessing,
@@ -60,12 +74,12 @@ app.get('/api/health', (req, res) => {
  */
 app.post('/api/judge/submit', (req, res) => {
   try {
-    const { problemUrl, language, sourceCode, studentId } = req.body;
+    const { problemUrl, language, sourceCode, studentId, platform } = req.body;
 
     if (!problemUrl) {
       return res.status(400).json({
         success: false,
-        error: 'Parameter problemUrl wajib diisi! Contoh: "https://tlx.toki.id/problems/troc-30/A"'
+        error: 'Parameter problemUrl wajib diisi! Contoh: "https://tlx.toki.id/problems/troc-30/A" atau "1068"'
       });
     }
 
@@ -76,15 +90,26 @@ app.post('/api/judge/submit', (req, res) => {
       });
     }
 
-    // Periksa apakah sesi bot sudah tersedia
-    if (!fs.existsSync(config.SESSION_PATH)) {
+    // Tentukan platform target
+    let targetPlatform = (platform || '').toLowerCase();
+    if (!targetPlatform) {
+      if (problemUrl.includes('cses.fi') || /^\d+$/.test(problemUrl.trim()) || problemUrl.toLowerCase().includes('cses')) {
+        targetPlatform = 'cses';
+      } else {
+        targetPlatform = 'tlx';
+      }
+    }
+
+    // Periksa apakah sesi bot TLX sudah tersedia jika target adalah TLX
+    if (targetPlatform === 'tlx' && !fs.existsSync(config.SESSION_PATH)) {
       return res.status(503).json({
         success: false,
-        error: 'Sesi bot TLX belum disiapkan di server. Harap jalankan "npm run login" di terminal server!'
+        error: 'Sesi bot TLX belum disiapkan di server. Harap jalankan "npm run login" di folder tlx-remote-judge!'
       });
     }
 
     const job = queue.addJob({
+      platform: targetPlatform,
       problemUrl,
       language: language || 'cpp20',
       sourceCode,
@@ -93,7 +118,8 @@ app.post('/api/judge/submit', (req, res) => {
 
     return res.status(202).json({
       success: true,
-      message: 'Kodingan berhasil dimasukkan ke dalam antrean penilaian TLX',
+      message: `Kodingan berhasil dimasukkan ke dalam antrean penilaian ${targetPlatform.toUpperCase()}`,
+      platform: targetPlatform,
       jobId: job.jobId,
       status: job.status,
       queuedAt: job.queuedAt,

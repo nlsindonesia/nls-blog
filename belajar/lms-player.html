@@ -1455,7 +1455,7 @@
                                                                         Nilai: <strong class="text-white text-sm" x-text="cpState.lastVerdict.score + ' / ' + cpState.lastVerdict.totalScore"></strong>
                                                                         <span class="mx-2">•</span>
                                                                         <template x-if="cpState.lastVerdict.isRemoteJudge">
-                                                                            <span class="text-emerald-400 font-bold">Evaluasi Resmi TLX TOKI (@nls_bot)</span>
+                                                                            <span class="text-emerald-400 font-bold" x-text="'Evaluasi Resmi Server ' + (cpState.lastVerdict.remotePlatform || 'TLX TOKI') + ' (@nls_bot)'"></span>
                                                                         </template>
                                                                         <template x-if="!cpState.lastVerdict.isRemoteJudge">
                                                                             <span>Lolos: <strong class="text-white" x-text="cpState.lastVerdict.passedCount + ' dari ' + cpState.lastVerdict.totalCount + ' kasus'"></strong></span>
@@ -1477,12 +1477,12 @@
                                                             </div>
                                                         </div>
 
-                                                        <!-- Remote Judge TLX Notice -->
+                                                        <!-- Remote Judge Notice -->
                                                         <template x-if="cpState.lastVerdict.isRemoteJudge">
                                                             <div class="p-3 bg-emerald-950/40 border border-emerald-500/30 rounded-xl text-xs flex items-center justify-between text-emerald-300">
                                                                 <div class="flex items-center gap-2">
                                                                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                                                                    <span>Solusi dinilai resmi oleh <strong>Server TLX TOKI (@nls_bot)</strong> terhadap seluruh subtask / secret test cases TLX.</span>
+                                                                    <span>Solusi dinilai resmi oleh <strong x-text="'Server ' + (cpState.lastVerdict.remotePlatform || 'TLX TOKI') + ' (@nls_bot)'"></strong> terhadap seluruh kasus uji resmi.</span>
                                                                 </div>
                                                                 <span class="font-mono text-[10px] text-emerald-400 font-bold" x-text="'Submisi ID: ' + cpState.lastVerdict.submissionId"></span>
                                                             </div>
@@ -3318,14 +3318,22 @@
                         if (res && res.ok) {
                             data = await res.json().catch(() => null);
                         } else {
-                            // Fallback langsung ke TLX Remote Judge port 3500 jika running lokal (misal serve.ps1 tanpa Vercel serverless)
-                            const isVJudge = payload.cpMode === 'vjudge' || payload.judgeProvider === 'tlx' || (payload.sourcePlatform && payload.sourcePlatform.toLowerCase() === 'tlx');
+                            // Fallback langsung ke Remote Judge port 3500 jika running lokal (misal serve.ps1 tanpa Vercel serverless)
+                            const isVJudge = payload.cpMode === 'vjudge' || 
+                                payload.judgeProvider === 'tlx' || payload.judgeProvider === 'cses' ||
+                                (payload.sourcePlatform && ['tlx', 'cses'].includes(payload.sourcePlatform.toLowerCase())) ||
+                                (payload.sourceUrl && (payload.sourceUrl.includes('tlx.toki.id') || payload.sourceUrl.includes('cses.fi')));
+
                             if (isVJudge) {
                                 try {
+                                    const targetPlat = (payload.judgeProvider === 'cses' || (payload.sourcePlatform && payload.sourcePlatform.toLowerCase() === 'cses') || (payload.sourceUrl && payload.sourceUrl.includes('cses.fi'))) ? 'cses' : 'tlx';
+                                    const platName = targetPlat === 'cses' ? 'CSES' : 'TLX TOKI';
+
                                     const directSubmitRes = await fetch('http://localhost:3500/api/judge/submit', {
                                         method: 'POST',
                                         headers: { 'Content-Type': 'application/json' },
                                         body: JSON.stringify({
+                                            platform: targetPlat,
                                             problemUrl: payload.sourceUrl || payload.problemTitle,
                                             language: payload.language,
                                             sourceCode: payload.code,
@@ -3351,6 +3359,19 @@
                                                 else if (/Compilation Error/i.test(v)) vCode = 'CE';
                                                 else if (/Runtime Error/i.test(v)) vCode = 'RTE';
                                                 const sc = Number(r.score) !== undefined ? Number(r.score) : (vCode === 'AC' ? 100 : 0);
+                                                
+                                                let testsArr = [];
+                                                if (Array.isArray(r.tests) && r.tests.length > 0) {
+                                                    testsArr = r.tests.map((t, idx) => ({
+                                                        index: t.index || (idx + 1),
+                                                        label: t.label || `Kasus Uji #${idx + 1}`,
+                                                        verdict: t.verdictCode || (t.passed ? 'AC' : 'WA'),
+                                                        passed: Boolean(t.passed),
+                                                        points: t.points !== undefined ? t.points : (t.passed ? 7 : 0),
+                                                        executionTimeMs: t.executionTimeMs || 0
+                                                    }));
+                                                }
+
                                                 data = {
                                                     success: true,
                                                     score: sc,
@@ -3358,14 +3379,16 @@
                                                     totalPoints: 100,
                                                     verdict: vCode,
                                                     verdictCode: vCode,
-                                                    verdictName: `${v} (TLX TOKI Official)`,
+                                                    verdictName: `${v} (${platName} Official)`,
                                                     timeMs: r.time || 'N/A',
                                                     memoryKb: r.memory || 'N/A',
-                                                    maxTimeMs: 0,
+                                                    maxTimeMs: r.maxTimeMs || 0,
                                                     maxMemoryKb: 262144,
                                                     isRemoteJudge: true,
-                                                    remotePlatform: 'TLX TOKI',
-                                                    submissionId: jobId
+                                                    remotePlatform: platName,
+                                                    submissionId: jobId,
+                                                    testResults: testsArr,
+                                                    tests: testsArr
                                                 };
                                                 break;
                                             }

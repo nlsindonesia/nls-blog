@@ -1,18 +1,22 @@
-# 🤖 TLX Remote Judge Service
+# 🤖 Universal Remote Judge Service (TLX & CSES)
 
-Modul dan layanan backend otomatis (*Proxy / Remote Judge*) untuk platform **TLX (TOKI)** berbasis **Node.js** dan **Playwright**.
+Modul dan layanan backend otomatis (*Proxy / Remote Judge*) untuk platform **TLX (TOKI)** dan **CSES (cses.fi)** berbasis **Node.js** dan **Playwright**.
 
-Layanan ini memungkinkan aplikasi website kamu (misal Bimbel OSN / Kontes Pemrograman) untuk menerima jawaban kodingan siswa, mengirimkannya secara otomatis ke server TLX TOKI via bot, dan mengembalikan hasil penilaian (*Verdict*, Skor, Runtime, Memori) secara realtime tanpa perlu membuat testcase sendiri.
+Layanan ini memungkinkan aplikasi website kamu (misal Bimbel OSN / Kontes Pemrograman) untuk menerima jawaban kodingan siswa, mengirimkannya secara otomatis ke server resmi TLX TOKI atau CSES via bot (@nls_bot), dan mengembalikan hasil penilaian (*Verdict*, Skor, Rincian Kasus Uji, Runtime, Memori) secara realtime tanpa perlu membuat testcase sendiri.
 
 ---
 
 ## ⚡ Fitur Utama
 
-- **Persistent Session Login (`npm run login`)**: Login sekali saja via browser tampak, sesi cookies tersimpan permanen di `session/tlx_session.json` tanpa pusing masalah captcha atau OTP berikutnya.
+- **Multi-Platform Remote Judge**: Mendukung **TLX TOKI** dan **CSES (cses.fi)**.
+- **Persistent Session Login**:
+  - TLX TOKI: `npm run login` (login manual sekali + simpan sesi cookies).
+  - CSES: `npm run cses-login` (auto-login otomatis menggunakan akun `@nls_bot`).
 - **Headless Automated Submitter**: Eksekusi submit di background tanpa membuka jendela browser.
-- **Rate-Limit Safe Queue (FIFO)**: Antrean bawaan dengan jeda otomatis (*cooldown*) 8 detik antar submisi agar akun bot aman dari pembatasan (*rate-limiting*) TLX.
+- **Detail Rincian Test Cases**: Mengembalikan hasil evaluasi tiap kasus uji resmi (misal 14/14 test cases di CSES).
+- **Rate-Limit Safe Queue (FIFO)**: Antrean bawaan dengan jeda otomatis (*cooldown*) 8 detik antar submisi agar akun bot aman dari pembatasan (*rate-limiting*).
 - **REST API Siap Pakai**: Endpoint `POST /api/judge/submit` & `GET /api/judge/status/:jobId` yang mudah dikonsumsi oleh backend/frontend mana pun.
-- **Live Test Playground**: Tampilan antarmuka visual modern di browser untuk langsung menguji submisi kodingan.
+- **Live Test Playground**: Tampilan antarmuka visual modern di browser (`http://localhost:3500`) untuk langsung menguji submisi kodingan ke TLX dan CSES.
 
 ---
 
