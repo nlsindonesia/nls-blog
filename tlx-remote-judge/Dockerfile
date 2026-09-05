@@ -1,13 +1,13 @@
 # Base image resmi Playwright dengan semua browser engine (Chromium, Firefox, WebKit) dan OS dependencies terpasang
-FROM mcr.microsoft.com/playwright:v1.45.0-jammy
+FROM mcr.microsoft.com/playwright:v1.63.0-jammy
 
 WORKDIR /app
 
 # Copy dependency definition
 COPY package*.json ./
 
-# Install dependencies (production)
-RUN npm ci --only=production
+# Install dependencies (production) & ensure browser binary
+RUN npm ci --only=production && npx playwright install chromium
 
 # Salin seluruh source code dan session
 COPY . .
