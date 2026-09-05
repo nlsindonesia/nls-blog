@@ -3320,14 +3320,24 @@
                         } else {
                             // Fallback langsung ke Remote Judge port 3500 jika running lokal (misal serve.ps1 tanpa Vercel serverless)
                             const isVJudge = payload.cpMode === 'vjudge' || 
-                                payload.judgeProvider === 'tlx' || payload.judgeProvider === 'cses' ||
-                                (payload.sourcePlatform && ['tlx', 'cses'].includes(payload.sourcePlatform.toLowerCase())) ||
-                                (payload.sourceUrl && (payload.sourceUrl.includes('tlx.toki.id') || payload.sourceUrl.includes('cses.fi')));
+                                ['tlx', 'cses', 'atcoder'].includes(payload.judgeProvider) ||
+                                (payload.sourcePlatform && ['tlx', 'cses', 'atcoder'].includes(payload.sourcePlatform.toLowerCase())) ||
+                                (payload.sourceUrl && (payload.sourceUrl.includes('tlx.toki.id') || payload.sourceUrl.includes('cses.fi') || payload.sourceUrl.includes('atcoder.jp')));
 
                             if (isVJudge) {
                                 try {
-                                    const targetPlat = (payload.judgeProvider === 'cses' || (payload.sourcePlatform && payload.sourcePlatform.toLowerCase() === 'cses') || (payload.sourceUrl && payload.sourceUrl.includes('cses.fi'))) ? 'cses' : 'tlx';
-                                    const platName = targetPlat === 'cses' ? 'CSES' : 'TLX TOKI';
+                                    let targetPlat = 'tlx';
+                                    let platName = 'TLX TOKI';
+                                    const srcLow = (payload.sourceUrl || '').toLowerCase();
+                                    const provLow = (payload.judgeProvider || (payload.sourcePlatform || '')).toLowerCase();
+
+                                    if (provLow === 'atcoder' || srcLow.includes('atcoder.jp')) {
+                                        targetPlat = 'atcoder';
+                                        platName = 'AtCoder';
+                                    } else if (provLow === 'cses' || srcLow.includes('cses.fi')) {
+                                        targetPlat = 'cses';
+                                        platName = 'CSES';
+                                    }
 
                                     const directSubmitRes = await fetch('http://localhost:3500/api/judge/submit', {
                                         method: 'POST',

@@ -8,7 +8,9 @@
     "dev": "node --watch src/server.js",
     "login": "node scripts/login.js",
     "cses-login": "node scripts/cses-login.js",
-    "check-auth": "node scripts/check-auth.js"
+    "atcoder-login": "node scripts/atcoder-login.js",
+    "check-auth": "node scripts/check-auth.js",
+    "check-atcoder": "node scripts/check-atcoder-auth.js"
   },
   "keywords": [
     "remote-judge",

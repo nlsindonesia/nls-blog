@@ -21,11 +21,12 @@ app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 app.use(express.static(path.join(__dirname, '../public')));
 
 /**
- * Health check & status sesi bot TLX & CSES
+ * Health check & status sesi bot TLX, CSES & AtCoder
  */
 app.get('/api/health', (req, res) => {
   const tlxSessionExists = fs.existsSync(config.SESSION_PATH);
   const csesSessionExists = fs.existsSync(config.CSES_SESSION_PATH);
+  const atcoderSessionExists = fs.existsSync(config.ATCODER_SESSION_PATH);
   let tlxBotUsername = null;
 
   if (tlxSessionExists) {
@@ -44,11 +45,12 @@ app.get('/api/health', (req, res) => {
   }
 
   const csesBotUsername = config.CSES_USERNAME || 'nls_bot';
+  const atcoderBotUsername = config.ATCODER_USERNAME || 'nls_bot';
 
   res.json({
     status: 'ok',
-    service: 'NLS Universal Remote Judge Service (TLX & CSES)',
-    sessionExists: tlxSessionExists || csesSessionExists,
+    service: 'NLS Universal Remote Judge Service (TLX, CSES & AtCoder)',
+    sessionExists: tlxSessionExists || csesSessionExists || atcoderSessionExists,
     botUser: tlxBotUsername || csesBotUsername,
     bots: {
       tlx: {
@@ -60,6 +62,11 @@ app.get('/api/health', (req, res) => {
         online: csesSessionExists,
         botUser: csesBotUsername,
         sessionPath: config.CSES_SESSION_PATH
+      },
+      atcoder: {
+        online: atcoderSessionExists,
+        botUser: atcoderBotUsername,
+        sessionPath: config.ATCODER_SESSION_PATH
       }
     },
     headless: config.HEADLESS,
@@ -79,7 +86,7 @@ app.post('/api/judge/submit', (req, res) => {
     if (!problemUrl) {
       return res.status(400).json({
         success: false,
-        error: 'Parameter problemUrl wajib diisi! Contoh: "https://tlx.toki.id/problems/troc-30/A" atau "1068"'
+        error: 'Parameter problemUrl wajib diisi! Contoh: "https://tlx.toki.id/problems/troc-30/A", "1068", atau "abc300_a"'
       });
     }
 
@@ -93,18 +100,27 @@ app.post('/api/judge/submit', (req, res) => {
     // Tentukan platform target
     let targetPlatform = (platform || '').toLowerCase();
     if (!targetPlatform) {
-      if (problemUrl.includes('cses.fi') || /^\d+$/.test(problemUrl.trim()) || problemUrl.toLowerCase().includes('cses')) {
+      if (problemUrl.includes('atcoder.jp') || /^(abc|arc|agc|practice)\d*_[a-zA-Z0-9]+/i.test(problemUrl.trim())) {
+        targetPlatform = 'atcoder';
+      } else if (problemUrl.includes('cses.fi') || /^\d+$/.test(problemUrl.trim()) || problemUrl.toLowerCase().includes('cses')) {
         targetPlatform = 'cses';
       } else {
         targetPlatform = 'tlx';
       }
     }
 
-    // Periksa apakah sesi bot TLX sudah tersedia jika target adalah TLX
+    // Periksa apakah sesi bot tersedia untuk platform yang membutuhkan login manual
     if (targetPlatform === 'tlx' && !fs.existsSync(config.SESSION_PATH)) {
       return res.status(503).json({
         success: false,
         error: 'Sesi bot TLX belum disiapkan di server. Harap jalankan "npm run login" di folder tlx-remote-judge!'
+      });
+    }
+
+    if (targetPlatform === 'atcoder' && !fs.existsSync(config.ATCODER_SESSION_PATH)) {
+      return res.status(503).json({
+        success: false,
+        error: 'Sesi bot AtCoder belum disiapkan di server. Harap jalankan "npm run atcoder-login" di folder tlx-remote-judge!'
       });
     }
 

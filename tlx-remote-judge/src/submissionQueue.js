@@ -6,6 +6,7 @@
 
 const { submitToTLX } = require('./tlxSubmitter');
 const { submitToCSES } = require('./csesSubmitter');
+const { submitToAtCoder } = require('./atcoderSubmitter');
 const config = require('./config');
 
 class SubmissionQueue {
@@ -25,7 +26,9 @@ class SubmissionQueue {
     // Auto-detect platform jika tidak dispesifikasikan secara eksplisit
     let targetPlatform = (platform || '').toLowerCase();
     if (!targetPlatform) {
-      if (problemUrl.includes('cses.fi') || /^\d+$/.test(problemUrl.trim()) || problemUrl.toLowerCase().includes('cses')) {
+      if (problemUrl.includes('atcoder.jp') || /^(abc|arc|agc|practice)\d*_[a-zA-Z0-9]+/i.test(problemUrl.trim())) {
+        targetPlatform = 'atcoder';
+      } else if (problemUrl.includes('cses.fi') || /^\d+$/.test(problemUrl.trim()) || problemUrl.toLowerCase().includes('cses')) {
         targetPlatform = 'cses';
       } else {
         targetPlatform = 'tlx';
@@ -98,7 +101,14 @@ class SubmissionQueue {
 
     try {
       let result;
-      if (job.platform === 'cses') {
+      if (job.platform === 'atcoder') {
+        result = await submitToAtCoder({
+          problemUrl: job.problemUrl,
+          language: job.language,
+          sourceCode: job.sourceCode,
+          studentId: job.studentId
+        });
+      } else if (job.platform === 'cses') {
         result = await submitToCSES({
           problemUrl: job.problemUrl,
           language: job.language,

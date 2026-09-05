@@ -442,9 +442,10 @@
 
       <form id="submitForm">
         <div class="form-group">
-          <label for="problemUrl">URL / Kode Soal (TLX / CSES)</label>
-          <input type="text" id="problemUrl" placeholder="Contoh: https://tlx.toki.id/problems/troc-30/A atau 1068" required value="https://cses.fi/problemset/task/1068">
+          <label for="problemUrl">URL / Kode Soal (TLX / CSES / AtCoder)</label>
+          <input type="text" id="problemUrl" placeholder="Contoh: https://tlx.toki.id/problems/troc-30/A, 1068, atau abc300_a" required value="https://atcoder.jp/contests/abc300/tasks/abc300_a">
           <div class="quick-chips">
+            <span class="chip" onclick="setProblem('https://atcoder.jp/contests/abc300/tasks/abc300_a', 'atcoder')">AtCoder abc300_a</span>
             <span class="chip" onclick="setProblem('https://cses.fi/problemset/task/1068', 'cses')">CSES 1068</span>
             <span class="chip" onclick="setProblem('https://cses.fi/problemset/task/1083', 'cses')">CSES 1083</span>
             <span class="chip" onclick="setProblem('https://tlx.toki.id/problems/troc-30/A', 'tlx')">TLX TROC-30 A</span>
@@ -548,7 +549,26 @@ int main() {
     // Quick helpers
     function setProblem(url, platform) {
       document.getElementById('problemUrl').value = url;
-      if (platform === 'cses' || url.includes('1068')) {
+      if (platform === 'atcoder' || url.includes('abc300')) {
+        document.getElementById('sourceCode').value = `#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n, a, b;
+    if (!(cin >> n >> a >> b)) return 0;
+    int target = a + b;
+    for (int i = 1; i <= n; i++) {
+        int c;
+        cin >> c;
+        if (c == target) {
+            cout << i << "\\n";
+            break;
+        }
+    }
+    return 0;
+}`;
+      } else if (platform === 'cses' || url.includes('1068')) {
         document.getElementById('sourceCode').value = `#include <iostream>
 using namespace std;
 
@@ -594,9 +614,14 @@ int main() {
         const dot = document.getElementById('statusDot');
         const text = document.getElementById('statusText');
 
-        if (data.sessionExists) {
+        const activeEngines = [];
+        if (data.sessionExists) activeEngines.push('TLX');
+        if (data.csesSessionExists) activeEngines.push('CSES');
+        if (data.atcoderSessionExists) activeEngines.push('AtCoder');
+
+        if (activeEngines.length > 0) {
           dot.className = 'status-dot active';
-          text.innerText = data.botUser ? `TLX: @${data.botUser} (Aktif)` : 'TLX Sesi Aktif';
+          text.innerText = `Online: ${activeEngines.join(', ')}`;
         } else {
           dot.className = 'status-dot inactive';
           text.innerText = 'Sesi Belum Login';

@@ -21,6 +21,11 @@ module.exports = {
     : path.resolve(ROOT_DIR, 'session/cses_session.json'),
   CSES_USERNAME: process.env.CSES_USERNAME || 'nls_bot',
   CSES_PASSWORD: process.env.CSES_PASSWORD || 'maman123',
+  ATCODER_SESSION_PATH: process.env.ATCODER_SESSION_PATH
+    ? path.resolve(ROOT_DIR, process.env.ATCODER_SESSION_PATH)
+    : path.resolve(ROOT_DIR, 'session/atcoder_session.json'),
+  ATCODER_USERNAME: process.env.ATCODER_USERNAME || 'nls_bot',
+  ATCODER_PASSWORD: process.env.ATCODER_PASSWORD || 'maman123',
 
   // Pemetaan ID bahasa umum ke nama bahasa di form dropdown CSES
   CSES_LANGUAGE_MAP: {

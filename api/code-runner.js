@@ -284,27 +284,41 @@ export default async function handler(req, res) {
             const sourcePlatform = (body.sourcePlatform || '').toLowerCase();
             const sourceUrl = body.sourceUrl || body.remoteJudgeUrl || body.problemUrl || '';
 
-            // Cek apakah soal ini menggunakan Mode Remote Judge (TLX TOKI atau CSES)
-            const isCsesVJudge = (
+            // Cek apakah soal ini menggunakan Mode Remote Judge (TLX TOKI, CSES, atau AtCoder)
+            const isAtcoderVJudge = (
+                sourceUrl.toLowerCase().includes('atcoder.jp') ||
+                judgeProvider === 'atcoder' ||
+                sourcePlatform === 'atcoder' ||
+                /^(abc|arc|agc|practice)\d*_[a-zA-Z0-9]+/i.test((sourceUrl || problemTitle || '').trim())
+            );
+
+            const isCsesVJudge = !isAtcoderVJudge && (
                 sourceUrl.toLowerCase().includes('cses.fi') ||
                 judgeProvider === 'cses' ||
                 sourcePlatform === 'cses' ||
                 (cpMode === 'vjudge' && /^\d+$/.test((sourceUrl || '').trim()))
             );
 
-            const isTlxVJudge = (
+            const isTlxVJudge = !isAtcoderVJudge && !isCsesVJudge && (
                 sourceUrl.toLowerCase().includes('tlx.toki.id') ||
                 judgeProvider === 'tlx' ||
-                sourcePlatform === 'tlx'
-            ) || (
-                (cpMode === 'vjudge' || body.isVJudge || body.remoteJudge) && !isCsesVJudge
+                sourcePlatform === 'tlx' ||
+                cpMode === 'vjudge' || body.isVJudge || body.remoteJudge
             );
 
-            const isRemoteJudge = isTlxVJudge || isCsesVJudge;
+            const isRemoteJudge = isAtcoderVJudge || isCsesVJudge || isTlxVJudge;
 
             if (isRemoteJudge) {
-                const targetPlatform = isCsesVJudge ? 'cses' : 'tlx';
-                const platformDisplayName = isCsesVJudge ? 'CSES' : 'TLX TOKI';
+                let targetPlatform = 'tlx';
+                let platformDisplayName = 'TLX TOKI';
+
+                if (isAtcoderVJudge) {
+                    targetPlatform = 'atcoder';
+                    platformDisplayName = 'AtCoder';
+                } else if (isCsesVJudge) {
+                    targetPlatform = 'cses';
+                    platformDisplayName = 'CSES';
+                }
 
                 console.log(`[CodeRunner] Meneruskan submisi ke Layanan Remote Judge [${platformDisplayName}]...`);
                 console.log(`[CodeRunner] URL/Task Soal: ${sourceUrl || problemTitle}`);

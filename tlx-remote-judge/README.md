@@ -1,22 +1,23 @@
-# 🤖 Universal Remote Judge Service (TLX & CSES)
+# 🤖 Universal Remote Judge Service (TLX, CSES & AtCoder)
 
-Modul dan layanan backend otomatis (*Proxy / Remote Judge*) untuk platform **TLX (TOKI)** dan **CSES (cses.fi)** berbasis **Node.js** dan **Playwright**.
+Modul dan layanan backend otomatis (*Proxy / Remote Judge*) untuk platform **TLX (TOKI)**, **CSES (cses.fi)**, dan **AtCoder (atcoder.jp)** berbasis **Node.js** dan **Playwright**.
 
-Layanan ini memungkinkan aplikasi website kamu (misal Bimbel OSN / Kontes Pemrograman) untuk menerima jawaban kodingan siswa, mengirimkannya secara otomatis ke server resmi TLX TOKI atau CSES via bot (@nls_bot), dan mengembalikan hasil penilaian (*Verdict*, Skor, Rincian Kasus Uji, Runtime, Memori) secara realtime tanpa perlu membuat testcase sendiri.
+Layanan ini memungkinkan aplikasi website kamu (misal Bimbel OSN / Kontes Pemrograman) untuk menerima jawaban kodingan siswa, mengirimkannya secara otomatis ke server resmi TLX TOKI, CSES, atau AtCoder via bot (@nls_bot), dan mengembalikan hasil penilaian (*Verdict*, Skor, Rincian Kasus Uji, Runtime, Memori) secara realtime tanpa perlu membuat testcase sendiri.
 
 ---
 
 ## ⚡ Fitur Utama
 
-- **Multi-Platform Remote Judge**: Mendukung **TLX TOKI** dan **CSES (cses.fi)**.
+- **Multi-Platform Remote Judge**: Mendukung **TLX TOKI**, **CSES (cses.fi)**, dan **AtCoder (atcoder.jp)**.
 - **Persistent Session Login**:
   - TLX TOKI: `npm run login` (login manual sekali + simpan sesi cookies).
   - CSES: `npm run cses-login` (auto-login otomatis menggunakan akun `@nls_bot`).
+  - AtCoder: `npm run atcoder-login` (login interaktif satu kali untuk Cloudflare Turnstile, sesi aktif 6 bulan).
 - **Headless Automated Submitter**: Eksekusi submit di background tanpa membuka jendela browser.
 - **Detail Rincian Test Cases**: Mengembalikan hasil evaluasi tiap kasus uji resmi (misal 14/14 test cases di CSES).
 - **Rate-Limit Safe Queue (FIFO)**: Antrean bawaan dengan jeda otomatis (*cooldown*) 8 detik antar submisi agar akun bot aman dari pembatasan (*rate-limiting*).
 - **REST API Siap Pakai**: Endpoint `POST /api/judge/submit` & `GET /api/judge/status/:jobId` yang mudah dikonsumsi oleh backend/frontend mana pun.
-- **Live Test Playground**: Tampilan antarmuka visual modern di browser (`http://localhost:3500`) untuk langsung menguji submisi kodingan ke TLX dan CSES.
+- **Live Test Playground**: Tampilan antarmuka visual modern di browser (`http://localhost:3500`) untuk langsung menguji submisi kodingan ke TLX, CSES, dan AtCoder.
 
 ---
 
@@ -40,13 +41,30 @@ npm run login
 - Setelah berhasil masuk, kembali ke terminal dan tekan **ENTER** (atau bot akan mendeteksinya secara otomatis).
 - File sesi akan tersimpan di `session/tlx_session.json`.
 
-### 3. Cek Status Sesi Kapan Saja
+### 3. Login Akun Bot CSES (Otomatis)
+Jalankan perintah ini:
+```bash
+npm run cses-login
+```
+Bot akan login otomatis secara headless menggunakan username `nls_bot` dan password `maman123`, lalu menyimpan sesi di `session/cses_session.json`.
+
+### 4. Login Akun Bot AtCoder (Satu Kali)
+Jalankan perintah ini:
+```bash
+npm run atcoder-login
+```
+- Browser Chromium akan terbuka secara otomatis dengan form login terisi (`nls_bot` & `maman123`).
+- Selesaikan verifikasi Cloudflare Turnstile (jika muncul kotak centang) lalu klik **Sign In**.
+- Sesi akan otomatis terdeteksi dan tersimpan di `session/atcoder_session.json` dan aktif selama 6 bulan!
+
+### 5. Cek Status Sesi Kapan Saja
 Untuk memastikan sesi login masih aktif tanpa membuka browser:
 ```bash
-npm run check-auth
+npm run check-auth       # Untuk TLX
+npm run check-atcoder    # Untuk AtCoder
 ```
 
-### 4. Jalankan Server
+### 6. Jalankan Server
 ```bash
 npm start
 ```
