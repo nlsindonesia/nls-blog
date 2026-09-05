@@ -491,11 +491,39 @@ export default async function handler(req, res) {
                         }
                     }
                 } catch (err) {
-                    console.warn(`[CodeRunner] Remote Judge [${platformDisplayName}] offline/tidak terjangkau (${err.message}). Beralih otomatis ke evaluasi Sandbox...`);
+                    console.warn(`[CodeRunner] Remote Judge [${platformDisplayName}] offline/tidak terjangkau (${err.message}).`);
                 }
             }
-            console.log(`[CodeRunner] Menggunakan Sandbox Evaluator otomatis untuk [${platformDisplayName}]...`);
-        }
+
+                // Sesuai standar Olimpiade & Competitive Programming:
+                // Mode VJudge TIDAK BOLEH dialihkan ke Sandbox lokal dengan sample cases semu.
+                // Jika server remote judge offline, berikan status transparan agar penilaian selalu 100% autentik.
+                console.warn(`[CodeRunner] Submisi VJudge [${platformDisplayName}] ditolak dari Sandbox semu karena server remote judge offline.`);
+                return res.status(503).json({
+                    success: false,
+                    isRemoteJudge: true,
+                    remotePlatform: platformDisplayName,
+                    verdict: 'OFFLINE',
+                    verdictCode: 'OFFLINE',
+                    verdictName: 'Server Grader Offline',
+                    score: 0,
+                    totalScore: 100,
+                    message: `Layanan Remote Judge [${platformDisplayName}] sedang offline atau belum terhubung. Mode VJudge mewajibkan evaluasi resmi langsung dari server ${platformDisplayName} agar seluruh kasus uji rahasia (secret test cases) teruji secara autentik.`,
+                    tests: [
+                        {
+                            index: 1,
+                            label: `Status Evaluasi Resmi ${platformDisplayName}`,
+                            verdict: 'OFFLINE',
+                            verdictCode: 'OFFLINE',
+                            verdictName: 'Server Grader Offline',
+                            passed: false,
+                            points: 0,
+                            maxPoints: 100,
+                            actualOutput: `Layanan Remote Judge [${platformDisplayName}] belum terjangkau. Untuk menjaga standar olimpiade, sistem menolak penilaian semu lokal dan hanya menerima penilaian resmi dari server ${platformDisplayName}.`
+                        }
+                    ]
+                });
+            }
 
             // Fallback: Mode 1 (Manual) atau Soal dengan Kasus Uji Lokal
             let tests = testCases.length > 0 ? testCases : samples;

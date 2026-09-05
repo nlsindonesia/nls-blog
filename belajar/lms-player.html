@@ -3482,6 +3482,9 @@
                                 }
                                 this.markAsCompleted(this.activeNode.id);
                             }
+                        } else if (data && (data.verdict === 'OFFLINE' || data.verdictCode === 'OFFLINE')) {
+                            this.cpState.lastVerdict = data;
+                            alert(data.message || 'Layanan Remote Judge sedang offline.');
                         } else {
                             alert('Gagal menilai solusi: ' + (data.message || 'Unknown error'));
                         }
