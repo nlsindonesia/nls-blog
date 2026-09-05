@@ -928,7 +928,7 @@
                             <template x-if="quizState.submitted && !quizState.showDiscussion">
                                 <div class="bg-white rounded-2xl sm:rounded-3xl lg:rounded-[2.5rem] p-6 sm:p-12 lg:p-16 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-slate-100 text-center relative overflow-hidden">
                                     <template x-if="!quizState.hasEssay">
-                                        <div class="absolute top-0 left-0 w-full h-3" :class="quizState.score > 70 ? 'bg-emerald-400' : 'bg-rose-400'"></div>
+                                        <div class="absolute top-0 left-0 w-full h-3" :class="isCurrentQuizPassed() ? 'bg-emerald-400' : 'bg-rose-400'"></div>
                                     </template>
                                     <template x-if="quizState.hasEssay">
                                         <div class="absolute top-0 left-0 w-full h-3 bg-amber-400"></div>
@@ -942,19 +942,25 @@
                                                 <!-- Current/Best Score Header -->
                                                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 bg-slate-50 border-2 border-slate-100 rounded-2xl sm:rounded-3xl p-5 sm:p-8 mb-6 sm:mb-8">
                                                     <div class="flex items-center gap-4 sm:gap-6">
-                                                        <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl sm:rounded-[1.5rem] flex items-center justify-center shadow-lg rotate-3 shrink-0" :class="quizState.score >= 70 ? 'bg-gradient-to-br from-emerald-100 to-emerald-200 text-emerald-700 border-2 border-white' : 'bg-gradient-to-br from-rose-100 to-rose-200 text-rose-700 border-2 border-white'">
+                                                        <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl sm:rounded-[1.5rem] flex items-center justify-center shadow-lg rotate-3 shrink-0" :class="isCurrentQuizPassed() ? 'bg-gradient-to-br from-emerald-100 to-emerald-200 text-emerald-700 border-2 border-white' : 'bg-gradient-to-br from-rose-100 to-rose-200 text-rose-700 border-2 border-white'">
                                                             <span class="text-3xl sm:text-4xl font-black" x-text="quizState.score"></span>
                                                         </div>
                                                         <div class="text-left">
-                                                            <h3 class="text-xl sm:text-3xl font-black text-slate-900 mb-1 tracking-tight" x-text="quizState.score >= 70 ? 'Lulus KKM! 🎉' : 'Belum Lulus 😢'"></h3>
-                                                            <p class="text-xs sm:text-sm text-slate-500 font-medium">Standar Kelulusan (KKM): <strong class="text-slate-800 font-bold">70</strong></p>
+                                                            <h3 class="text-xl sm:text-3xl font-black text-slate-900 mb-1 tracking-tight" x-text="isCurrentQuizPassed() ? 'Lulus KKM! 🎉' : 'Belum Lulus 😢'"></h3>
+                                                            <p class="text-xs sm:text-sm text-slate-500 font-medium">Standar Kelulusan (KKM): <strong class="text-slate-800 font-bold" x-text="getKkmScoreTarget() + (activeNode && activeNode.quizEnableInterval ? ' (' + (activeNode.quizPassingGrade || 70) + '%)' : '%')"></strong></p>
+                                                            <template x-if="activeNode && activeNode.quizEnableInterval">
+                                                                <div class="mt-2 text-xs font-bold text-slate-600 flex flex-wrap items-center gap-2">
+                                                                    <span class="px-2.5 py-1 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-200/60 shadow-2xs">🎯 Skala Nilai: <strong x-text="(activeNode.quizScoreMin || 200) + ' – ' + (activeNode.quizScoreMax || 1100)"></strong></span>
+                                                                    <span class="px-2.5 py-1 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200/60 shadow-2xs">Capaian: <strong x-text="(quizState.percentage || 0) + '%'"></strong> (<span x-text="(quizState.rawEarned || 0) + ' / ' + (quizState.rawTotal || 0) + ' bobot poin'"></span>)</span>
+                                                                </div>
+                                                            </template>
                                                         </div>
                                                     </div>
                                                     <div class="shrink-0 text-right hidden sm:block">
                                                         <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Status Kuis</div>
-                                                        <div class="px-4 py-2 rounded-xl text-sm font-bold shadow-sm inline-flex items-center gap-2" :class="quizState.score >= 70 ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'">
+                                                        <div class="px-4 py-2 rounded-xl text-sm font-bold shadow-sm inline-flex items-center gap-2" :class="isCurrentQuizPassed() ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'">
                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                            <span x-text="quizState.score >= 70 ? 'Tuntas' : 'Mengulang'"></span>
+                                                            <span x-text="isCurrentQuizPassed() ? 'Tuntas' : 'Mengulang'"></span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -984,10 +990,13 @@
                                                                         </td>
                                                                         <td class="py-3 px-4 sm:px-6 text-slate-500 font-medium" x-text="attempt.datetime || attempt.date || '-'"></td>
                                                                         <td class="py-3 px-4 sm:px-6">
-                                                                            <span class="font-black text-base" :class="attempt.score >= 70 ? 'text-emerald-600' : 'text-rose-600'" x-text="attempt.score"></span>
+                                                                            <span class="font-black text-base" :class="isAttemptPassed(attempt) ? 'text-emerald-600' : 'text-rose-600'" x-text="attempt.score"></span>
+                                                                            <template x-if="attempt.isInterval">
+                                                                                <span class="text-[10px] text-slate-400 font-normal block" x-text="'Skala ' + attempt.scoreMin + ' - ' + attempt.scoreMax"></span>
+                                                                            </template>
                                                                         </td>
                                                                         <td class="py-3 px-4 sm:px-6 text-right">
-                                                                            <span class="inline-flex px-2 py-1 rounded-lg text-xs font-bold" :class="attempt.score >= 70 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'" x-text="attempt.score >= 70 ? 'Lulus' : 'Gagal'"></span>
+                                                                            <span class="inline-flex px-2 py-1 rounded-lg text-xs font-bold" :class="isAttemptPassed(attempt) ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'" x-text="isAttemptPassed(attempt) ? 'Lulus' : 'Gagal'"></span>
                                                                         </td>
                                                                     </tr>
                                                                 </template>
@@ -1031,16 +1040,36 @@
                             <!-- Pembahasan (Discussion View) -->
                             <template x-if="quizState.showDiscussion">
                                 <div class="bg-white rounded-[2.5rem] p-6 sm:p-10 shadow-xl border border-slate-100">
-                                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 border-b-2 border-slate-50 pb-6">
+                                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b-2 border-slate-50 pb-6">
                                         <div>
                                             <h3 class="text-2xl font-black text-slate-900 tracking-tight">Kunci & Pembahasan</h3>
-                                            <p class="text-slate-500 text-sm font-medium mt-1">Review hasil pekerjaan Anda.</p>
+                                            <p class="text-slate-500 text-sm font-medium mt-1">Review hasil pekerjaan Anda dan perolehan nilai setiap butir soal.</p>
                                         </div>
                                         <button @click="quizState.showDiscussion = false" class="px-6 py-3 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold text-sm transition-all flex items-center gap-2">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                                             Kembali ke Hasil
                                         </button>
                                     </div>
+
+                                    <!-- Banner Info Konversi Nilai Soal jika Interval Aktif -->
+                                    <template x-if="activeNode && activeNode.quizEnableInterval">
+                                        <div class="mb-8 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-indigo-950 via-purple-950 to-slate-900 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4 border border-indigo-800/60 relative overflow-hidden">
+                                            <div class="flex items-center gap-3 relative z-10">
+                                                <div class="w-11 h-11 rounded-2xl bg-white/10 flex items-center justify-center text-xl shrink-0 backdrop-blur-md border border-white/10 shadow-inner">🎯</div>
+                                                <div>
+                                                    <div class="text-[10px] font-black uppercase tracking-widest text-indigo-300">Konversi Skala Interval Nilai</div>
+                                                    <div class="text-sm sm:text-base font-black text-white mt-0.5">
+                                                        Total Nilai: <span class="text-emerald-400 text-lg sm:text-xl font-black" x-text="quizState.score"></span>
+                                                        <span class="text-xs font-semibold text-indigo-200 ml-1.5">(Skor Dasar Min: <span x-text="activeNode.quizScoreMin || 200"></span> + Poin Soal: <span x-text="Math.max(0, quizState.score - (activeNode.quizScoreMin || 200))"></span>)</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex flex-wrap items-center gap-2 text-xs font-bold text-indigo-200 relative z-10">
+                                                <span class="px-3 py-1.5 rounded-xl bg-white/10 border border-white/10">Skala: <strong class="text-white" x-text="(activeNode.quizScoreMin || 200) + ' – ' + (activeNode.quizScoreMax || 1100)"></strong></span>
+                                                <span class="px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">Capaian: <strong class="text-white" x-text="(quizState.percentage || 0) + '%'"></strong> (<span x-text="(quizState.rawEarned || 0) + ' / ' + (quizState.rawTotal || 0) + ' poin mentah'"></span>)</span>
+                                            </div>
+                                        </div>
+                                    </template>
 
                                     <div class="space-y-8">
                                         <template x-for="(q, qIdx) in quizState.activeQuestions" :key="q.id">
@@ -1050,15 +1079,29 @@
                                                         <div class="shrink-0 w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-black flex items-center justify-center text-sm" x-text="qIdx + 1"></div>
                                                         <div class="prose prose-sm prose-slate max-w-none prose-img:rounded-xl prose-img:shadow-md w-full" x-html="q.text ? q.text.replace(/{dash}/g, '_____') : ''"></div>
                                                     </div>
-                                                    <div class="shrink-0 mt-1" x-show="q.type !== 'essai'">
+                                                    <div class="flex items-center gap-2 flex-wrap shrink-0 mt-1" x-show="q.type !== 'essai'">
+                                                        <!-- Converted Score Pill (Nilai per Butir Soal) -->
+                                                        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black shadow-2xs border tracking-tight"
+                                                             :class="getQuestionScore(q) > 0 ? (getQuestionScore(q) >= getQuestionMaxScore(q) ? 'bg-indigo-50 text-indigo-800 border-indigo-200' : 'bg-amber-50 text-amber-800 border-amber-200') : 'bg-slate-100 text-slate-500 border-slate-200'">
+                                                            <span class="text-[10px] font-bold uppercase opacity-75">Nilai:</span>
+                                                            <span class="font-black text-sm" :class="getQuestionScore(q) > 0 ? 'text-indigo-600' : 'text-slate-500'" x-text="(getQuestionScore(q) > 0 ? '+' : '') + getQuestionScore(q)"></span>
+                                                            <span class="text-[10px] opacity-70 font-bold" x-text="'/ ' + getQuestionMaxScore(q) + ' Poin'"></span>
+                                                        </div>
+
                                                         <template x-if="isAnswerCorrect(q, quizAnswers[q.id])">
-                                                            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-black shadow-sm border border-emerald-200 uppercase tracking-wider">
+                                                            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-100 text-emerald-700 text-[10px] font-black shadow-sm border border-emerald-200 uppercase tracking-wider">
                                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                                                 Benar
                                                             </div>
                                                         </template>
-                                                        <template x-if="!isAnswerCorrect(q, quizAnswers[q.id])">
-                                                            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-100 text-rose-700 text-[10px] font-black shadow-sm border border-rose-200 uppercase tracking-wider">
+                                                        <template x-if="!isAnswerCorrect(q, quizAnswers[q.id]) && getQuestionScore(q) > 0">
+                                                            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-100 text-amber-700 text-[10px] font-black shadow-sm border border-amber-200 uppercase tracking-wider">
+                                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                                                Parsial
+                                                            </div>
+                                                        </template>
+                                                        <template x-if="!isAnswerCorrect(q, quizAnswers[q.id]) && getQuestionScore(q) <= 0">
+                                                            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-100 text-rose-700 text-[10px] font-black shadow-sm border border-rose-200 uppercase tracking-wider">
                                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
                                                                 Salah
                                                             </div>
@@ -1987,7 +2030,7 @@
                 completedNodes: [],
                 pastScores: {},
                 quizAnswers: {},
-                quizState: { submitted: false, isSubmitting: false, showDiscussion: false, hasEssay: false, score: 0, correct: 0, total: 0, inProgress: false, currentQIdx: 0, doubtful: [], timeLeft: 0, timerInterval: null, elapsedSeconds: 0, autosaveInterval: null, autosaveTimeout: null, activeQuestions: [], assignedPaket: 1 },
+                quizState: { submitted: false, isSubmitting: false, showDiscussion: false, hasEssay: false, score: 0, correct: 0, total: 0, inProgress: false, currentQIdx: 0, doubtful: [], timeLeft: 0, timerInterval: null, elapsedSeconds: 0, autosaveInterval: null, autosaveTimeout: null, activeQuestions: [], assignedPaket: 1, questionScores: {}, percentage: 0, rawEarned: 0, rawTotal: 0, isInterval: false, scoreMin: 200, scoreMax: 1100 },
                 
                 isRightPaneFullscreen: false,
                 isAppFullscreen: false,
@@ -2589,16 +2632,29 @@
                     }
 
                     if (node && node.type === 'kuis' && this.pastScores[node.id] && this.pastScores[node.id].length > 0) {
+                        const latestAttempt = this.pastScores[node.id][0];
                         this.quizState.submitted = true;
-                        this.quizState.score = this.pastScores[node.id][0].score;
+                        this.quizState.score = latestAttempt.score;
                         this.quizState.total = '?'; // mark as loaded from history
-                        let isGraded = this.pastScores[node.id][0].isGraded;
+                        const isInterval = !!(node.quizEnableInterval && node.quizScoreMax > node.quizScoreMin);
+                        this.quizState.isInterval = isInterval;
+                        this.quizState.scoreMin = Number(node.quizScoreMin || 200);
+                        this.quizState.scoreMax = Number(node.quizScoreMax || 1100);
+                        if (latestAttempt.percentage !== undefined) {
+                            this.quizState.percentage = latestAttempt.percentage;
+                        } else if (isInterval) {
+                            const range = this.quizState.scoreMax - this.quizState.scoreMin;
+                            this.quizState.percentage = range > 0 ? Math.max(0, Math.min(100, Math.round(((latestAttempt.score - this.quizState.scoreMin) / range) * 100))) : 0;
+                        } else {
+                            this.quizState.percentage = latestAttempt.score;
+                        }
+                        let isGraded = latestAttempt.isGraded;
                         this.quizState.hasEssay = !isGraded && node.questions && node.questions.some(q => q.type === 'essai');
                         this.quizState.inProgress = false;
                         
-                        this.quizState.assignedPaket = this.pastScores[node.id][0].paket || 1;
+                        this.quizState.assignedPaket = latestAttempt.paket || 1;
                         this.quizState.activeQuestions = node.questions ? node.questions.filter(q => (q.paket || 1) === this.quizState.assignedPaket) : [];
-                        this.quizAnswers = this.pastScores[node.id][0].answers || {};
+                        this.quizAnswers = latestAttempt.answers || {};
                     } else {
                         this.quizState.submitted = false;
                         this.quizState.inProgress = false;
@@ -2713,6 +2769,10 @@
                     this.quizAnswers = {};
                     this.quizState.submitted = false;
                     this.quizState.elapsedSeconds = 0;
+                    this.quizState.questionScores = {};
+                    this.quizState.percentage = 0;
+                    this.quizState.rawEarned = 0;
+                    this.quizState.rawTotal = 0;
                     
                     // 1. Acak Paket (jika quizPackageCount > 1 dan quizShufflePackage !== false)
                     const packages = this.activeNode.quizPackageCount || 1;
@@ -2944,102 +3004,65 @@
                     this.quizState.inProgress = false;
                     if (!this.quizState.activeQuestions || this.quizState.activeQuestions.length === 0) return;
                     
-                    let correct = 0;
+                    let correctCount = 0;
                     let totalGradable = 0;
-                    
+                    let totalWeight = 0;
+                    let earnedWeight = 0;
+                    this.quizState.questionScores = {};
+
+                    // 1. Hitung total bobot soal mentah
                     this.quizState.activeQuestions.forEach(q => {
-                        if (q.type === 'essai') return; // Skip auto-grading for essay
-                        
+                        if (q.type === 'essai') return;
                         totalGradable++;
+                        const w = (parseFloat(q.points) > 0) ? parseFloat(q.points) : 10;
+                        totalWeight += w;
+                    });
+                    if (totalWeight <= 0) totalWeight = 100;
+
+                    const isInterval = !!(this.activeNode && this.activeNode.quizEnableInterval && this.activeNode.quizScoreMax > this.activeNode.quizScoreMin);
+                    const scoreMin = isInterval ? Number(this.activeNode.quizScoreMin || 200) : 0;
+                    const scoreMax = isInterval ? Number(this.activeNode.quizScoreMax || 1100) : 100;
+                    const range = scoreMax - scoreMin;
+
+                    // 2. Evaluasi jawaban dan hitung konversi nilai tiap soal
+                    this.quizState.activeQuestions.forEach(q => {
+                        if (q.type === 'essai') return;
+                        const w = (parseFloat(q.points) > 0) ? parseFloat(q.points) : 10;
                         const ans = this.quizAnswers[q.id];
-                        
-                        if (q.type === 'pg') {
-                            if (ans == q.correctAnswers) correct++;
-                        } 
-                        else if (q.type === 'pg_kompleks') {
-                            const correctArr = (q.correctAnswersArray || []).map(String);
-                            const userArr = (Array.isArray(ans) ? ans : []).map(String);
-                            if (correctArr.length === userArr.length && correctArr.every(val => userArr.includes(val))) {
-                                correct++;
-                            }
-                        }
-                        else if (q.type === 'pg_majemuk') {
-                            let allMatch = true;
-                            const userObj = ans || {};
-                            q.statements.forEach((stmt, sIdx) => {
-                                if (String(userObj[sIdx]) !== String(stmt.isCorrect)) allMatch = false;
-                            });
-                            if (allMatch && q.statements.length > 0) correct++;
-                        }
-                        else if (q.type === 'jodoh') {
-                            let allMatch = true;
-                            const userObj = ans || {};
-                            q.pairs.forEach((pair, pIdx) => {
-                                if (userObj[pIdx] !== pair.right) allMatch = false;
-                            });
-                            if (allMatch && q.pairs.length > 0) correct++;
-                        }
-                        else if (q.type === 'isian') {
-                            if (!q.shortAnswerKeys) return;
-                            const keys = q.shortAnswerKeys.toLowerCase().split(',').map(k => k.trim());
-                            if (ans && keys.includes(ans.toString().toLowerCase().trim())) correct++;
-                        }
-                        else if (q.type === 'blank') {
-                            const ans = this.quizAnswers[q.id] || {};
-                            let correctParts = 0;
-                            const totalParts = (q.blankText.match(/{dash}/g) || []).length;
-                            const keys = (q.blankAnswers || '').split('|').map(s => s.trim().toLowerCase());
-                            for(let i=0; i<totalParts; i++) {
-                                let expected = keys[i] ? keys[i].split(',').map(s => s.trim()) : [];
-                                if (ans[i] && expected.includes(ans[i].trim().toLowerCase())) correctParts++;
-                            }
-                            if (totalParts > 0) correct += (correctParts / totalParts);
-                        }
-                        else if (q.type === 'osn_biologi') {
-                            const ans = this.quizAnswers[q.id] || {};
-                            let correctStmts = 0;
-                            if (Array.isArray(q.osnStatements)) {
-                                q.osnStatements.forEach((stmt, idx) => {
-                                    if (ans[idx] === stmt.isTrue.toString()) correctStmts++;
-                                });
-                            }
-                            if (correctStmts === 4) correct += 1;
-                            else if (correctStmts === 3) correct += 0.6;
-                            else if (correctStmts === 2) correct += 0.2;
-                        }
-                        else if (q.type === 'range') {
-                            const ans = this.quizAnswers[q.id];
-                            if (ans !== undefined && parseFloat(ans) === parseFloat(q.rangeCorrect ?? q.correctRange)) correct++;
-                        }
-                        else if (q.type === 'graph') {
-                            const ans = this.quizAnswers[q.id] || [];
-                            let allCorrect = true;
-                            if (!q.graphCoordinates || ans.length !== q.graphCoordinates.length) allCorrect = false;
-                            else {
-                                // check if every coordinate in q is present in ans
-                                q.graphCoordinates.forEach(gc => {
-                                    const match = ans.find(a => parseFloat(a.x) === parseFloat(gc.x) && parseFloat(a.y) === parseFloat(gc.y));
-                                    if (!match) allCorrect = false;
-                                });
-                            }
-                            if (allCorrect) correct++;
-                        }
-                        else if (q.type === 'puzzle') {
-                            const ans = this.quizAnswers[q.id] || [];
-                            const totalPieces = Math.pow(parseInt(q.puzzleDifficulty) || 4, 2);
-                            let allCorrect = ans.length === totalPieces;
-                            if (allCorrect) {
-                                for(let i=0; i<totalPieces; i++) {
-                                    if (ans[i] !== i) { allCorrect = false; break; }
-                                }
-                            }
-                            if (allCorrect) correct++;
-                        }
+                        const fraction = this.getQuestionFraction(q, ans);
+
+                        if (fraction >= 1) correctCount++;
+                        else if (fraction > 0) correctCount += fraction;
+
+                        const rawEarned = fraction * w;
+                        earnedWeight += rawEarned;
+
+                        // Konversi nilai maksimal dan nilai yang didapat pada butir soal ini
+                        const qMaxConverted = isInterval ? Math.round((w / totalWeight) * range) : Math.round((w / totalWeight) * 100);
+                        const qEarnedConverted = isInterval ? Math.round((fraction * w / totalWeight) * range) : Math.round((fraction * w / totalWeight) * 100);
+
+                        this.quizState.questionScores[q.id] = {
+                            earned: qEarnedConverted,
+                            max: qMaxConverted,
+                            fraction: fraction,
+                            rawPoints: rawEarned,
+                            maxRawPoints: w,
+                            isCorrect: fraction >= 1
+                        };
                     });
 
+                    const percentage = totalWeight > 0 ? (earnedWeight / totalWeight) : 0;
+                    const finalScore = isInterval ? Math.round(scoreMin + (percentage * range)) : Math.round(percentage * 100);
+
                     this.quizState.total = totalGradable;
-                    this.quizState.correct = correct;
-                    this.quizState.score = totalGradable > 0 ? Math.round((correct / totalGradable) * 100) : 100;
+                    this.quizState.correct = +correctCount.toFixed(1);
+                    this.quizState.score = finalScore;
+                    this.quizState.percentage = Math.round(percentage * 100);
+                    this.quizState.rawEarned = +earnedWeight.toFixed(1);
+                    this.quizState.rawTotal = +totalWeight.toFixed(1);
+                    this.quizState.isInterval = isInterval;
+                    this.quizState.scoreMin = scoreMin;
+                    this.quizState.scoreMax = scoreMax;
                     this.quizState.hasEssay = this.quizState.activeQuestions.some(q => q.type === 'essai');
                     
                     this.quizState.isSubmitting = true;
@@ -3055,7 +3078,11 @@
                         this.pastScores[this.activeNode.id].unshift({
                             score: this.quizState.score,
                             datetime: new Date().toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-                            paket: this.quizState.assignedPaket
+                            paket: this.quizState.assignedPaket,
+                            isInterval: isInterval,
+                            scoreMin: scoreMin,
+                            scoreMax: scoreMax,
+                            percentage: this.quizState.percentage
                         });
 
                         // Final submit to DB
@@ -3212,15 +3239,17 @@
                     return 'Sistem Penilaian Kompleks (Grafik/Puzzle/OSN/Range)';
                 },
                 isAnswerCorrect(q, ans) {
-                    if (ans === undefined || ans === null || ans === '') return false;
-                    
+                    return this.getQuestionFraction(q, ans) >= 1;
+                },
+                getQuestionFraction(q, ans) {
+                    if (ans === undefined || ans === null || ans === '') return 0;
                     if (q.type === 'pg') {
-                        return ans == q.correctAnswers;
+                        return ans == q.correctAnswers ? 1 : 0;
                     } 
                     else if (q.type === 'pg_kompleks') {
                         const correctArr = (q.correctAnswersArray || []).map(String);
                         const userArr = (Array.isArray(ans) ? ans : []).map(String);
-                        return (correctArr.length === userArr.length && correctArr.every(val => userArr.includes(val)));
+                        return (correctArr.length === userArr.length && correctArr.every(val => userArr.includes(val))) ? 1 : 0;
                     }
                     else if (q.type === 'pg_majemuk') {
                         let allMatch = true;
@@ -3228,7 +3257,7 @@
                         q.statements.forEach((stmt, sIdx) => {
                             if (String(userObj[sIdx]) !== String(stmt.isCorrect)) allMatch = false;
                         });
-                        return allMatch && q.statements.length > 0;
+                        return (allMatch && q.statements.length > 0) ? 1 : 0;
                     }
                     else if (q.type === 'jodoh') {
                         let allMatch = true;
@@ -3236,60 +3265,112 @@
                         q.pairs.forEach((pair, pIdx) => {
                             if (userObj[pIdx] !== pair.right) allMatch = false;
                         });
-                        return allMatch && q.pairs.length > 0;
+                        return (allMatch && q.pairs.length > 0) ? 1 : 0;
                     }
                     else if (q.type === 'isian') {
-                        if (!q.shortAnswerKeys) return false;
+                        if (!q.shortAnswerKeys) return 0;
                         const keys = q.shortAnswerKeys.toLowerCase().split(',').map(k => k.trim());
-                        return keys.includes(ans.toString().toLowerCase().trim());
+                        return keys.includes(ans.toString().toLowerCase().trim()) ? 1 : 0;
                     }
                     else if (q.type === 'blank') {
+                        const ansObj = typeof ans === 'object' && ans !== null ? ans : {};
                         let correctParts = 0;
                         const totalParts = (q.blankText.match(/{dash}/g) || []).length;
-                        const keys = q.blankAnswers.split('|').map(s => s.trim().toLowerCase());
+                        const keys = (q.blankAnswers || '').split('|').map(s => s.trim().toLowerCase());
                         for(let i=0; i<totalParts; i++) {
                             let expected = keys[i] ? keys[i].split(',').map(s => s.trim()) : [];
-                            if (ans[i] && expected.includes(ans[i].trim().toLowerCase())) correctParts++;
+                            if (ansObj[i] && expected.includes(ansObj[i].trim().toLowerCase())) correctParts++;
                         }
-                        return correctParts === totalParts && totalParts > 0;
+                        return totalParts > 0 ? (correctParts / totalParts) : 0;
                     }
                     else if (q.type === 'osn_biologi') {
+                        const ansObj = typeof ans === 'object' && ans !== null ? ans : {};
                         let correctStmts = 0;
                         if (Array.isArray(q.osnStatements)) {
                             q.osnStatements.forEach((stmt, idx) => {
-                                if (ans[idx] === stmt.isTrue.toString()) correctStmts++;
+                                if (ansObj[idx] === stmt.isTrue.toString()) correctStmts++;
                             });
                         }
-                        return correctStmts === 4;
+                        if (correctStmts === 4) return 1;
+                        if (correctStmts === 3) return 0.6;
+                        if (correctStmts === 2) return 0.2;
+                        return 0;
                     }
                     else if (q.type === 'range') {
-                        return parseFloat(ans) === parseFloat(q.rangeCorrect ?? q.correctRange);
+                        return (parseFloat(ans) === parseFloat(q.rangeCorrect ?? q.correctRange)) ? 1 : 0;
                     }
                     else if (q.type === 'graph') {
+                        const ansArr = Array.isArray(ans) ? ans : [];
+                        if (!q.graphCoordinates || ansArr.length !== q.graphCoordinates.length) return 0;
                         let allCorrect = true;
-                        if (!q.graphCoordinates || ans.length !== q.graphCoordinates.length) allCorrect = false;
-                        else {
-                            q.graphCoordinates.forEach(gc => {
-                                const match = ans.find(a => parseFloat(a.x) === parseFloat(gc.x) && parseFloat(a.y) === parseFloat(gc.y));
-                                if (!match) allCorrect = false;
-                            });
-                        }
-                        return allCorrect;
+                        q.graphCoordinates.forEach(gc => {
+                            const match = ansArr.find(a => parseFloat(a.x) === parseFloat(gc.x) && parseFloat(a.y) === parseFloat(gc.y));
+                            if (!match) allCorrect = false;
+                        });
+                        return allCorrect ? 1 : 0;
                     }
                     else if (q.type === 'puzzle') {
+                        const ansArr = Array.isArray(ans) ? ans : [];
                         const totalPieces = Math.pow(parseInt(q.puzzleDifficulty) || 4, 2);
-                        let allCorrect = ans.length === totalPieces;
-                        if (allCorrect) {
-                            for(let i=0; i<totalPieces; i++) {
-                                if (ans[i] !== i) { allCorrect = false; break; }
-                            }
+                        if (ansArr.length !== totalPieces) return 0;
+                        for(let i=0; i<totalPieces; i++) {
+                            if (ansArr[i] !== i) return 0;
                         }
-                        return allCorrect;
+                        return 1;
                     }
-                    else if (q.type === 'essai') {
-                        return null; // Not applicable
+                    return 0;
+                },
+                isCurrentQuizPassed() {
+                    const passPct = (this.activeNode && this.activeNode.quizPassingGrade !== undefined) ? Number(this.activeNode.quizPassingGrade) : 70;
+                    if (this.quizState && this.quizState.percentage !== undefined && this.activeNode && this.activeNode.quizEnableInterval) {
+                        return this.quizState.percentage >= passPct;
                     }
-                    return false;
+                    if (this.activeNode && this.activeNode.quizEnableInterval && this.activeNode.quizScoreMax > this.activeNode.quizScoreMin) {
+                        const target = this.getKkmScoreTarget();
+                        return (this.quizState ? this.quizState.score : 0) >= target;
+                    }
+                    return (this.quizState ? this.quizState.score : 0) >= passPct;
+                },
+                isAttemptPassed(attempt) {
+                    const passPct = (this.activeNode && this.activeNode.quizPassingGrade !== undefined) ? Number(this.activeNode.quizPassingGrade) : 70;
+                    if (attempt && attempt.percentage !== undefined) return attempt.percentage >= passPct;
+                    if (attempt && attempt.isInterval && attempt.scoreMax > attempt.scoreMin) {
+                        const kkmScore = Math.round(Number(attempt.scoreMin) + (passPct / 100) * (Number(attempt.scoreMax) - Number(attempt.scoreMin)));
+                        return attempt.score >= kkmScore;
+                    }
+                    return attempt ? attempt.score >= passPct : false;
+                },
+                getKkmScoreTarget() {
+                    const passPct = (this.activeNode && this.activeNode.quizPassingGrade !== undefined) ? Number(this.activeNode.quizPassingGrade) : 70;
+                    if (this.activeNode && this.activeNode.quizEnableInterval && this.activeNode.quizScoreMax > this.activeNode.quizScoreMin) {
+                        const min = Number(this.activeNode.quizScoreMin || 200);
+                        const max = Number(this.activeNode.quizScoreMax || 1100);
+                        return Math.round(min + (passPct / 100) * (max - min));
+                    }
+                    return passPct;
+                },
+                getQuestionScore(q) {
+                    if (!q) return 0;
+                    if (this.quizState && this.quizState.questionScores && this.quizState.questionScores[q.id] !== undefined) {
+                        return this.quizState.questionScores[q.id].earned;
+                    }
+                    const totalWeight = (this.quizState.activeQuestions || []).reduce((sum, item) => sum + (parseFloat(item.points) > 0 ? parseFloat(item.points) : 10), 0) || 1;
+                    const weight = parseFloat(q.points) > 0 ? parseFloat(q.points) : 10;
+                    const isInterval = !!(this.activeNode && this.activeNode.quizEnableInterval && this.activeNode.quizScoreMax > this.activeNode.quizScoreMin);
+                    const range = isInterval ? ((this.activeNode.quizScoreMax || 1100) - (this.activeNode.quizScoreMin || 200)) : 100;
+                    const frac = this.getQuestionFraction(q, this.quizAnswers ? this.quizAnswers[q.id] : undefined);
+                    return Math.round((frac * weight / totalWeight) * range);
+                },
+                getQuestionMaxScore(q) {
+                    if (!q) return 0;
+                    if (this.quizState && this.quizState.questionScores && this.quizState.questionScores[q.id] !== undefined) {
+                        return this.quizState.questionScores[q.id].max;
+                    }
+                    const totalWeight = (this.quizState.activeQuestions || []).reduce((sum, item) => sum + (parseFloat(item.points) > 0 ? parseFloat(item.points) : 10), 0) || 1;
+                    const weight = parseFloat(q.points) > 0 ? parseFloat(q.points) : 10;
+                    const isInterval = !!(this.activeNode && this.activeNode.quizEnableInterval && this.activeNode.quizScoreMax > this.activeNode.quizScoreMin);
+                    const range = isInterval ? ((this.activeNode.quizScoreMax || 1100) - (this.activeNode.quizScoreMin || 200)) : 100;
+                    return Math.round((weight / totalWeight) * range);
                 },
 
                 // ==========================================
