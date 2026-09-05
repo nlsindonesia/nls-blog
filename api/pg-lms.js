@@ -961,10 +961,14 @@ export default async function handler(request, response) {
             let enrolledIds = [];
             let quizResults = [];
             let progressMap = {};
+            let cpSubmissions = [];
+            let cpDrafts = {};
 
             if (targetUser && targetUser.lmsData) {
                 enrolledIds = Array.isArray(targetUser.lmsData.enrolledIds) ? [...targetUser.lmsData.enrolledIds] : [];
                 progressMap = targetUser.lmsData.progressMap || {};
+                cpSubmissions = Array.isArray(targetUser.lmsData.cpSubmissions) ? [...targetUser.lmsData.cpSubmissions] : [];
+                cpDrafts = targetUser.lmsData.cpDrafts || {};
                 if (Array.isArray(targetUser.lmsData.quizResults)) {
                     quizResults = targetUser.lmsData.quizResults.map(q => ({
                         ...q,
@@ -995,7 +999,9 @@ export default async function handler(request, response) {
                 lmsData: {
                     enrolledIds: Array.from(new Set(enrolledIds)),
                     quizResults,
-                    progressMap
+                    progressMap,
+                    cpSubmissions,
+                    cpDrafts
                 }
             });
         }
@@ -1064,6 +1070,92 @@ export default async function handler(request, response) {
             }
             
             return response.status(200).json({ success: true, message: 'Progress updated.' });
+        }
+
+        // --- 6B. SAVE PROGRAMMING SUBMISSION (100% Cloud DB per Student) ---
+        if (action === 'save_cp_submission') {
+            const { userId, courseId, moduleId, submission, code, language } = request.body || {};
+            const uid = userId || request.body?.studentId || '';
+            if (!uid || !submission) {
+                return response.status(400).json({ success: false, message: 'Missing userId or submission data.' });
+            }
+
+            const store = await getCloudStore();
+            const users = Array.isArray(store.users) ? store.users : [];
+            const searchKey = String(uid).toLowerCase();
+
+            let targetUser = users.find(u => {
+                if (!u) return false;
+                return (u.id && String(u.id).toLowerCase() === searchKey) ||
+                       (u.email && u.email.toLowerCase() === searchKey) ||
+                       (u.username && u.username.toLowerCase() === searchKey);
+            });
+
+            if (targetUser) {
+                if (!targetUser.lmsData) targetUser.lmsData = { enrolledIds: [], quizResults: [], progressMap: {} };
+                if (!Array.isArray(targetUser.lmsData.cpSubmissions)) targetUser.lmsData.cpSubmissions = [];
+                if (!targetUser.lmsData.cpDrafts) targetUser.lmsData.cpDrafts = {};
+
+                // Simpan ke riwayat submisi unik akun siswa
+                targetUser.lmsData.cpSubmissions.unshift(submission);
+                if (targetUser.lmsData.cpSubmissions.length > 100) {
+                    targetUser.lmsData.cpSubmissions = targetUser.lmsData.cpSubmissions.slice(0, 100);
+                }
+
+                // Update draft kodingan terakhir jika ada
+                if (code && moduleId && language) {
+                    const draftKey = `${courseId || 'course'}_${moduleId}_${language}`;
+                    targetUser.lmsData.cpDrafts[draftKey] = {
+                        code: code,
+                        language: language,
+                        updatedAt: new Date().toISOString()
+                    };
+                }
+
+                targetUser.updatedAt = new Date().toISOString();
+                await saveCloudStore({ users });
+                return response.status(200).json({ success: true, message: 'Submisi berhasil tersimpan di akun siswa.' });
+            }
+
+            return response.status(200).json({ success: true, message: 'Submisi diproses lokal.' });
+        }
+
+        // --- 6C. SAVE PROGRAMMING DRAFT CODE (100% Cloud DB per Student) ---
+        if (action === 'save_cp_draft') {
+            const { userId, courseId, moduleId, language, code } = request.body || {};
+            const uid = userId || '';
+            if (!uid || !moduleId || !code) {
+                return response.status(400).json({ success: false, message: 'Missing required draft fields.' });
+            }
+
+            const store = await getCloudStore();
+            const users = Array.isArray(store.users) ? store.users : [];
+            const searchKey = String(uid).toLowerCase();
+
+            let targetUser = users.find(u => {
+                if (!u) return false;
+                return (u.id && String(u.id).toLowerCase() === searchKey) ||
+                       (u.email && u.email.toLowerCase() === searchKey) ||
+                       (u.username && u.username.toLowerCase() === searchKey);
+            });
+
+            if (targetUser) {
+                if (!targetUser.lmsData) targetUser.lmsData = { enrolledIds: [], quizResults: [], progressMap: {} };
+                if (!targetUser.lmsData.cpDrafts) targetUser.lmsData.cpDrafts = {};
+
+                const draftKey = `${courseId || 'course'}_${moduleId}_${language || 'cpp'}`;
+                targetUser.lmsData.cpDrafts[draftKey] = {
+                    code: code,
+                    language: language,
+                    updatedAt: new Date().toISOString()
+                };
+
+                targetUser.updatedAt = new Date().toISOString();
+                await saveCloudStore({ users });
+                return response.status(200).json({ success: true });
+            }
+
+            return response.status(200).json({ success: true });
         }
 
         // --- 7. SUBMIT QUIZ (100% Cloud DB) ---

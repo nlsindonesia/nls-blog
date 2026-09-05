@@ -1695,6 +1695,43 @@
                 quizAnswers: {},
                 quizState: { submitted: false, isSubmitting: false, showDiscussion: false, hasEssay: false, score: 0, correct: 0, total: 0, inProgress: false, currentQIdx: 0, doubtful: [], timeLeft: 0, timerInterval: null, elapsedSeconds: 0, autosaveInterval: null, autosaveTimeout: null, activeQuestions: [], assignedPaket: 1 },
                 
+                cloudCpSubmissions: [],
+                cloudCpDrafts: {},
+                cpDraftTimeout: null,
+
+                getStudentId() {
+                    try {
+                        const sessionRaw = localStorage.getItem('nls_student_auth_session') || localStorage.getItem('nls_auth_session');
+                        if (sessionRaw) {
+                            const sess = JSON.parse(sessionRaw);
+                            if (sess && sess.id) return String(sess.id);
+                            if (sess && sess.email) return String(sess.email);
+                            if (sess && sess.username) return String(sess.username);
+                        }
+                    } catch(e) {}
+                    return 'guest';
+                },
+
+                debounceSaveCpDraft(code, lang) {
+                    if (this.cpDraftTimeout) clearTimeout(this.cpDraftTimeout);
+                    this.cpDraftTimeout = setTimeout(() => {
+                        const studentId = this.getStudentId();
+                        if (studentId === 'guest' || !this.activeNode || !this.courseData) return;
+                        fetch('/api/pg-lms', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                action: 'save_cp_draft',
+                                userId: studentId,
+                                courseId: this.courseData.id,
+                                moduleId: this.activeNode.id,
+                                language: lang,
+                                code: code
+                            })
+                        }).catch(() => {});
+                    }, 2000);
+                },
+
                 // YouTube Interactive API state
                 ytPlayer: null,
                 ytPollInterval: null,
@@ -2028,6 +2065,15 @@
                                                 this.pastScores[qr.moduleIndex].push(qr);
                                             }
                                         });
+                                    }
+                                    if (Array.isArray(data.lmsData.cpSubmissions)) {
+                                        this.cloudCpSubmissions = data.lmsData.cpSubmissions;
+                                    }
+                                    if (data.lmsData.cpDrafts) {
+                                        this.cloudCpDrafts = data.lmsData.cpDrafts;
+                                    }
+                                    if (this.activeNode && this.activeNode.type === 'pemrograman') {
+                                        this.loadCpSubmissions();
                                     }
                                 }
                             }
@@ -2985,8 +3031,10 @@
                         this.cpState.editorReady = false;
                     }
 
+                    const studentId = this.getStudentId();
                     const courseId = this.courseData ? this.courseData.id : 'draft';
-                    const lastLang = localStorage.getItem('cp_last_lang_' + courseId + '_' + this.activeNode.id);
+                    const lastLang = localStorage.getItem('cp_last_lang_' + studentId + '_' + courseId + '_' + this.activeNode.id) ||
+                                     localStorage.getItem('cp_last_lang_' + courseId + '_' + this.activeNode.id);
                     if (lastLang) {
                         this.cpState.selectedLang = lastLang;
                     } else if (this.activeNode.starterCodes) {
@@ -3010,9 +3058,19 @@
                     this.loadCpSubmissions();
 
                     // Pre-load saved code or boilerplate into currentCode so fallback textarea is immediately populated
-                    const key = 'cp_code_' + courseId + '_' + this.activeNode.id + '_' + this.cpState.selectedLang;
-                    let savedCode = localStorage.getItem(key);
-                    if (savedCode === null) {
+                    const key = 'cp_code_' + studentId + '_' + courseId + '_' + this.activeNode.id + '_' + this.cpState.selectedLang;
+                    const legacyKey = 'cp_code_' + courseId + '_' + this.activeNode.id + '_' + this.cpState.selectedLang;
+                    let savedCode = localStorage.getItem(key) || localStorage.getItem(legacyKey);
+                    
+                    // Fallback to cloud draft from database if not in local storage
+                    if (!savedCode && this.cloudCpDrafts) {
+                        const draftKey = `${courseId}_${this.activeNode.id}_${this.cpState.selectedLang}`;
+                        if (this.cloudCpDrafts[draftKey] && this.cloudCpDrafts[draftKey].code) {
+                            savedCode = this.cloudCpDrafts[draftKey].code;
+                        }
+                    }
+
+                    if (savedCode === null || savedCode === undefined) {
                         if (this.activeNode.starterCodes && this.activeNode.starterCodes[this.cpState.selectedLang]) {
                             savedCode = this.activeNode.starterCodes[this.cpState.selectedLang];
                         } else {
@@ -3059,10 +3117,12 @@
                                 this.cpState.currentCode = val;
                                 const currentLang = this.cpState.selectedLang;
                                 const cId = this.courseData ? this.courseData.id : 'draft';
-                                const saveKey = 'cp_code_' + cId + '_' + this.activeNode.id + '_' + currentLang;
+                                const sId = this.getStudentId();
+                                const saveKey = 'cp_code_' + sId + '_' + cId + '_' + this.activeNode.id + '_' + currentLang;
                                 try {
                                     localStorage.setItem(saveKey, val);
                                 } catch(e) {}
+                                this.debounceSaveCpDraft(val, currentLang);
                             });
 
                             this.cpState.editorInstance = editor;
@@ -3086,11 +3146,13 @@
                 onTextareaCodeChange(val) {
                     this.cpState.currentCode = val;
                     if (this.activeNode) {
+                        const sId = this.getStudentId();
                         const courseId = this.courseData ? this.courseData.id : 'draft';
-                        const key = 'cp_code_' + courseId + '_' + this.activeNode.id + '_' + this.cpState.selectedLang;
+                        const key = 'cp_code_' + sId + '_' + courseId + '_' + this.activeNode.id + '_' + this.cpState.selectedLang;
                         try {
                             localStorage.setItem(key, val);
                         } catch(e) {}
+                        this.debounceSaveCpDraft(val, this.cpState.selectedLang);
                     }
                 },
 
@@ -3110,11 +3172,20 @@
                 updateEditorLangAndCode() {
                     if (!this.activeNode) return;
                     const lang = this.cpState.selectedLang;
+                    const sId = this.getStudentId();
                     const courseId = this.courseData ? this.courseData.id : 'draft';
-                    const key = 'cp_code_' + courseId + '_' + this.activeNode.id + '_' + lang;
+                    const key = 'cp_code_' + sId + '_' + courseId + '_' + this.activeNode.id + '_' + lang;
+                    const legacyKey = 'cp_code_' + courseId + '_' + this.activeNode.id + '_' + lang;
 
-                    let savedCode = localStorage.getItem(key);
-                    if (savedCode === null) {
+                    let savedCode = localStorage.getItem(key) || localStorage.getItem(legacyKey);
+                    if (!savedCode && this.cloudCpDrafts) {
+                        const draftKey = `${courseId}_${this.activeNode.id}_${lang}`;
+                        if (this.cloudCpDrafts[draftKey] && this.cloudCpDrafts[draftKey].code) {
+                            savedCode = this.cloudCpDrafts[draftKey].code;
+                        }
+                    }
+
+                    if (savedCode === null || savedCode === undefined) {
                         if (this.activeNode.starterCodes && this.activeNode.starterCodes[lang]) {
                             savedCode = this.activeNode.starterCodes[lang];
                         } else {
@@ -3137,8 +3208,9 @@
 
                 onLangChange() {
                     if (!this.activeNode) return;
+                    const sId = this.getStudentId();
                     const courseId = this.courseData ? this.courseData.id : 'draft';
-                    localStorage.setItem('cp_last_lang_' + courseId + '_' + this.activeNode.id, this.cpState.selectedLang);
+                    localStorage.setItem('cp_last_lang_' + sId + '_' + courseId + '_' + this.activeNode.id, this.cpState.selectedLang);
                     this.updateEditorLangAndCode();
                 },
 
@@ -3171,8 +3243,10 @@
                         this.cpState.editorInstance.setValue(starter, -1);
                         this.cpState.editorInstance.focus();
                     }
+                    const sId = this.getStudentId();
                     const courseId = this.courseData ? this.courseData.id : 'draft';
-                    localStorage.setItem('cp_code_' + courseId + '_' + this.activeNode.id + '_' + lang, starter);
+                    localStorage.setItem('cp_code_' + sId + '_' + courseId + '_' + this.activeNode.id + '_' + lang, starter);
+                    this.debounceSaveCpDraft(starter, lang);
                 },
 
                 async runCpCustom() {
@@ -3461,6 +3535,9 @@
                             // Add to submissions history
                             const submissionRecord = {
                                 id: data.submissionId || ('sub_' + Date.now().toString(36)),
+                                courseId: courseId,
+                                moduleId: this.activeNode.id,
+                                problemId: this.activeNode.id,
                                 language: this.cpState.selectedLang,
                                 verdict: data.verdict || data.verdictCode,
                                 score: data.score,
@@ -3472,9 +3549,28 @@
                                 details: data.testResults || data.tests || []
                             };
                             this.cpState.submissions.unshift(submissionRecord);
+
+                            const sId = this.getStudentId();
                             try {
-                                localStorage.setItem('cp_submissions_' + courseId + '_' + this.activeNode.id, JSON.stringify(this.cpState.submissions.slice(0, 30)));
+                                localStorage.setItem('cp_submissions_' + sId + '_' + courseId + '_' + this.activeNode.id, JSON.stringify(this.cpState.submissions.slice(0, 30)));
                             } catch(e) {}
+
+                            // Save submission to PostgreSQL Cloud DB per student
+                            if (sId !== 'guest') {
+                                fetch('/api/pg-lms', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        action: 'save_cp_submission',
+                                        userId: sId,
+                                        courseId: courseId,
+                                        moduleId: this.activeNode.id,
+                                        submission: submissionRecord,
+                                        code: code,
+                                        language: this.cpState.selectedLang
+                                    })
+                                }).catch(() => {});
+                            }
 
                             // Update best score
                             if (data.score > (this.cpState.bestScore || 0)) {
@@ -3507,32 +3603,48 @@
 
                 loadCpSubmissions() {
                     if (!this.activeNode) return;
+                    const sId = this.getStudentId();
                     const courseId = this.courseData ? this.courseData.id : 'draft';
-                    const key = 'cp_submissions_' + courseId + '_' + this.activeNode.id;
+                    const key = 'cp_submissions_' + sId + '_' + courseId + '_' + this.activeNode.id;
+                    const legacyKey = 'cp_submissions_' + courseId + '_' + this.activeNode.id;
+                    
+                    let localSubs = [];
                     try {
-                        const raw = localStorage.getItem(key);
-                        if (raw) {
-                            this.cpState.submissions = JSON.parse(raw);
-                            let maxSc = 0;
-                            let bestV = null;
-                            this.cpState.submissions.forEach(s => {
-                                if (s.score >= maxSc) {
-                                    maxSc = s.score;
-                                    bestV = s.verdict;
-                                }
-                            });
-                            this.cpState.bestScore = maxSc;
-                            this.cpState.bestVerdict = bestV;
-                            if (maxSc === 100 && !this.isCompleted(this.activeNode.id)) {
-                                this.markAsCompleted(this.activeNode.id);
-                            }
-                        } else {
-                            this.cpState.submissions = [];
-                            this.cpState.bestScore = 0;
-                            this.cpState.bestVerdict = null;
+                        const raw = localStorage.getItem(key) || localStorage.getItem(legacyKey);
+                        if (raw) localSubs = JSON.parse(raw) || [];
+                    } catch(e) {}
+
+                    // Merge with cloud submissions from PostgreSQL DB
+                    let cloudSubs = [];
+                    if (Array.isArray(this.cloudCpSubmissions)) {
+                        cloudSubs = this.cloudCpSubmissions.filter(s => {
+                            return (s.courseId === courseId || !s.courseId) && (s.moduleId === this.activeNode.id || s.problemId === this.activeNode.id);
+                        });
+                    }
+
+                    // Deduplicate by ID
+                    const mergedMap = new Map();
+                    [...localSubs, ...cloudSubs].forEach(s => {
+                        if (s && s.id && !mergedMap.has(s.id)) {
+                            mergedMap.set(s.id, s);
                         }
-                    } catch(e) {
-                        this.cpState.submissions = [];
+                    });
+
+                    const merged = Array.from(mergedMap.values());
+                    this.cpState.submissions = merged;
+
+                    let maxSc = 0;
+                    let bestV = null;
+                    merged.forEach(s => {
+                        if (s.score >= maxSc) {
+                            maxSc = s.score;
+                            bestV = s.verdict;
+                        }
+                    });
+                    this.cpState.bestScore = maxSc;
+                    this.cpState.bestVerdict = bestV;
+                    if (maxSc === 100 && !this.isCompleted(this.activeNode.id)) {
+                        this.markAsCompleted(this.activeNode.id);
                     }
                 },
 
@@ -3585,10 +3697,12 @@
                     }
                     this.cpState.showCodeModal = false;
                     this.cpState.activeTab = 'code';
+                    const sId = this.getStudentId();
                     const cId = this.courseData ? this.courseData.id : 'draft';
                     if (this.activeNode) {
-                        localStorage.setItem('cp_code_' + cId + '_' + this.activeNode.id + '_' + this.cpState.selectedLang, code);
+                        localStorage.setItem('cp_code_' + sId + '_' + cId + '_' + this.activeNode.id + '_' + this.cpState.selectedLang, code);
                     }
+                    this.debounceSaveCpDraft(code, this.cpState.selectedLang);
                     const el = document.getElementById('cp-ace-editor');
                     if (el) el.scrollIntoView({ behavior: 'smooth' });
                 },
