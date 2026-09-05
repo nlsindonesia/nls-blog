@@ -116,7 +116,7 @@ app.get('/api/health', (req, res) => {
       }
     },
     headless: config.HEADLESS,
-    queueLength: queue.getQueueLength(),
+    queueLength: queue.queue ? queue.queue.length : 0,
     isProcessing: queue.isProcessing,
     timestamp: new Date().toISOString()
   });
