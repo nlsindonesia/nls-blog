@@ -7,6 +7,7 @@
 const { submitToTLX } = require('./tlxSubmitter');
 const { submitToCSES } = require('./csesSubmitter');
 const { submitToAtCoder } = require('./atcoderSubmitter');
+const { submitToCodeforces } = require('./codeforcesSubmitter');
 const config = require('./config');
 
 class SubmissionQueue {
@@ -26,7 +27,9 @@ class SubmissionQueue {
     // Auto-detect platform jika tidak dispesifikasikan secara eksplisit
     let targetPlatform = (platform || '').toLowerCase();
     if (!targetPlatform) {
-      if (problemUrl.includes('atcoder.jp') || /^(abc|arc|agc|practice)\d*_[a-zA-Z0-9]+/i.test(problemUrl.trim())) {
+      if (problemUrl.includes('codeforces.com') || /^\d+[a-zA-Z][a-zA-Z0-9]*$/.test(problemUrl.trim()) || problemUrl.toLowerCase().includes('codeforce')) {
+        targetPlatform = 'codeforces';
+      } else if (problemUrl.includes('atcoder.jp') || /^(abc|arc|agc|practice)\d*_[a-zA-Z0-9]+/i.test(problemUrl.trim())) {
         targetPlatform = 'atcoder';
       } else if (problemUrl.includes('cses.fi') || /^\d+$/.test(problemUrl.trim()) || problemUrl.toLowerCase().includes('cses')) {
         targetPlatform = 'cses';
@@ -101,7 +104,14 @@ class SubmissionQueue {
 
     try {
       let result;
-      if (job.platform === 'atcoder') {
+      if (job.platform === 'codeforces') {
+        result = await submitToCodeforces({
+          problemUrl: job.problemUrl,
+          language: job.language,
+          sourceCode: job.sourceCode,
+          studentId: job.studentId
+        });
+      } else if (job.platform === 'atcoder') {
         result = await submitToAtCoder({
           problemUrl: job.problemUrl,
           language: job.language,

@@ -3320,9 +3320,9 @@
                         } else {
                             // Fallback langsung ke Remote Judge port 3500 jika running lokal (misal serve.ps1 tanpa Vercel serverless)
                             const isVJudge = payload.cpMode === 'vjudge' || 
-                                ['tlx', 'cses', 'atcoder'].includes(payload.judgeProvider) ||
-                                (payload.sourcePlatform && ['tlx', 'cses', 'atcoder'].includes(payload.sourcePlatform.toLowerCase())) ||
-                                (payload.sourceUrl && (payload.sourceUrl.includes('tlx.toki.id') || payload.sourceUrl.includes('cses.fi') || payload.sourceUrl.includes('atcoder.jp')));
+                                ['tlx', 'cses', 'atcoder', 'codeforces'].includes(payload.judgeProvider) ||
+                                (payload.sourcePlatform && ['tlx', 'cses', 'atcoder', 'codeforces'].includes(payload.sourcePlatform.toLowerCase())) ||
+                                (payload.sourceUrl && (payload.sourceUrl.includes('tlx.toki.id') || payload.sourceUrl.includes('cses.fi') || payload.sourceUrl.includes('atcoder.jp') || payload.sourceUrl.includes('codeforces.com')));
 
                             if (isVJudge) {
                                 try {
@@ -3331,7 +3331,10 @@
                                     const srcLow = (payload.sourceUrl || '').toLowerCase();
                                     const provLow = (payload.judgeProvider || (payload.sourcePlatform || '')).toLowerCase();
 
-                                    if (provLow === 'atcoder' || srcLow.includes('atcoder.jp')) {
+                                    if (provLow === 'codeforces' || srcLow.includes('codeforces.com') || /^\d+[a-za-z][a-za-z0-9]*$/.test(srcLow.trim())) {
+                                        targetPlat = 'codeforces';
+                                        platName = 'Codeforces';
+                                    } else if (provLow === 'atcoder' || srcLow.includes('atcoder.jp')) {
                                         targetPlat = 'atcoder';
                                         platName = 'AtCoder';
                                     } else if (provLow === 'cses' || srcLow.includes('cses.fi')) {

@@ -284,35 +284,45 @@ export default async function handler(req, res) {
             const sourcePlatform = (body.sourcePlatform || '').toLowerCase();
             const sourceUrl = body.sourceUrl || body.remoteJudgeUrl || body.problemUrl || '';
 
-            // Cek apakah soal ini menggunakan Mode Remote Judge (TLX TOKI, CSES, atau AtCoder)
-            const isAtcoderVJudge = (
+            // Cek apakah soal ini menggunakan Mode Remote Judge (TLX TOKI, CSES, AtCoder, atau Codeforces)
+            const isCodeforcesVJudge = (
+                sourceUrl.toLowerCase().includes('codeforces.com') ||
+                judgeProvider === 'codeforces' ||
+                sourcePlatform === 'codeforces' ||
+                /^\d+[a-zA-Z][a-zA-Z0-9]*$/.test((sourceUrl || problemTitle || '').trim())
+            );
+
+            const isAtcoderVJudge = !isCodeforcesVJudge && (
                 sourceUrl.toLowerCase().includes('atcoder.jp') ||
                 judgeProvider === 'atcoder' ||
                 sourcePlatform === 'atcoder' ||
                 /^(abc|arc|agc|practice)\d*_[a-zA-Z0-9]+/i.test((sourceUrl || problemTitle || '').trim())
             );
 
-            const isCsesVJudge = !isAtcoderVJudge && (
+            const isCsesVJudge = !isCodeforcesVJudge && !isAtcoderVJudge && (
                 sourceUrl.toLowerCase().includes('cses.fi') ||
                 judgeProvider === 'cses' ||
                 sourcePlatform === 'cses' ||
                 (cpMode === 'vjudge' && /^\d+$/.test((sourceUrl || '').trim()))
             );
 
-            const isTlxVJudge = !isAtcoderVJudge && !isCsesVJudge && (
+            const isTlxVJudge = !isCodeforcesVJudge && !isAtcoderVJudge && !isCsesVJudge && (
                 sourceUrl.toLowerCase().includes('tlx.toki.id') ||
                 judgeProvider === 'tlx' ||
                 sourcePlatform === 'tlx' ||
                 cpMode === 'vjudge' || body.isVJudge || body.remoteJudge
             );
 
-            const isRemoteJudge = isAtcoderVJudge || isCsesVJudge || isTlxVJudge;
+            const isRemoteJudge = isCodeforcesVJudge || isAtcoderVJudge || isCsesVJudge || isTlxVJudge;
 
             if (isRemoteJudge) {
                 let targetPlatform = 'tlx';
                 let platformDisplayName = 'TLX TOKI';
 
-                if (isAtcoderVJudge) {
+                if (isCodeforcesVJudge) {
+                    targetPlatform = 'codeforces';
+                    platformDisplayName = 'Codeforces';
+                } else if (isAtcoderVJudge) {
                     targetPlatform = 'atcoder';
                     platformDisplayName = 'AtCoder';
                 } else if (isCsesVJudge) {

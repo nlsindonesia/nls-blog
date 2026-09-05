@@ -27,6 +27,7 @@ app.get('/api/health', (req, res) => {
   const tlxSessionExists = fs.existsSync(config.SESSION_PATH);
   const csesSessionExists = fs.existsSync(config.CSES_SESSION_PATH);
   const atcoderSessionExists = fs.existsSync(config.ATCODER_SESSION_PATH);
+  const codeforcesSessionExists = fs.existsSync(config.CODEFORCES_SESSION_PATH);
   let tlxBotUsername = null;
 
   if (tlxSessionExists) {
@@ -46,11 +47,12 @@ app.get('/api/health', (req, res) => {
 
   const csesBotUsername = config.CSES_USERNAME || 'nls_bot';
   const atcoderBotUsername = config.ATCODER_USERNAME || 'nls_bot';
+  const codeforcesBotUsername = config.CODEFORCES_HANDLE || 'nls_bot';
 
   res.json({
     status: 'ok',
-    service: 'NLS Universal Remote Judge Service (TLX, CSES & AtCoder)',
-    sessionExists: tlxSessionExists || csesSessionExists || atcoderSessionExists,
+    service: 'NLS Universal Remote Judge Service (TLX, CSES, AtCoder & Codeforces)',
+    sessionExists: tlxSessionExists || csesSessionExists || atcoderSessionExists || codeforcesSessionExists,
     botUser: tlxBotUsername || csesBotUsername,
     bots: {
       tlx: {
@@ -67,6 +69,11 @@ app.get('/api/health', (req, res) => {
         online: atcoderSessionExists,
         botUser: atcoderBotUsername,
         sessionPath: config.ATCODER_SESSION_PATH
+      },
+      codeforces: {
+        online: codeforcesSessionExists,
+        botUser: codeforcesBotUsername,
+        sessionPath: config.CODEFORCES_SESSION_PATH
       }
     },
     headless: config.HEADLESS,
@@ -100,7 +107,9 @@ app.post('/api/judge/submit', (req, res) => {
     // Tentukan platform target
     let targetPlatform = (platform || '').toLowerCase();
     if (!targetPlatform) {
-      if (problemUrl.includes('atcoder.jp') || /^(abc|arc|agc|practice)\d*_[a-zA-Z0-9]+/i.test(problemUrl.trim())) {
+      if (problemUrl.includes('codeforces.com') || /^\d+[a-zA-Z][a-zA-Z0-9]*$/.test(problemUrl.trim()) || problemUrl.toLowerCase().includes('codeforce')) {
+        targetPlatform = 'codeforces';
+      } else if (problemUrl.includes('atcoder.jp') || /^(abc|arc|agc|practice)\d*_[a-zA-Z0-9]+/i.test(problemUrl.trim())) {
         targetPlatform = 'atcoder';
       } else if (problemUrl.includes('cses.fi') || /^\d+$/.test(problemUrl.trim()) || problemUrl.toLowerCase().includes('cses')) {
         targetPlatform = 'cses';
@@ -121,6 +130,13 @@ app.post('/api/judge/submit', (req, res) => {
       return res.status(503).json({
         success: false,
         error: 'Sesi bot AtCoder belum disiapkan di server. Harap jalankan "npm run atcoder-login" di folder tlx-remote-judge!'
+      });
+    }
+
+    if (targetPlatform === 'codeforces' && !fs.existsSync(config.CODEFORCES_SESSION_PATH)) {
+      return res.status(503).json({
+        success: false,
+        error: 'Sesi bot Codeforces belum disiapkan di server. Harap jalankan "npm run codeforces-login" di folder tlx-remote-judge!'
       });
     }
 

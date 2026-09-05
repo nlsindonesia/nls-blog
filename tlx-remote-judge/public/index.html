@@ -442,14 +442,13 @@
 
       <form id="submitForm">
         <div class="form-group">
-          <label for="problemUrl">URL / Kode Soal (TLX / CSES / AtCoder)</label>
-          <input type="text" id="problemUrl" placeholder="Contoh: https://tlx.toki.id/problems/troc-30/A, 1068, atau abc300_a" required value="https://atcoder.jp/contests/abc300/tasks/abc300_a">
+          <label for="problemUrl">URL / Kode Soal (TLX / CSES / AtCoder / Codeforces)</label>
+          <input type="text" id="problemUrl" placeholder="Contoh: https://codeforces.com/problemset/problem/4/A, 4A, abc300_a, 1068" required value="https://codeforces.com/problemset/problem/4/A">
           <div class="quick-chips">
+            <span class="chip" onclick="setProblem('https://codeforces.com/problemset/problem/4/A', 'codeforces')">Codeforces 4A (Watermelon)</span>
             <span class="chip" onclick="setProblem('https://atcoder.jp/contests/abc300/tasks/abc300_a', 'atcoder')">AtCoder abc300_a</span>
             <span class="chip" onclick="setProblem('https://cses.fi/problemset/task/1068', 'cses')">CSES 1068</span>
-            <span class="chip" onclick="setProblem('https://cses.fi/problemset/task/1083', 'cses')">CSES 1083</span>
             <span class="chip" onclick="setProblem('https://tlx.toki.id/problems/troc-30/A', 'tlx')">TLX TROC-30 A</span>
-            <span class="chip" onclick="setProblem('https://tlx.toki.id/problems/troc-29/A', 'tlx')">TLX TROC-29 A</span>
           </div>
         </div>
 
@@ -568,6 +567,18 @@ int main() {
     }
     return 0;
 }`;
+      } else if (platform === 'codeforces' || url.includes('/4/A') || url.toUpperCase().includes('4A')) {
+        document.getElementById('sourceCode').value = `#include <iostream>
+using namespace std;
+
+int main() {
+    int w;
+    if (cin >> w) {
+        if (w > 2 && w % 2 == 0) cout << "YES\\n";
+        else cout << "NO\\n";
+    }
+    return 0;
+}`;
       } else if (platform === 'cses' || url.includes('1068')) {
         document.getElementById('sourceCode').value = `#include <iostream>
 using namespace std;
@@ -615,9 +626,14 @@ int main() {
         const text = document.getElementById('statusText');
 
         const activeEngines = [];
-        if (data.sessionExists) activeEngines.push('TLX');
-        if (data.csesSessionExists) activeEngines.push('CSES');
-        if (data.atcoderSessionExists) activeEngines.push('AtCoder');
+        if (data.bots) {
+          if (data.bots.tlx?.online) activeEngines.push('TLX');
+          if (data.bots.cses?.online) activeEngines.push('CSES');
+          if (data.bots.atcoder?.online) activeEngines.push('AtCoder');
+          if (data.bots.codeforces?.online) activeEngines.push('Codeforces');
+        } else {
+          if (data.sessionExists) activeEngines.push('TLX');
+        }
 
         if (activeEngines.length > 0) {
           dot.className = 'status-dot active';

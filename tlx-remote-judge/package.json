@@ -9,8 +9,10 @@
     "login": "node scripts/login.js",
     "cses-login": "node scripts/cses-login.js",
     "atcoder-login": "node scripts/atcoder-login.js",
+    "codeforces-login": "node scripts/codeforces-login.js",
     "check-auth": "node scripts/check-auth.js",
-    "check-atcoder": "node scripts/check-atcoder-auth.js"
+    "check-atcoder": "node scripts/check-atcoder-auth.js",
+    "check-codeforces": "node scripts/check-codeforces-auth.js"
   },
   "keywords": [
     "remote-judge",

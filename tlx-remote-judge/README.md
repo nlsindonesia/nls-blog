@@ -1,23 +1,24 @@
-# 🤖 Universal Remote Judge Service (TLX, CSES & AtCoder)
+# 🤖 Universal Remote Judge Service (TLX, CSES, AtCoder & Codeforces)
 
-Modul dan layanan backend otomatis (*Proxy / Remote Judge*) untuk platform **TLX (TOKI)**, **CSES (cses.fi)**, dan **AtCoder (atcoder.jp)** berbasis **Node.js** dan **Playwright**.
+Modul dan layanan backend otomatis (*Proxy / Remote Judge*) untuk platform **TLX (TOKI)**, **CSES (cses.fi)**, **AtCoder (atcoder.jp)**, dan **Codeforces (codeforces.com)** berbasis **Node.js** dan **Playwright**.
 
-Layanan ini memungkinkan aplikasi website kamu (misal Bimbel OSN / Kontes Pemrograman) untuk menerima jawaban kodingan siswa, mengirimkannya secara otomatis ke server resmi TLX TOKI, CSES, atau AtCoder via bot (@nls_bot), dan mengembalikan hasil penilaian (*Verdict*, Skor, Rincian Kasus Uji, Runtime, Memori) secara realtime tanpa perlu membuat testcase sendiri.
+Layanan ini memungkinkan aplikasi website kamu (misal Bimbel OSN / Kontes Pemrograman) untuk menerima jawaban kodingan siswa, mengirimkannya secara otomatis ke server resmi TLX TOKI, CSES, AtCoder, atau Codeforces via bot (@nls_bot), dan mengembalikan hasil penilaian (*Verdict*, Skor, Rincian Kasus Uji, Runtime, Memori) secara realtime tanpa perlu membuat testcase sendiri.
 
 ---
 
 ## ⚡ Fitur Utama
 
-- **Multi-Platform Remote Judge**: Mendukung **TLX TOKI**, **CSES (cses.fi)**, dan **AtCoder (atcoder.jp)**.
+- **Multi-Platform Remote Judge**: Mendukung **TLX TOKI**, **CSES (cses.fi)**, **AtCoder (atcoder.jp)**, dan **Codeforces (codeforces.com)**.
 - **Persistent Session Login**:
   - TLX TOKI: `npm run login` (login manual sekali + simpan sesi cookies).
   - CSES: `npm run cses-login` (auto-login otomatis menggunakan akun `@nls_bot`).
   - AtCoder: `npm run atcoder-login` (login interaktif satu kali untuk Cloudflare Turnstile, sesi aktif 6 bulan).
-- **Headless Automated Submitter**: Eksekusi submit di background tanpa membuka jendela browser.
-- **Detail Rincian Test Cases**: Mengembalikan hasil evaluasi tiap kasus uji resmi (misal 14/14 test cases di CSES).
+  - Codeforces: `npm run codeforces-login` (auto-login otomatis menggunakan akun `@nls_bot`).
+- **Automated Submitter dengan Turnstile Auto-Bypass**: Eksekusi submit di background dengan offscreen Chrome yang otomatis menyelesaikan Cloudflare Turnstile tanpa repot.
+- **Detail Rincian Test Cases**: Mengembalikan hasil evaluasi tiap kasus uji resmi (misal 14/14 test cases di CSES, atau rincian kegagalan per test case di Codeforces).
 - **Rate-Limit Safe Queue (FIFO)**: Antrean bawaan dengan jeda otomatis (*cooldown*) 8 detik antar submisi agar akun bot aman dari pembatasan (*rate-limiting*).
 - **REST API Siap Pakai**: Endpoint `POST /api/judge/submit` & `GET /api/judge/status/:jobId` yang mudah dikonsumsi oleh backend/frontend mana pun.
-- **Live Test Playground**: Tampilan antarmuka visual modern di browser (`http://localhost:3500`) untuk langsung menguji submisi kodingan ke TLX, CSES, dan AtCoder.
+- **Live Test Playground**: Tampilan antarmuka visual modern di browser (`http://localhost:3500`) untuk langsung menguji submisi kodingan ke TLX, CSES, AtCoder, dan Codeforces.
 
 ---
 
@@ -57,14 +58,22 @@ npm run atcoder-login
 - Selesaikan verifikasi Cloudflare Turnstile (jika muncul kotak centang) lalu klik **Sign In**.
 - Sesi akan otomatis terdeteksi dan tersimpan di `session/atcoder_session.json` dan aktif selama 6 bulan!
 
-### 5. Cek Status Sesi Kapan Saja
+### 5. Login Akun Bot Codeforces (Otomatis)
+Jalankan perintah ini:
+```bash
+npm run codeforces-login
+```
+Bot akan login otomatis menggunakan username `nls_bot` dan password `@NLSIndonesia1$`, lalu menyimpan sesi di `session/codeforces_session.json`.
+
+### 6. Cek Status Sesi Kapan Saja
 Untuk memastikan sesi login masih aktif tanpa membuka browser:
 ```bash
-npm run check-auth       # Untuk TLX
-npm run check-atcoder    # Untuk AtCoder
+npm run check-auth         # Untuk TLX
+npm run check-atcoder      # Untuk AtCoder
+npm run check-codeforces   # Untuk Codeforces
 ```
 
-### 6. Jalankan Server
+### 7. Jalankan Server
 ```bash
 npm start
 ```

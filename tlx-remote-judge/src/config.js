@@ -26,6 +26,11 @@ module.exports = {
     : path.resolve(ROOT_DIR, 'session/atcoder_session.json'),
   ATCODER_USERNAME: process.env.ATCODER_USERNAME || 'nls_bot',
   ATCODER_PASSWORD: process.env.ATCODER_PASSWORD || 'maman123',
+  CODEFORCES_SESSION_PATH: process.env.CODEFORCES_SESSION_PATH
+    ? path.resolve(ROOT_DIR, process.env.CODEFORCES_SESSION_PATH)
+    : path.resolve(ROOT_DIR, 'session/codeforces_session.json'),
+  CODEFORCES_HANDLE: process.env.CODEFORCES_HANDLE || 'nls_bot',
+  CODEFORCES_PASSWORD: process.env.CODEFORCES_PASSWORD || '@NLSIndonesia1$',
 
   // Pemetaan ID bahasa umum ke nama bahasa di form dropdown CSES
   CSES_LANGUAGE_MAP: {
